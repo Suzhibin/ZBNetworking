@@ -3,7 +3,7 @@ NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小�
 ## 使用
 1.添加#import "ZBNetworking.h"或#import "ZBURLSessionManager.h"
 
-2.添加
+2.添加 代理
 ```objective-c
 <ZBURLSessionDelegate>
 ```
