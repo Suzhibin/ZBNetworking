@@ -88,10 +88,10 @@
     if (request.error.code==-999)return;
     if (request.error.code==NSURLErrorTimedOut) {
 
-   
+        [self alertTitle:@"请求超时" andMessage:@""];
     }else{
 
-     
+       [self alertTitle:@"请求失败" andMessage:@""];
     }
 }
 

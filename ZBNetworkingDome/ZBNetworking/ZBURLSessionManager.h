@@ -22,13 +22,7 @@
 #import <UIKit/UIKit.h>
 @class ZBURLSessionManager;
 
-#define DEBUG_LOG 1
 
-#if(DEBUG_LOG == 1)
-# define SLog(fmt, ...) NSLog((@"[文件名:%s]\n" "[函数名:%s]\n" "[行号:%d] \n" fmt), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-# define SLog(...);
-#endif
 
 //用于标识不同类型的请求
 typedef NS_ENUM(NSInteger,apiType) {

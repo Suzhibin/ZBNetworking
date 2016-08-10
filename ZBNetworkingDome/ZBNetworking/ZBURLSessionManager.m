@@ -83,13 +83,13 @@
         
        
         [self.downloadData appendData:data];
-        SLog(@"读缓存");
+        ZBLog(@"读缓存");
         if ([self.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [self.delegate urlRequestFinished:self];
         }
 
     }else{
-         SLog(@"重新请求");
+         ZBLog(@"重新请求");
         [self startRequest];
        
         
@@ -136,11 +136,11 @@
         if ([request.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [request.delegate urlRequestFinished:request];
         }
-        SLog(@"读缓存");
+        ZBLog(@"读缓存");
         return request;
     }else{
         [request startRequest];
-        SLog(@"重新请求");
+        ZBLog(@"重新请求");
  
     }
 
@@ -164,7 +164,7 @@
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
 {
 
-  //  NSLog(@"didReceiveResponse--%@",[NSThread currentThread]);
+  //  ZBLog(@"didReceiveResponse--%@",[NSThread currentThread]);
     
     
     completionHandler(NSURLSessionResponseAllow);
@@ -176,7 +176,7 @@
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-   // NSLog(@"%ld---%@--",_downloadData.length,[NSThread currentThread]);
+   // ZBLog(@"%ld---%@--",_downloadData.length,[NSThread currentThread]);
    
     [self.downloadData appendData:data];
 }
@@ -186,7 +186,7 @@
  */
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-   // NSLog(@"didCompleteWithError--%@",[NSThread currentThread]);
+   // ZBLog(@"didCompleteWithError--%@",[NSThread currentThread]);
     
     if(error == nil)
     {
@@ -207,7 +207,7 @@
     }else{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         //错误信息
-         NSLog(@"error:%@",[error localizedDescription]);
+         ZBLog(@"error:%@",[error localizedDescription]);
         self.error=nil;
         self.error=error;
        
@@ -223,7 +223,7 @@
  */
 - (void)startRequest
 {
-    // NSLog(@"get 请求");
+    // ZBLog(@"get 请求");
     if (_dataTask) {
         [_dataTask cancel];
         
