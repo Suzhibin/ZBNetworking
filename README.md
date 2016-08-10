@@ -1,7 +1,7 @@
 # ZBNetworking
 NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小，删除缓存等功能 
 ## 使用
-1.添加#import "ZBNetworking.h"或#import "ZBURLSessionManager.h"
+1.添加#import "ZBNetworking.h"
 
 2.添加 代理
 ```objective-c
