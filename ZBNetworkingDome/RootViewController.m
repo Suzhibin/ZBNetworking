@@ -191,30 +191,7 @@
     
     
 }
-// 导航栏隐藏
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-    //    NSLog(@"offset---scroll:%f",self.tableView.contentOffset.y);
-    
-    //scrollView已经有拖拽手势，直接拿到scrollView的拖拽手势
-    UIPanGestureRecognizer* pan = scrollView.panGestureRecognizer;
-    //获取到拖拽的速度 >0 向下拖动 <0 向上拖动
-    CGFloat velocity = [pan velocityInView:scrollView].y;
-    
-    if (velocity<-5) {
-        
-        //向上拖动，隐藏导航栏
-        [self.navigationController setNavigationBarHidden:true animated:true];
-    }
-    else if (velocity>5) {
-        //向下拖动，显示导航栏
-        [self.navigationController setNavigationBarHidden:false animated:true];
-    }
-    else if(velocity==0){
-        
-        //停止拖拽
-    }
-}
+
 
 - (void)btnclick
 {
