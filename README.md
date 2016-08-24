@@ -15,7 +15,7 @@ NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小�
 ```
 
 
-4.成功和失败俩个代理回调
+4.完成和失败俩个代理回调
 ```objective-c
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
