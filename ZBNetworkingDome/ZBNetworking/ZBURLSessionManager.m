@@ -48,54 +48,25 @@
     }
     return _session;
 }
-#pragma mark - cache
+
 #pragma  mark - 实例方法 请求
 
 -(void)postRequestWithUrlString:(NSString *)requestString dict:(NSDictionary*)dict target:(id<ZBURLSessionDelegate>)delegate
 {
     
-    self.requestString = requestString;
-    self.delegate = delegate;
-    
-    [self downloadFromdict:dict];
-
+    [ZBURLSessionManager postRequestWithUrlString:requestString dict:dict target:delegate];
     
 }
 
 - (void)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate
 {
-     [self getRequestWithUrlString:requestString target:delegate apiType:kDefaultType];
+     [self getRequestWithUrlString:requestString target:delegate apiType:ZBRequestTypeDefault];
 }
 
-- (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(NSInteger)type
+- (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
     
-    self.requestString = requestString;
-    self.delegate = delegate;
-    self.apiType = type;
-    
-    NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:requestString];
-    
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:60*60]==NO&&type!=kRefreshType) {
-        
-        NSData *data = [NSData dataWithContentsOfFile:path];
-
-        ZBLog(@"Read cache");
-        [self.downloadData appendData:data];
- 
-        if ([self.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
-            [self.delegate urlRequestFinished:self];
-        }
-
-    }else{
-         ZBLog(@"start Request");
-        [self startRequest];
-       
-        
-    }
-    
-    [[ZBRequestManager shareManager] setRequestObject:self forkey:requestString];
+     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:type];
 
 }
 #pragma  mark - 类方法 请求
@@ -112,11 +83,11 @@
 
 
 +(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate{
-    return [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:kDefaultType];
+    return [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:ZBRequestTypeDefault];
 }
 
 
-+(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(NSInteger)type
++(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
    
     
@@ -127,7 +98,7 @@
   
      NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:requestString];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:60*60]==NO&&type!=kRefreshType) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:60*60]==NO&&type!=ZBRequestTypeRefresh) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
     
@@ -140,7 +111,7 @@
        
         return request;
     }else{
-        ZBLog(@"start Request");
+
         [request startRequest];
        
  
@@ -225,7 +196,7 @@
  */
 - (void)startRequest
 {
-    // ZBLog(@"get 请求");
+     ZBLog(@"start Request");
     if (_dataTask) {
         [_dataTask cancel];
         

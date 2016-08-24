@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */; };
+		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
+		7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */; };
 		7DF826321D5815BE000D1109 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826311D5815BE000D1109 /* main.m */; };
 		7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826341D5815BE000D1109 /* AppDelegate.m */; };
 		7DF826381D5815BE000D1109 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826371D5815BE000D1109 /* ViewController.m */; };
@@ -19,10 +22,8 @@
 		7DF8266E1D581622000D1109 /* ZBRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826691D581622000D1109 /* ZBRequestManager.m */; };
 		7DF8266F1D581622000D1109 /* ZBURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8266B1D581622000D1109 /* ZBURLSessionManager.m */; };
 		7DF826761D5816C9000D1109 /* ZBCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826751D5816C9000D1109 /* ZBCacheManager.m */; };
-		7DF826811D58170C000D1109 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826781D58170C000D1109 /* SettingViewController.m */; };
 		7DF826821D58170C000D1109 /* DetailsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8267A1D58170C000D1109 /* DetailsModel.m */; };
 		7DF826831D58170C000D1109 /* RootModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8267C1D58170C000D1109 /* RootModel.m */; };
-		7DF826841D58170C000D1109 /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8267E1D58170C000D1109 /* DetailsViewController.m */; };
 		7DF826851D58170C000D1109 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826801D58170C000D1109 /* RootViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		7D4C69D11D6D8D23006CCE4C /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
+		7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		7DF8262D1D5815BE000D1109 /* ZBNetworkingDome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZBNetworkingDome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF826311D5815BE000D1109 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7DF826331D5815BE000D1109 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -69,14 +76,10 @@
 		7DF826731D581665000D1109 /* ZBNetworking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBNetworking.h; sourceTree = "<group>"; };
 		7DF826741D5816C9000D1109 /* ZBCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBCacheManager.h; sourceTree = "<group>"; };
 		7DF826751D5816C9000D1109 /* ZBCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBCacheManager.m; sourceTree = "<group>"; };
-		7DF826771D58170C000D1109 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
-		7DF826781D58170C000D1109 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		7DF826791D58170C000D1109 /* DetailsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsModel.h; sourceTree = "<group>"; };
 		7DF8267A1D58170C000D1109 /* DetailsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsModel.m; sourceTree = "<group>"; };
 		7DF8267B1D58170C000D1109 /* RootModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootModel.h; sourceTree = "<group>"; };
 		7DF8267C1D58170C000D1109 /* RootModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootModel.m; sourceTree = "<group>"; };
-		7DF8267D1D58170C000D1109 /* DetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsViewController.h; sourceTree = "<group>"; };
-		7DF8267E1D58170C000D1109 /* DetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsViewController.m; sourceTree = "<group>"; };
 		7DF8267F1D58170C000D1109 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		7DF826801D58170C000D1109 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -130,14 +133,16 @@
 		7DF8262F1D5815BE000D1109 /* ZBNetworkingDome */ = {
 			isa = PBXGroup;
 			children = (
-				7DF826771D58170C000D1109 /* SettingViewController.h */,
-				7DF826781D58170C000D1109 /* SettingViewController.m */,
+				7D4C69D11D6D8D23006CCE4C /* SettingViewController.h */,
+				7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */,
 				7DF826791D58170C000D1109 /* DetailsModel.h */,
 				7DF8267A1D58170C000D1109 /* DetailsModel.m */,
 				7DF8267B1D58170C000D1109 /* RootModel.h */,
 				7DF8267C1D58170C000D1109 /* RootModel.m */,
-				7DF8267D1D58170C000D1109 /* DetailsViewController.h */,
-				7DF8267E1D58170C000D1109 /* DetailsViewController.m */,
+				7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */,
+				7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */,
+				7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */,
+				7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */,
 				7DF8267F1D58170C000D1109 /* RootViewController.h */,
 				7DF826801D58170C000D1109 /* RootViewController.m */,
 				7DF826331D5815BE000D1109 /* AppDelegate.h */,
@@ -263,7 +268,6 @@
 				TargetAttributes = {
 					7DF8262C1D5815BE000D1109 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 44DERL27HZ;
 					};
 					7DF826451D5815BE000D1109 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -331,8 +335,8 @@
 			files = (
 				7DF826761D5816C9000D1109 /* ZBCacheManager.m in Sources */,
 				7DF826381D5815BE000D1109 /* ViewController.m in Sources */,
+				7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
-				7DF826841D58170C000D1109 /* DetailsViewController.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
 				7DF826821D58170C000D1109 /* DetailsModel.m in Sources */,
 				7DF8266E1D581622000D1109 /* ZBRequestManager.m in Sources */,
@@ -340,7 +344,8 @@
 				7DF8266F1D581622000D1109 /* ZBURLSessionManager.m in Sources */,
 				7DF826831D58170C000D1109 /* RootModel.m in Sources */,
 				7DF826321D5815BE000D1109 /* main.m in Sources */,
-				7DF826811D58170C000D1109 /* SettingViewController.m in Sources */,
+				7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */,
+				7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +488,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZBNetworkingDome/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDome";
@@ -494,6 +500,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZBNetworkingDome/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDome";
@@ -566,6 +573,7 @@
 				7DF8265C1D5815BE000D1109 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7DF8265D1D5815BE000D1109 /* Build configuration list for PBXNativeTarget "ZBNetworkingDomeTests" */ = {
 			isa = XCConfigurationList;
@@ -574,6 +582,7 @@
 				7DF8265F1D5815BE000D1109 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7DF826601D5815BE000D1109 /* Build configuration list for PBXNativeTarget "ZBNetworkingDomeUITests" */ = {
 			isa = XCConfigurationList;
@@ -582,6 +591,7 @@
 				7DF826621D5815BE000D1109 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

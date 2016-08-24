@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "RootViewController.h"
+#import "HomeViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -23,7 +23,7 @@
     NSLog(@"path = %@",path);
     
     
-    RootViewController *root = [[RootViewController alloc]init];
+    HomeViewController *root = [[HomeViewController alloc]init];
     UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:root];
     
     self.window.rootViewController = nc;

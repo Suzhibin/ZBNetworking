@@ -1,8 +1,8 @@
 //
 //  SettingViewController.m
-//  ZBNetworking
+//  ZBNetworkingDome
 //
-//  Created by NQ UEC on 16/6/21.
+//  Created by NQ UEC on 16/8/24.
 //  Copyright © 2016年 Suzhibin. All rights reserved.
 //
 
@@ -18,10 +18,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-     self.view.backgroundColor=[UIColor whiteColor];
-    
+   
     [self.view addSubview:self.tableView];
+
 }
 #pragma mark - UITableView dataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -39,21 +38,21 @@
             cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",size];
         }else{
             cell.detailTextLabel.text=@"0M";
-
+            
         }
-    
+        
         
     }
     if (indexPath.row==1) {
         cell.textLabel.text=@"缓存文件数量";
         
         float count=[[ZBCacheManager shareCacheManager]getFileCount];
-   
+        
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
-            
-  
+        
+        
     }
-
+    
     
     return cell;
 }
@@ -63,7 +62,7 @@
     return 2;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (indexPath.row==0) {
@@ -74,6 +73,7 @@
         [[ZBCacheManager shareCacheManager]clearDiskOnOperation:^{
             [[ZBCacheManager shareCacheManager]getFileSize];
             [_tableView reloadData];
+            [self alertTitle:@"" andMessage:@"缓存已删除"];
         }];
         
         
@@ -97,6 +97,7 @@
     
     return _tableView;
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

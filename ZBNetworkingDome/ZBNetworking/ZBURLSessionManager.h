@@ -27,11 +27,11 @@
 //用于标识不同类型的请求
 typedef NS_ENUM(NSInteger,apiType) {
     
-    kDefaultType,   //默认类型
-    kRefreshType,   //重新请求 （不读缓存）
-    kLoadMoreType,  //加载更多
-    kDetailType,    //详情
-    kLocationType,  //位置
+    ZBRequestTypeDefault,   //默认类型
+    ZBRequestTypeRefresh,   //重新请求 （不读缓存）
+    ZBRequestTypeLoadMore,  //加载更多
+    ZBRequestTypeDetail,    //详情
+    ZBRequestTypeLocation,  //位置
 
 } ;
 
@@ -80,7 +80,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  用于标识不同类型的request
  */
-@property (nonatomic,assign) NSInteger apiType;
+@property (nonatomic,assign) apiType apiType;
 
 /**
  *  请求错误
@@ -116,7 +116,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param type          用于直接区分不同的request对象 比如:kRefreshType 默认为kDefaultType
  *
  */
-- (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(NSInteger)type;
+- (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
  *  post 请求
@@ -145,7 +145,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param type          用于直接区分不同的request对象 比如:kRefreshType 默认为kDefaultType
  *
  */
-+(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(NSInteger)type;
++(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
  *  post 请求

@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface RootViewController : UIViewController
+//title 设置btn的标题; selector点击btn实现的方法; isLeft 标记btn的位置
+- (void)addItemWithTitle:(NSString *)title selector:(SEL)selector location:(BOOL)isLeft;
+//title提示框的标题; andMessage提示框的描述
+- (void)alertTitle:(NSString *)title andMessage:(NSString *)message;
 
 @end

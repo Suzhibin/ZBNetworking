@@ -1,5 +1,5 @@
 //
-//  SettingViewController.h
+//  HomeViewController.h
 //  ZBNetworkingDome
 //
 //  Created by NQ UEC on 16/8/24.
@@ -8,6 +8,6 @@
 
 #import "RootViewController.h"
 
-@interface SettingViewController : RootViewController
+@interface HomeViewController : RootViewController
 
 @end
