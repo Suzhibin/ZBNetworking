@@ -114,8 +114,6 @@
      *  [ZBURLSessionManager getRequestWithUrlString:Root_URL target:self apiType:ZBRequestTypeRefresh];
      */
     
-    UIButton *btn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [btn setTitle:@"aa" forState:UIControlStateNormal];
     /**
      *  实例方法
      */
