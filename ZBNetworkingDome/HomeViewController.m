@@ -57,6 +57,8 @@
         [_dataArray removeAllObjects];
         //结束刷新
         [_refreshControl endRefreshing];
+        
+    
     }
   
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
@@ -121,9 +123,6 @@
     [manager setTimeoutInterval:10];//更改超时时间 默认15秒
     [manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
    
-    
-    [_tableView reloadData];
-    
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     
 }
