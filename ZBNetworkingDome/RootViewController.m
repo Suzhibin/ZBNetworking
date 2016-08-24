@@ -31,7 +31,7 @@
     self.view.backgroundColor=[UIColor whiteColor];
     _dataArray=[[NSMutableArray alloc]init];
     
-
+    
     /**
      *  默认缓存路径/Library/Caches/ZBCache
      */
@@ -91,7 +91,7 @@
         [self alertTitle:@"请求超时" andMessage:@""];
     }else{
 
-       [self alertTitle:@"请求失败" andMessage:@""];
+        [self alertTitle:@"请求失败" andMessage:@""];
     }
 }
 

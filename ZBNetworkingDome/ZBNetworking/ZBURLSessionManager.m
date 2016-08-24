@@ -80,16 +80,16 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:60*60]==NO&&type!=kRefreshType) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
-        
-       
+
+        ZBLog(@"Read cache");
         [self.downloadData appendData:data];
-        ZBLog(@"读缓存");
+ 
         if ([self.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [self.delegate urlRequestFinished:self];
         }
 
     }else{
-         ZBLog(@"重新请求");
+         ZBLog(@"start Request");
         [self startRequest];
        
         
@@ -131,16 +131,18 @@
         
         NSData *data = [NSData dataWithContentsOfFile:path];
     
+        ZBLog(@"Read cache");
         [request.downloadData appendData:data];
 
         if ([request.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [request.delegate urlRequestFinished:request];
         }
-        ZBLog(@"读缓存");
+       
         return request;
     }else{
+        ZBLog(@"start Request");
         [request startRequest];
-        ZBLog(@"重新请求");
+       
  
     }
 
