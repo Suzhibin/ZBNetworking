@@ -60,7 +60,7 @@
 
 - (void)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate
 {
-     [self getRequestWithUrlString:requestString target:delegate apiType:ZBRequestTypeDefault];
+    [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate];
 }
 
 - (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
