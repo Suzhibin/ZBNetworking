@@ -24,6 +24,7 @@ NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小�
 
 4.完成和失败俩个代理回调
 ```objective-c
+//请求完成的代理方法里进行解析或赋值
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
     
@@ -44,9 +45,16 @@ NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小�
     
     
 }
+//请求失败的方法里 进行异常判断 支持error.code所有异常
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
-    NSLog(@"请求失败");
+    if (request.error.code==-999)return;
+    if (request.error.code==NSURLErrorTimedOut) {
+        NSLog(@"请求超时");
+    }else{
+        NSLog(@"请求失败");
+    }
+
 }
 ```
 
