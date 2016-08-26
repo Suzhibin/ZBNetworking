@@ -15,10 +15,10 @@ NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小�
   [ZBURLSessionManager getRequestWithUrlString:URL target:self];
   
   2.实例方法
-   ZBURLSessionManager *manager=[ZBURLSessionManager manager];
-    [manager getRequestWithUrlString:URL target:self];
+  ZBURLSessionManager *manager=[ZBURLSessionManager manager];
+  [manager getRequestWithUrlString:URL target:self];
     实例方法还可以做其他操作
-      [manager setTimeoutInterval:10];//更改超时时间 
+  [manager setTimeoutInterval:10];//更改超时时间 
 
 ```
 
