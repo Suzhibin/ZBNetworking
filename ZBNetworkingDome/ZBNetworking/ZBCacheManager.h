@@ -24,7 +24,7 @@
 typedef void(^ZBCacheManagerBlock)();
 
 /**
- *  缓存文件管理类:管理缓存文件的创建,存储,显示,删除等功能.
+ *  缓存文件管理类:管理缓存文件的创建,存储,编码,显示,删除等功能.
  */
 
 @interface ZBCacheManager : NSObject

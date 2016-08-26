@@ -122,7 +122,6 @@
     ZBURLSessionManager *manager=[ZBURLSessionManager manager];
     [manager setTimeoutInterval:10];//更改超时时间 默认15秒
     [manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
-   
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     
 }

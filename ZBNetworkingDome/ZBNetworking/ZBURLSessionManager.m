@@ -42,7 +42,7 @@
 
 - (NSURLSession *)session
 {
-    if (nil == _session) {
+    if (_session == nil) {
         
         _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     }
@@ -120,6 +120,25 @@
     [[ZBRequestManager shareManager] setRequestObject:request forkey:requestString];
     
     return request;
+}
++(BOOL)isTimeOutWithPath:(NSString *)path timeOut:(NSTimeInterval)time{
+    
+    NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+    
+    NSDate *current = [info objectForKey:NSFileModificationDate];
+    
+    NSDate *date = [NSDate date];
+    
+    NSTimeInterval currentTime = [date timeIntervalSinceDate:current];
+    
+    if (currentTime>time) {
+        
+        return YES;
+    }else{
+        
+        return NO;
+    }
+    
 }
 
 

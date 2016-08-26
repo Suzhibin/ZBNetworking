@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 @property (nonatomic,strong)NSError *error;
 
 /**
- *  设置超时时间
+ *  设置超时时间  默认15秒
  *   The timeout interval, in seconds, for created requests. The default timeout interval is 15 seconds.
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;

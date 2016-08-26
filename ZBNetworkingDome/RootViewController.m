@@ -25,7 +25,6 @@
 
 - (void)addItemWithTitle:(NSString *)title selector:(SEL)selector location:(BOOL)isLeft{
     
-
     UIBarButtonItem *item =[[UIBarButtonItem alloc]initWithTitle:title style:UIBarButtonItemStylePlain  target:self action:selector];
     
     if (isLeft == YES) {
