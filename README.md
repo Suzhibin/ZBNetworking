@@ -11,13 +11,13 @@ NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小�
 3.使用简单:  类方法一行调用   或   实例方法调用
 ```objective-c
 //get请求方法 会默认创建缓存路径 
-  1.类方法
+  //1.类方法
   [ZBURLSessionManager getRequestWithUrlString:URL target:self];
   
-  2.实例方法
+ // 2.实例方法
   ZBURLSessionManager *manager=[ZBURLSessionManager manager];
   [manager getRequestWithUrlString:URL target:self];
-    实例方法还可以做其他操作
+ // 实例方法还可以做其他操作
   [manager setTimeoutInterval:10];//更改超时时间 
 
 ```
