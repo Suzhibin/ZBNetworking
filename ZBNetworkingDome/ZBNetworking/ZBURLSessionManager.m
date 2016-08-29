@@ -120,26 +120,6 @@ static const NSInteger timeOut = 60*60;
     
     return request;
 }
-+(BOOL)isTimeOutWithPath:(NSString *)path timeOut:(NSTimeInterval)time{
-    
-    NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
-    
-    NSDate *current = [info objectForKey:NSFileModificationDate];
-    
-    NSDate *date = [NSDate date];
-    
-    NSTimeInterval currentTime = [date timeIntervalSinceDate:current];
-    
-    if (currentTime>time) {
-        
-        return YES;
-    }else{
-        
-        return NO;
-    }
-    
-}
-
 
 - (void)setTimeoutInterval:(NSTimeInterval)timeoutInterval {
     [self willChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
