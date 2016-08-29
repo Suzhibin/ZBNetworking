@@ -75,7 +75,7 @@
 
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
-    if (request.error.code==-999)return;
+    if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
         
         [self alertTitle:@"请求超时" andMessage:@""];

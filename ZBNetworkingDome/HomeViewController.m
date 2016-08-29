@@ -34,8 +34,7 @@
      */
     [ZBURLSessionManager getRequestWithUrlString:home_URL target:self];
     
-    [self refresh];
-    
+    [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     [self addItemWithTitle:@"清楚缓存" selector:@selector(btnclick) location:NO];
 
@@ -43,13 +42,7 @@
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
-    /**
-     ZBRequestTypeDefault,   //默认类型
-     ZBRequestTypeRefresh,   //重新请求 （不读缓存）
-     ZBRequestTypeLoadMore,  //加载更多
-     ZBRequestTypeDetail,    //详情
-     ZBRequestTypeLocation,  //位置
-     */
+ 
      //如果是刷新的数据
     if (request.apiType==ZBRequestTypeRefresh) {
         
@@ -79,7 +72,7 @@
 }
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
-    if (request.error.code==-999)return;
+    if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
         
         [self alertTitle:@"请求超时" andMessage:@""];
@@ -90,15 +83,18 @@
 }
 
 #pragma mark - 刷新
-- (void)refresh
+- (UIRefreshControl *)refreshControl
 {
+    if (!_refreshControl) {
+
     //下拉刷新
     _refreshControl = [[UIRefreshControl alloc] init];
     //标题
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     //事件
     [_refreshControl addTarget:self action:@selector(refreshDown) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:_refreshControl];
+    }
+    return _refreshControl;
 }
 - (void)refreshDown{
     //开始刷新

@@ -22,7 +22,7 @@
 #import "ZBRequestManager.h"
 #import "NSFileManager+pathMethod.h"
 #import "ZBCacheManager.h"
-
+static const NSInteger timeOut = 60*60;
 @implementation ZBURLSessionManager
 
 - (id)init{
@@ -90,15 +90,14 @@
 +(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
    
-    
     ZBURLSessionManager *request = [[ZBURLSessionManager alloc] init];
     request.requestString = requestString;
     request.delegate = delegate;
     request.apiType = type;
   
      NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:requestString];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:60*60]==NO&&type!=ZBRequestTypeRefresh) {
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
     
@@ -191,7 +190,7 @@
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self];
         }
- 
+
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;

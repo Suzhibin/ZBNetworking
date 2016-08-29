@@ -61,7 +61,6 @@ typedef NS_ENUM(NSInteger,apiType) {
 
 @property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 
-
 /**
  *  接口(请求地址)
  */
