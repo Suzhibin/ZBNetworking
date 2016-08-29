@@ -12,9 +12,9 @@
 #import "DetailViewController.h"
 #import "SettingViewController.h"
 
-#define home_URL @"http://api.dotaly.com/lol/api/v1/authors?iap=0&ident=6B82A117-E1CB-40C0-97A8-1D6C78D53069&jb=0&token=a545841af74a6712006a029528729392"
+#define home_URL @"http://api.dotaly.com/lol/api/v1/authors?iap=0"
 
-#define details_URL @"http://api.dotaly.com/lol/api/v1/shipin/latest?author=%@&iap=0&ident=6B82A117-E1CB-40C0-97A8-1D6C78D53069&jb=0&limit=50&offset=0&token=51bea81c7e1dda99290115e4fbd6092f"
+#define details_URL @"http://api.dotaly.com/lol/api/v1/shipin/latest?author=%@&iap=0jb=0&limit=50&offset=0"
 @interface HomeViewController ()<ZBURLSessionDelegate,UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong)UITableView *tableView;
@@ -42,16 +42,13 @@
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
- 
      //如果是刷新的数据
     if (request.apiType==ZBRequestTypeRefresh) {
-        
         
         [_dataArray removeAllObjects];
         //结束刷新
         [_refreshControl endRefreshing];
         
-    
     }
   
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
@@ -66,8 +63,6 @@
         
     }
     [_tableView reloadData];
-    
-    
     
 }
 - (void)urlRequestFailed:(ZBURLSessionManager *)request

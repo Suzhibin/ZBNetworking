@@ -44,6 +44,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param request
  */
 - (void)urlRequestFinished:(ZBURLSessionManager *)request;
+
 /**
  *  数据请求失败调用的方法
  *
