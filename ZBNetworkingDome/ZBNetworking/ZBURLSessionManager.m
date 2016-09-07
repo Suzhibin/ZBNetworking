@@ -48,7 +48,13 @@ static const NSInteger timeOut = 60*60;
     }
     return _session;
 }
+- (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed
+{
+    self.FinishedBlock = finished;
+    self.FailedBlock = Failed;
+    [ZBURLSessionManager getRequestWithUrlString:requestString target:nil];
 
+}
 #pragma  mark - 实例方法 请求
 
 -(void)postRequestWithUrlString:(NSString *)requestString dict:(NSDictionary*)dict target:(id<ZBURLSessionDelegate>)delegate
@@ -60,13 +66,15 @@ static const NSInteger timeOut = 60*60;
 
 - (void)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate
 {
+    
     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate];
+    
 }
 
 - (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
     
-     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:type];
+    [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:type];
 
 }
 #pragma  mark - 类方法 请求
@@ -83,7 +91,9 @@ static const NSInteger timeOut = 60*60;
 
 
 +(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate{
+    
     return [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:ZBRequestTypeDefault];
+    
 }
 
 
@@ -107,13 +117,16 @@ static const NSInteger timeOut = 60*60;
         if ([request.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [request.delegate urlRequestFinished:request];
         }
-       
+        
+        if (request.FinishedBlock) {
+            request.FinishedBlock(request);
+        }
         return request;
+        
     }else{
 
         [request startRequest];
        
- 
     }
 
     [[ZBRequestManager shareManager] setRequestObject:request forkey:requestString];
@@ -134,12 +147,7 @@ static const NSInteger timeOut = 60*60;
  */
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
 {
-
-  //  ZBLog(@"didReceiveResponse--%@",[NSThread currentThread]);
-    
-    
     completionHandler(NSURLSessionResponseAllow);
-    
 }
 /**
  *  接收到服务器返回数据的时候会调用该方法，如果数据较大那么该方法可能会调用多次
@@ -147,7 +155,6 @@ static const NSInteger timeOut = 60*60;
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-   // ZBLog(@"%ld---%@--",_downloadData.length,[NSThread currentThread]);
    
     [self.downloadData appendData:data];
 }
@@ -157,20 +164,19 @@ static const NSInteger timeOut = 60*60;
  */
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-   // ZBLog(@"didCompleteWithError--%@",[NSThread currentThread]);
-    
     if(error == nil)
     {
 
         NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:_requestString];
         
-
         [[ZBCacheManager shareCacheManager] setMutableData:_downloadData WriteToFile:path];
         
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self];
         }
-
+        if (_FinishedBlock) {
+            self.FinishedBlock(self);
+        }
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -185,9 +191,13 @@ static const NSInteger timeOut = 60*60;
         if ([_delegate respondsToSelector:@selector(urlRequestFailed:)]) {
             [_delegate urlRequestFailed:self];
         }
-        
+        if (self.FailedBlock) {
+            self.FailedBlock(self);
+        }
     }
 }
+
+
 #pragma mark - get Request
 /**
  *  get
@@ -197,8 +207,6 @@ static const NSInteger timeOut = 60*60;
      ZBLog(@"start Request");
     if (_dataTask) {
         [_dataTask cancel];
-        
-        
     }
     
     NSString *string = [self.requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -206,11 +214,12 @@ static const NSInteger timeOut = 60*60;
     NSURL *url = [NSURL URLWithString:string];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-    
+
     _dataTask = [self.session dataTaskWithRequest:request];
     
     [_dataTask resume];
 }
+
 
 #pragma mark - post Request
 /**
@@ -228,23 +237,22 @@ static const NSInteger timeOut = 60*60;
     
     NSString *string = [_requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
-    
     NSURL *url = [NSURL URLWithString:string];
-    
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
-    
-    request.HTTPMethod = @"POST";
+    [request setHTTPMethod: @"POST"];
     
     [request setTimeoutInterval:_timeoutInterval];
     
     NSMutableArray *array = [[NSMutableArray alloc] init];
+    
     for (NSString *key in dict) {
         id obj = [dict objectForKey:key];
         NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
         [array addObject:str];
     }
+    
     NSString *dataStr = [array componentsJoinedByString:@"&"];
     
     NSData *data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];

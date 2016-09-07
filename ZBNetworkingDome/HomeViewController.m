@@ -20,6 +20,7 @@
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UIRefreshControl *refreshControl;
+
 @end
 
 @implementation HomeViewController
@@ -29,16 +30,23 @@
     // Do any additional setup after loading the view.
     _dataArray=[[NSMutableArray alloc]init];
     
+    
+
     /**
      *  默认缓存路径/Library/Caches/ZBCache
      */
+
+    
     [ZBURLSessionManager getRequestWithUrlString:home_URL target:self];
+
     
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
+    
     [self addItemWithTitle:@"清楚缓存" selector:@selector(btnclick) location:NO];
 
 }
+
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
@@ -52,6 +60,7 @@
     }
   
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+
     NSArray *array=[dict objectForKey:@"authors"];
     
     for (NSDictionary *dic in array) {

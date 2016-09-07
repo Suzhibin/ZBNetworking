@@ -24,7 +24,6 @@
      */
     [[ZBRequestManager shareManager] clearDelegateForKey:_urlString];
     
-    
 #warning 可选实现
     /**
      防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要释放session. 也可避免造成内存泄露.
@@ -43,7 +42,6 @@
      *  如果详情页面不想要缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      *  [ZBURLSessionManager getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
      */
-    
     [ZBURLSessionManager getRequestWithUrlString:_urlString target:self];
     
     

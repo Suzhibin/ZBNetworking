@@ -37,14 +37,14 @@ typedef NS_ENUM(NSInteger,apiType) {
 
 
 @protocol ZBURLSessionDelegate <NSObject>
-
+@required
 /**
  *  数据请求成功调用的方法
  *
  *  @param request
  */
 - (void)urlRequestFinished:(ZBURLSessionManager *)request;
-
+@optional
 /**
  *  数据请求失败调用的方法
  *
@@ -62,6 +62,10 @@ typedef NS_ENUM(NSInteger,apiType) {
 
 @property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 
+@property (nonatomic, strong) NSMutableURLRequest *request;
+
+@property (nonatomic, copy) void (^FinishedBlock)(ZBURLSessionManager *);
+@property (nonatomic, copy) void (^FailedBlock)(ZBURLSessionManager *);
 /**
  *  接口(请求地址)
  */
@@ -99,6 +103,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  */
 + (instancetype)manager;
 
+- (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed;
 /**
  *  get请求
  *
