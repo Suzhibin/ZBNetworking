@@ -103,7 +103,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  */
 + (instancetype)manager;
 
-- (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed;
+//- (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed;
 /**
  *  get请求
  *

@@ -165,13 +165,11 @@ static ZBCacheManager *Cachemanager=nil;
         {
             NSString *filePath = [self.diskCachePath stringByAppendingPathComponent:fileName];
             
-            
             NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
             NSDate *current = [info objectForKey:NSFileModificationDate];
             
             if ([[current laterDate:expirationDate] isEqualToDate:expirationDate])
             {
-                
                 
                 [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
                 

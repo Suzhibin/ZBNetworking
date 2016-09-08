@@ -71,9 +71,11 @@
         
         //删除ZBCache 缓存
         [[ZBCacheManager shareCacheManager]clearDiskOnOperation:^{
+            
             [[ZBCacheManager shareCacheManager]getFileSize];
+            
             [_tableView reloadData];
-            [self alertTitle:@"" andMessage:@"缓存已删除"];
+            
         }];
         
         
