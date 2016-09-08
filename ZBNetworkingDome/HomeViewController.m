@@ -29,16 +29,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _dataArray=[[NSMutableArray alloc]init];
-    
-    
 
     /**
      *  默认缓存路径/Library/Caches/ZBCache
      */
-
     [ZBURLSessionManager getRequestWithUrlString:home_URL target:self];
 
-    
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     

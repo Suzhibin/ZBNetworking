@@ -106,9 +106,8 @@
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         
-        
-        
     }
+    
     DetailsModel *model=[_dataArray objectAtIndex:indexPath.row];
     
     cell.textLabel.text=model.title;
