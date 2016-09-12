@@ -104,7 +104,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 + (instancetype)manager;
 
 /**
- *  设置请求头
+ *  设置请求头 请在请求前使用该方法 如果在请求后使用 则不会起作用。
  *  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
  *
  *  @param value  The value set as default for the specified header.

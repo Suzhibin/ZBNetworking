@@ -53,7 +53,6 @@ static ZBRequestManager *RequestManager=nil;
 
     if (obj) {
         [_requestDic setObject:obj forKey:key];
-    
     }
 
 }
@@ -62,6 +61,12 @@ static ZBRequestManager *RequestManager=nil;
    
     if(!key)return;
     [_requestDic removeObjectForKey:key];
+
+}
+
+- (NSString *)objectRequestForKey:(NSString *)key{
+    
+   return  [_requestDic objectForKey:key];
 
 }
 

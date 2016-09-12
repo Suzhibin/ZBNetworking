@@ -27,7 +27,7 @@
 #define DEBUG_LOG 0
 
 #if(DEBUG_LOG == 1)
-# define ZBLog(fmt, ...) NSLog((@"[文件名:%s]\n" "[函数名:%s]\n" "[第 %d 行] Log:" fmt), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+# define ZBLog(fmt, ...) NSLog((@"[文件名:%s]\n" "[函数名:%s]\n" "[第 %d 行] Log:\n" fmt), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #else
 # define ZBLog(...);
 #endif
@@ -40,24 +40,37 @@
 
 /**
  *  用于维护多个request对象
- *  为了区分不用的request对象，用request对应的请求地址(urlString)作为key值:(request-urlString)
  */
 @property ( nonatomic, strong) NSMutableDictionary *requestDic;
+
+/**
+ *  用于维护 请求头的request对象
+ */
+@property (nonatomic,copy) NSString *value;
 
 +(ZBRequestManager *)shareManager;
 
 /**
  *
- *  @param obj request
- *  @param key 请求的协议地址
+ *  @param obj request 对象
+ *  @param key
  */
 - (void)setRequestObject:(id)obj forkey:(NSString *)key;
 
 /**
  *
- *  @param key 请求的协议地址
+ *  @param key 
  */
 - (void)removeRequestForkey:(NSString *)key;
+
+/**
+ *
+ *
+ *  @param key request 对象
+ *
+ *  @return 
+ */
+- (NSString *)objectRequestForKey:(NSString *)key;
 
 /**
  *
@@ -70,7 +83,7 @@
 
 
 /**
- *  无效的会话管理,选择是否取消任务
+ *  请求会话管理,取消请求任务
  *  Invalidates the managed session, optionally canceling pending tasks.
  *
  *  @param cancelPendingTasks Whether or not to cancel pending tasks.

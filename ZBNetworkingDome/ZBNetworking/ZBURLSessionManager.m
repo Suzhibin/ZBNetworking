@@ -29,7 +29,7 @@ static const NSInteger timeOut = 60*60;
     self = [super init];
     if (self) {
         self.downloadData = [[NSMutableData alloc] init];
-        
+    
         _timeoutInterval=15;
         
     }
@@ -196,6 +196,7 @@ static const NSInteger timeOut = 60*60;
 - (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field
 {
     if (value) {
+        [ZBRequestManager shareManager].value =value;
         [[ZBRequestManager shareManager] setRequestObject:value forkey:field];
     }
     else {
@@ -204,8 +205,8 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (NSString *)valueForHTTPHeaderField:(NSString *)field {
-      NSLog(@"[[ZBRequestManager shareManager]requestDic] :%@",[[ZBRequestManager shareManager]requestDic] );
-    return [[[ZBRequestManager shareManager]requestDic] valueForKey:field];
+    
+    return [[ZBRequestManager shareManager]objectRequestForKey:field];
     
 }
 
@@ -231,18 +232,23 @@ static const NSInteger timeOut = 60*60;
     NSURL *url = [NSURL URLWithString:string];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-    
-    NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
-    [[[ZBRequestManager shareManager]requestDic] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-
-        if (![mutableRequest valueForHTTPHeaderField:field]) {
-            [mutableRequest addValue: value forHTTPHeaderField:field];
-        }
-    }];
-    request = [mutableRequest copy];
-    
-    ZBLog(@"get_HeaderField%@", request.allHTTPHeaderFields);
+    if ([ZBRequestManager shareManager].value) {
+        
+          NSMutableURLRequest *mutableRequest = [request mutableCopy];
+        
+        [[[ZBRequestManager shareManager]requestDic] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+            
+            if (![mutableRequest valueForHTTPHeaderField:field]) {
+                [mutableRequest addValue: value forHTTPHeaderField:field];
+            }
+            
+        }];
+        
+        request = [mutableRequest copy];
+        
+        ZBLog(@"get_HeaderField%@", request.allHTTPHeaderFields);
+    }
 
     _dataTask = [self.session dataTaskWithRequest:request];
     
@@ -271,12 +277,18 @@ static const NSInteger timeOut = 60*60;
     
     [mutableRequest setHTTPMethod: @"POST"];
     
-    [[[ZBRequestManager shareManager]requestDic] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+    if ([ZBRequestManager shareManager].value) {
+        
+        [[[ZBRequestManager shareManager]requestDic] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+            
+            if (![mutableRequest valueForHTTPHeaderField:field]) {
+                [mutableRequest setValue:value forHTTPHeaderField:field];
+            }
+            
+        }];
 
-        if (![mutableRequest valueForHTTPHeaderField:field]) {
-            [mutableRequest setValue:value forHTTPHeaderField:field];
-        }
-    }];
+    }
+    
      ZBLog(@"POST_HeaderField%@", mutableRequest.allHTTPHeaderFields);
     
     [mutableRequest setTimeoutInterval:_timeoutInterval];

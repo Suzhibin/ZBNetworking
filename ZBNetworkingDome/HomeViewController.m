@@ -24,10 +24,12 @@
 @end
 
 @implementation HomeViewController
+
 - (ZBURLSessionManager *)manager
 {
     return  [ZBURLSessionManager manager];
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -40,8 +42,9 @@
      *  实例方法
      */
     //请求头
-   // [self.manager setValue:@"my the apikey" forHTTPHeaderField:@"apikey"];
-    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+    //[self.manager setValue:@"my the apikey" forHTTPHeaderField:@"apikey"];
+    
+    [self.manager getRequestWithUrlString:home_URL target:self];
    
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
