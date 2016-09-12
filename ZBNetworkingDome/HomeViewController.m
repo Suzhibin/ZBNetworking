@@ -20,21 +20,29 @@
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UIRefreshControl *refreshControl;
-
+@property (nonatomic,strong)ZBURLSessionManager *manager;
 @end
 
 @implementation HomeViewController
-
+- (ZBURLSessionManager *)manager
+{
+    return  [ZBURLSessionManager manager];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _dataArray=[[NSMutableArray alloc]init];
-
+   
     /**
      *  默认缓存路径/Library/Caches/ZBCache
      */
-    [ZBURLSessionManager getRequestWithUrlString:home_URL target:self];
-
+    /**
+     *  实例方法
+     */
+    //请求头
+   // [self.manager setValue:@"my the apikey" forHTTPHeaderField:@"apikey"];
+    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+   
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     
@@ -114,9 +122,8 @@
     /**
      *  实例方法
      */
-    ZBURLSessionManager *manager=[ZBURLSessionManager manager];
-    [manager setTimeoutInterval:10];//更改超时时间 默认15秒
-    [manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+    [self.manager setTimeoutInterval:10];//更改超时时间 默认15秒
+    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     
 }

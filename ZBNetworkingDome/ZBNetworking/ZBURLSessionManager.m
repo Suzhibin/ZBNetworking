@@ -48,6 +48,7 @@ static const NSInteger timeOut = 60*60;
     }
     return _session;
 }
+#pragma mark block 请求 （暂时无用）
 - (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed
 {
     self.FinishedBlock = finished;
@@ -134,11 +135,6 @@ static const NSInteger timeOut = 60*60;
     return request;
 }
 
-- (void)setTimeoutInterval:(NSTimeInterval)timeoutInterval {
-    [self willChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
-    _timeoutInterval = timeoutInterval;
-    [self didChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
-}
 
 #pragma mark - NSURLSessionDelegate
 
@@ -196,7 +192,28 @@ static const NSInteger timeOut = 60*60;
         }
     }
 }
+#pragma mark - request Operation
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field
+{
+    if (value) {
+        [[ZBRequestManager shareManager] setRequestObject:value forkey:field];
+    }
+    else {
+        [[ZBRequestManager shareManager] removeRequestForkey:field];
+    }
+}
 
+- (NSString *)valueForHTTPHeaderField:(NSString *)field {
+      NSLog(@"[[ZBRequestManager shareManager]requestDic] :%@",[[ZBRequestManager shareManager]requestDic] );
+    return [[[ZBRequestManager shareManager]requestDic] valueForKey:field];
+    
+}
+
+- (void)setTimeoutInterval:(NSTimeInterval)timeoutInterval {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
+    _timeoutInterval = timeoutInterval;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
+}
 
 #pragma mark - get Request
 /**
@@ -214,6 +231,18 @@ static const NSInteger timeOut = 60*60;
     NSURL *url = [NSURL URLWithString:string];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+    
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+
+    [[[ZBRequestManager shareManager]requestDic] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+
+        if (![mutableRequest valueForHTTPHeaderField:field]) {
+            [mutableRequest addValue: value forHTTPHeaderField:field];
+        }
+    }];
+    request = [mutableRequest copy];
+    
+    ZBLog(@"get_HeaderField%@", request.allHTTPHeaderFields);
 
     _dataTask = [self.session dataTaskWithRequest:request];
     
@@ -234,16 +263,23 @@ static const NSInteger timeOut = 60*60;
         
     }
     
-    
     NSString *string = [_requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSURL *url = [NSURL URLWithString:string];
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
     
-    [request setHTTPMethod: @"POST"];
+    [mutableRequest setHTTPMethod: @"POST"];
     
-    [request setTimeoutInterval:_timeoutInterval];
+    [[[ZBRequestManager shareManager]requestDic] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+
+        if (![mutableRequest valueForHTTPHeaderField:field]) {
+            [mutableRequest setValue:value forHTTPHeaderField:field];
+        }
+    }];
+     ZBLog(@"POST_HeaderField%@", mutableRequest.allHTTPHeaderFields);
+    
+    [mutableRequest setTimeoutInterval:_timeoutInterval];
     
     NSMutableArray *array = [[NSMutableArray alloc] init];
     
@@ -257,9 +293,9 @@ static const NSInteger timeOut = 60*60;
     
     NSData *data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
     
-    [request setHTTPBody:data];
+    [mutableRequest setHTTPBody:data];
     
-    _dataTask = [self.session dataTaskWithRequest:request];
+    _dataTask = [self.session dataTaskWithRequest:mutableRequest];
     
     [_dataTask resume];
     

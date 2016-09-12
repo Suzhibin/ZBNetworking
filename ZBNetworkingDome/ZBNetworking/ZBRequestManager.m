@@ -25,9 +25,8 @@
 static ZBRequestManager *RequestManager=nil;
 
 @implementation ZBRequestManager{
-//用于维护多个request对象
-//为了区分不用的request对象，用request对应的请求地址(urlString)作为key值:(request-urlString)
-   NSMutableDictionary*_requestDic;
+
+ //  NSMutableDictionary*_requestDic;
     
 }
 + (ZBRequestManager *)shareManager {
@@ -54,6 +53,7 @@ static ZBRequestManager *RequestManager=nil;
 
     if (obj) {
         [_requestDic setObject:obj forKey:key];
+    
     }
 
 }
@@ -61,15 +61,14 @@ static ZBRequestManager *RequestManager=nil;
 - (void)removeRequestForkey:(NSString *)key{
    
     if(!key)return;
- 
     [_requestDic removeObjectForKey:key];
-   
+
 }
 
 - (void)clearDelegateForKey:(NSString *)key{
     if(!key)return;
     self.manager=[_requestDic objectForKey:key];
-    
+ 
     self.manager.delegate = nil;
  
 }
@@ -78,7 +77,6 @@ static ZBRequestManager *RequestManager=nil;
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
-     
         if (cancelPendingTasks) {
          
             [self.manager.session invalidateAndCancel];

@@ -38,6 +38,11 @@
 
 @property ( nonatomic, strong) ZBURLSessionManager *manager;
 
+/**
+ *  用于维护多个request对象
+ *  为了区分不用的request对象，用request对应的请求地址(urlString)作为key值:(request-urlString)
+ */
+@property ( nonatomic, strong) NSMutableDictionary *requestDic;
 
 +(ZBRequestManager *)shareManager;
 

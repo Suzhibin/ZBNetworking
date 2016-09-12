@@ -103,6 +103,25 @@ typedef NS_ENUM(NSInteger,apiType) {
  */
 + (instancetype)manager;
 
+/**
+ *  设置请求头
+ *  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
+ *
+ *  @param value  The value set as default for the specified header.
+ *  @param field  The HTTP header to set a default value for
+ 
+ */
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field;
+
+/**
+ *  Returns the value for the HTTP headers set in the request Operation
+ *
+ *  @param field The HTTP header to retrieve the default value for
+ *
+ *  @return The value set as default for the specified header.
+ */
+- (NSString *)valueForHTTPHeaderField:(NSString *)field;
+
 //- (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed;
 /**
  *  get请求
