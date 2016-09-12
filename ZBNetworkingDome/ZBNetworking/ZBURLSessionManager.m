@@ -40,14 +40,6 @@ static const NSInteger timeOut = 60*60;
     return [[[self class] alloc] init];
 }
 
-- (NSURLSession *)session
-{
-    if (_session == nil) {
-        
-        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
-    }
-    return _session;
-}
 #pragma mark block 请求 （暂时无用）
 - (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed
 {
@@ -216,6 +208,15 @@ static const NSInteger timeOut = 60*60;
     [self didChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
 }
 
+- (NSURLSession *)session
+{
+    if (_session == nil) {
+        
+        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+    }
+    return _session;
+}
+
 #pragma mark - get Request
 /**
  *  get
@@ -286,10 +287,9 @@ static const NSInteger timeOut = 60*60;
             }
             
         }];
-
+        
+        ZBLog(@"POST_HeaderField%@", mutableRequest.allHTTPHeaderFields);
     }
-    
-     ZBLog(@"POST_HeaderField%@", mutableRequest.allHTTPHeaderFields);
     
     [mutableRequest setTimeoutInterval:_timeoutInterval];
     

@@ -25,6 +25,7 @@
 
 @implementation HomeViewController
 
+//懒加载
 - (ZBURLSessionManager *)manager
 {
     return  [ZBURLSessionManager manager];
@@ -41,9 +42,7 @@
     /**
      *  实例方法
      */
-    //请求头
-    //[self.manager setValue:@"my the apikey" forHTTPHeaderField:@"apikey"];
-    
+    [self.manager setTimeoutInterval:10];//更改超时时间 默认15秒
     [self.manager getRequestWithUrlString:home_URL target:self];
    
     [self.tableView addSubview:self.refreshControl];
@@ -116,17 +115,12 @@
 - (void)timer{
     /**
      *  刷新正常是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
-     */
-    /**
-     *  类方法
-     *  [ZBURLSessionManager getRequestWithUrlString:Root_URL target:self apiType:ZBRequestTypeRefresh];
-     */
-    
+     */    
     /**
      *  实例方法
      */
-    [self.manager setTimeoutInterval:10];//更改超时时间 默认15秒
     [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+    
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     
 }

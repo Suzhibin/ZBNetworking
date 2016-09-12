@@ -59,11 +59,13 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSUInteger)getFileCount;
 
 /**
+ *
  *  Remove all expired cached file from disk
  */
 - (void)automaticCleanDisk;
 
-/**
+/** 
+ *  
  *  Remove all expired cached file from disk
  *
  *  @param completion  block 回调
