@@ -26,7 +26,7 @@
     
 #warning 可选实现
     /**
-     防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要释放session. 也可避免造成内存泄露.
+     防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求、释放session. 也可避免造成内存泄露.
      */
     [[ZBRequestManager shareManager] requestToCancel:YES];
     

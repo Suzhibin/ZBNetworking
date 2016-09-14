@@ -43,11 +43,28 @@ static ZBRequestManager *RequestManager=nil;
     self = [super init];
     if (self) {
         _requestDic =[[NSMutableDictionary alloc] init];
+        self.mutableHTTPRequestHeaders = [[NSMutableDictionary alloc]init];
     }
     return self;
 }
 
+- (void)setValue:(NSString *)value forHeaderField:(NSString *)field
+{
+    [self.mutableHTTPRequestHeaders setValue:value forKey:field];
+}
 
+- (NSString *)objectHeaderForKey:(NSString *)key{
+    
+    return  [self.mutableHTTPRequestHeaders objectForKey:key];
+    
+}
+
+- (void)removeHeaderForkey:(NSString *)key{
+    
+    if(!key)return;
+    [self.mutableHTTPRequestHeaders removeObjectForKey:key];
+    
+}
 
 - (void)setRequestObject:(id)obj forkey:(NSString *)key{
 
@@ -61,12 +78,6 @@ static ZBRequestManager *RequestManager=nil;
    
     if(!key)return;
     [_requestDic removeObjectForKey:key];
-
-}
-
-- (NSString *)objectRequestForKey:(NSString *)key{
-    
-   return  [_requestDic objectForKey:key];
 
 }
 

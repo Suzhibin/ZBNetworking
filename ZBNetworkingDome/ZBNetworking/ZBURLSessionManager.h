@@ -19,7 +19,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+
 @class ZBURLSessionManager;
 
 
@@ -64,8 +64,8 @@ typedef NS_ENUM(NSInteger,apiType) {
 
 @property (nonatomic, strong) NSMutableURLRequest *request;
 
-@property (nonatomic, copy) void (^FinishedBlock)(ZBURLSessionManager *);
-@property (nonatomic, copy) void (^FailedBlock)(ZBURLSessionManager *);
+@property (nonatomic, strong) void (^FinishedBlock)(ZBURLSessionManager *);
+@property (nonatomic, strong) void (^FailedBlock)(ZBURLSessionManager *);
 /**
  *  接口(请求地址)
  */
@@ -122,7 +122,8 @@ typedef NS_ENUM(NSInteger,apiType) {
  */
 - (NSString *)valueForHTTPHeaderField:(NSString *)field;
 
-//- (void)getRequestWithUrlString:(NSString *)requestString completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed;
+#pragma mark block 请求 （暂时无用）
+//- (void)get:(NSString *)requestString apiType:(apiType)type completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed;
 /**
  *  get请求
  *

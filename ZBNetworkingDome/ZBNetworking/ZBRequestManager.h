@@ -27,7 +27,7 @@
 #define DEBUG_LOG 0
 
 #if(DEBUG_LOG == 1)
-# define ZBLog(fmt, ...) NSLog((@"[文件名:%s]\n" "[函数名:%s]\n" "[第 %d 行] Log:\n" fmt), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+# define ZBLog(fmt, ...) NSLog((@"[函数名:%s]" " [第 %d 行]\n" fmt),  __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #else
 # define ZBLog(...);
 #endif
@@ -43,12 +43,42 @@
  */
 @property ( nonatomic, strong) NSMutableDictionary *requestDic;
 
+
 /**
  *  用于维护 请求头的request对象
+ */
+@property ( nonatomic, strong) NSMutableDictionary *mutableHTTPRequestHeaders;
+
+/**
+ *  用于判断是否有请求头
  */
 @property (nonatomic,copy) NSString *value;
 
 +(ZBRequestManager *)shareManager;
+
+
+/**
+ *  添加请求头
+ *
+ *  @param value
+ *  @param field
+ */
+- (void)setValue:(NSString *)value forHeaderField:(NSString *)field;
+
+/**
+ *  
+ *  @param key request 对象
+ *
+ *  @return
+ */
+- (NSString *)objectHeaderForKey:(NSString *)key;
+
+/**
+ *  删除请求头的key
+ *
+ *  @param key
+ */
+- (void)removeHeaderForkey:(NSString *)key;
 
 /**
  *
@@ -62,14 +92,6 @@
  *  @param key 
  */
 - (void)removeRequestForkey:(NSString *)key;
-
-/**
- *
- *  @param key request 对象
- *
- *  @return 
- */
-- (NSString *)objectRequestForKey:(NSString *)key;
 
 /**
  *

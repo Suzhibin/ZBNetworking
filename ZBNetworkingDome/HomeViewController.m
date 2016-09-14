@@ -25,10 +25,12 @@
 
 @implementation HomeViewController
 
-//懒加载
 - (ZBURLSessionManager *)manager
 {
-    return  [ZBURLSessionManager manager];
+    if (!_manager) {
+        _manager = [ZBURLSessionManager manager];
+    }
+    return _manager;
 }
 
 - (void)viewDidLoad {
@@ -42,9 +44,10 @@
     /**
      *  实例方法
      */
-    [self.manager setTimeoutInterval:10];//更改超时时间 默认15秒
-    [self.manager getRequestWithUrlString:home_URL target:self];
-   
+    [self.manager setValue:@"qqq" forHTTPHeaderField:@"aaa"];
+    [self.manager setTimeoutInterval:10];//更改超时时间
+    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     
@@ -65,9 +68,8 @@
     }
   
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
-
     NSArray *array=[dict objectForKey:@"authors"];
-    
+  
     for (NSDictionary *dic in array) {
         RootModel *model=[[RootModel alloc]init];
         model.name=[dic objectForKey:@"name"];
@@ -90,6 +92,7 @@
         [self alertTitle:@"请求失败" andMessage:@""];
     }
 }
+
 
 #pragma mark - 刷新
 - (UIRefreshControl *)refreshControl
@@ -119,7 +122,7 @@
     /**
      *  实例方法
      */
-    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+   [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
     
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     

@@ -8,6 +8,9 @@
 
 #import "SettingViewController.h"
 #import "ZBNetworking.h"
+
+typedef void(^SuccessBlock)(id object , NSURLResponse *response);
+typedef void(^failBlock)(NSError *error);
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong)UITableView *tableView;
@@ -18,10 +21,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-   
+
+    
     [self.view addSubview:self.tableView];
 
 }
+
 #pragma mark - UITableView dataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *cellIde=@"cellIde";
