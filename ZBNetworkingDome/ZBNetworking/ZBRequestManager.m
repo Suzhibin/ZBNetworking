@@ -101,9 +101,7 @@ static ZBRequestManager *RequestManager=nil;
             [self.manager.session finishTasksAndInvalidate];
         }
 
-    
     });
-
 }
 
 

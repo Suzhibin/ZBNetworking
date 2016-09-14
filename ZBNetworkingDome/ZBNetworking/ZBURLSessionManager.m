@@ -278,7 +278,7 @@ static const NSInteger timeOut = 60*60;
     
     if ([ZBRequestManager shareManager].value) {
         
-        [[[ZBRequestManager shareManager]requestDic] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+        [[[ZBRequestManager shareManager]mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
             
             if (![mutableRequest valueForHTTPHeaderField:field]) {
                 [mutableRequest setValue:value forHTTPHeaderField:field];
