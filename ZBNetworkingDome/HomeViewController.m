@@ -44,7 +44,6 @@
     /**
      *  实例方法
      */
-    [self.manager setValue:@"qqq" forHTTPHeaderField:@"aaa"];
     [self.manager setTimeoutInterval:10];//更改超时时间
     [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
 
