@@ -64,7 +64,7 @@
         [_dataArray addObject:model];
         
     }
-    [_tableView reloadData];
+    [self.tableView reloadData];
     
     
 }

@@ -45,12 +45,12 @@
      *  实例方法
      */
     [self.manager setTimeoutInterval:10];//更改超时时间
-    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+    [self.manager getRequestWithUrlString:home_URL target:self];
 
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     
-    [self addItemWithTitle:@"清楚缓存" selector:@selector(btnclick) location:NO];
+    [self addItemWithTitle:@"清楚缓存" selector:@selector(btnClick) location:NO];
 
 }
 
@@ -67,8 +67,9 @@
     }
   
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+
     NSArray *array=[dict objectForKey:@"authors"];
-  
+    
     for (NSDictionary *dic in array) {
         RootModel *model=[[RootModel alloc]init];
         model.name=[dic objectForKey:@"name"];
@@ -185,7 +186,7 @@
 }
 
 
-- (void)btnclick
+- (void)btnClick
 {
     
     SettingViewController *settingVC=[[SettingViewController alloc]init];

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D1F0E631D8E6F46007A8A63 /* NSDictionary+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1F0E621D8E6F46007A8A63 /* NSDictionary+Log.m */; };
 		7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */; };
 		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
 		7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */; };
@@ -45,6 +46,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D1F0E611D8E6F46007A8A63 /* NSDictionary+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+Log.h"; path = "ZBNetworking/NSDictionary+Log.h"; sourceTree = "<group>"; };
+		7D1F0E621D8E6F46007A8A63 /* NSDictionary+Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+Log.m"; path = "ZBNetworking/NSDictionary+Log.m"; sourceTree = "<group>"; };
 		7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
@@ -133,6 +136,8 @@
 		7DF8262F1D5815BE000D1109 /* ZBNetworkingDome */ = {
 			isa = PBXGroup;
 			children = (
+				7D1F0E611D8E6F46007A8A63 /* NSDictionary+Log.h */,
+				7D1F0E621D8E6F46007A8A63 /* NSDictionary+Log.m */,
 				7D4C69D11D6D8D23006CCE4C /* SettingViewController.h */,
 				7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */,
 				7DF826791D58170C000D1109 /* DetailsModel.h */,
@@ -336,6 +341,7 @@
 				7DF826761D5816C9000D1109 /* ZBCacheManager.m in Sources */,
 				7DF826381D5815BE000D1109 /* ViewController.m in Sources */,
 				7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */,
+				7D1F0E631D8E6F46007A8A63 /* NSDictionary+Log.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
 				7DF826821D58170C000D1109 /* DetailsModel.m in Sources */,

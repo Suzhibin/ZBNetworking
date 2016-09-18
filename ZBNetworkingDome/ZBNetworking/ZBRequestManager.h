@@ -56,7 +56,6 @@
 
 +(ZBRequestManager *)shareManager;
 
-
 /**
  *  添加请求头
  *
@@ -95,7 +94,7 @@
 
 /**
  *
- *  将request的delegate置空
+ *  根据key 将request的delegate置空
  *  在ViewController被销毁之前,将delegate置为nil
  *
  *  @return  请求的协议地址
