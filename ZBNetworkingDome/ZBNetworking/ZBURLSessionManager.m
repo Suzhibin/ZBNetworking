@@ -171,9 +171,7 @@ static const NSInteger timeOut = 60*60;
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
     }else{
-        
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        //错误信息
+
          ZBLog(@"error:%@",[error localizedDescription]);
         self.error=nil;
         self.error=error;
@@ -184,6 +182,9 @@ static const NSInteger timeOut = 60*60;
         if (self.FailedBlock) {
             self.FailedBlock(self);
         }
+        
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
     }
 }
 
@@ -235,7 +236,7 @@ static const NSInteger timeOut = 60*60;
     NSURL *url = [NSURL URLWithString:string];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-
+    
     if ([ZBRequestManager shareManager].value) {
         
           NSMutableURLRequest *mutableRequest = [request mutableCopy];

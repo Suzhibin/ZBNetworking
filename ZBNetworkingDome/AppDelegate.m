@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "HomeViewController.h"
+#import "ZBNetworking.h"
 @interface AppDelegate ()
 
 @end
@@ -19,7 +20,7 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *path = [[ZBCacheManager shareCacheManager]getCachesDirectory];
     NSLog(@"path = %@",path);
     
     

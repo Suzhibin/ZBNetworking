@@ -39,7 +39,7 @@
     _dataArray=[[NSMutableArray alloc]init];
    
     /**
-     *  默认缓存路径/Library/Caches/ZBCache
+     *  默认缓存路径/Library/Caches/AppCache
      */
     /**
      *  实例方法

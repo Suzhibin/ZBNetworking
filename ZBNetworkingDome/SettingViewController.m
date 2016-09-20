@@ -12,7 +12,7 @@
 typedef void(^SuccessBlock)(id object , NSURLResponse *response);
 typedef void(^failBlock)(NSError *error);
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource>
-
+@property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)UITableView *tableView;
 @end
 
@@ -21,14 +21,21 @@ typedef void(^failBlock)(NSError *error);
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-
+    
+    //得到沙盒cache文件夹
+    NSString *cachePath= [[ZBCacheManager shareCacheManager]getCachesDirectory];
+    NSString *Snapshots=@"Snapshots";
+    //拼接cache文件夹下的 Snapshots 文件夹
+    self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
     
     [self.view addSubview:self.tableView];
 
 }
 
-#pragma mark - UITableView dataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+   
+  
     static NSString *cellIde=@"cellIde";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIde];
     if (!cell) {
@@ -37,35 +44,42 @@ typedef void(^failBlock)(NSError *error);
     if (indexPath.row==0) {
         cell.textLabel.text=@"清除缓存";
         
-        float size=[[ZBCacheManager shareCacheManager]getFileSize];
-        size=size/1000.0f/1000.0f;
-        if (size>0) {
-            cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",size];
-        }else{
-            cell.detailTextLabel.text=@"0M";
-            
-        }
-        
-        
+        float size=[[ZBCacheManager shareCacheManager]getCacheSize];
+        size=size/1000.0/1000.0;
+  
+        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",size];
+
     }
     if (indexPath.row==1) {
         cell.textLabel.text=@"缓存文件数量";
         
-        float count=[[ZBCacheManager shareCacheManager]getFileCount];
+        float count=[[ZBCacheManager shareCacheManager]getCacheCount];
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
+    }
+
+    if (indexPath.row==2) {
+        cell.textLabel.text=@"清除某个沙盒文件";
+    
+        float size=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];
+
+        //fileUnitWithSize 转换单位方法
+        cell.detailTextLabel.text=[[ZBCacheManager shareCacheManager] fileUnitWithSize:size];
+
+    }
+    if (indexPath.row==3) {
+        cell.textLabel.text=@"某个沙盒文件数量";
+      
+        float count=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];
+        
+        cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
     }
     
-    
     return cell;
 }
-#pragma mark - UITableView delegate
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    
-    return 2;
-}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -74,21 +88,32 @@ typedef void(^failBlock)(NSError *error);
         
         [[NSURLCache sharedURLCache]removeAllCachedResponses];
         
-        //删除ZBCache 缓存
-        [[ZBCacheManager shareCacheManager]clearDiskOnOperation:^{
-            
-            [[ZBCacheManager shareCacheManager]getFileSize];
+        //清除缓存
+        [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
             
             [_tableView reloadData];
             
         }];
         
-        
-        
     }
+    
+    if (indexPath.row==2) {
+        
+        //清除某个沙盒文件
+        [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path Operation:^{
+            
+            [_tableView reloadData];
+            
+        }];
+    }
+    
     
 }
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
+    return 4;
+}
 
 //懒加载
 - (UITableView *)tableView

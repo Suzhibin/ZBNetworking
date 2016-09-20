@@ -48,7 +48,7 @@
     [ZBURLSessionManager getRequestWithUrlString:_urlString target:self];
     
     
-    [self.view addSubview:self.tableView];
+  
 
 }
 #pragma mark - ZBURLSessionManager Delegate
@@ -64,6 +64,7 @@
         [_dataArray addObject:model];
         
     }
+    [self.view addSubview:self.tableView];
     [self.tableView reloadData];
     
     
@@ -80,8 +81,6 @@
         [self alertTitle:@"请求失败" andMessage:@""];
     }
 }
-
-
 //懒加载
 - (UITableView *)tableView
 {

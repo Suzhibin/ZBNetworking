@@ -21,7 +21,7 @@
 #import "ZBCacheManager.h"
 #import <CommonCrypto/CommonDigest.h>
 
-NSString *const PathDefault =@"ZBCache";
+NSString *const PathDefault =@"AppCache";
 static const NSInteger cacheMaxCacheAge  = 60*60*24*7;
 //static NSInteger cacheMixCacheAge = 60;
 @interface ZBCacheManager ()
@@ -50,7 +50,7 @@ static ZBCacheManager *Cachemanager=nil;
         
         [self initCachesfileWithName:PathDefault];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanDisk) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
         
@@ -63,11 +63,31 @@ static ZBCacheManager *Cachemanager=nil;
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 
+#pragma mark - 获取沙盒目录
+- (NSString *)getDocumentDirectory{
+    return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+}
 
+- (NSString *)getLibraryDirectory{
+    return [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject];
+}
+
+- (NSString *)getCachesDirectory{
+    return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+}
+
+- (NSString *)getPreferencePanesDirectory{
+    return [NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, YES) lastObject];
+}
+
+- (NSString *)getTmpDirectory{
+    return NSTemporaryDirectory();
+}
+
+#pragma mark - 创建存储文件
 - (void)initCachesfileWithName:(NSString *)name
 {
-  
-    NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *caches=[self getCachesDirectory];
     
     self.diskCachePath = [NSString stringWithFormat:@"%@/%@", caches,name];
 
@@ -77,10 +97,8 @@ static ZBCacheManager *Cachemanager=nil;
     } else {
         // NSLog(@"FileDir is exists.");
     }
-    
-    
 }
-#pragma  mark -
+#pragma  mark - 存储
 
 - (void)setMutableData:(NSMutableData*)data WriteToFile:(NSString *)path{
     [data writeToFile:path atomically:YES];
@@ -97,14 +115,12 @@ static ZBCacheManager *Cachemanager=nil;
     }
 }
 
-
 - (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)CachePath {
 
         NSString *filename = [self cachedFileNameForKey:key];
         return [CachePath stringByAppendingPathComponent:filename];
 
 }
-
 
 - (NSString *)cachedFileNameForKey:(NSString *)key {
     const char *str = [key UTF8String];
@@ -120,42 +136,64 @@ static ZBCacheManager *Cachemanager=nil;
     return filename;
 }
 
-#pragma  mark -
+#pragma  mark - 计算大小与个数
+- (NSUInteger)getCacheSize {
+    
+    return [self getFileSizeWithpath:self.diskCachePath];
+}
 
-- (NSUInteger)getFileSize {
+- (NSUInteger)getCacheCount {
+    return [self getFileCountWithpath:self.diskCachePath];
+}
+
+- (NSUInteger)getFileSizeWithpath:(NSString *)path
+{
     __block NSUInteger size = 0;
     
-     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
-            NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:self.diskCachePath];
+    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         for (NSString *fileName in fileEnumerator) {
-            NSString *filePath = [self.diskCachePath stringByAppendingPathComponent:fileName];
- 
+            NSString *filePath = [path stringByAppendingPathComponent:fileName];
+            
             NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
             size += [attrs fileSize];
         }
     });
-  
+    
     return size;
+
+}
+- (NSString *)fileUnitWithSize:(float)size
+{
+     CGFloat unit = 1000.0;
+    if (size >= unit * unit * unit) { // >= 1GB
+        return  [NSString stringWithFormat:@"%.2fGB", size / unit / unit / unit];
+    } else if (size >= unit * unit) { // >= 1MB
+        return [NSString stringWithFormat:@"%.2fMB", size / unit / unit];
+    } else { // >= 1KB
+        return [NSString stringWithFormat:@"%.2fKB", size / unit];
+    }
+  
 }
 
-- (NSUInteger)getFileCount {
+- (NSUInteger)getFileCountWithpath:(NSString *)path
+{
     __block NSUInteger count = 0;
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
-        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:self.diskCachePath];
+        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         count = [[fileEnumerator allObjects] count];
     });
     return count;
 }
 
+#pragma  mark - 清除文件
 
-#pragma  mark -
-
--(void) automaticCleanDisk{
+-(void) automaticCleanCache{
     
-    [self automaticCleanDiskWithCompletion:nil];
+    [self automaticCleanCacheWithOperation:nil];
 }
 
-- (void)automaticCleanDiskWithCompletion:(ZBCacheManagerBlock)completion
+- (void)automaticCleanCacheWithOperation:(ZBCacheManagerBlock)operation
 {
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL),^{
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMaxCacheAge];
@@ -175,11 +213,11 @@ static ZBCacheManager *Cachemanager=nil;
                 
             }
         }
-        if (completion) {
+        if (operation) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
             
-                completion();
+                operation();
             });
             
         }
@@ -201,59 +239,85 @@ static ZBCacheManager *Cachemanager=nil;
     }];
     
     // Start the long-running task and return immediately.
-    [self automaticCleanDiskWithCompletion:^{
+    [self automaticCleanCacheWithOperation:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
 }
 
-- (void)removeDiskForkey:(NSString *)key
+- (void)clearCacheForkey:(NSString *)key
 {
-
-    [self removeDiskForkey:key Operation:nil];
+    [self clearCacheForkey:key Operation:nil];
 }
 
-- (void)removeDiskForkey:(NSString *)key Operation:(ZBCacheManagerBlock)Operation
+- (void)clearCacheForkey:(NSString *)key Operation:(ZBCacheManagerBlock)operation
 {
-    
     dispatch_sync(dispatch_queue_create(0,DISPATCH_QUEUE_SERIAL),^{
         
         NSString *path=[self pathWithfileName:key];
         
         [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
         
-        if (Operation) {
+        if (operation) {
             dispatch_sync(dispatch_get_main_queue(),^{
-                Operation();
+                operation();
             });
         }
 
     });
 }
 
-- (void)clearDisk
+- (void)clearCache
 {
-     [self clearDiskOnOperation:nil];
+     [self clearCacheOnOperation:nil];
 }
 
-
-- (void)clearDiskOnOperation:(ZBCacheManagerBlock)Operation{
+- (void)clearCacheOnOperation:(ZBCacheManagerBlock)operation{
 
     dispatch_async(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
-        [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
-        [[NSFileManager defaultManager] createDirectoryAtPath:self.diskCachePath
-                withIntermediateDirectories:YES
-                                 attributes:nil
-                                      error:NULL];
-        if (Operation) {
+
+        [self clearDiskWithpath:self.diskCachePath];
+        
+        if (operation) {
             dispatch_sync(dispatch_get_main_queue(),^{
-                Operation();
+                operation();
             });
         }
     });
 }
 
+- (void)clearDiskWithpath:(NSString *)path
+{
+    [self clearDiskWithpath:path Operation:nil];
+}
 
+- (void)clearDiskWithpath:(NSString *)path Operation:(ZBCacheManagerBlock)operation
+{
+     dispatch_async(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+  
+           NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
+         for (NSString *fileName in fileEnumerator)
+         {
+             NSString *filePath = [path stringByAppendingPathComponent:fileName];
+         
+             [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+       
+         }
+         if (operation) {
+             dispatch_sync(dispatch_get_main_queue(),^{
+                 operation();
+             });
+         }
 
+     });
+}
 
+/*
+ [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
+ [[NSFileManager defaultManager] createDirectoryAtPath:self.diskCachePath
+ withIntermediateDirectories:YES
+ attributes:nil
+ error:NULL];
+
+ */
 @end
