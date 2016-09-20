@@ -273,7 +273,9 @@ static ZBCacheManager *Cachemanager=nil;
 
     dispatch_async(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
 
-        [self clearDiskWithpath:self.diskCachePath];
+            //[self clearDiskWithpath:self.diskCachePath];
+        [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:self.diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
         
         if (operation) {
             dispatch_sync(dispatch_get_main_queue(),^{
