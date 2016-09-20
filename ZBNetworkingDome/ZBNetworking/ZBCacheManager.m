@@ -312,12 +312,5 @@ static ZBCacheManager *Cachemanager=nil;
      });
 }
 
-/*
- [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
- [[NSFileManager defaultManager] createDirectoryAtPath:self.diskCachePath
- withIntermediateDirectories:YES
- attributes:nil
- error:NULL];
 
- */
 @end
