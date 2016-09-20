@@ -59,9 +59,10 @@ NSURLSession 网络请求的封装  添加了缓存功能，显示缓存大小�
 
 }
 ```
-5.显示缓存大小、删除缓存
+5.其他操作
 ```objective-c
+//显示缓存大小
  [[ZBCacheManager shareCacheManager]getCacheSize];
-
+ //删除缓存
 [[ZBCacheManager shareCacheManager]clearCache];
  ```
