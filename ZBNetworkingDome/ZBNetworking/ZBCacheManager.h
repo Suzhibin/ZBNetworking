@@ -55,13 +55,6 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSString *)getCachesDirectory;
 
 /**
- 获取沙盒Preference的文件目录
- 
- @return Preference路径
- */
-- (NSString *)getPreferencePanesDirectory;
-
-/**
  获取沙盒tmp的文件目录
  
  @return tmp路径

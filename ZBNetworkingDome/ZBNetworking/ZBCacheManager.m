@@ -76,10 +76,6 @@ static ZBCacheManager *Cachemanager=nil;
     return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
 }
 
-- (NSString *)getPreferencePanesDirectory{
-    return [NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, YES) lastObject];
-}
-
 - (NSString *)getTmpDirectory{
     return NSTemporaryDirectory();
 }
