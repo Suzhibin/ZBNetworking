@@ -54,9 +54,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 
 @end
 
-
 @interface ZBURLSessionManager : NSObject<NSURLSessionDelegate>
-
 
 @property (nonatomic,copy)NSURLSession *session;
 
@@ -66,6 +64,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 
 @property (nonatomic, strong) void (^FinishedBlock)(ZBURLSessionManager *);
 @property (nonatomic, strong) void (^FailedBlock)(ZBURLSessionManager *);
+
 /**
  *  接口(请求地址)
  */

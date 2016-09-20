@@ -84,7 +84,7 @@ static ZBCacheManager *Cachemanager=nil;
     return NSTemporaryDirectory();
 }
 
-#pragma mark - 创建存储文件
+#pragma mark - 创建存储文件夹
 - (void)initCachesfileWithName:(NSString *)name
 {
     NSString *caches=[self getCachesDirectory];
@@ -167,7 +167,7 @@ static ZBCacheManager *Cachemanager=nil;
 {
      CGFloat unit = 1000.0;
     if (size >= unit * unit * unit) { // >= 1GB
-        return  [NSString stringWithFormat:@"%.2fGB", size / unit / unit / unit];
+        return [NSString stringWithFormat:@"%.2fGB", size / unit / unit / unit];
     } else if (size >= unit * unit) { // >= 1MB
         return [NSString stringWithFormat:@"%.2fMB", size / unit / unit];
     } else { // >= 1KB
@@ -196,9 +196,11 @@ static ZBCacheManager *Cachemanager=nil;
 - (void)automaticCleanCacheWithOperation:(ZBCacheManagerBlock)operation
 {
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL),^{
+        
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMaxCacheAge];
         
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:self.diskCachePath];
+        
         for (NSString *fileName in fileEnumerator)
         {
             NSString *filePath = [self.diskCachePath stringByAppendingPathComponent:fileName];
