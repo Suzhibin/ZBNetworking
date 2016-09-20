@@ -157,7 +157,7 @@ static const NSInteger timeOut = 60*60;
     {
         NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:_requestString];
         
-        [[ZBCacheManager shareCacheManager] setMutableData:_downloadData WriteToFile:path];
+        [[ZBCacheManager shareCacheManager] setMutableData:_downloadData writeToFile:path];
         
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self];

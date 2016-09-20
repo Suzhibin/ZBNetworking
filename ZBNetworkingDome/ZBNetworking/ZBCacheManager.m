@@ -95,8 +95,8 @@ static ZBCacheManager *Cachemanager=nil;
     }
 }
 #pragma  mark - 存储
-
-- (void)setMutableData:(NSMutableData*)data WriteToFile:(NSString *)path{
+- (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path
+{
     [data writeToFile:path atomically:YES];
 }
 
@@ -245,10 +245,10 @@ static ZBCacheManager *Cachemanager=nil;
 
 - (void)clearCacheForkey:(NSString *)key
 {
-    [self clearCacheForkey:key Operation:nil];
+    [self clearCacheForkey:key operation:nil];
 }
 
-- (void)clearCacheForkey:(NSString *)key Operation:(ZBCacheManagerBlock)operation
+- (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation
 {
     dispatch_sync(dispatch_queue_create(0,DISPATCH_QUEUE_SERIAL),^{
         
@@ -286,10 +286,10 @@ static ZBCacheManager *Cachemanager=nil;
 
 - (void)clearDiskWithpath:(NSString *)path
 {
-    [self clearDiskWithpath:path Operation:nil];
+    [self clearDiskWithpath:path operation:nil];
 }
 
-- (void)clearDiskWithpath:(NSString *)path Operation:(ZBCacheManagerBlock)operation
+- (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation
 {
      dispatch_async(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
   

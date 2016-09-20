@@ -26,7 +26,6 @@ typedef void(^ZBCacheManagerBlock)();
 /**
  *  文件管理类:管理文件的路径,创建,存储,编码,显示,删除等功能.
  */
-
 @interface ZBCacheManager : NSObject
 
 
@@ -61,12 +60,12 @@ typedef void(^ZBCacheManagerBlock)();
  */
 - (NSString *)getTmpDirectory;
 
-
 /**
+ * 把二进制内容,写入到文件
  *  @param data 
  *  @param path 路径
  */
-- (void)setMutableData:(NSMutableData*)data WriteToFile:(NSString *)path;
+- (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path;
 
 /**
  *  
@@ -141,7 +140,7 @@ typedef void(^ZBCacheManagerBlock)();
  *  @param key       请求的协议地址
  *  @param Operation  block 后续操作
  */
-- (void)clearCacheForkey:(NSString *)key Operation:(ZBCacheManagerBlock)operation;
+- (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation;
 
 /**
  *  清除缓存
@@ -169,7 +168,7 @@ typedef void(^ZBCacheManagerBlock)();
  @param path      路径
  @param Operation block 后续操作
  */
-- (void)clearDiskWithpath:(NSString *)path Operation:(ZBCacheManagerBlock)operation;
+- (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation;
 
 /**
  Posted when a task name.

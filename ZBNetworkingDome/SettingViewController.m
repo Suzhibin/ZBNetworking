@@ -100,7 +100,7 @@ typedef void(^failBlock)(NSError *error);
     if (indexPath.row==2) {
         
         //清除某个沙盒文件
-        [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path Operation:^{
+        [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path operation:^{
             
             [_tableView reloadData];
             
