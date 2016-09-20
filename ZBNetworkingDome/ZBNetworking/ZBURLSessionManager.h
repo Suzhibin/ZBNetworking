@@ -78,7 +78,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  delegate 赋值为实现协议的对象
  */
-@property (nonatomic,assign) id<ZBURLSessionDelegate>delegate;
+@property (nonatomic,weak) id<ZBURLSessionDelegate>delegate;
 
 /**
  *  用于标识不同类型的request

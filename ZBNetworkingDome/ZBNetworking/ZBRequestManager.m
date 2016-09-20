@@ -71,7 +71,6 @@ static ZBRequestManager *RequestManager=nil;
     if (obj) {
         [_requestDic setObject:obj forKey:key];
     }
-
 }
 
 - (void)removeRequestForkey:(NSString *)key{
@@ -80,13 +79,11 @@ static ZBRequestManager *RequestManager=nil;
     [_requestDic removeObjectForKey:key];
 
 }
-
+//_requestDic 已被remove 此方法暂时不用
 - (void)clearDelegateForKey:(NSString *)key{
     if(!key)return;
-    self.manager=[_requestDic objectForKey:key];
- 
+    self.manager=[_requestDic objectForKey:key];;
     self.manager.delegate = nil;
- 
 }
 
 - (void)requestToCancel:(BOOL)cancelPendingTasks

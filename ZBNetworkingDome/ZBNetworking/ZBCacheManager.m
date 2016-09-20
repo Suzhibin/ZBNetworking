@@ -28,7 +28,6 @@ static const NSInteger cacheMaxCacheAge  = 60*60*24*7;
 
 @property (nonatomic ,copy)NSString *diskCachePath;
 
-
 @end
 
 static ZBCacheManager *Cachemanager=nil;
@@ -49,7 +48,7 @@ static ZBCacheManager *Cachemanager=nil;
     if (self) {
         
         [self initCachesfileWithName:PathDefault];
-        
+    
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];

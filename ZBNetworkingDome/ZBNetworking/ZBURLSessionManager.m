@@ -92,12 +92,11 @@ static const NSInteger timeOut = 60*60;
 
 +(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
-   
     ZBURLSessionManager *request = [[ZBURLSessionManager alloc] init];
     request.requestString = requestString;
     request.delegate = delegate;
     request.apiType = type;
-  
+       
      NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:requestString];
 
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh) {
@@ -165,9 +164,9 @@ static const NSInteger timeOut = 60*60;
         if (self.FinishedBlock) {
             self.FinishedBlock(self);
         }
-        
+
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
-        
+
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
     }else{

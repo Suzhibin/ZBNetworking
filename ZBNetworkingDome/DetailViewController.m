@@ -12,21 +12,17 @@
 @interface DetailViewController ()<ZBURLSessionDelegate,UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
+
 @end
 
 @implementation DetailViewController
 
 - (void)dealloc{
-    
-#warning 必须实现
-    /**
-     *  在ViewController被销毁之前,将delegate置为nil
-     */
-    [[ZBRequestManager shareManager] clearDelegateForKey:_urlString];
-    
+
 #warning 可选实现
     /**
-     防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求、释放session. 也可避免造成内存泄露.
+    1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
+    2.系统的session.Delegate 是retain的 手动取消 避免造成内存泄露.
      */
     [[ZBRequestManager shareManager] requestToCancel:YES];
     
@@ -45,8 +41,7 @@
     /**
      *  类方法
      */
-    [ZBURLSessionManager getRequestWithUrlString:_urlString target:self];
-    
+     [ZBURLSessionManager getRequestWithUrlString:_urlString target:self];
     
   
 
