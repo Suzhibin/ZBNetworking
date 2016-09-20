@@ -47,8 +47,9 @@ static const NSInteger timeOut = 60*60;
 {
     self.FinishedBlock = finished;
     self.FailedBlock = Failed;
-   // [ZBURLSessionManager getRequestWithUrlString:requestString target:nil];
+    // [ZBURLSessionManager getRequestWithUrlString:requestString target:nil];
     [ZBURLSessionManager getRequestWithUrlString:requestString target:nil apiType:type];
+    
 }
 
 #pragma  mark - 实例方法 请求

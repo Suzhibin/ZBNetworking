@@ -117,10 +117,7 @@
 
 - (void)timer{
     /**
-     *  刷新正常是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
-     */    
-    /**
-     *  实例方法
+     *  刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      */
    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
     
