@@ -33,9 +33,7 @@ typedef void(^failBlock)(NSError *error);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-   
-  
+
     static NSString *cellIde=@"cellIde";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIde];
     if (!cell) {

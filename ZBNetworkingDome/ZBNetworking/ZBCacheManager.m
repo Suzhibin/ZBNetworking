@@ -23,6 +23,7 @@
 
 NSString *const PathDefault =@"AppCache";
 static const NSInteger cacheMaxCacheAge  = 60*60*24*7;
+static const CGFloat unit = 1000.0;
 //static NSInteger cacheMixCacheAge = 60;
 @interface ZBCacheManager ()
 
@@ -160,7 +161,6 @@ static ZBCacheManager *Cachemanager=nil;
 }
 - (NSString *)fileUnitWithSize:(float)size
 {
-     CGFloat unit = 1000.0;
     if (size >= unit * unit * unit) { // >= 1GB
         return [NSString stringWithFormat:@"%.2fGB", size / unit / unit / unit];
     } else if (size >= unit * unit) { // >= 1MB
