@@ -33,7 +33,7 @@ typedef void(^failBlock)(NSError *error);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-
+    
     static NSString *cellIde=@"cellIde";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIde];
     if (!cell) {
@@ -83,10 +83,10 @@ typedef void(^failBlock)(NSError *error);
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (indexPath.row==0) {
-        //清除内存
+        
         [[NSURLCache sharedURLCache]removeAllCachedResponses];
         
-        //清除沙盒缓存
+        //清除缓存
         [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
             
             [_tableView reloadData];
@@ -97,7 +97,7 @@ typedef void(^failBlock)(NSError *error);
     
     if (indexPath.row==2) {
         
-        //清除某个沙盒文件
+        //清除某个沙盒文件内容
         [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path operation:^{
             
             [_tableView reloadData];

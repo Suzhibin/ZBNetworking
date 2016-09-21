@@ -24,8 +24,8 @@
     NSLog(@"path = %@",path);
     
     
-    HomeViewController *root = [[HomeViewController alloc]init];
-    UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:root];
+    HomeViewController *home = [[HomeViewController alloc]init];
+    UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:home];
     
     self.window.rootViewController = nc;
     
