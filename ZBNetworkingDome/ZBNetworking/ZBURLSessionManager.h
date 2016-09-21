@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger,apiType) {
     ZBRequestTypeRefresh,   //重新请求 （不读缓存）
     ZBRequestTypeLoadMore,  //加载更多
     ZBRequestTypeDetail,    //详情
-    ZBRequestTypeLocation,  //位置
+    ZBRequestTypeOffline,   //离线
 
 } ;
 
@@ -97,6 +97,12 @@ typedef NS_ENUM(NSInteger,apiType) {
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 /**
+ *  请求错误
+ */
+@property (nonatomic,assign)NSInteger index;
+
+
+/**
  *  创建并返回一个“ZBURLSessionManager”对象
  *  Creates and returns an `ZBURLSessionManager` object
  */
@@ -121,8 +127,15 @@ typedef NS_ENUM(NSInteger,apiType) {
  */
 - (NSString *)valueForHTTPHeaderField:(NSString *)field;
 
-#pragma mark block 请求 （暂时无用）
-//- (void)get:(NSString *)requestString apiType:(apiType)type completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed;
+/**
+ *  离线下载
+ *
+ *  @param DownloadArray 请求的协议地址的集合
+ *  @param delegate      代理  传实现协议的对象
+ *   @param type         用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ */
+- (void)offlineDownload:(NSMutableArray *)DownloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+
 /**
  *  get请求
  *
@@ -137,7 +150,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *
  *  @param requestString 请求的协议地址
  *  @param delegate      代理 传实现协议的对象
- *  @param type          用于直接区分不同的request对象 比如:kRefreshType 默认为kDefaultType
+ *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
  */
 - (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
@@ -166,7 +179,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *
  *  @param requestString 请求的协议地址
  *  @param delegate      代理 传实现协议的对象
- *  @param type          用于直接区分不同的request对象 比如:kRefreshType 默认为kDefaultType
+ *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
  */
 +(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;

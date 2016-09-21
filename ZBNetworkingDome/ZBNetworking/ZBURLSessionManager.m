@@ -52,6 +52,18 @@ static const NSInteger timeOut = 60*60;
     
 }
 
+- (void)offlineDownload:(NSMutableArray *)DownloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
+{
+    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+      
+        [DownloadArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            [self getRequestWithUrlString:obj target:delegate apiType:type];
+        }];
+    });
+  
+}
+
 #pragma  mark - 实例方法 请求
 -(void)postRequestWithUrlString:(NSString *)requestString dict:(NSDictionary*)dict target:(id<ZBURLSessionDelegate>)delegate
 {
@@ -157,7 +169,7 @@ static const NSInteger timeOut = 60*60;
     {
         NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:_requestString];
         
-        [[ZBCacheManager shareCacheManager] setMutableData:_downloadData writeToFile:path];
+        [[ZBCacheManager shareCacheManager] setMutableData:self.downloadData writeToFile:path];
         
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self];
@@ -167,7 +179,7 @@ static const NSInteger timeOut = 60*60;
         }
 
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
-
+       
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
     }else{
@@ -227,9 +239,6 @@ static const NSInteger timeOut = 60*60;
 - (void)startRequest
 {
      ZBLog(@"start Request");
-    if (_dataTask) {
-        [_dataTask cancel];
-    }
     
     NSString *string = [self.requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -262,11 +271,6 @@ static const NSInteger timeOut = 60*60;
 
 #pragma mark - post Request
 - (void)downloadFromdict:(NSDictionary *)dict;{
-    
-    if (_dataTask) {
-        [_dataTask cancel];
-        
-    }
     
     NSString *string = [_requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     

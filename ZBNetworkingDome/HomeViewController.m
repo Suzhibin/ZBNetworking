@@ -12,9 +12,7 @@
 #import "DetailViewController.h"
 #import "SettingViewController.h"
 
-#define home_URL @"http://api.dotaly.com/lol/api/v1/authors?iap=0"
 
-#define details_URL @"http://api.dotaly.com/lol/api/v1/shipin/latest?author=%@&iap=0jb=0&limit=50&offset=0"
 @interface HomeViewController ()<ZBURLSessionDelegate,UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong)UITableView *tableView;

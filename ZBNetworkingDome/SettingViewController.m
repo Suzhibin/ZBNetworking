@@ -8,16 +8,24 @@
 
 #import "SettingViewController.h"
 #import "ZBNetworking.h"
-
+#import "offlineDownloadViewController.h"
 typedef void(^SuccessBlock)(id object , NSURLResponse *response);
 typedef void(^failBlock)(NSError *error);
-@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
+
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic,strong)ZBURLSessionManager *manager;
 @end
 
 @implementation SettingViewController
-
+- (ZBURLSessionManager *)manager
+{
+    if (!_manager) {
+        _manager = [ZBURLSessionManager manager];
+    }
+    return _manager;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -31,7 +39,10 @@ typedef void(^failBlock)(NSError *error);
     [self.view addSubview:self.tableView];
 
 }
-
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
+    return 5;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     static NSString *cellIde=@"cellIde";
@@ -75,6 +86,11 @@ typedef void(^failBlock)(NSError *error);
         
     }
     
+    if (indexPath.row==4) {
+        cell.textLabel.text=@"离线下载";
+         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
     return cell;
 }
 
@@ -89,10 +105,9 @@ typedef void(^failBlock)(NSError *error);
         //清除缓存
         [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
             
-            [_tableView reloadData];
+            [self.tableView reloadData];
             
         }];
-        
     }
     
     if (indexPath.row==2) {
@@ -100,18 +115,27 @@ typedef void(^failBlock)(NSError *error);
         //清除某个沙盒文件内容
         [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path operation:^{
             
-            [_tableView reloadData];
+            [self.tableView reloadData];
             
         }];
     }
+    if (indexPath.row==4) {
+
+        offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
+        offlineVC.delegate=self;
+        [self.navigationController pushViewController:offlineVC animated:YES];
+        
+    }
     
-    
+}
+#pragma mark offlineDelegate
+- (void)refreshSize
+{
+    [self.tableView reloadData];
+  
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    
-    return 4;
-}
+
 
 //懒加载
 - (UITableView *)tableView
