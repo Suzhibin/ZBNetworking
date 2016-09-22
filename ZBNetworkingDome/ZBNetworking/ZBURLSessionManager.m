@@ -31,7 +31,7 @@ static const NSInteger timeOut = 60*60;
     if (self) {
         
         self.downloadData = [[NSMutableData alloc] init];
-    
+        self.channelArray=[[NSMutableArray alloc]init];
         _timeoutInterval=15;
         
     }
@@ -52,16 +52,42 @@ static const NSInteger timeOut = 60*60;
     
 }
 
-- (void)offlineDownload:(NSMutableArray *)DownloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
       
-        [DownloadArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [downloadArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
-            [self getRequestWithUrlString:obj target:delegate apiType:type];
+            [ZBURLSessionManager getRequestWithUrlString:obj target:delegate apiType:type];
         }];
-    });
+    });  
+}
+
+- (BOOL)isAddUrl:(NSString *)url
+{
+  return  [self.channelArray containsObject: url];
+
+}
+
+- (void)addObjectWithUrl:(NSString *)url
+{
+    if ([self isAddUrl:url]==1) {
+         ZBLog(@"已经包含该频道");
+    }else{
+          [self.channelArray addObject:url];
+    }
   
+}
+
+- (void)removeObjectWithUrl:(NSString *)url
+{
+    if ([self isAddUrl:url]==1) {
+        [self.channelArray removeObject:url];
+        
+    }else{
+        ZBLog(@"已经删除该频道");
+    }
+    
 }
 
 #pragma  mark - 实例方法 请求
@@ -112,7 +138,7 @@ static const NSInteger timeOut = 60*60;
        
      NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:requestString];
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
     

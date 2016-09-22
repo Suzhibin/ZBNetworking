@@ -12,7 +12,6 @@
 @interface offlineDownloadViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLSessionDelegate>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
-@property (nonatomic,strong) NSMutableArray *channelArray;
 @property (nonatomic,strong)ZBURLSessionManager *manager;
 @end
 
@@ -35,10 +34,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.dataArray=[[NSMutableArray alloc]init];
-    self.channelArray=[[NSMutableArray alloc]init];
     
-    //此页的数据也是有缓存的
-    [self.manager getRequestWithUrlString:home_URL target:self];
+    //保证频道是最新的 不要取缓存
+    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+    
     [self.view addSubview:self.tableView];
     
     [self addItemWithTitle:@"离线下载" selector:@selector(btnClick) location:NO];
@@ -46,11 +45,13 @@
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
-
     //如果是离线数据
     if (request.apiType==ZBRequestTypeOffline) {
+        
         NSLog(@"添加了几个离线下载 就会走几遍");
-    }
+        
+    }else{
+      
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
         
         NSArray *array=[dict objectForKey:@"authors"];
@@ -63,10 +64,9 @@
             
         }
         [_tableView reloadData];
-
-
     
-    
+      }
+
 }
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
@@ -79,6 +79,7 @@
         [self alertTitle:@"请求失败" andMessage:@""];
     }
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     return self.dataArray.count;
@@ -107,43 +108,35 @@
 {
     RootModel *model=[self.dataArray objectAtIndex:sw.tag];
     NSString *url=[NSString stringWithFormat:details_URL,model.wid];
-    
-    BOOL isThere = [self.channelArray containsObject: url];
+
     
     if (sw.isOn == YES) {
-
-        if (isThere==1) {
-            NSLog(@"已经包含该频道");
-        }else{
-            [self.channelArray addObject:url];
-        
-        }
+        //添加请求列队
+        [self.manager addObjectWithUrl:url];
       
     }else{
- 
-        if (isThere==1) {
-            [self.channelArray removeObject:url];
-    
-        }else{
-           NSLog(@"已经删除该频道");
-        }
+        //删除请求列队
+        [self.manager removeObjectWithUrl:url];
         
-       
     }
 }
 
 
 - (void)btnClick
 {
-    if (self.channelArray.count==0) {
-        [self alertTitle:@"没有数据" andMessage:@"请添加频道"];
-    }else{
-          NSLog(@"离线请求的url:%@",self.channelArray);
-        //离线请求
-        [self.manager offlineDownload:self.channelArray target:self apiType:ZBRequestTypeOffline];
+    if (self.manager.channelArray.count==0) {
         
-      //  [self alertTitle:@"被点击的频道" andMessage:@"如果之前有缓存 点击将不会下载"];
-         NSLog(@"被点击的频道,如果之前有缓存 点击将不会下载");
+        [self alertTitle:@"没有数据" andMessage:@"请添加栏目"];
+        
+    }else{
+        
+        NSLog(@"离线请求的url:%@",self.manager.channelArray);
+        NSLog(@"离线请求的url个数:%ld",self.manager.channelArray.count);
+        NSLog(@"为保证栏目是最新的数据，请求列队都是重新请求。如果之前有缓存 下载会覆盖之前的缓存，所以覆盖的缓存文件数量是不增长的");
+        
+        //离线请求 apiType:ZBRequestTypeOffline
+        [self.manager offlineDownload:self.manager.channelArray target:self apiType:ZBRequestTypeOffline];
+        
     }
 }
 //懒加载

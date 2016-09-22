@@ -24,7 +24,7 @@
 #import <UIKit/UIKit.h>
 @class ZBURLSessionManager;
 
-#define DEBUG_LOG 1
+#define DEBUG_LOG 0
 
 #if(DEBUG_LOG == 1)
 # define ZBLog(fmt, ...) NSLog((@"[函数名:%s]" " [第 %d 行]\n" fmt),  __FUNCTION__, __LINE__, ##__VA_ARGS__);

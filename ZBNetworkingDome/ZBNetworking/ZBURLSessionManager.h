@@ -28,10 +28,10 @@
 typedef NS_ENUM(NSInteger,apiType) {
     
     ZBRequestTypeDefault,   //默认类型
-    ZBRequestTypeRefresh,   //重新请求 （不读缓存）
+    ZBRequestTypeRefresh,   //重新请求 （有缓存，不读取，重新请求）
     ZBRequestTypeLoadMore,  //加载更多
     ZBRequestTypeDetail,    //详情
-    ZBRequestTypeOffline,   //离线
+    ZBRequestTypeOffline,   //离线    （有缓存，不读取，重新请求）
 
 } ;
 
@@ -101,7 +101,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  */
 @property (nonatomic,assign)NSInteger index;
 
-
+@property (nonatomic,strong) NSMutableArray *channelArray;
 /**
  *  创建并返回一个“ZBURLSessionManager”对象
  *  Creates and returns an `ZBURLSessionManager` object
@@ -130,11 +130,34 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  离线下载
  *
- *  @param DownloadArray 请求的协议地址的集合
+ *  @param DownloadArray 请求列队
  *  @param delegate      代理  传实现协议的对象
- *   @param type         用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ *   @param type         用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
  */
-- (void)offlineDownload:(NSMutableArray *)DownloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+
+/**
+  离线下载 是否添加请求列队
+
+ @param url 请求地址
+
+ @return 1:0
+ */
+- (BOOL)isAddUrl:(NSString *)url;
+
+/**
+ 离线下载 添加请求列队
+
+ @param url 请求地址
+ */
+- (void)addObjectWithUrl:(NSString *)url;
+
+/**
+ 离线下载 删除请求列队
+
+ @param url 请求地址
+ */
+- (void)removeObjectWithUrl:(NSString *)url;
 
 /**
  *  get请求
