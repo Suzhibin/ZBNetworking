@@ -124,18 +124,18 @@
 
 - (void)btnClick
 {
-    if (self.manager.channelArray.count==0) {
+    if (self.manager.offlineArray.count==0) {
         
         [self alertTitle:@"没有数据" andMessage:@"请添加栏目"];
         
     }else{
         
-        NSLog(@"离线请求的url:%@",self.manager.channelArray);
-        NSLog(@"离线请求的url个数:%ld",self.manager.channelArray.count);
+        NSLog(@"离线请求的url:%@",self.manager.offlineArray);
+        NSLog(@"离线请求的url个数:%ld",self.manager.offlineArray.count);
         NSLog(@"为保证栏目是最新的数据，请求列队都是重新请求。如果之前有缓存 下载会覆盖之前的缓存，所以覆盖的缓存文件数量是不增长的");
         
         //离线请求 apiType:ZBRequestTypeOffline
-        [self.manager offlineDownload:self.manager.channelArray target:self apiType:ZBRequestTypeOffline];
+        [self.manager offlineDownload:self.manager.offlineArray target:self apiType:ZBRequestTypeOffline];
         
     }
 }

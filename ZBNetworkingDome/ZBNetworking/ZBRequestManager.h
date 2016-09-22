@@ -43,7 +43,10 @@
  */
 @property ( nonatomic, strong) NSMutableDictionary *requestDic;
 
-
+/**
+ *  离线下载栏目容器
+ */
+@property (nonatomic,strong) NSMutableArray *channelArray;
 /**
  *  用于维护 请求头的request对象
  */
@@ -78,6 +81,29 @@
  *  @param key
  */
 - (void)removeHeaderForkey:(NSString *)key;
+
+/**
+ 离线下载 是否添加请求列队
+ 
+ @param url 请求地址
+ 
+ @return 1:0
+ */
+- (BOOL)isAddForkey:(NSString *)url;
+
+/**
+ 离线下载 添加请求列队
+ 
+ @param url 请求地址
+ */
+- (void)addObjectWithForkey:(NSString *)url;
+
+/**
+ 离线下载 删除请求列队
+ 
+ @param url 请求地址
+ */
+- (void)removeObjectWithForkey:(NSString *)url;
 
 /**
  *

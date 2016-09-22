@@ -42,7 +42,6 @@
     /**
      *  实例方法
      */
-    [self.manager setTimeoutInterval:10];//更改超时时间
     [self.manager getRequestWithUrlString:home_URL target:self];
 
     [self.tableView addSubview:self.refreshControl];

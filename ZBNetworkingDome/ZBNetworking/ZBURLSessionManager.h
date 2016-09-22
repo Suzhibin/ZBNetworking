@@ -97,11 +97,10 @@ typedef NS_ENUM(NSInteger,apiType) {
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 /**
- *  请求错误
+    离线下载 请求列队容器
  */
-@property (nonatomic,assign)NSInteger index;
+@property (nonatomic,strong) NSMutableArray *offlineArray;
 
-@property (nonatomic,strong) NSMutableArray *channelArray;
 /**
  *  创建并返回一个“ZBURLSessionManager”对象
  *  Creates and returns an `ZBURLSessionManager` object
@@ -128,7 +127,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 - (NSString *)valueForHTTPHeaderField:(NSString *)field;
 
 /**
- *  离线下载
+ *  离线下载 请求方法
  *
  *  @param DownloadArray 请求列队
  *  @param delegate      代理  传实现协议的对象
@@ -146,18 +145,23 @@ typedef NS_ENUM(NSInteger,apiType) {
 - (BOOL)isAddUrl:(NSString *)url;
 
 /**
- 离线下载 添加请求列队
+ 离线下载 将url添加请求列队
 
  @param url 请求地址
  */
 - (void)addObjectWithUrl:(NSString *)url;
 
 /**
- 离线下载 删除请求列队
+ 离线下载 将url删除请求列队
 
  @param url 请求地址
  */
 - (void)removeObjectWithUrl:(NSString *)url;
+
+/**
+ 离线下载 删除全部请求列队
+ */
+- (void)removeOfflineArray;
 
 /**
  *  get请求
