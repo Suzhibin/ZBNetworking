@@ -97,9 +97,14 @@ typedef NS_ENUM(NSInteger,apiType) {
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 /**
-    离线下载 请求列队容器
+    离线下载 请求url列队容器
  */
-@property (nonatomic,strong) NSMutableArray *offlineArray;
+@property (nonatomic,strong) NSMutableArray *offlineUrlArray;
+
+/**
+    离线下载 请求名字列队容器
+ */
+@property (nonatomic,strong) NSMutableArray *offlineNameArray;
 
 /**
  *  创建并返回一个“ZBURLSessionManager”对象
@@ -136,7 +141,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
-  离线下载 是否添加请求列队
+  离线下载 判断栏目url 是否已添加到请求列队容器
 
  @param url 请求地址
 
@@ -145,18 +150,41 @@ typedef NS_ENUM(NSInteger,apiType) {
 - (BOOL)isAddUrl:(NSString *)url;
 
 /**
- 离线下载 将url添加请求列队
+ 离线下载 将url 添加到请求列队
 
  @param url 请求地址
  */
 - (void)addObjectWithUrl:(NSString *)url;
 
 /**
- 离线下载 将url删除请求列队
+ 离线下载 将url 从请求列队删除
 
  @param url 请求地址
  */
 - (void)removeObjectWithUrl:(NSString *)url;
+
+/**
+  离线下载 判断栏目名字 是否已添加到容器
+ 
+ @param url 请求地址
+ 
+ @return 1:0
+ */
+- (BOOL)isAddName:(NSString *)name;
+
+/**
+ 离线下载 将栏目名字 添加到容器
+ 
+ @param url 请求地址
+ */
+- (void)addObjectWithName:(NSString *)name;
+
+/**
+ 离线下载 将栏目名字 从容器删除
+ 
+ @param url 请求地址
+ */
+- (void)removeObjectWithName:(NSString *)name;
 
 /**
  离线下载 删除全部请求列队

@@ -108,15 +108,17 @@
 {
     RootModel *model=[self.dataArray objectAtIndex:sw.tag];
     NSString *url=[NSString stringWithFormat:details_URL,model.wid];
-
+    
     
     if (sw.isOn == YES) {
         //添加请求列队
         [self.manager addObjectWithUrl:url];
+        [self.manager addObjectWithName:model.name];
       
     }else{
         //删除请求列队
         [self.manager removeObjectWithUrl:url];
+        [self.manager addObjectWithName:model.name];
         
     }
 }
@@ -124,18 +126,22 @@
 
 - (void)btnClick
 {
-    if (self.manager.offlineArray.count==0) {
+    if (self.manager.offlineUrlArray.count==0) {
         
-        [self alertTitle:@"没有数据" andMessage:@"请添加栏目"];
+        [self alertTitle:@"请添加栏目" andMessage:@""];
         
     }else{
         
-        NSLog(@"离线请求的url:%@",self.manager.offlineArray);
-        NSLog(@"离线请求的url个数:%ld",self.manager.offlineArray.count);
+        for (NSString *name in self.manager.offlineNameArray) {
+            NSLog(@"离线请求的name:%@",name);
+        }
+        
+        NSLog(@"离线请求的url:%@",self.manager.offlineUrlArray);
+        NSLog(@"离线请求的url个数:%ld",self.manager.offlineUrlArray.count);
         NSLog(@"为保证栏目是最新的数据，请求列队都是重新请求。如果之前有缓存 下载会覆盖之前的缓存，所以覆盖的缓存文件数量是不增长的");
         
         //离线请求 apiType:ZBRequestTypeOffline
-        [self.manager offlineDownload:self.manager.offlineArray target:self apiType:ZBRequestTypeOffline];
+        [self.manager offlineDownload:self.manager.offlineUrlArray target:self apiType:ZBRequestTypeOffline];
         
     }
 }

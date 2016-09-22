@@ -24,7 +24,7 @@
 #import <UIKit/UIKit.h>
 @class ZBURLSessionManager;
 
-#define DEBUG_LOG 0
+#define DEBUG_LOG 1
 
 #if(DEBUG_LOG == 1)
 # define ZBLog(fmt, ...) NSLog((@"[函数名:%s]" " [第 %d 行]\n" fmt),  __FUNCTION__, __LINE__, ##__VA_ARGS__);
@@ -44,9 +44,15 @@
 @property ( nonatomic, strong) NSMutableDictionary *requestDic;
 
 /**
- *  离线下载栏目容器
+ *  离线下载栏目url容器
  */
-@property (nonatomic,strong) NSMutableArray *channelArray;
+@property (nonatomic,strong) NSMutableArray *channelUrlArray;
+
+/**
+ *  离线下载栏目名字容器
+ */
+@property (nonatomic,strong) NSMutableArray *channelNameArray;
+
 /**
  *  用于维护 请求头的request对象
  */
@@ -83,27 +89,50 @@
 - (void)removeHeaderForkey:(NSString *)key;
 
 /**
- 离线下载 是否添加请求列队
+  离线下载 判断栏目url 是否已添加到请求列队容器
  
  @param url 请求地址
  
  @return 1:0
  */
-- (BOOL)isAddForkey:(NSString *)url;
+- (BOOL)isAddForUrl:(NSString *)url;
 
 /**
- 离线下载 添加请求列队
+ 离线下载 将url 添加到请求列队
  
  @param url 请求地址
  */
-- (void)addObjectWithForkey:(NSString *)url;
+- (void)addObjectWithForUrl:(NSString *)url;
 
 /**
- 离线下载 删除请求列队
+ 离线下载 将url 从请求列队删除
  
  @param url 请求地址
  */
-- (void)removeObjectWithForkey:(NSString *)url;
+- (void)removeObjectWithForUrl:(NSString *)url;
+
+/**
+  离线下载 判断栏目名字 是否已添加到容器
+ 
+ @param url 请求地址
+ 
+ @return 1:0
+ */
+- (BOOL)isAddForName:(NSString *)name;
+
+/**
+ 离线下载 将栏目名字 添加到容器
+ 
+ @param url 请求地址
+ */
+- (void)addObjectWithForName:(NSString *)name;
+
+/**
+ 离线下载 将栏目名字 从容器删除
+ 
+ @param url 请求地址
+ */
+- (void)removeObjectWithForName:(NSString *)name;
 
 /**
  *

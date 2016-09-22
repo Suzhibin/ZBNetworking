@@ -44,7 +44,8 @@ static ZBRequestManager *RequestManager=nil;
     if (self) {
         _requestDic =[[NSMutableDictionary alloc] init];
         self.mutableHTTPRequestHeaders = [[NSMutableDictionary alloc]init];
-        self.channelArray=[[NSMutableArray alloc]init];
+        self.channelUrlArray=[[NSMutableArray alloc]init];
+        self.channelNameArray=[[NSMutableArray alloc]init];
     }
     return self;
 }
@@ -67,28 +68,54 @@ static ZBRequestManager *RequestManager=nil;
     
 }
 
-- (BOOL)isAddForkey:(NSString *)url
+- (BOOL)isAddForUrl:(NSString *)url
 {
-    return  [self.channelArray containsObject: url];
+    return  [self.channelUrlArray containsObject: url];
 }
 
-- (void)addObjectWithForkey:(NSString *)url
+- (void)addObjectWithForUrl:(NSString *)url
 {
-    if ([self isAddForkey:url]==1) {
-        ZBLog(@"已经包含该频道");
+    if ([self isAddForUrl:url]==1) {
+        ZBLog(@"已经包含该频道URL");
     }else{
-        [self.channelArray addObject:url];
+        [self.channelUrlArray addObject:url];
     }
     
 }
 
-- (void)removeObjectWithForkey:(NSString *)url
+- (void)removeObjectWithForUrl:(NSString *)url
 {
-    if ([self isAddForkey:url]==1) {
-        [self.channelArray removeObject:url];
+    if ([self isAddForUrl:url]==1) {
+        [self.channelUrlArray removeObject:url];
         
     }else{
-        ZBLog(@"已经删除该频道");
+        ZBLog(@"已经删除该频道URL");
+    }
+    
+}
+
+- (BOOL)isAddForName:(NSString *)name
+{
+    return  [self.channelNameArray containsObject: name];
+}
+
+- (void)addObjectWithForName:(NSString *)name
+{
+    if ([self isAddForName:name]==1) {
+        ZBLog(@"已经包含该频道名字");
+    }else{
+        [self.channelNameArray addObject:name];
+    }
+    
+}
+
+- (void)removeObjectWithForName:(NSString *)name
+{
+    if ([self isAddForName:name]==1) {
+        [self.channelNameArray removeObject:name];
+        
+    }else{
+        ZBLog(@"已经删除该频道名字");
     }
     
 }

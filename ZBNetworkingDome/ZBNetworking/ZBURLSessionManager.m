@@ -66,30 +66,52 @@ static const NSInteger timeOut = 60*60;
     });  
 }
 
-- (NSMutableArray *)offlineArray
+- (NSMutableArray *)offlineUrlArray
 {
-    return [NSMutableArray arrayWithArray:[ZBRequestManager shareManager].channelArray];
+    return [NSMutableArray arrayWithArray:[ZBRequestManager shareManager].channelUrlArray];
+}
+
+- (NSMutableArray *)offlineNameArray
+{
+    return [NSMutableArray arrayWithArray:[ZBRequestManager shareManager].channelNameArray];
 }
 
 - (BOOL)isAddUrl:(NSString *)url
 {
-    return [[ZBRequestManager shareManager]isAddForkey:url];
+    return [[ZBRequestManager shareManager]isAddForUrl:url];
 }
 
 - (void)addObjectWithUrl:(NSString *)url
 {
-    [[ZBRequestManager shareManager]addObjectWithForkey:url];
+    [[ZBRequestManager shareManager]addObjectWithForUrl:url];
 }
 
 - (void)removeObjectWithUrl:(NSString *)url
 {
-    [[ZBRequestManager shareManager]removeObjectWithForkey:url];
+    [[ZBRequestManager shareManager]removeObjectWithForUrl:url];
+}
+
+- (BOOL)isAddName:(NSString *)name
+{
+    return [[ZBRequestManager shareManager]isAddForName:name];
+}
+
+- (void)addObjectWithName:(NSString *)name
+{
+     [[ZBRequestManager shareManager]addObjectWithForName:name];
+}
+
+- (void)removeObjectWithName:(NSString *)name
+{
+    [[ZBRequestManager shareManager]removeObjectWithForName:name];
 }
 
 - (void)removeOfflineArray
 {
-    [self.offlineArray removeAllObjects];
-    [[ZBRequestManager shareManager].channelArray removeAllObjects];
+    [self.offlineUrlArray removeAllObjects];
+    [self.offlineNameArray removeAllObjects];
+    [[ZBRequestManager shareManager].channelUrlArray removeAllObjects];
+    [[ZBRequestManager shareManager].channelNameArray removeAllObjects];
 }
 
 #pragma  mark - 实例方法 请求
