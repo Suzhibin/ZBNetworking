@@ -77,10 +77,10 @@ typedef void(^ZBCacheManagerBlock)();
 - (BOOL)fileExistsAtPath:(NSString *)path;
 
 /**
- *  
- *  @param NSString fileName 用data对应的请求地址
+ *  查找存储的文件
+ *  @param NSString fileName 存储的文件
  *
- *  @return 根据请求的协议地址，返回data在本地的存储路径
+ *  @return 根据存储的文件，返回data在本地的存储路径
  */
 - (NSString *)pathWithfileName:(NSString *)key;
 
