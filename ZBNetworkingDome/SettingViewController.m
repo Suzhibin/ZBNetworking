@@ -53,7 +53,7 @@ typedef void(^failBlock)(NSError *error);
     if (indexPath.row==0) {
         cell.textLabel.text=@"清除缓存";
         
-        float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//数据缓存大小
+        float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
         float AppCacheSize=cacheSize+imageSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
@@ -64,7 +64,7 @@ typedef void(^failBlock)(NSError *error);
     if (indexPath.row==1) {
         cell.textLabel.text=@"缓存文件数量";
         
-        float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//缓存文件个数
+        float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
          float AppCacheCount=cacheCount+imageCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
@@ -139,7 +139,6 @@ typedef void(^failBlock)(NSError *error);
 
 - (void)progressSize:(double)size
 {
-    
     NSLog(@"图片下载进度%@",[self progressStrWithSize:size]);
     self.offlineView.progressLabel.text=[self progressStrWithSize:size];
     self.offlineView.pv.progress = size;
@@ -166,9 +165,8 @@ typedef void(^failBlock)(NSError *error);
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.delegate=self;
         _tableView.dataSource=self;
-       self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
-    //    [[UIApplication sharedApplication].keyWindow addSubview:headerView];
-         self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
+        self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+        self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
         [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
        _tableView.tableFooterView=self.offlineView;
         

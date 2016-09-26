@@ -35,7 +35,7 @@
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     
-    [self addItemWithTitle:@"清楚缓存" selector:@selector(btnClick) location:NO];
+    [self addItemWithTitle:@"设置" selector:@selector(btnClick) location:NO];
 
 }
 

@@ -66,18 +66,18 @@
             model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
             [self.imageArray addObject:model];
             
-            NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
+             //使用SDWebImage 下载图片
             
+            NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
             //如果sdwebImager 有这个图片 则不下载
             if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]) {
                 NSLog(@"已经下载了");
             } else{
-                //使用SDWebImage 下载图片
+               
                 SDWebImageOptions options = SDWebImageRetryFailed ;
                 [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:model.thumb] options:options progress:^(NSInteger receivedSize, NSInteger expectedSize){
                     
                     [self.delegate progressSize:(double)receivedSize/expectedSize];
-                    
                     
                 } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
                     
@@ -200,11 +200,6 @@
     }
 }
 
-- (NSString *)progressStrWithSize:(double)size
-{
-    NSString *progressStr = [NSString stringWithFormat:@"图片下载:%.1f",size* 100];
-    return  progressStr = [progressStr stringByAppendingString:@"%"];
-}
 //懒加载
 - (UITableView *)tableView
 {
