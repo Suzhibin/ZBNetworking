@@ -58,6 +58,51 @@ NSURLSession 网络请求的封装  添加了缓存功能，离线下载，显�
 ```objective-c
 [[ZBURLSessionManager shareManager] offlineDownload:[ZBURLSessionManager shareManager].offlineUrlArray target:self apiType:ZBRequestTypeOffline];
 
+  //如果是离线数据
+    if (request.apiType==ZBRequestTypeOffline) {
+        NSLog(@"添加了几个url  就会走几遍");
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+        NSArray *array=[dict objectForKey:@"videos"];
+        for (NSDictionary *dic in array) {
+            DetailsModel *model=[[DetailsModel alloc]init];
+            model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
+            [self.imageArray addObject:model];
+            
+             //使用SDWebImage 下载图片
+            NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
+            //如果sdwebImager 有这个图片 则不下载
+            if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]) {
+                NSLog(@"已经下载了");
+            } else{
+               
+                SDWebImageOptions options = SDWebImageRetryFailed ;
+                [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:model.thumb] options:options progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                    
+                    [self.delegate progressSize:(double)receivedSize/expectedSize];
+                    
+                } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
+                    
+                    NSLog(@"单个图片下载完成");
+                    [self.delegate progressSize:0.0];
+                    
+                    //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
+                    NSString *imageURLStr = [imageURL absoluteString];
+                    NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
+                    if ([imageURLStr isEqualToString:lastImage]) {
+                        NSLog(@"下载完成");
+                        [self.delegate Finished];
+                        
+                    }
+
+                }];
+
+            }
+            
+          
+        }
+    
+        
+    }
 ```
 6.其他操作
 ```objective-c
