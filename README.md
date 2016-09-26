@@ -8,19 +8,14 @@ NSURLSession 网络请求的封装  添加了缓存功能，离线下载，显�
 <ZBURLSessionDelegate>
 ```
 
-3.使用简单:  类方法一行调用   或   实例方法调用
+3.使用简单:  一行代码调用 
 ```objective-c
-//get请求方法 会默认创建缓存路径 
-  //1.类方法
-  [ZBURLSessionManager getRequestWithUrlString:URL target:self];
-  
- // 2.实例方法
-  ZBURLSessionManager *manager=[ZBURLSessionManager manager];
-  [manager getRequestWithUrlString:URL target:self];
-  
- // 实例方法还可以做其他操作 注意:要放在请求前
-  [manager setTimeoutInterval:10];//更改超时时间 
-  [manager setValue:@"my the apikey" forHTTPHeaderField:@"apikey"]//设置请求头
+//get请求方法 会默认创建缓存路径    
+  [[ZBURLSessionManager shareManager] getRequestWithUrlString:URL target:self];
+ 
+ // 还可以做其他操作 注意:要放在请求前
+  [[ZBURLSessionManager shareManager] setTimeoutInterval:10];//更改超时时间 
+  [[ZBURLSessionManager shareManager] setValue:@"my the apikey" forHTTPHeaderField:@"apikey"]//设置请求头
 
 ```
 
@@ -59,7 +54,12 @@ NSURLSession 网络请求的封装  添加了缓存功能，离线下载，显�
 
 }
 ```
-5.其他操作
+5.离线下载
+```objective-c
+[[ZBURLSessionManager shareManager] offlineDownload:[ZBURLSessionManager shareManager].offlineUrlArray target:self apiType:ZBRequestTypeOffline];
+
+```
+6.其他操作
 ```objective-c
 //显示缓存大小
  [[ZBCacheManager shareCacheManager]getCacheSize];
