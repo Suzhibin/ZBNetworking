@@ -18,18 +18,9 @@
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UIRefreshControl *refreshControl;
-@property (nonatomic,strong)ZBURLSessionManager *manager;
 @end
 
 @implementation HomeViewController
-
-- (ZBURLSessionManager *)manager
-{
-    if (!_manager) {
-        _manager = [ZBURLSessionManager manager];
-    }
-    return _manager;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -39,10 +30,7 @@
     /**
      *  默认缓存路径/Library/Caches/AppCache
      */
-    /**
-     *  实例方法
-     */
-    [self.manager getRequestWithUrlString:home_URL target:self];
+    [[ZBURLSessionManager shareManager]getRequestWithUrlString:home_URL target:self];
 
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
@@ -115,8 +103,9 @@
 - (void)timer{
     /**
      *  刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
+     *  请求下来的缓存会覆盖原有的缓存文件
      */
-   [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+   [[ZBURLSessionManager shareManager] getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
     
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     

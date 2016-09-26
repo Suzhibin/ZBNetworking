@@ -9,6 +9,7 @@
 #import "DetailViewController.h"
 #import "DetailsModel.h"
 #import "ZBNetworking.h"
+#import "UIImageView+WebCache.h"
 @interface DetailViewController ()<ZBURLSessionDelegate,UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
@@ -24,7 +25,7 @@
     1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
     2.系统的session.delegate 是retain的 手动取消 避免造成内存泄露.
      */
-    [[ZBRequestManager shareManager] requestToCancel:YES];
+    [[ZBURLSessionManager shareManager] requestToCancel:YES];
     
 }
 - (void)viewDidLoad {
@@ -36,13 +37,13 @@
     
     /**
      *  如果详情页面不想要缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
-     *  [ZBURLSessionManager getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
+     *  [[ZBURLSessionManager shareManager] getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
      */
     /**
      *  类方法
      */
-     [ZBURLSessionManager getRequestWithUrlString:_urlString target:self];
- 
+     [[ZBURLSessionManager shareManager] getRequestWithUrlString:_urlString target:self];
+
 }
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
@@ -57,6 +58,7 @@
         [_dataArray addObject:model];
         
     }
+    
     [self.view addSubview:self.tableView];
     [self.tableView reloadData];
     
@@ -108,7 +110,10 @@
     cell.textLabel.text=model.title;
     
     cell.detailTextLabel.text=[NSString stringWithFormat:@"发布时间:%@",model.date];
-    
+ 
+    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:model.thumb] placeholderImage:[UIImage imageNamed:@"h1.jpg"]];
+
+
     return cell;
 }
 

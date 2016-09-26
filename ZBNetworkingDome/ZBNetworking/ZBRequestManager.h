@@ -63,6 +63,9 @@
  */
 @property (nonatomic,copy) NSString *value;
 
+/**
+    返回单例对象
+ */
 +(ZBRequestManager *)shareManager;
 
 /**
@@ -89,50 +92,30 @@
 - (void)removeHeaderForkey:(NSString *)key;
 
 /**
-  离线下载 判断栏目url 是否已添加到请求列队容器
- 
- @param url 请求地址
- 
+ 离线下载 判断栏目url 或 其他参数 是否已添加到请求容器
+
+ @param key   请求地址 或 其他参数
+ @param isUrl 是否是url
+
  @return 1:0
  */
-- (BOOL)isAddForUrl:(NSString *)url;
+- (BOOL)isAddForKey:(NSString *)key isUrl:(BOOL)isUrl;
 
 /**
- 离线下载 将url 添加到请求列队
- 
- @param url 请求地址
+ 离线下载 将url 或 其他参数 添加到请求列队
+
+ @param key   请求地址 或 其他参数
+ @param isUrl 是否是url
  */
-- (void)addObjectWithForUrl:(NSString *)url;
+- (void)addObjectWithForKey:(NSString *)key isUrl:(BOOL)isUrl;
 
 /**
- 离线下载 将url 从请求列队删除
- 
- @param url 请求地址
- */
-- (void)removeObjectWithForUrl:(NSString *)url;
+ 离线下载 将url 或 其他参数 从请求列队删除
 
-/**
-  离线下载 判断栏目名字 是否已添加到容器
- 
- @param url 请求地址
- 
- @return 1:0
+ @param key   请求地址 或 其他参数
+ @param isUrl 是否是url
  */
-- (BOOL)isAddForName:(NSString *)name;
-
-/**
- 离线下载 将栏目名字 添加到容器
- 
- @param url 请求地址
- */
-- (void)addObjectWithForName:(NSString *)name;
-
-/**
- 离线下载 将栏目名字 从容器删除
- 
- @param url 请求地址
- */
-- (void)removeObjectWithForName:(NSString *)name;
+- (void)removeObjectWithForkey:(NSString *)key isUrl:(BOOL)isUrl;
 
 /**
  *
@@ -154,15 +137,6 @@
  *  @return  请求的协议地址
  */
 //- (void)clearDelegateForKey:(NSString *)key;
-
-
-/**
- *  请求会话管理,取消请求任务
- *  Invalidates the managed session, optionally canceling pending tasks.
- *
- *  @param cancelPendingTasks Whether or not to cancel pending tasks.
- */
-- (void)requestToCancel:(BOOL)cancelPendingTasks;
 
 
 

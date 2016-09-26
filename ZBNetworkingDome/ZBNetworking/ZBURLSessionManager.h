@@ -23,7 +23,7 @@
 @class ZBURLSessionManager;
 
 
-
+typedef void(^ZBURLSessionManagerBlock)();
 //用于标识不同类型的请求
 typedef NS_ENUM(NSInteger,apiType) {
     
@@ -32,6 +32,7 @@ typedef NS_ENUM(NSInteger,apiType) {
     ZBRequestTypeLoadMore,  //加载更多
     ZBRequestTypeDetail,    //详情
     ZBRequestTypeOffline,   //离线    （有缓存，不读取，重新请求）
+    ZBRequestTypeCustom     //自定义
 
 } ;
 
@@ -61,9 +62,6 @@ typedef NS_ENUM(NSInteger,apiType) {
 @property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 
 @property (nonatomic, strong) NSMutableURLRequest *request;
-
-@property (nonatomic, strong) void (^FinishedBlock)(ZBURLSessionManager *);
-@property (nonatomic, strong) void (^FailedBlock)(ZBURLSessionManager *);
 
 /**
  *  接口(请求地址)
@@ -113,6 +111,13 @@ typedef NS_ENUM(NSInteger,apiType) {
 + (instancetype)manager;
 
 /**
+ 返回单例对象
+
+ @return  “ZBURLSessionManager”对象
+ */
++ (ZBURLSessionManager *)shareManager;
+
+/**
  *  设置请求头 请在请求前使用该方法 如果在请求后使用 则不会起作用。
  *  Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
  *
@@ -132,6 +137,14 @@ typedef NS_ENUM(NSInteger,apiType) {
 - (NSString *)valueForHTTPHeaderField:(NSString *)field;
 
 /**
+ *  请求会话管理,取消请求任务
+ *  Invalidates the managed session, optionally canceling pending tasks.
+ *
+ *  @param cancelPendingTasks Whether or not to cancel pending tasks.
+ */
+- (void)requestToCancel:(BOOL)cancelPendingTasks;
+
+/**
  *  离线下载 请求方法
  *
  *  @param DownloadArray 请求列队
@@ -139,6 +152,16 @@ typedef NS_ENUM(NSInteger,apiType) {
  *   @param type         用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
  */
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+
+/**
+ 离线下载 请求方法
+
+ @param downloadArray 请求列队
+ @param delegate      代理  传实现协议的对象
+ @param type          用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
+ @param operation     block 回调
+ */
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type operation:(ZBURLSessionManagerBlock)operation;
 
 /**
   离线下载 判断栏目url 是否已添加到请求列队容器
@@ -218,7 +241,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param delegate      代理 传实现协议的对象
  *
  */
-- (void)postRequestWithUrlString:(NSString *)requestString dict:(NSDictionary*)dict target:(id<ZBURLSessionDelegate>)delegate;
+- (void)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
 
 /**
  *  get请求
@@ -247,7 +270,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param delegate      代理 传实现协议的对象
  *
  */
-+(ZBURLSessionManager *)postRequestWithUrlString:(NSString *)requestString dict:(NSDictionary*)dict target:(id<ZBURLSessionDelegate>)delegate;
++(ZBURLSessionManager *)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
 
 
 

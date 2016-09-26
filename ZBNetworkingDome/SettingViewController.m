@@ -9,23 +9,21 @@
 #import "SettingViewController.h"
 #import "ZBNetworking.h"
 #import "offlineDownloadViewController.h"
+#import "SDImageCache.h"
+#import "SDWebImageManager.h"
+#import "OfflineView.h"
 typedef void(^SuccessBlock)(id object , NSURLResponse *response);
 typedef void(^failBlock)(NSError *error);
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
 
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)UITableView *tableView;
-@property (nonatomic,strong)ZBURLSessionManager *manager;
+@property (nonatomic,strong)OfflineView *offlineView;
+
 @end
 
 @implementation SettingViewController
-- (ZBURLSessionManager *)manager
-{
-    if (!_manager) {
-        _manager = [ZBURLSessionManager manager];
-    }
-    return _manager;
-}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -37,6 +35,8 @@ typedef void(^failBlock)(NSError *error);
     self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
     
     [self.view addSubview:self.tableView];
+    
+
 
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -53,18 +53,21 @@ typedef void(^failBlock)(NSError *error);
     if (indexPath.row==0) {
         cell.textLabel.text=@"清除缓存";
         
-        float size=[[ZBCacheManager shareCacheManager]getCacheSize];
-        size=size/1000.0/1000.0;
+        float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//数据缓存大小
+        float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
+        float AppCacheSize=cacheSize+imageSize;
+        AppCacheSize=AppCacheSize/1000.0/1000.0;
   
-        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",size];
+        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",AppCacheSize];
 
     }
     if (indexPath.row==1) {
         cell.textLabel.text=@"缓存文件数量";
         
-        float count=[[ZBCacheManager shareCacheManager]getCacheCount];
-        
-        cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
+        float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//缓存文件个数
+        float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
+         float AppCacheCount=cacheCount+imageCount;
+        cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
     }
 
@@ -89,6 +92,7 @@ typedef void(^failBlock)(NSError *error);
     if (indexPath.row==4) {
         cell.textLabel.text=@"离线下载";
          cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+    
     }
     
     return cell;
@@ -104,6 +108,9 @@ typedef void(^failBlock)(NSError *error);
         
         //清除缓存
         [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
+            //清除图片缓存
+            [[SDImageCache sharedImageCache] clearDisk];
+            [[SDImageCache sharedImageCache] clearMemory];
             
             [self.tableView reloadData];
             
@@ -120,7 +127,7 @@ typedef void(^failBlock)(NSError *error);
         }];
     }
     if (indexPath.row==4) {
-
+       
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;
         [self.navigationController pushViewController:offlineVC animated:YES];
@@ -129,14 +136,27 @@ typedef void(^failBlock)(NSError *error);
     
 }
 #pragma mark offlineDelegate
-- (void)refreshSize
-{
 
+- (void)progressSize:(double)size
+{
+    
+    NSLog(@"图片下载进度%@",[self progressStrWithSize:size]);
+    self.offlineView.progressLabel.text=[self progressStrWithSize:size];
+    self.offlineView.pv.progress = size;
     [self.tableView reloadData];
-  
+}
+- (void)Finished
+{
+    [self alertTitle:@"下载完成" andMessage:@""];
+    NSLog(@"下载已完成");
 }
 
-
+- (void)cancelClick
+{
+    [[ZBURLSessionManager shareManager] requestToCancel:YES];
+    [[SDWebImageManager sharedManager] cancelAll];
+    NSLog(@"取消下载");
+}
 
 //懒加载
 - (UITableView *)tableView
@@ -146,13 +166,22 @@ typedef void(^failBlock)(NSError *error);
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.delegate=self;
         _tableView.dataSource=self;
-        _tableView.tableFooterView=[[UIView alloc]init];
+       self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+    //    [[UIApplication sharedApplication].keyWindow addSubview:headerView];
+         self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
+        [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
+       _tableView.tableFooterView=self.offlineView;
         
     }
     
     return _tableView;
 }
 
+- (NSString *)progressStrWithSize:(double)size
+{
+    NSString *progressStr = [NSString stringWithFormat:@"图片下载:%.1f",size* 100];
+    return  progressStr = [progressStr stringByAppendingString:@"%"];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

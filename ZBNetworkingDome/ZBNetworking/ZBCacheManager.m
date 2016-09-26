@@ -22,13 +22,14 @@
 #import <CommonCrypto/CommonDigest.h>
 
 NSString *const PathDefault =@"AppCache";
+NSString *const PathImager =@"ImageCache";
 static const NSInteger cacheMaxCacheAge  = 60*60*24*7;
 static const CGFloat unit = 1000.0;
 //static NSInteger cacheMixCacheAge = 60;
 @interface ZBCacheManager ()
 
 @property (nonatomic ,copy)NSString *diskCachePath;
-
+@property (nonatomic ,copy)NSString *imageCachePath;
 @end
 
 static ZBCacheManager *Cachemanager=nil;
@@ -49,7 +50,7 @@ static ZBCacheManager *Cachemanager=nil;
     if (self) {
         
         [self initCachesfileWithName:PathDefault];
-    
+      
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -87,13 +88,22 @@ static ZBCacheManager *Cachemanager=nil;
     
     self.diskCachePath = [NSString stringWithFormat:@"%@/%@", caches,name];
 
-    if (![[NSFileManager defaultManager] fileExistsAtPath:self.diskCachePath]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:self.diskCachePath withIntermediateDirectories:YES attributes:nil error:nil];
-        
+    [self createDirectoryAtPath:self.diskCachePath];
+}
+- (void)createDirectoryAtPath:(NSString *)path
+{
+    if (![self fileExistsAtPath:path]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
     } else {
         // NSLog(@"FileDir is exists.");
     }
 }
+
+- (BOOL)fileExistsAtPath:(NSString *)path
+{
+  return  [[NSFileManager defaultManager] fileExistsAtPath:path];
+}
+
 #pragma  mark - 存储
 - (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path
 {
@@ -275,7 +285,7 @@ static ZBCacheManager *Cachemanager=nil;
 
             //[self clearDiskWithpath:self.diskCachePath];
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
-        [[NSFileManager defaultManager] createDirectoryAtPath:self.diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
+        [self createDirectoryAtPath:self.diskCachePath];
         
         if (operation) {
             dispatch_sync(dispatch_get_main_queue(),^{

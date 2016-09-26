@@ -24,7 +24,16 @@
 #import "NSFileManager+pathMethod.h"
 #import "ZBCacheManager.h"
 static const NSInteger timeOut = 60*60;
+  static ZBURLSessionManager *sessionManager=nil;
 @implementation ZBURLSessionManager
+
++ (ZBURLSessionManager *)shareManager {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sessionManager = [[ZBURLSessionManager alloc] init];
+    });
+    return sessionManager;
+}
 
 - (id)init{
     self = [super init];
@@ -42,29 +51,7 @@ static const NSInteger timeOut = 60*60;
     return [[[self class] alloc] init];
 }
 
-#pragma mark block 请求 （暂时无用）
-- (void)get:(NSString *)requestString apiType:(apiType)type completion:(void (^)(ZBURLSessionManager *))finished completion:(void (^)(ZBURLSessionManager *))Failed
-{
-    self.FinishedBlock = finished;
-    self.FailedBlock = Failed;
-    // [ZBURLSessionManager getRequestWithUrlString:requestString target:nil];
-    [ZBURLSessionManager getRequestWithUrlString:requestString target:nil apiType:type];
-    
-}
 #pragma mark - 离线下载
-- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
-{
-    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
-    
-        for (NSString *urlStr in downloadArray) {
-            
-            [ZBURLSessionManager getRequestWithUrlString:urlStr target:delegate apiType:type];
-        }
-        
-        [self removeOfflineArray];
-        
-    });  
-}
 
 - (NSMutableArray *)offlineUrlArray
 {
@@ -76,34 +63,60 @@ static const NSInteger timeOut = 60*60;
     return [NSMutableArray arrayWithArray:[ZBRequestManager shareManager].channelNameArray];
 }
 
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
+{
+    [self offlineDownload:downloadArray target:delegate apiType:type operation:nil];
+}
+
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type operation:(ZBURLSessionManagerBlock)operation
+{
+    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+    
+        for (NSString *urlStr in downloadArray) {
+            
+            [self getRequestWithUrlString:urlStr target:delegate apiType:type];
+        }
+        
+        if (operation) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                operation();
+            });
+            
+        }
+        
+    });  
+}
+
 - (BOOL)isAddUrl:(NSString *)url
 {
-    return [[ZBRequestManager shareManager]isAddForUrl:url];
+    return [[ZBRequestManager shareManager]isAddForKey:url isUrl:YES];
 }
 
 - (void)addObjectWithUrl:(NSString *)url
 {
-    [[ZBRequestManager shareManager]addObjectWithForUrl:url];
+    [[ZBRequestManager shareManager]addObjectWithForKey:url isUrl:YES];
 }
 
 - (void)removeObjectWithUrl:(NSString *)url
 {
-    [[ZBRequestManager shareManager]removeObjectWithForUrl:url];
+    [[ZBRequestManager shareManager]removeObjectWithForkey:url isUrl:YES];
 }
 
 - (BOOL)isAddName:(NSString *)name
 {
-    return [[ZBRequestManager shareManager]isAddForName:name];
+    return [[ZBRequestManager shareManager]isAddForKey:name isUrl:NO];
 }
 
 - (void)addObjectWithName:(NSString *)name
 {
-     [[ZBRequestManager shareManager]addObjectWithForName:name];
+     [[ZBRequestManager shareManager]addObjectWithForKey:name isUrl:NO];
 }
 
 - (void)removeObjectWithName:(NSString *)name
 {
-    [[ZBRequestManager shareManager]removeObjectWithForName:name];
+    [[ZBRequestManager shareManager]removeObjectWithForkey:name isUrl:NO];
 }
 
 - (void)removeOfflineArray
@@ -112,12 +125,13 @@ static const NSInteger timeOut = 60*60;
     [self.offlineNameArray removeAllObjects];
     [[ZBRequestManager shareManager].channelUrlArray removeAllObjects];
     [[ZBRequestManager shareManager].channelNameArray removeAllObjects];
+    ZBLog(@"清空容器");
 }
 
-#pragma  mark - 实例方法 请求
--(void)postRequestWithUrlString:(NSString *)requestString dict:(NSDictionary*)dict target:(id<ZBURLSessionDelegate>)delegate
+#pragma  mark -  请求
+-(void)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate
 {
-    [ZBURLSessionManager postRequestWithUrlString:requestString dict:dict target:delegate];
+    [ZBURLSessionManager postRequestWithUrlString:requestString parameters:parameters target:delegate];
 }
 
 - (void)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate
@@ -125,18 +139,22 @@ static const NSInteger timeOut = 60*60;
     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate];
 }
 
+- (void)getRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate
+{
+    
+}
+
 - (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:type];
 }
 
-#pragma  mark - 类方法 请求
-+(ZBURLSessionManager *)postRequestWithUrlString:(NSString *)requestString dict:(NSDictionary*)dict target:(id<ZBURLSessionDelegate>)delegate
++(ZBURLSessionManager *)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate
 {
     ZBURLSessionManager *request = [[ZBURLSessionManager alloc] init];
     request.requestString = requestString;
     request.delegate = delegate;
-    [request downloadFromdict:dict];
+    [request postStartRequestWithParameters:parameters];
     return  request;
     
 }
@@ -155,8 +173,8 @@ static const NSInteger timeOut = 60*60;
     request.apiType = type;
        
      NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:requestString];
-
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
+    
+    if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
     
@@ -167,22 +185,20 @@ static const NSInteger timeOut = 60*60;
             [request.delegate urlRequestFinished:request];
         }
         
-        if (request.FinishedBlock) {
-            request.FinishedBlock(request);
-        }
         return request;
         
     }else{
 
-        [request startRequest];
+        [request getStartRequest];
        
     }
-
+ 
     [[ZBRequestManager shareManager] setRequestObject:request forkey:requestString];
+    
+   
     
     return request;
 }
-
 
 #pragma mark - NSURLSessionDelegate
 
@@ -218,12 +234,11 @@ static const NSInteger timeOut = 60*60;
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self];
         }
-        if (self.FinishedBlock) {
-            self.FinishedBlock(self);
-        }
-
+    
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
-       
+        
+        [self requestToCancel:NO];
+        
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
     }else{
@@ -235,9 +250,6 @@ static const NSInteger timeOut = 60*60;
         if ([_delegate respondsToSelector:@selector(urlRequestFailed:)]) {
             [_delegate urlRequestFailed:self];
         }
-        if (self.FailedBlock) {
-            self.FailedBlock(self);
-        }
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
@@ -248,7 +260,7 @@ static const NSInteger timeOut = 60*60;
 - (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field
 {
     if (value) {
-        
+        [ZBRequestManager shareManager].mutableHTTPRequestHeaders = [[NSMutableDictionary alloc]init];
         [ZBRequestManager shareManager].value =value;
         [[ZBRequestManager shareManager] setValue:value forHeaderField:field ];
     }
@@ -279,10 +291,25 @@ static const NSInteger timeOut = 60*60;
     return _session;
 }
 
+- (void)requestToCancel:(BOOL)cancelPendingTasks{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if (cancelPendingTasks) {
+            
+            [self.session invalidateAndCancel];
+        } else {
+            
+            [self.session finishTasksAndInvalidate];
+        }
+        
+    });
+}
+
 #pragma mark - get Request
-- (void)startRequest
+- (void)getStartRequest
 {
-     ZBLog(@"start Request");
+     ZBLog(@"get start Request");
     
     NSString *string = [self.requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -314,7 +341,9 @@ static const NSInteger timeOut = 60*60;
 
 
 #pragma mark - post Request
-- (void)downloadFromdict:(NSDictionary *)dict;{
+- (void)postStartRequestWithParameters:(NSDictionary *)parameters;{
+    
+     ZBLog(@"start Request POST");
     
     NSString *string = [_requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -341,8 +370,8 @@ static const NSInteger timeOut = 60*60;
     
     NSMutableArray *array = [[NSMutableArray alloc] init];
     
-    for (NSString *key in dict) {
-        id obj = [dict objectForKey:key];
+    for (NSString *key in parameters) {
+        id obj = [parameters objectForKey:key];
         NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
         [array addObject:str];
     }

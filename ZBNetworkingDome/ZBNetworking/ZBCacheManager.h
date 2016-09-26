@@ -68,6 +68,15 @@ typedef void(^ZBCacheManagerBlock)();
 - (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path;
 
 /**
+ 判断沙盒是否对应的值
+
+ @param path 路径
+
+ @return YES NO
+ */
+- (BOOL)fileExistsAtPath:(NSString *)path;
+
+/**
  *  
  *  @param NSString fileName 用data对应的请求地址
  *
@@ -175,7 +184,10 @@ typedef void(^ZBCacheManagerBlock)();
  */
 FOUNDATION_EXPORT NSString * const PathDefault;
 
-
+/**
+ Posted when a task name.
+ */
+FOUNDATION_EXPORT NSString *const PathImager;
 @end
 
 

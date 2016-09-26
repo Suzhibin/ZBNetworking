@@ -9,13 +9,8 @@
 #import "RootViewController.h"
 @protocol offlineDelegate <NSObject>
 
-/**
- *  数据请求成功调用的方法
- *
- *  @param request
- */
-- (void)refreshSize;
-
+- (void)Finished;
+- (void)progressSize:(double)size;
 
 @end
 

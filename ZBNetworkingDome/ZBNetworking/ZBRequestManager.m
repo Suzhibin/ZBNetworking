@@ -22,7 +22,7 @@
 #import "ZBURLSessionManager.h"
 #import "ZBCacheManager.h"
 
-static ZBRequestManager *RequestManager=nil;
+static ZBRequestManager *requestManager=nil;
 
 @implementation ZBRequestManager{
 
@@ -33,9 +33,9 @@ static ZBRequestManager *RequestManager=nil;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        RequestManager = [[ZBRequestManager alloc] init];
+        requestManager = [[ZBRequestManager alloc] init];
     });
-    return RequestManager;
+    return requestManager;
 }
 
 
@@ -43,81 +43,74 @@ static ZBRequestManager *RequestManager=nil;
     self = [super init];
     if (self) {
         _requestDic =[[NSMutableDictionary alloc] init];
-        self.mutableHTTPRequestHeaders = [[NSMutableDictionary alloc]init];
         self.channelUrlArray=[[NSMutableArray alloc]init];
         self.channelNameArray=[[NSMutableArray alloc]init];
+    
     }
     return self;
 }
 
-- (void)setValue:(NSString *)value forHeaderField:(NSString *)field
-{
+- (void)setValue:(NSString *)value forHeaderField:(NSString *)field{
     [self.mutableHTTPRequestHeaders setValue:value forKey:field];
 }
 
 - (NSString *)objectHeaderForKey:(NSString *)key{
-    
     return  [self.mutableHTTPRequestHeaders objectForKey:key];
-    
 }
 
 - (void)removeHeaderForkey:(NSString *)key{
-    
     if(!key)return;
     [self.mutableHTTPRequestHeaders removeObjectForKey:key];
-    
 }
 
-- (BOOL)isAddForUrl:(NSString *)url
-{
-    return  [self.channelUrlArray containsObject: url];
-}
-
-- (void)addObjectWithForUrl:(NSString *)url
-{
-    if ([self isAddForUrl:url]==1) {
-        ZBLog(@"已经包含该频道URL");
+- (BOOL)isAddForKey:(NSString *)key isUrl:(BOOL)isUrl{
+   
+    if (isUrl==YES) {
+        return  [self.channelUrlArray containsObject: key];
     }else{
-        [self.channelUrlArray addObject:url];
+        return  [self.channelNameArray containsObject: key];
+    }
+}
+
+- (void)addObjectWithForKey:(NSString *)key isUrl:(BOOL)isUrl{
+    if (isUrl==YES) {
+       
+        if ([self isAddForKey:key isUrl:isUrl]==1) {
+            ZBLog(@"已经包含该栏目URL");
+        }else{
+            [self.channelUrlArray addObject:key];
+        }
+
+    }else{
+       
+        if ([self isAddForKey:key isUrl:isUrl]==1) {
+            ZBLog(@"已经包含该栏目名字");
+        }else{
+            [self.channelNameArray addObject:key];
+        }
+
     }
     
 }
 
-- (void)removeObjectWithForUrl:(NSString *)url
-{
-    if ([self isAddForUrl:url]==1) {
-        [self.channelUrlArray removeObject:url];
-        
-    }else{
-        ZBLog(@"已经删除该频道URL");
-    }
-    
-}
+- (void)removeObjectWithForkey:(NSString *)key isUrl:(BOOL)isUrl{
+    if (isUrl==YES) {
+         if ([self isAddForKey:key isUrl:isUrl]==1) {
+            [self.channelUrlArray removeObject:key];
+            
+        }else{
+            ZBLog(@"已经删除该栏目URL");
+        }
 
-- (BOOL)isAddForName:(NSString *)name
-{
-    return  [self.channelNameArray containsObject: name];
-}
-
-- (void)addObjectWithForName:(NSString *)name
-{
-    if ([self isAddForName:name]==1) {
-        ZBLog(@"已经包含该频道名字");
     }else{
-        [self.channelNameArray addObject:name];
-    }
     
-}
-
-- (void)removeObjectWithForName:(NSString *)name
-{
-    if ([self isAddForName:name]==1) {
-        [self.channelNameArray removeObject:name];
-        
-    }else{
-        ZBLog(@"已经删除该频道名字");
+        if ([self isAddForKey:key isUrl:isUrl]==1) {
+            [self.channelNameArray removeObject:key];
+            
+        }else{
+            ZBLog(@"已经删除该栏目名字");
+        }
     }
-    
 }
 
 - (void)setRequestObject:(id)obj forkey:(NSString *)key{
@@ -140,20 +133,6 @@ static ZBRequestManager *RequestManager=nil;
     self.manager.delegate = nil;
 }
 
-- (void)requestToCancel:(BOOL)cancelPendingTasks
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        if (cancelPendingTasks) {
-         
-            [self.manager.session invalidateAndCancel];
-        } else {
-            
-            [self.manager.session finishTasksAndInvalidate];
-        }
-
-    });
-}
 
 
 
