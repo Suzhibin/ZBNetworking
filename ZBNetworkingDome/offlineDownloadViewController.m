@@ -33,7 +33,7 @@
    
     NSLog(@"离开页面时 清空容器");
     [self.manager removeOfflineArray];
- 
+    
 }
 
 - (void)viewDidLoad {

@@ -139,11 +139,6 @@ static const NSInteger timeOut = 60*60;
     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate];
 }
 
-- (void)getRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate
-{
-    
-}
-
 - (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
 {
     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:type];
