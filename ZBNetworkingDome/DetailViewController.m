@@ -39,9 +39,7 @@
      *  如果详情页面不想要缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      *  [[ZBURLSessionManager shareManager] getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
      */
-    /**
-     *  类方法
-     */
+
      [[ZBURLSessionManager shareManager] getRequestWithUrlString:_urlString target:self];
 
 }
