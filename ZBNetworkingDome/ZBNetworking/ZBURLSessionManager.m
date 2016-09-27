@@ -231,6 +231,8 @@ static const NSInteger timeOut = 60*60;
     
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
         
+        [self requestToCancel:NO];
+        
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
     }else{

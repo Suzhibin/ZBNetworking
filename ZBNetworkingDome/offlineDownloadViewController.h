@@ -9,9 +9,7 @@
 #import "RootViewController.h"
 @protocol offlineDelegate <NSObject>
 
-- (void)Finished;
-- (void)progressSize:(double)size;
-
+- (void)downloadWithArray:(NSMutableArray *)offlineArray;
 @end
 
 @interface offlineDownloadViewController : RootViewController

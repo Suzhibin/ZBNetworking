@@ -12,4 +12,7 @@
 @property (nonatomic,strong)UIProgressView *pv;
 @property (nonatomic,strong)UILabel *progressLabel;
 @property (nonatomic,strong)UIButton *cancelButton;
+@property (nonatomic,strong)UIView *bjView;
+
+- (void)hide;
 @end

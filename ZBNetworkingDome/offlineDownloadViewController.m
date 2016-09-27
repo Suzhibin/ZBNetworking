@@ -9,8 +9,7 @@
 #import "offlineDownloadViewController.h"
 #import "ZBNetworking.h"
 #import "RootModel.h"
-#import "DetailsModel.h"
-#import "SDWebImageManager.h"
+
 @interface offlineDownloadViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLSessionDelegate>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)UIProgressView *pv;
@@ -18,7 +17,7 @@
 @property (nonatomic,strong)UILabel *nameLabel;
 
 @property (nonatomic,strong)NSMutableArray *dataArray;
-@property (nonatomic,strong)NSMutableArray *imageArray;
+
 @property (nonatomic,strong)ZBURLSessionManager *manager;
 
 @end
@@ -30,11 +29,11 @@
     return [ZBURLSessionManager shareManager];
     
 }
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
    
-    NSLog(@"离开页面时 清空容器");
+    NSLog(@"页面要出来时 清空容器");
     [self.manager removeOfflineArray];
     
 }
@@ -43,8 +42,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.dataArray=[[NSMutableArray alloc]init];
-    self.imageArray=[[NSMutableArray array]init];
-    
+ 
     //创建单例
      self.manager=[self session];
     
@@ -59,71 +57,20 @@
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
-    //如果是离线数据
-    if (request.apiType==ZBRequestTypeOffline) {
-        NSLog(@"添加了几个url  就会走几遍");
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
-        NSArray *array=[dict objectForKey:@"videos"];
-        NSLog(@"%@",array);
-        for (NSDictionary *dic in array) {
-            DetailsModel *model=[[DetailsModel alloc]init];
-            model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
-            [self.imageArray addObject:model];
-            
-             //使用SDWebImage 下载图片
-            
-            NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
-            //如果sdwebImage 有这个图片 则不下载
-            if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]) {
-                NSLog(@"已经下载了");
-            } else{
-               
-                SDWebImageOptions options = SDWebImageRetryFailed ;
-                [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:model.thumb] options:options progress:^(NSInteger receivedSize, NSInteger expectedSize){
-                    
-                    [self.delegate progressSize:(double)receivedSize/expectedSize];
-                    
-                } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
-                    
-                    NSLog(@"单个图片下载完成");
-                    [self.delegate progressSize:0.0];
-                    
-                    //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
-                    NSString *imageURLStr = [imageURL absoluteString];
-                    NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
-                    if ([imageURLStr isEqualToString:lastImage]) {
-                        NSLog(@"下载完成");
-                        [self.delegate Finished];
-                        
-                    }
-                    if (error) {
-                        NSLog(@"下载失败");
-                    }
-                }];
 
-            }
-            
-          
-        }
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
     
-        
-    }else{
-      //home_URL
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
-        
-        NSArray *array=[dict objectForKey:@"authors"];
-        
-        for (NSDictionary *dic in array) {
-            RootModel *model=[[RootModel alloc]init];
-            model.name=[dic objectForKey:@"name"];
-            model.wid=[dic objectForKey:@"id"];
-            [self.dataArray addObject:model];
-            
-        }
-        [_tableView reloadData];
+    NSArray *array=[dict objectForKey:@"authors"];
     
-      }
-
+    for (NSDictionary *dic in array) {
+        RootModel *model=[[RootModel alloc]init];
+        model.name=[dic objectForKey:@"name"];
+        model.wid=[dic objectForKey:@"id"];
+        [self.dataArray addObject:model];
+        
+    }
+    [_tableView reloadData];
+    
 }
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
@@ -195,14 +142,11 @@
         
         NSLog(@"离线请求的url:%@",self.manager.offlineUrlArray);
         NSLog(@"离线请求的栏目/url个数:%lu",self.manager.offlineUrlArray.count);
-  
-        //离线请求 apiType:ZBRequestTypeOffline
-        [self.manager offlineDownload:self.manager.offlineUrlArray target:self apiType:ZBRequestTypeOffline operation:^{
-          
-            [self.navigationController popViewControllerAnimated:YES];
-        }];
+
+        [self.delegate downloadWithArray:self.manager.offlineUrlArray];
         
-        
+        [self.navigationController popViewControllerAnimated:YES];
+
     }
 }
 

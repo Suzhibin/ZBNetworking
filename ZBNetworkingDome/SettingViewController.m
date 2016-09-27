@@ -12,11 +12,13 @@
 #import "SDImageCache.h"
 #import "SDWebImageManager.h"
 #import "OfflineView.h"
-typedef void(^SuccessBlock)(id object , NSURLResponse *response);
-typedef void(^failBlock)(NSError *error);
-@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
+#import "DetailsModel.h"
+#import "SDWebImageManager.h"
+
+@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate>
 
 @property (nonatomic,copy)NSString *path;
+@property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)OfflineView *offlineView;
 
@@ -27,7 +29,7 @@ typedef void(^failBlock)(NSError *error);
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.imageArray=[[NSMutableArray array]init];
     //得到沙盒cache文件夹
     NSString *cachePath= [[ZBCacheManager shareCacheManager]getCachesDirectory];
     NSString *Snapshots=@"Snapshots";
@@ -35,7 +37,6 @@ typedef void(^failBlock)(NSError *error);
     self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
     
     [self.view addSubview:self.tableView];
-    
 
 
 }
@@ -136,24 +137,95 @@ typedef void(^failBlock)(NSError *error);
     
 }
 #pragma mark offlineDelegate
+- (void)downloadWithArray:(NSMutableArray *)offlineArray
+{        //离线请求 apiType:ZBRequestTypeOffline
+    [[ZBURLSessionManager shareManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
+    
+    self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
+    self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
+    [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.offlineView];
+}
 
-- (void)progressSize:(double)size
+#pragma mark - ZBURLSessionManager Delegate
+- (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
-    NSLog(@"图片下载进度%@",[self progressStrWithSize:size]);
-    self.offlineView.progressLabel.text=[self progressStrWithSize:size];
-    self.offlineView.pv.progress = size;
-    [self.tableView reloadData];
+    //如果是离线数据
+    if (request.apiType==ZBRequestTypeOffline) {
+        NSLog(@"添加了几个url  就会走几遍");
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+        NSArray *array=[dict objectForKey:@"videos"];
+        for (NSDictionary *dic in array) {
+            DetailsModel *model=[[DetailsModel alloc]init];
+            model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
+            [self.imageArray addObject:model];
+            
+            //使用SDWebImage 下载图片
+            
+            NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
+            //如果sdwebImage 有这个图片 则不下载
+            if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]) {
+                NSLog(@"已经下载了");
+            } else{
+             
+                SDWebImageOptions options = SDWebImageRetryFailed ;
+                [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:model.thumb] options:options progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                    
+                     NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
+                    self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
+                    self.offlineView.pv.progress =(double)receivedSize/expectedSize;
+                    
+                    [self.tableView reloadData];
+                    
+                } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
+                
+                    NSLog(@"单个图片下载完成");
+                    self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
+                    
+                    self.offlineView.pv.progress = 0.0;
+                    
+                    [self.tableView reloadData];
+                    
+                    //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
+                    NSString *imageURLStr = [imageURL absoluteString];
+                    NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
+                    if ([imageURLStr isEqualToString:lastImage]) {
+                        NSLog(@"下载完成");
+                        [self alertTitle:@"下载完成" andMessage:@""];
+                        [self.offlineView hide];
+                       
+                    }
+                    if (error) {
+                        NSLog(@"下载失败");
+                    }
+                }];
+                
+            }
+            
+            
+        }
+        
+        
+    }
 }
-- (void)Finished
+- (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
-    [self alertTitle:@"下载完成" andMessage:@""];
-    NSLog(@"下载已完成");
+    if (request.error.code==NSURLErrorCancelled)return;
+    if (request.error.code==NSURLErrorTimedOut) {
+        
+        [self alertTitle:@"请求超时" andMessage:@""];
+    }else{
+        
+        [self alertTitle:@"请求失败" andMessage:@""];
+    }
 }
+
 
 - (void)cancelClick
 {
     [[ZBURLSessionManager shareManager] requestToCancel:YES];
     [[SDWebImageManager sharedManager] cancelAll];
+    [self.offlineView hide];
     NSLog(@"取消下载");
 }
 
@@ -165,10 +237,8 @@ typedef void(^failBlock)(NSError *error);
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.delegate=self;
         _tableView.dataSource=self;
-        self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
-        self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
-        [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
-       _tableView.tableFooterView=self.offlineView;
+
+      // _tableView.tableFooterView=self.offlineView;
         
     }
     
