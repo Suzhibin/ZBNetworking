@@ -237,8 +237,7 @@
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.delegate=self;
         _tableView.dataSource=self;
-
-      // _tableView.tableFooterView=self.offlineView;
+        _tableView.tableFooterView=[[UIView alloc]init];
         
     }
     
