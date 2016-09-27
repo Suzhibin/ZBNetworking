@@ -138,11 +138,11 @@
 }
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray
-{        //离线请求 apiType:ZBRequestTypeOffline
+{
+    //离线请求 apiType:ZBRequestTypeOffline
     [[ZBURLSessionManager shareManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
     
     self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
-    self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
     [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:self.offlineView];
 }
