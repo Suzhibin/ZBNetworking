@@ -24,8 +24,11 @@
 @end
 
 @implementation offlineDownloadViewController
+
 - (ZBURLSessionManager *)session {
+    
     return [ZBURLSessionManager shareManager];
+    
 }
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -61,6 +64,7 @@
         NSLog(@"添加了几个url  就会走几遍");
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
         NSArray *array=[dict objectForKey:@"videos"];
+        NSLog(@"%@",array);
         for (NSDictionary *dic in array) {
             DetailsModel *model=[[DetailsModel alloc]init];
             model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
@@ -69,7 +73,7 @@
              //使用SDWebImage 下载图片
             
             NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
-            //如果sdwebImager 有这个图片 则不下载
+            //如果sdwebImage 有这个图片 则不下载
             if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]) {
                 NSLog(@"已经下载了");
             } else{
@@ -92,7 +96,9 @@
                         [self.delegate Finished];
                         
                     }
-
+                    if (error) {
+                        NSLog(@"下载失败");
+                    }
                 }];
 
             }

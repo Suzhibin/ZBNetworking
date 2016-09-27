@@ -73,7 +73,7 @@ static const NSInteger timeOut = 60*60;
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
     
         for (NSString *urlStr in downloadArray) {
-            
+    
             [self getRequestWithUrlString:urlStr target:delegate apiType:type];
         }
         
@@ -125,7 +125,6 @@ static const NSInteger timeOut = 60*60;
     [self.offlineNameArray removeAllObjects];
     [[ZBRequestManager shareManager].channelUrlArray removeAllObjects];
     [[ZBRequestManager shareManager].channelNameArray removeAllObjects];
-    ZBLog(@"清空容器");
 }
 
 #pragma  mark -  请求
@@ -223,7 +222,7 @@ static const NSInteger timeOut = 60*60;
     if(error == nil)
     {
         NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:_requestString];
-        
+       
         [[ZBCacheManager shareCacheManager] setMutableData:self.downloadData writeToFile:path];
         
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
@@ -231,8 +230,6 @@ static const NSInteger timeOut = 60*60;
         }
     
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
-        
-        [self requestToCancel:NO];
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
