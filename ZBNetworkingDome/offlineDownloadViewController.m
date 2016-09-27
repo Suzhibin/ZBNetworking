@@ -33,7 +33,7 @@
 {
     [super viewDidDisappear:animated];
    
-    NSLog(@"页面要出来时 清空容器");
+    NSLog(@"离开页面时 清空容器");
     [self.manager removeOfflineArray];
     
 }
