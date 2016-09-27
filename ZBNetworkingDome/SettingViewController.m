@@ -175,8 +175,6 @@
                     self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
                     self.offlineView.pv.progress =(double)receivedSize/expectedSize;
                     
-                    [self.tableView reloadData];
-                    
                 } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
                 
                     NSLog(@"单个图片下载完成");
@@ -193,7 +191,9 @@
                         NSLog(@"下载完成");
                         [self alertTitle:@"下载完成" andMessage:@""];
                         [self.offlineView hide];
-                       
+                        
+                   //     [self.tableView reloadData];
+                        
                     }
                     if (error) {
                         NSLog(@"下载失败");
