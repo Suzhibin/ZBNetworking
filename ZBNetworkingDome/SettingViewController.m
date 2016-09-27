@@ -182,6 +182,7 @@
                     
                     self.offlineView.pv.progress = 0.0;
                     
+                    //此处刷新 tableView 内存会略涨，请根据具体情况，刷新tableView。
                     [self.tableView reloadData];
                     
                     //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
@@ -192,7 +193,7 @@
                         [self alertTitle:@"下载完成" andMessage:@""];
                         [self.offlineView hide];
                         
-                   //     [self.tableView reloadData];
+                     //   [self.tableView reloadData];
                         
                     }
                     if (error) {
