@@ -117,12 +117,12 @@
         //添加请求列队
         [self.manager addObjectWithUrl:url];
         [self.manager addObjectWithName:model.name];
-      
+         NSLog(@"离线请求的url:%@",self.manager.offlineUrlArray);
     }else{
         //删除请求列队
         [self.manager removeObjectWithUrl:url];
         [self.manager removeObjectWithName:model.name];
-        
+         NSLog(@"离线请求的url:%@",self.manager.offlineUrlArray);
     }
 }
 
@@ -136,12 +136,11 @@
         
     }else{
        
+        NSLog(@"离线请求的栏目/url个数:%lu",self.manager.offlineUrlArray.count);
+        
         for (NSString *name in self.manager.offlineNameArray) {
             NSLog(@"离线请求的name:%@",name);
         }
-        
-        NSLog(@"离线请求的url:%@",self.manager.offlineUrlArray);
-        NSLog(@"离线请求的栏目/url个数:%lu",self.manager.offlineUrlArray.count);
 
         [self.delegate downloadWithArray:self.manager.offlineUrlArray];
         

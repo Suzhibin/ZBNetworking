@@ -38,16 +38,28 @@ static ZBRequestManager *requestManager=nil;
     return requestManager;
 }
 
-
 - (id)init{
     self = [super init];
     if (self) {
         _requestDic =[[NSMutableDictionary alloc] init];
-        self.channelUrlArray=[[NSMutableArray alloc]init];
-        self.channelNameArray=[[NSMutableArray alloc]init];
     
     }
     return self;
+}
+
+- (NSMutableArray *)channelUrlArray
+{
+    if (!_channelUrlArray) {
+        _channelUrlArray=[[NSMutableArray alloc]init];
+    }
+    return _channelUrlArray;
+}
+- (NSMutableArray *)channelNameArray
+{
+    if (!_channelNameArray) {
+        _channelNameArray=[[NSMutableArray alloc]init];
+    }
+    return _channelNameArray;
 }
 
 - (void)setValue:(NSString *)value forHeaderField:(NSString *)field{
