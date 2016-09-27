@@ -57,7 +57,7 @@ NSURLSession 网络请求的封装  添加了缓存功能，离线下载，显�
 5.离线下载
 ```objective-c
 [[ZBURLSessionManager shareManager] offlineDownload:[ZBURLSessionManager shareManager].offlineUrlArray target:self apiType:ZBRequestTypeOffline];
-具体演示看demo
+//具体演示看demo
 ```
 6.其他操作
 ```objective-c
