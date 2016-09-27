@@ -24,11 +24,8 @@
 
 static ZBRequestManager *requestManager=nil;
 
-@implementation ZBRequestManager{
+@implementation ZBRequestManager
 
- //  NSMutableDictionary*_requestDic;
-    
-}
 + (ZBRequestManager *)shareManager {
     
     static dispatch_once_t onceToken;
@@ -54,12 +51,20 @@ static ZBRequestManager *requestManager=nil;
     }
     return _channelUrlArray;
 }
+
 - (NSMutableArray *)channelNameArray
 {
     if (!_channelNameArray) {
         _channelNameArray=[[NSMutableArray alloc]init];
     }
     return _channelNameArray;
+}
+
+- (NSMutableDictionary *)mutableHTTPRequestHeaders{
+    if (!_mutableHTTPRequestHeaders) {
+        _mutableHTTPRequestHeaders  = [[NSMutableDictionary alloc]init];
+    }
+    return _mutableHTTPRequestHeaders;
 }
 
 - (void)setValue:(NSString *)value forHeaderField:(NSString *)field{

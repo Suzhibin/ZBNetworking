@@ -13,7 +13,6 @@
 #import "SDWebImageManager.h"
 #import "OfflineView.h"
 #import "DetailsModel.h"
-#import "SDWebImageManager.h"
 
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate>
 
@@ -166,6 +165,7 @@
             //如果sdwebImage 有这个图片 则不下载
             if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]) {
                 NSLog(@"已经下载了");
+                self.offlineView.progressLabel.text=@"已经下载了";
             } else{
              
                 SDWebImageOptions options = SDWebImageRetryFailed ;

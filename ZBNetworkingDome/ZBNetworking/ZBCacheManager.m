@@ -169,6 +169,17 @@ static ZBCacheManager *Cachemanager=nil;
     return size;
 
 }
+
+- (NSUInteger)getFileCountWithpath:(NSString *)path
+{
+    __block NSUInteger count = 0;
+    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
+        count = [[fileEnumerator allObjects] count];
+    });
+    return count;
+}
+
 - (NSString *)fileUnitWithSize:(float)size
 {
     if (size >= unit * unit * unit) { // >= 1GB
@@ -179,16 +190,6 @@ static ZBCacheManager *Cachemanager=nil;
         return [NSString stringWithFormat:@"%.2fKB", size / unit];
     }
   
-}
-
-- (NSUInteger)getFileCountWithpath:(NSString *)path
-{
-    __block NSUInteger count = 0;
-    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
-        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
-        count = [[fileEnumerator allObjects] count];
-    });
-    return count;
 }
 
 #pragma  mark - 清除文件

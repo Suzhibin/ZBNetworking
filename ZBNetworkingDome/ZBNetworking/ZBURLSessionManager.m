@@ -24,7 +24,7 @@
 #import "NSFileManager+pathMethod.h"
 #import "ZBCacheManager.h"
 static const NSInteger timeOut = 60*60;
-  static ZBURLSessionManager *sessionManager=nil;
+static ZBURLSessionManager *sessionManager=nil;
 @implementation ZBURLSessionManager
 
 + (ZBURLSessionManager *)shareManager {
@@ -254,7 +254,6 @@ static const NSInteger timeOut = 60*60;
 - (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field
 {
     if (value) {
-        [ZBRequestManager shareManager].mutableHTTPRequestHeaders = [[NSMutableDictionary alloc]init];
         [ZBRequestManager shareManager].value =value;
         [[ZBRequestManager shareManager] setValue:value forHeaderField:field ];
     }
