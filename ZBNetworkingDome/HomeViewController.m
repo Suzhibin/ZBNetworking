@@ -12,7 +12,6 @@
 #import "DetailViewController.h"
 #import "SettingViewController.h"
 
-
 @interface HomeViewController ()<ZBURLSessionDelegate,UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong)UITableView *tableView;

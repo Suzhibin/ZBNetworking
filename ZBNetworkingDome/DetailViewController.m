@@ -18,15 +18,15 @@
 
 @implementation DetailViewController
 
-- (void)dealloc{
-
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
 #warning 可选实现
     /**
-    1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
-    2.系统的session.delegate 是retain的 手动取消 避免造成内存泄露.
+     1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
+     2.系统的session.delegate 是retain的 手动取消 避免造成内存泄露.
      */
     [[ZBURLSessionManager shareManager] requestToCancel:YES];
-    
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
