@@ -71,9 +71,20 @@
     if (request.error.code==NSURLErrorTimedOut) {
         
         [self alertTitle:@"请求超时" andMessage:@""];
+        //如果是刷新的数据
+        if (request.apiType==ZBRequestTypeRefresh) {
+            //结束刷新
+            [_refreshControl endRefreshing];
+        }
+
     }else{
         
         [self alertTitle:@"请求失败" andMessage:@""];
+        //如果是刷新的数据
+        if (request.apiType==ZBRequestTypeRefresh) {
+            //结束刷新
+            [_refreshControl endRefreshing];
+        }
     }
 }
 
