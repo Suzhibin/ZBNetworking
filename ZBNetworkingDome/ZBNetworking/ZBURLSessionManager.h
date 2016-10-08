@@ -164,15 +164,6 @@ typedef NS_ENUM(NSInteger,apiType) {
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type operation:(ZBURLSessionManagerBlock)operation;
 
 /**
-  离线下载 判断栏目url 是否已添加到请求列队容器
-
- @param url 请求地址
-
- @return 1:0
- */
-- (BOOL)isAddUrl:(NSString *)url;
-
-/**
  离线下载 将url 添加到请求列队
 
  @param url 请求地址
@@ -185,15 +176,6 @@ typedef NS_ENUM(NSInteger,apiType) {
  @param url 请求地址
  */
 - (void)removeObjectWithUrl:(NSString *)url;
-
-/**
-  离线下载 判断栏目名字 是否已添加到容器
- 
- @param url 请求地址
- 
- @return 1:0
- */
-- (BOOL)isAddName:(NSString *)name;
 
 /**
  离线下载 将栏目名字 添加到容器

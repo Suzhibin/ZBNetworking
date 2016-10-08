@@ -89,11 +89,6 @@ static ZBURLSessionManager *sessionManager=nil;
     });  
 }
 
-- (BOOL)isAddUrl:(NSString *)url
-{
-    return [[ZBRequestManager shareManager]isAddForKey:url isUrl:YES];
-}
-
 - (void)addObjectWithUrl:(NSString *)url
 {
     [[ZBRequestManager shareManager]addObjectWithForKey:url isUrl:YES];
@@ -102,11 +97,6 @@ static ZBURLSessionManager *sessionManager=nil;
 - (void)removeObjectWithUrl:(NSString *)url
 {
     [[ZBRequestManager shareManager]removeObjectWithForkey:url isUrl:YES];
-}
-
-- (BOOL)isAddName:(NSString *)name
-{
-    return [[ZBRequestManager shareManager]isAddForKey:name isUrl:NO];
 }
 
 - (void)addObjectWithName:(NSString *)name
