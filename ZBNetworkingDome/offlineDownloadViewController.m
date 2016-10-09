@@ -12,10 +12,6 @@
 
 @interface offlineDownloadViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLSessionDelegate>
 @property (nonatomic,strong)UITableView *tableView;
-@property (nonatomic,strong)UIProgressView *pv;
-@property (nonatomic,strong)UILabel *progressLabel;
-@property (nonatomic,strong)UILabel *nameLabel;
-
 @property (nonatomic,strong)NSMutableArray *dataArray;
 
 @property (nonatomic,strong)ZBURLSessionManager *manager;

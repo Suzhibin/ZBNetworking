@@ -135,9 +135,10 @@
     }
     
 }
+
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray
-{
+{   
     //离线请求 apiType:ZBRequestTypeOffline
     [[ZBURLSessionManager shareManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
     
@@ -168,10 +169,8 @@
                 self.offlineView.progressLabel.text=@"已经下载了";
             } else{
              
-                SDWebImageOptions options = SDWebImageRetryFailed ;
-                [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:model.thumb] options:options progress:^(NSInteger receivedSize, NSInteger expectedSize){
-                    
-                     NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
+                [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:model.thumb] options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                    NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
                     self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
                     self.offlineView.pv.progress =(double)receivedSize/expectedSize;
                     
