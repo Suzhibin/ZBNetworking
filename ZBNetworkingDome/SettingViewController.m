@@ -14,7 +14,7 @@
 #import "OfflineView.h"
 #import "DetailsModel.h"
 
-@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate>
+@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate>
 
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)NSMutableArray *imageArray;
@@ -161,6 +161,8 @@
             [self.imageArray addObject:model];
             
             //使用SDWebImage 下载图片
+      
+            [SDWebImageManager sharedManager].delegate=self;
             
             NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
             //如果sdwebImage 有这个图片 则不下载
@@ -169,7 +171,8 @@
                 self.offlineView.progressLabel.text=@"已经下载了";
             } else{
              
-                [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:model.thumb] options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                    
                     NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
                     self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
                     self.offlineView.pv.progress =(double)receivedSize/expectedSize;
@@ -182,7 +185,6 @@
                     self.offlineView.pv.progress = 0.0;
                     
                     [self.tableView reloadData];
-                    
                     //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                     NSString *imageURLStr = [imageURL absoluteString];
                     NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
@@ -191,9 +193,10 @@
                         [self alertTitle:@"下载完成" andMessage:@""];
                         [self.offlineView hide];
                         
-                     //   [self.tableView reloadData];
+                        //   [self.tableView reloadData];
                         
                     }
+                 
                     if (error) {
                         NSLog(@"下载失败");
                     }
@@ -219,6 +222,16 @@
     }
 }
 
+
+
+- (UIImage *)imageManager:(SDWebImageManager *)imageManager transformDownloadedImage:(UIImage *)image withURL:(NSURL *)imageURL{
+    //Do something with the downloaded image
+    NSLog(@"image:%@",image);
+    NSLog(@"imageURL:%@",imageURL);
+    
+    
+    return image;
+}
 
 - (void)cancelClick
 {

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7DF8262C1D5815BE000D1109"
-               BuildableName = "ZBNetworkingDome.app"
-               BlueprintName = "ZBNetworkingDome"
-               ReferencedContainer = "container:ZBNetworkingDome.xcodeproj">
+               BuildableName = "ZBNetworkingDemo.app"
+               BlueprintName = "ZBNetworkingDemo"
+               ReferencedContainer = "container:ZBNetworkingDemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7DF826451D5815BE000D1109"
-               BuildableName = "ZBNetworkingDomeTests.xctest"
-               BlueprintName = "ZBNetworkingDomeTests"
-               ReferencedContainer = "container:ZBNetworkingDome.xcodeproj">
+               BuildableName = "ZBNetworkingDemoTests.xctest"
+               BlueprintName = "ZBNetworkingDemoTests"
+               ReferencedContainer = "container:ZBNetworkingDemo.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7DF826501D5815BE000D1109"
-               BuildableName = "ZBNetworkingDomeUITests.xctest"
-               BlueprintName = "ZBNetworkingDomeUITests"
-               ReferencedContainer = "container:ZBNetworkingDome.xcodeproj">
+               BuildableName = "ZBNetworkingDemoUITests.xctest"
+               BlueprintName = "ZBNetworkingDemoUITests"
+               ReferencedContainer = "container:ZBNetworkingDemo.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DF8262C1D5815BE000D1109"
-            BuildableName = "ZBNetworkingDome.app"
-            BlueprintName = "ZBNetworkingDome"
-            ReferencedContainer = "container:ZBNetworkingDome.xcodeproj">
+            BuildableName = "ZBNetworkingDemo.app"
+            BlueprintName = "ZBNetworkingDemo"
+            ReferencedContainer = "container:ZBNetworkingDemo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DF8262C1D5815BE000D1109"
-            BuildableName = "ZBNetworkingDome.app"
-            BlueprintName = "ZBNetworkingDome"
-            ReferencedContainer = "container:ZBNetworkingDome.xcodeproj">
+            BuildableName = "ZBNetworkingDemo.app"
+            BlueprintName = "ZBNetworkingDemo"
+            ReferencedContainer = "container:ZBNetworkingDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -102,9 +102,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7DF8262C1D5815BE000D1109"
-            BuildableName = "ZBNetworkingDome.app"
-            BlueprintName = "ZBNetworkingDome"
-            ReferencedContainer = "container:ZBNetworkingDome.xcodeproj">
+            BuildableName = "ZBNetworkingDemo.app"
+            BlueprintName = "ZBNetworkingDemo"
+            ReferencedContainer = "container:ZBNetworkingDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
