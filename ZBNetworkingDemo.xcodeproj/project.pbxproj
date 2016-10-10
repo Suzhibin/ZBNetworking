@@ -35,8 +35,8 @@
 		7DF8263B1D5815BE000D1109 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DF826391D5815BE000D1109 /* Main.storyboard */; };
 		7DF8263D1D5815BE000D1109 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8263C1D5815BE000D1109 /* Assets.xcassets */; };
 		7DF826401D5815BE000D1109 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8263E1D5815BE000D1109 /* LaunchScreen.storyboard */; };
-		7DF8264B1D5815BE000D1109 /* ZBNetworkingDomeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8264A1D5815BE000D1109 /* ZBNetworkingDomeTests.m */; };
-		7DF826561D5815BE000D1109 /* ZBNetworkingDomeUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826551D5815BE000D1109 /* ZBNetworkingDomeUITests.m */; };
+		7DF8264B1D5815BE000D1109 /* ZBNetworkingDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8264A1D5815BE000D1109 /* ZBNetworkingDemoTests.m */; };
+		7DF826561D5815BE000D1109 /* ZBNetworkingDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826551D5815BE000D1109 /* ZBNetworkingDemoUITests.m */; };
 		7DF8266C1D581622000D1109 /* NSFileManager+pathMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826651D581622000D1109 /* NSFileManager+pathMethod.m */; };
 		7DF8266E1D581622000D1109 /* ZBRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826691D581622000D1109 /* ZBRequestManager.m */; };
 		7DF8266F1D581622000D1109 /* ZBURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8266B1D581622000D1109 /* ZBURLSessionManager.m */; };
@@ -119,10 +119,10 @@
 		7DF8263F1D5815BE000D1109 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7DF826411D5815BE000D1109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7DF826461D5815BE000D1109 /* ZBNetworkingDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZBNetworkingDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DF8264A1D5815BE000D1109 /* ZBNetworkingDomeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBNetworkingDomeTests.m; sourceTree = "<group>"; };
+		7DF8264A1D5815BE000D1109 /* ZBNetworkingDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBNetworkingDemoTests.m; sourceTree = "<group>"; };
 		7DF8264C1D5815BE000D1109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7DF826511D5815BE000D1109 /* ZBNetworkingDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZBNetworkingDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DF826551D5815BE000D1109 /* ZBNetworkingDomeUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBNetworkingDomeUITests.m; sourceTree = "<group>"; };
+		7DF826551D5815BE000D1109 /* ZBNetworkingDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBNetworkingDemoUITests.m; sourceTree = "<group>"; };
 		7DF826571D5815BE000D1109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7DF826641D581622000D1109 /* NSFileManager+pathMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+pathMethod.h"; sourceTree = "<group>"; };
 		7DF826651D581622000D1109 /* NSFileManager+pathMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+pathMethod.m"; sourceTree = "<group>"; };
@@ -212,9 +212,9 @@
 				7DB651BB1DA8A7D8005286C7 /* SDWebImage */,
 				7DDF4D281D94B7E600BDE173 /* h1.jpg */,
 				7DF826631D581622000D1109 /* ZBNetworking */,
-				7DF8262F1D5815BE000D1109 /* ZBNetworkingDome */,
-				7DF826491D5815BE000D1109 /* ZBNetworkingDomeTests */,
-				7DF826541D5815BE000D1109 /* ZBNetworkingDomeUITests */,
+				7DF8262F1D5815BE000D1109 /* ZBNetworkingDemo */,
+				7DF826491D5815BE000D1109 /* ZBNetworkingDemoTests */,
+				7DF826541D5815BE000D1109 /* ZBNetworkingDemoUITests */,
 				7DF8262E1D5815BE000D1109 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -229,7 +229,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7DF8262F1D5815BE000D1109 /* ZBNetworkingDome */ = {
+		7DF8262F1D5815BE000D1109 /* ZBNetworkingDemo */ = {
 			isa = PBXGroup;
 			children = (
 				7D27F5F91D98FB5B0065B1A2 /* OfflineView.h */,
@@ -258,6 +258,7 @@
 				7DF826411D5815BE000D1109 /* Info.plist */,
 				7DF826301D5815BE000D1109 /* Supporting Files */,
 			);
+			name = ZBNetworkingDemo;
 			path = ZBNetworkingDome;
 			sourceTree = "<group>";
 		};
@@ -269,21 +270,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		7DF826491D5815BE000D1109 /* ZBNetworkingDomeTests */ = {
+		7DF826491D5815BE000D1109 /* ZBNetworkingDemoTests */ = {
 			isa = PBXGroup;
 			children = (
-				7DF8264A1D5815BE000D1109 /* ZBNetworkingDomeTests.m */,
+				7DF8264A1D5815BE000D1109 /* ZBNetworkingDemoTests.m */,
 				7DF8264C1D5815BE000D1109 /* Info.plist */,
 			);
+			name = ZBNetworkingDemoTests;
 			path = ZBNetworkingDomeTests;
 			sourceTree = "<group>";
 		};
-		7DF826541D5815BE000D1109 /* ZBNetworkingDomeUITests */ = {
+		7DF826541D5815BE000D1109 /* ZBNetworkingDemoUITests */ = {
 			isa = PBXGroup;
 			children = (
-				7DF826551D5815BE000D1109 /* ZBNetworkingDomeUITests.m */,
+				7DF826551D5815BE000D1109 /* ZBNetworkingDemoUITests.m */,
 				7DF826571D5815BE000D1109 /* Info.plist */,
 			);
+			name = ZBNetworkingDemoUITests;
 			path = ZBNetworkingDomeUITests;
 			sourceTree = "<group>";
 		};
@@ -475,7 +478,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DF8264B1D5815BE000D1109 /* ZBNetworkingDomeTests.m in Sources */,
+				7DF8264B1D5815BE000D1109 /* ZBNetworkingDemoTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,7 +486,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DF826561D5815BE000D1109 /* ZBNetworkingDomeUITests.m in Sources */,
+				7DF826561D5815BE000D1109 /* ZBNetworkingDemoUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
