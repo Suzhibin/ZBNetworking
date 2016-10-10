@@ -1,6 +1,6 @@
 //
-//  ZBNetworkingDomeTests.m
-//  ZBNetworkingDomeTests
+//  ZBNetworkingDemoTests.m
+//  ZBNetworkingDemoTests
 //
 //  Created by NQ UEC on 16/8/8.
 //  Copyright © 2016年 Suzhibin. All rights reserved.
@@ -8,11 +8,11 @@
 
 #import <XCTest/XCTest.h>
 
-@interface ZBNetworkingDomeTests : XCTestCase
+@interface ZBNetworkingDemoTests : XCTestCase
 
 @end
 
-@implementation ZBNetworkingDomeTests
+@implementation ZBNetworkingDemoTests
 
 - (void)setUp {
     [super setUp];

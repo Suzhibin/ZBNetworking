@@ -258,8 +258,7 @@
 				7DF826411D5815BE000D1109 /* Info.plist */,
 				7DF826301D5815BE000D1109 /* Supporting Files */,
 			);
-			name = ZBNetworkingDemo;
-			path = ZBNetworkingDome;
+			path = ZBNetworkingDemo;
 			sourceTree = "<group>";
 		};
 		7DF826301D5815BE000D1109 /* Supporting Files */ = {
@@ -276,8 +275,7 @@
 				7DF8264A1D5815BE000D1109 /* ZBNetworkingDemoTests.m */,
 				7DF8264C1D5815BE000D1109 /* Info.plist */,
 			);
-			name = ZBNetworkingDemoTests;
-			path = ZBNetworkingDomeTests;
+			path = ZBNetworkingDemoTests;
 			sourceTree = "<group>";
 		};
 		7DF826541D5815BE000D1109 /* ZBNetworkingDemoUITests */ = {
@@ -286,8 +284,7 @@
 				7DF826551D5815BE000D1109 /* ZBNetworkingDemoUITests.m */,
 				7DF826571D5815BE000D1109 /* Info.plist */,
 			);
-			name = ZBNetworkingDemoUITests;
-			path = ZBNetworkingDomeUITests;
+			path = ZBNetworkingDemoUITests;
 			sourceTree = "<group>";
 		};
 		7DF826631D581622000D1109 /* ZBNetworking */ = {
@@ -304,7 +301,7 @@
 				7DF826731D581665000D1109 /* ZBNetworking.h */,
 			);
 			name = ZBNetworking;
-			path = ZBNetworkingDome/ZBNetworking;
+			path = ZBNetworkingDemo/ZBNetworking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -614,7 +611,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = ZBNetworkingDome/Info.plist;
+				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -626,7 +623,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = ZBNetworkingDome/Info.plist;
+				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -637,9 +634,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = ZBNetworkingDomeTests/Info.plist;
+				INFOPLIST_FILE = ZBNetworkingDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDomeTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemoTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZBNetworkingDemo.app/ZBNetworkingDemo";
 			};
@@ -649,9 +646,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = ZBNetworkingDomeTests/Info.plist;
+				INFOPLIST_FILE = ZBNetworkingDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDomeTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemoTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZBNetworkingDemo.app/ZBNetworkingDemo";
 			};
@@ -660,22 +657,22 @@
 		7DF826611D5815BE000D1109 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = ZBNetworkingDomeUITests/Info.plist;
+				INFOPLIST_FILE = ZBNetworkingDemoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDomeUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemoUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = ZBNetworkingDome;
+				TEST_TARGET_NAME = ZBNetworkingDemo;
 			};
 			name = Debug;
 		};
 		7DF826621D5815BE000D1109 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = ZBNetworkingDomeUITests/Info.plist;
+				INFOPLIST_FILE = ZBNetworkingDemoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDomeUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemoUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = ZBNetworkingDome;
+				TEST_TARGET_NAME = ZBNetworkingDemo;
 			};
 			name = Release;
 		};
