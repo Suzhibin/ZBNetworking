@@ -161,8 +161,6 @@
             [self.imageArray addObject:model];
             
             //使用SDWebImage 下载图片
-      
-            [SDWebImageManager sharedManager].delegate=self;
             
             NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
             //如果sdwebImage 有这个图片 则不下载
@@ -220,17 +218,6 @@
         
         [self alertTitle:@"请求失败" andMessage:@""];
     }
-}
-
-
-
-- (UIImage *)imageManager:(SDWebImageManager *)imageManager transformDownloadedImage:(UIImage *)image withURL:(NSURL *)imageURL{
-    //Do something with the downloaded image
-    NSLog(@"image:%@",image);
-    NSLog(@"imageURL:%@",imageURL);
-    
-    
-    return image;
 }
 
 - (void)cancelClick
