@@ -162,7 +162,7 @@ static ZBURLSessionManager *sessionManager=nil;
         
         NSData *data = [NSData dataWithContentsOfFile:path];
     
-        ZBLog(@"Read cache");
+        ZBLog(@"cache");
         [request.downloadData appendData:data];
 
         if ([request.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
@@ -292,7 +292,7 @@ static ZBURLSessionManager *sessionManager=nil;
 #pragma mark - get Request
 - (void)getStartRequest
 {
-     ZBLog(@"get start Request");
+     ZBLog(@"get");
     
     NSString *string = [self.requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -326,7 +326,7 @@ static ZBURLSessionManager *sessionManager=nil;
 #pragma mark - post Request
 - (void)postStartRequestWithParameters:(NSDictionary *)parameters;{
     
-     ZBLog(@"start Request POST");
+     ZBLog(@"post");
     
     NSString *string = [_requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
