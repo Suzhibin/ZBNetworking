@@ -61,6 +61,7 @@ NSURLSession 网络请求的封装  添加了缓存功能，离线下载，显�
 //具体演示看demo
 ```
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
+
 6.其他操作
 ```objective-c
 //显示缓存大小
