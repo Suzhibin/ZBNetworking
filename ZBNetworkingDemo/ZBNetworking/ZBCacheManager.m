@@ -194,7 +194,7 @@ static ZBCacheManager *Cachemanager=nil;
 
 #pragma  mark - 清除文件
 
--(void) automaticCleanCache{
+-(void)automaticCleanCache{
     
     [self automaticCleanCacheWithOperation:nil];
 }
