@@ -12,4 +12,13 @@
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
     //  NSLog(@"undefinedKey:%@",key);
 }
+
+-(instancetype)initWithDict:(NSDictionary *)dict
+{
+  if (self=[super init]) {
+         [self setValuesForKeysWithDictionary:dict];
+    }
+   return self;
+ }
+
 @end

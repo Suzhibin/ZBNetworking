@@ -36,7 +36,7 @@
     //    NSLog(@"urlString:%@",_urlString);
     
     /**
-     *  如果详情页面不想要缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
+     *  如果页面不想要缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      *  [[ZBURLSessionManager shareManager] getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
      */
 
@@ -50,9 +50,7 @@
     NSArray *array=[dataDict objectForKey:@"videos"];
     
     for (NSDictionary *dict in array) {
-        DetailsModel *model=[[DetailsModel alloc]init];
-        
-        [model setValuesForKeysWithDictionary:dict];
+        DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
         [_dataArray addObject:model];
         
     }

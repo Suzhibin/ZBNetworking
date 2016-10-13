@@ -15,4 +15,6 @@
 @property (nonatomic,copy)NSString *time;
 @property (nonatomic,copy)NSString *title;
 @property (nonatomic,copy)NSString *wid;
+
+-(instancetype)initWithDict:(NSDictionary *)dict;
 @end
