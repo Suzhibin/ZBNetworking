@@ -88,11 +88,11 @@
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
     }
-    
+ 
     if (indexPath.row==4) {
         cell.textLabel.text=@"离线下载";
-         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-    
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        
     }
     
     return cell;
@@ -126,6 +126,7 @@
             
         }];
     }
+
     if (indexPath.row==4) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];

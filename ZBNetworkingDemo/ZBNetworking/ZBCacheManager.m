@@ -65,6 +65,10 @@ static ZBCacheManager *Cachemanager=nil;
 }
 
 #pragma mark - 获取沙盒目录
+- (NSString *)getHomeDirectory {
+    return NSHomeDirectory();
+}
+
 - (NSString *)getDocumentDirectory{
     return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 }
@@ -84,12 +88,11 @@ static ZBCacheManager *Cachemanager=nil;
 #pragma mark - 创建存储文件夹
 - (void)initCachesfileWithName:(NSString *)name
 {
-    NSString *caches=[self getCachesDirectory];
-    
-    self.diskCachePath = [NSString stringWithFormat:@"%@/%@", caches,name];
+    self.diskCachePath = [NSString stringWithFormat:@"%@/%@", [self getCachesDirectory],name];
 
     [self createDirectoryAtPath:self.diskCachePath];
 }
+
 - (void)createDirectoryAtPath:(NSString *)path
 {
     if (![self fileExistsAtPath:path]) {
@@ -107,6 +110,7 @@ static ZBCacheManager *Cachemanager=nil;
 #pragma  mark - 存储
 - (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path
 {
+    if (!data) return;
     [data writeToFile:path atomically:YES];
 }
 

@@ -33,6 +33,13 @@ typedef void(^ZBCacheManagerBlock)();
 + (ZBCacheManager *)shareCacheManager;
 
 /**
+ 获取沙盒Home的文件目录
+
+ @return Home 路径
+ */
+- (NSString *)getHomeDirectory;
+
+/**
   获取沙盒Document的文件目录
 
  @return Document 路径
@@ -61,7 +68,7 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSString *)getTmpDirectory;
 
 /**
- * 把二进制内容,写入到文件
+ * 把data内容,写入到文件
  *  @param data 
  *  @param path 路径
  */
@@ -83,6 +90,16 @@ typedef void(^ZBCacheManagerBlock)();
  *  @return 根据存储的文件，返回data在本地的存储路径
  */
 - (NSString *)pathWithfileName:(NSString *)key;
+
+/**
+ 拼接路径与编码后的文件
+
+ @param key       文件
+ @param CachePath 路径
+
+ @return 完整的文件路径
+ */
+- (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)CachePath;
 
 /**
  * 显示缓存大小
