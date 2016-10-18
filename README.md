@@ -1,6 +1,7 @@
 # ZBNetworking
-NSURLSession 网络请求的封装  添加了缓存功能，离线下载，显示缓存大小，删除缓存等功能 。
+一站式缓存解决方案 集成get请求缓存,离线下载,html缓存,显示缓存大小,删除缓存等功能 — 
 低耦合，易扩展。
+
 ## 使用
 1.添加#import "ZBNetworking.h"
 
@@ -62,7 +63,20 @@ NSURLSession 网络请求的封装  添加了缓存功能，离线下载，显�
 ```
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
 
-6.其他操作
+6.html 下载
+```objective-c
+    if ([[ZBWebViewManager shareManager]fileAtPath:self.weburl]==YES) {
+        NSLog(@"UIWebView读缓存");
+        NSString *html=[[ZBWebViewManager shareManager]htmlString:self.weburl];
+        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
+    }else{
+        NSLog(@"UIWebView重新请求");
+        NSURL *url = [NSURL URLWithString:self.weburl];
+        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+    }
+
+```
+7.其他操作
 ```objective-c
 //显示缓存大小
  [[ZBCacheManager shareCacheManager]getCacheSize];
