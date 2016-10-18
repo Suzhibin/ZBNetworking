@@ -20,7 +20,6 @@
 
 #import "ZBRequestManager.h"
 #import "ZBURLSessionManager.h"
-#import "ZBCacheManager.h"
 
 static ZBRequestManager *requestManager=nil;
 
@@ -35,15 +34,20 @@ static ZBRequestManager *requestManager=nil;
     return requestManager;
 }
 
-- (id)init{
-    self = [super init];
-    if (self) {
-        _requestDic =[[NSMutableDictionary alloc] init];
-    
+- (NSMutableDictionary *)requestDic
+{
+    if (!_requestDic) {
+        _requestDic  = [[NSMutableDictionary alloc]init];
     }
-    return self;
+    return _requestDic;
 }
-
+- (NSMutableDictionary *)webRequestDic
+{
+    if (!_webRequestDic) {
+        _webRequestDic  = [[NSMutableDictionary alloc]init];
+    }
+    return _webRequestDic;
+}
 - (NSMutableArray *)channelUrlArray
 {
     if (!_channelUrlArray) {
@@ -133,25 +137,35 @@ static ZBRequestManager *requestManager=nil;
 - (void)setRequestObject:(id)obj forkey:(NSString *)key{
 
     if (obj) {
-        [_requestDic setObject:obj forKey:key];
+        [self.requestDic setObject:obj forKey:key];
     }
 }
 
 - (void)removeRequestForkey:(NSString *)key{
    
     if(!key)return;
-    [_requestDic removeObjectForKey:key];
+    [self.requestDic removeObjectForKey:key];
 
 }
 //_requestDic 已被remove 此方法暂时不用
 - (void)clearDelegateForKey:(NSString *)key{
     if(!key)return;
-    self.manager=[_requestDic objectForKey:key];;
+    self.manager=[self.requestDic objectForKey:key];;
     self.manager.delegate = nil;
 }
 
+- (void)setWebRequestObject:(id)obj forkey:(NSString *)key{
+    
+    if (obj) {
+        [self.webRequestDic setObject:obj forKey:key];
+        NSLog(@"webRequestDic:%@",self.webRequestDic);
+    }
+}
 
-
+- (void)removeWebRequestForkey:(NSString *)key{
+    if(!key)return;
+    [self.webRequestDic removeObjectForKey:key];
+}
 
 
 

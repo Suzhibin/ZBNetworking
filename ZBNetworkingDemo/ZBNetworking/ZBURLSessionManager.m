@@ -156,7 +156,7 @@ static ZBURLSessionManager *sessionManager=nil;
     request.delegate = delegate;
     request.apiType = type;
        
-     NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:requestString];
+     NSString *path =[[ZBCacheManager shareCacheManager] pathWithFileName:requestString];
     
     if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
         
@@ -211,7 +211,7 @@ static ZBURLSessionManager *sessionManager=nil;
 {
     if(error == nil)
     {
-        NSString *path =[[ZBCacheManager shareCacheManager] pathWithfileName:_requestString];
+        NSString *path =[[ZBCacheManager shareCacheManager] pathWithFileName:_requestString];
        
         [[ZBCacheManager shareCacheManager] setMutableData:self.downloadData writeToFile:path];
         
@@ -302,7 +302,7 @@ static ZBURLSessionManager *sessionManager=nil;
     
     if ([ZBRequestManager shareManager].value) {
         
-          NSMutableURLRequest *mutableRequest = [request mutableCopy];
+        NSMutableURLRequest *mutableRequest = [request mutableCopy];
         
         [[[ZBRequestManager shareManager]mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
             
@@ -316,12 +316,11 @@ static ZBURLSessionManager *sessionManager=nil;
         
         ZBLog(@"get_HeaderField%@", request.allHTTPHeaderFields);
     }
-
     _dataTask = [self.session dataTaskWithRequest:request];
     
     [_dataTask resume];
-}
 
+}
 
 #pragma mark - post Request
 - (void)postStartRequestWithParameters:(NSDictionary *)parameters;{

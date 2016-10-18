@@ -22,14 +22,16 @@
 #import <CommonCrypto/CommonDigest.h>
 
 NSString *const PathDefault =@"AppCache";
-NSString *const PathImager =@"ImageCache";
+NSString *const PathData =@"DataCache";
+NSString *const PathWeb =@"WebCache";
 static const NSInteger cacheMaxCacheAge  = 60*60*24*7;
 static const CGFloat unit = 1000.0;
 //static NSInteger cacheMixCacheAge = 60;
 @interface ZBCacheManager ()
 
 @property (nonatomic ,copy)NSString *diskCachePath;
-@property (nonatomic ,copy)NSString *imageCachePath;
+@property (nonatomic ,copy)NSString *dataCachePath;
+@property (nonatomic ,copy)NSString *webCachePath;
 @end
 
 static ZBCacheManager *Cachemanager=nil;
@@ -50,6 +52,8 @@ static ZBCacheManager *Cachemanager=nil;
     if (self) {
         
         [self initCachesfileWithName:PathDefault];
+        [self initCachesDatafileWithName:PathData];
+        [self initCachesWebfileWithName:PathWeb];
       
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
@@ -93,6 +97,22 @@ static ZBCacheManager *Cachemanager=nil;
     [self createDirectoryAtPath:self.diskCachePath];
 }
 
+- (void)initCachesDatafileWithName:(NSString *)name
+{
+    self.dataCachePath = [NSString stringWithFormat:@"%@/%@", self.diskCachePath,name];
+    if (self.diskCachePath) {
+         [self createDirectoryAtPath:self.dataCachePath];
+    }
+}
+
+- (void)initCachesWebfileWithName:(NSString *)name
+{
+    self.webCachePath = [NSString stringWithFormat:@"%@/%@", self.diskCachePath,name];
+    if (self.diskCachePath) {
+        [self createDirectoryAtPath:self.webCachePath];
+    }
+}
+
 - (void)createDirectoryAtPath:(NSString *)path
 {
     if (![self fileExistsAtPath:path]) {
@@ -114,22 +134,33 @@ static ZBCacheManager *Cachemanager=nil;
     [data writeToFile:path atomically:YES];
 }
 
-- (NSString *)pathWithfileName:(NSString *)key{
-    
-    @synchronized (self) {
+- (void)setString:(NSString*)string writeToFile:(NSString *)path
+{
+    if (!string) return;
+    [string writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
+}
+
+- (NSString *)pathWithFileName:(NSString *)key{
         
-    NSString *path=[self cachePathForKey:key inPath:self.diskCachePath];
+    NSString *path=[self cachePathForKey:key inPath:self.dataCachePath];
         
     return path;
         
-    }
+}
+
+- (NSString *)pathWithWebFileName:(NSString *)key{
+    
+    NSString *path=[self cachePathForKey:key inPath:self.webCachePath];
+    
+    return path;
+    
 }
 
 - (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)CachePath {
-
+    @synchronized (self) {
         NSString *filename = [self cachedFileNameForKey:key];
         return [CachePath stringByAppendingPathComponent:filename];
-
+    }
 }
 
 - (NSString *)cachedFileNameForKey:(NSString *)key {
@@ -149,11 +180,20 @@ static ZBCacheManager *Cachemanager=nil;
 #pragma  mark - 计算大小与个数
 - (NSUInteger)getCacheSize {
     
-    return [self getFileSizeWithpath:self.diskCachePath];
+    return [self getFileSizeWithpath:self.dataCachePath];
 }
 
 - (NSUInteger)getCacheCount {
-    return [self getFileCountWithpath:self.diskCachePath];
+    return [self getFileCountWithpath:self.dataCachePath];
+}
+
+- (NSUInteger)getWebCacheSize {
+    
+    return [self getFileSizeWithpath:self.webCachePath];
+}
+
+- (NSUInteger)getWebCacheCount {
+    return [self getFileCountWithpath:self.webCachePath];
 }
 
 - (NSUInteger)getFileSizeWithpath:(NSString *)path
@@ -200,20 +240,21 @@ static ZBCacheManager *Cachemanager=nil;
 
 -(void)automaticCleanCache{
     
-    [self automaticCleanCacheWithOperation:nil];
+    [self automaticCleanCacheWithPath:self.dataCachePath Operation:nil];
+    [self automaticCleanCacheWithPath:self.webCachePath Operation:nil];
 }
 
-- (void)automaticCleanCacheWithOperation:(ZBCacheManagerBlock)operation
+- (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation
 {
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL),^{
         
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMaxCacheAge];
         
-        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:self.diskCachePath];
+        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         
         for (NSString *fileName in fileEnumerator)
         {
-            NSString *filePath = [self.diskCachePath stringByAppendingPathComponent:fileName];
+            NSString *filePath = [path stringByAppendingPathComponent:fileName];
             
             NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
             NSDate *current = [info objectForKey:NSFileModificationDate];
@@ -231,12 +272,10 @@ static ZBCacheManager *Cachemanager=nil;
             
                 operation();
             });
-            
         }
-        
-        
     });
 }
+
 - (void)backgroundCleanDisk {
     Class UIApplicationClass = NSClassFromString(@"UIApplication");
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
@@ -251,7 +290,11 @@ static ZBCacheManager *Cachemanager=nil;
     }];
     
     // Start the long-running task and return immediately.
-    [self automaticCleanCacheWithOperation:^{
+    [self automaticCleanCacheWithPath:self.dataCachePath Operation:^{
+        [application endBackgroundTask:bgTask];
+        bgTask = UIBackgroundTaskInvalid;
+    }];
+    [self automaticCleanCacheWithPath:self.webCachePath Operation:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
@@ -259,14 +302,19 @@ static ZBCacheManager *Cachemanager=nil;
 
 - (void)clearCacheForkey:(NSString *)key
 {
-    [self clearCacheForkey:key operation:nil];
+    NSString *path=[self pathWithFileName:key];
+    [self clearCacheForPath:path operation:nil];
 }
 
-- (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation
+- (void)clearWebCacheForkey:(NSString *)key
+{
+    NSString *path=[self pathWithWebFileName:key];
+    [self clearCacheForPath:path operation:nil];
+}
+
+- (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation
 {
     dispatch_sync(dispatch_queue_create(0,DISPATCH_QUEUE_SERIAL),^{
-        
-        NSString *path=[self pathWithfileName:key];
         
         [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
         
@@ -291,13 +339,24 @@ static ZBCacheManager *Cachemanager=nil;
             //[self clearDiskWithpath:self.diskCachePath];
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
         [self createDirectoryAtPath:self.diskCachePath];
-        
+        [self createDirectoryAtPath:self.dataCachePath];
+        [self createDirectoryAtPath:self.webCachePath];
         if (operation) {
             dispatch_sync(dispatch_get_main_queue(),^{
                 operation();
             });
         }
     });
+}
+
+- (void)clearDataCache
+{
+    [self clearDiskWithpath:self.dataCachePath];
+}
+
+- (void)clearWebCache
+{
+    [self clearDiskWithpath:self.webCachePath];
 }
 
 - (void)clearDiskWithpath:(NSString *)path

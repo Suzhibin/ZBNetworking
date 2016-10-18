@@ -10,6 +10,7 @@
 #import "DetailsModel.h"
 #import "ZBNetworking.h"
 #import "UIImageView+WebCache.h"
+#import "WebViewController.h"
 @interface DetailViewController ()<ZBURLSessionDelegate,UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
@@ -48,7 +49,6 @@
 {
     NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
     NSArray *array=[dataDict objectForKey:@"videos"];
-    
     for (NSDictionary *dict in array) {
         DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
         [_dataArray addObject:model];
@@ -98,7 +98,7 @@
     if (cell==nil) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     
     DetailsModel *model=[_dataArray objectAtIndex:indexPath.row];
@@ -112,7 +112,15 @@
 
     return cell;
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DetailsModel *model=[_dataArray objectAtIndex:indexPath.row];
+    NSLog(@"model.weburl:%@:",model.weburl);
+    WebViewController *web=[[WebViewController alloc]init];
+    web.weburl=model.weburl;
+    [self.navigationController pushViewController:web animated:YES];
 
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

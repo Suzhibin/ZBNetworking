@@ -27,7 +27,7 @@
     _dataArray=[[NSMutableArray alloc]init];
    
     /**
-     *  默认缓存路径/Library/Caches/AppCache
+     *  默认缓存路径/Library/Caches/AppCache/DataCache
      */
     [[ZBURLSessionManager shareManager]getRequestWithUrlString:home_URL target:self];
 
@@ -49,7 +49,9 @@
         [_refreshControl endRefreshing];
         
     }
-  
+    if (request.apiType==ZBRequestTypeLoadMore) {
+        //上拉加载
+    }
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
 
     NSArray *array=[dict objectForKey:@"authors"];
@@ -67,10 +69,13 @@
 }
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
-    //如果是刷新的数据
+    //如果是下拉刷新的数据
     if (request.apiType==ZBRequestTypeRefresh) {
         //结束刷新
         [_refreshControl endRefreshing];
+    }
+    if (request.apiType==ZBRequestTypeLoadMore) {
+        //上拉加载
     }
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
@@ -104,13 +109,16 @@
 
 - (void)timer{
     /**
-     *  刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
+     *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      *  请求下来的缓存会覆盖原有的缓存文件
      */
    [[ZBURLSessionManager shareManager] getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
     
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     
+    /**
+     * 上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore
+     */
 }
 
 

@@ -13,11 +13,12 @@
 #import "SDWebImageManager.h"
 #import "OfflineView.h"
 #import "DetailsModel.h"
-
+#import <WebKit/WebKit.h>
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate>
 
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)NSMutableArray *imageArray;
+@property (nonatomic,strong)NSMutableArray *webArray;
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)OfflineView *offlineView;
 
@@ -28,7 +29,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.imageArray=[[NSMutableArray array]init];
+    self.imageArray=[[NSMutableArray alloc]init];
+    self.webArray=[[NSMutableArray alloc]init];
     //得到沙盒cache文件夹
     NSString *cachePath= [[ZBCacheManager shareCacheManager]getCachesDirectory];
     NSString *Snapshots=@"Snapshots";
@@ -36,12 +38,13 @@
     self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
     
     [self.view addSubview:self.tableView];
-
+    
+    [self addItemWithTitle:@"star" selector:@selector(btnClick) location:NO];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 5;
+    return 11;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -49,47 +52,110 @@
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIde];
     if (!cell) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIde];
+      
     }
+    
     if (indexPath.row==0) {
-        cell.textLabel.text=@"清除缓存";
+        cell.textLabel.text=@"清除全部缓存";
         
         float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float AppCacheSize=cacheSize+imageSize;
+        float webSize=[[ZBCacheManager shareCacheManager]getWebCacheSize];//json缓存文件大小
+        float SnapshotsSize=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];//某个沙盒文件大小
+        float AppCacheSize=cacheSize+imageSize+webSize+SnapshotsSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
-  
+        
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",AppCacheSize];
-
+        
     }
     if (indexPath.row==1) {
-        cell.textLabel.text=@"缓存文件数量";
+        cell.textLabel.text=@"全部缓存数量";
+        cell.userInteractionEnabled = NO;
         
         float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-         float AppCacheCount=cacheCount+imageCount;
+        float webCount=[[ZBCacheManager shareCacheManager]getWebCacheCount];//json缓存文件个数
+        float SnapshotsCount=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];//某个沙盒文件个数
+        float AppCacheCount=cacheCount+imageCount+webCount+SnapshotsCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
     }
 
     if (indexPath.row==2) {
+        cell.textLabel.text=@"清除json缓存";
+        
+        float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
+    
+        cacheSize=cacheSize/1000.0/1000.0;
+  
+        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",cacheSize];
+
+    }
+    
+    if (indexPath.row==3) {
+        cell.textLabel.text=@"json缓存数量";
+         cell.userInteractionEnabled = NO;
+        
+        float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
+        
+        cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",cacheCount];
+        
+    }
+    
+    if (indexPath.row==4) {
+          cell.textLabel.text=@"清除图片缓存";
+        float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
+        
+         imageSize=imageSize/1000.0/1000.0;
+        
+         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",imageSize];
+    }
+    
+    if (indexPath.row==5) {
+        cell.textLabel.text=@"图片缓存数量";
+        cell.userInteractionEnabled = NO;
+        
+        float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
+        
+        cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",imageCount];
+    }
+    
+    if (indexPath.row==6) {
+        cell.textLabel.text=@"清除web缓存";
+        float webSize = [[ZBCacheManager shareCacheManager]getWebCacheSize];//web缓存大小
+        webSize=webSize/1000.0/1000.0;
+        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",webSize];
+    }
+    
+    if (indexPath.row==7) {
+        cell.textLabel.text=@"web缓存数量";
+        cell.userInteractionEnabled = NO;
+        
+        float webCount=[[ZBCacheManager shareCacheManager]getWebCacheCount];//web缓存个数
+        
+        cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",webCount];
+    }
+    
+    if (indexPath.row==8) {
         cell.textLabel.text=@"清除某个沙盒文件";
     
         float size=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];
 
         //fileUnitWithSize 转换单位方法
         cell.detailTextLabel.text=[[ZBCacheManager shareCacheManager] fileUnitWithSize:size];
-
     }
-    if (indexPath.row==3) {
+    
+    if (indexPath.row==9) {
         cell.textLabel.text=@"某个沙盒文件数量";
-      
+        cell.userInteractionEnabled = NO;
+        
         float count=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
     }
  
-    if (indexPath.row==4) {
+    if (indexPath.row==10) {
         cell.textLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
@@ -104,21 +170,52 @@
     
     if (indexPath.row==0) {
         
-        [[NSURLCache sharedURLCache]removeAllCachedResponses];
-        
-        //清除缓存
+        //清除全部缓存(此方法 包含 jsonData和web 文件夹)
         [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
             [[SDImageCache sharedImageCache] clearMemory];
+            //清除沙盒某个文件夹
+            [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path];
+            //清除系统内存文件
+            [[NSURLCache sharedURLCache]removeAllCachedResponses];
+            
+            #warning 注意 如果使用了WkWebView 要加上这个方法
+            [self clearWkWebViewCache];
             
             [self.tableView reloadData];
             
         }];
     }
-    
     if (indexPath.row==2) {
+        //清除json缓存
+        [[ZBCacheManager shareCacheManager]clearDataCache];
+          [self.tableView reloadData];
+    }
+    
+    if (indexPath.row==4) {
+        //清除图片缓存
+        [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
+            [[SDImageCache sharedImageCache] clearMemory];
+            
+            [self.tableView reloadData];
         
+        }];
+     
+    }
+    if (indexPath.row==6) {
+
+        //清除web缓存
+        [[ZBCacheManager shareCacheManager]clearWebCache];
+
+        #warning 注意 如果使用了WkWebView 要加上这个方法
+        [self clearWkWebViewCache];
+
+        [self.tableView reloadData];
+     
+    }
+    if (indexPath.row==8) {
+
         //清除某个沙盒文件内容
         [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path operation:^{
             
@@ -127,7 +224,7 @@
         }];
     }
 
-    if (indexPath.row==4) {
+    if (indexPath.row==10) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;
@@ -136,7 +233,10 @@
     }
     
 }
-
+- (void)btnClick
+{
+     [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
+}
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray
 {   
@@ -161,6 +261,7 @@
             model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
             [self.imageArray addObject:model];
             
+            //暂时不支持 html离线
             //使用SDWebImage 下载图片
             
             NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
@@ -191,9 +292,7 @@
                         NSLog(@"下载完成");
                         [self alertTitle:@"下载完成" andMessage:@""];
                         [self.offlineView hide];
-                        
-                        //   [self.tableView reloadData];
-                        
+                        // [self.tableView reloadData];
                     }
                  
                     if (error) {
@@ -203,22 +302,25 @@
                 
             }
             
-            
         }
-        
         
     }
 }
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
-    if (request.error.code==NSURLErrorCancelled)return;
-    if (request.error.code==NSURLErrorTimedOut) {
-        
-        [self alertTitle:@"请求超时" andMessage:@""];
-    }else{
-        
-        [self alertTitle:@"请求失败" andMessage:@""];
-    }
+//    if (request.apiType==ZBRequestTypeHtml) {
+//        NSLog(@"html下载失败");
+//    }else{
+        if (request.error.code==NSURLErrorCancelled)return;
+        if (request.error.code==NSURLErrorTimedOut) {
+            
+            [self alertTitle:@"请求超时" andMessage:@""];
+        }else{
+            
+            [self alertTitle:@"请求失败" andMessage:@""];
+        }
+
+  //  }
 }
 
 - (void)cancelClick
@@ -243,7 +345,43 @@
     
     return _tableView;
 }
+- (void)clearWkWebViewCache
+{
 
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
+        
+        NSSet *websiteDataTypes = [NSSet setWithArray:@[ WKWebsiteDataTypeDiskCache,
+                                                         WKWebsiteDataTypeOfflineWebApplicationCache,
+                                                         WKWebsiteDataTypeMemoryCache,
+                                                         WKWebsiteDataTypeLocalStorage,
+                                                         WKWebsiteDataTypeCookies,
+                                                         WKWebsiteDataTypeSessionStorage,
+                                                         WKWebsiteDataTypeIndexedDBDatabases,
+                                                         WKWebsiteDataTypeWebSQLDatabases]];
+        NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
+        
+        //// Execute
+        
+        [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom completionHandler:^{
+            
+            // Done
+            
+        }];
+        
+        
+    } else {
+
+        NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        NSString *cookiesFolderPath = [libraryPath stringByAppendingString:@"/Cookies"];
+        
+        NSError *errors;
+        
+        [[NSFileManager defaultManager] removeItemAtPath:cookiesFolderPath error:&errors];
+        
+    }
+
+}
 - (NSString *)progressStrWithSize:(double)size
 {
     NSString *progressStr = [NSString stringWithFormat:@"图片下载:%.1f",size* 100];

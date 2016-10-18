@@ -68,11 +68,25 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSString *)getTmpDirectory;
 
 /**
+ 创建沙盒文件夹
+
+ @param path 路径
+ */
+- (void)createDirectoryAtPath:(NSString *)path;
+/**
  * 把data内容,写入到文件
  *  @param data 
  *  @param path 路径
  */
 - (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path;
+
+/**
+ 把字符串内容,写入到文件
+
+ @param string 字符串
+ @param path   路径
+ */
+- (void)setString:(NSString*)string writeToFile:(NSString *)path;
 
 /**
  判断沙盒是否对应的值
@@ -87,9 +101,17 @@ typedef void(^ZBCacheManagerBlock)();
  *  查找存储的文件
  *  @param NSString fileName 存储的文件
  *
- *  @return 根据存储的文件，返回data在本地的存储路径
+ *  @return 根据存储的文件，返回在本地的存储路径
  */
-- (NSString *)pathWithfileName:(NSString *)key;
+- (NSString *)pathWithFileName:(NSString *)key;
+
+/**
+ *  查找存储Web的文件
+ *  @param NSString WebfileName 存储的文件
+ *
+ *  @return 根据存储的文件，返回在本地的存储路径
+ */
+- (NSString *)pathWithWebFileName:(NSString *)key;
 
 /**
  拼接路径与编码后的文件
@@ -102,16 +124,28 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)CachePath;
 
 /**
- * 显示缓存大小
+ * 显示data文件缓存大小
  * Get the size used by the disk cache
  */
 - (NSUInteger)getCacheSize;
 
 /**
- * 显示缓存个数
+ * 显示data文件缓存个数
  * Get the number of file in the disk cache
  */
 - (NSUInteger)getCacheCount;
+
+/**
+ * 显示web文件缓存大小
+ * Get the size used by the disk cache
+ */
+- (NSUInteger)getWebCacheSize;
+
+/**
+ * 显示web文件缓存个数
+ * Get the number of file in the disk cache
+ */
+- (NSUInteger)getWebCacheCount;
 
 /**
  显示文件大小
@@ -149,16 +183,22 @@ typedef void(^ZBCacheManagerBlock)();
 /** 
  *  
  *  Remove all expired cached file from disk
- *
- *  @param completion  block 后续操作
+ *  @param path   路径
+ *  @param operation  block 后续操作
  */
-- (void)automaticCleanCacheWithOperation:(ZBCacheManagerBlock)operation;
+- (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation;
 
 /**
- *  清除某一个缓存文件
+ *  清除某一个data缓存文件
  *  @param key 请求的协议地址
  */
 - (void)clearCacheForkey:(NSString *)key;
+
+/**
+ *  清除某一个web缓存文件
+ *  @param key 请求的协议地址
+ */
+- (void)clearWebCacheForkey:(NSString *)key;
 
 /**
  *  清除某一个缓存文件
@@ -166,16 +206,27 @@ typedef void(^ZBCacheManagerBlock)();
  *  @param key       请求的协议地址
  *  @param Operation  block 后续操作
  */
-- (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation;
+- (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation;
 
 /**
- *  清除缓存
+ *  清除Data缓存 /Library/Caches/AppCache/DataCache
+ *  Clear AppCache disk cached
+ */
+- (void)clearDataCache;
+
+/**
+ *  清除Data缓存 /Library/Caches/AppCache/WebCache
+ *  Clear AppCache disk cached
+ */
+- (void)clearWebCache;
+/**
+ *  清除全部缓存 /Library/Caches/AppCache
  *  Clear AppCache disk cached
  */
 - (void)clearCache;
 
 /**
- *  清除缓存
+ *  清除全部缓存 /Library/Caches/AppCache
  *  @param Operation block 后续操作
  */
 - (void)clearCacheOnOperation:(ZBCacheManagerBlock)operation;
