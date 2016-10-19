@@ -22,8 +22,9 @@
     // Do any additional setup after loading the view.
 
     /**
-     *  默认缓存路径/Library/Caches/AppCache/WebCache
+     *  默认缓存路径/Library/Caches/AppCache/HtmlCache
      */
+    //UIWebView 内存泄漏 内存上涨
     self.title=@"UIWebView";
     self.webView=[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:self.webView];
