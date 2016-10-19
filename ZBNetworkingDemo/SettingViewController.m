@@ -61,7 +61,7 @@
         
         float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float webSize=[[ZBCacheManager shareCacheManager]getHtmlCacheSize];//json缓存文件大小
+        float webSize=[[ZBCacheManager shareCacheManager]getHtmlCacheSize];//html缓存文件大小
         float SnapshotsSize=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];//某个沙盒文件大小
         float AppCacheSize=cacheSize+imageSize+webSize+SnapshotsSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
@@ -75,7 +75,7 @@
         
         float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//json缓存文件个数
+        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//html缓存文件个数
         float SnapshotsCount=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];//某个沙盒文件个数
         float AppCacheCount=cacheCount+imageCount+webCount+SnapshotsCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
@@ -123,7 +123,7 @@
     
     if (indexPath.row==6) {
         cell.textLabel.text=@"清除html缓存";
-        float webSize = [[ZBCacheManager shareCacheManager]getHtmlCacheSize];//web缓存大小
+        float webSize = [[ZBCacheManager shareCacheManager]getHtmlCacheSize];//html缓存大小
         webSize=webSize/1000.0/1000.0;
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",webSize];
     }
@@ -132,7 +132,7 @@
         cell.textLabel.text=@"html缓存数量";
         cell.userInteractionEnabled = NO;
         
-        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//web缓存个数
+        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//html缓存个数
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",webCount];
     }
@@ -171,7 +171,7 @@
     
     if (indexPath.row==0) {
         
-        //清除全部缓存(此方法 包含 jsonData和web 文件夹)
+        //清除全部缓存(此方法 包含 jsonData和html 文件夹)
         [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
@@ -206,7 +206,7 @@
     }
     if (indexPath.row==6) {
 
-        //清除web缓存
+        //清除html缓存
         [[ZBCacheManager shareCacheManager]clearHtmlCache];
 
         #warning 注意 如果使用了WkWebView 要加上这个方法
