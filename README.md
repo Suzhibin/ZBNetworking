@@ -1,5 +1,5 @@
 # ZBNetworking
-一站式缓存解决方案 集成get请求缓存,离线下载,html缓存,显示缓存大小,删除缓存等功能 — 
+一站式缓存解决方案 集成get请求缓存,离线下载,显示缓存大小,删除缓存等功能 — 
 低耦合，易扩展。
 
 ## 使用
@@ -63,20 +63,8 @@
 ```
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
 
-6.html缓存 uiwebView只要一句判断就可以使用缓存。html缓存 只是在有网的状态下加快读取速度 ,在无网状态下有缓存也无法显示。 由于uiwebView内存泄漏 demo里进入web页面内存会涨
-```objective-c
-    if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
-        NSLog(@"UIWebView读缓存");
-        NSString *html=[[ZBWebViewManager shareManager]htmlString:self.weburl];
-        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
-    }else{
-        NSLog(@"UIWebView重新请求");
-        NSURL *url = [NSURL URLWithString:self.weburl];
-        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-    }
-
 ```
-7.其他操作
+6.其他操作
 ```objective-c
 //显示缓存大小
  [[ZBCacheManager shareCacheManager]getCacheSize];
