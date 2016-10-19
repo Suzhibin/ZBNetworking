@@ -21,7 +21,6 @@
     // Do any additional setup after loading the view.
 
     //UIWebView 内存泄漏 内存会上涨
-    self.title=@"UIWebView";
     self.webView=[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:self.webView];
 

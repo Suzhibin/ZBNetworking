@@ -308,6 +308,7 @@
         WebViewController *web=[[WebViewController alloc]init];
         web.delegate=self;
         web.weburl=@"https://github.com/Suzhibin/ZBNetworking";
+        web.title=@"github";
         [self.navigationController pushViewController:web animated:YES];
     }
 }
