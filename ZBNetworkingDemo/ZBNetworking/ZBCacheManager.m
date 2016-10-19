@@ -50,6 +50,10 @@ static ZBCacheManager *Cachemanager=nil;
         [self initCachesfileWithName:PathDefault];
       
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(automaticCleanCache)
+                                                     name:UIApplicationWillTerminateNotification
+                                                   object:nil];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
         
@@ -59,7 +63,12 @@ static ZBCacheManager *Cachemanager=nil;
 }
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 #pragma mark - 获取沙盒目录

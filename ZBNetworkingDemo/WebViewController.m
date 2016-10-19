@@ -27,12 +27,8 @@
     NSURL *url = [NSURL URLWithString:self.weburl];
     [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
 
-    
-    
-
-   
-  
 }
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     
