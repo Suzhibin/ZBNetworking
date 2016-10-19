@@ -40,7 +40,7 @@
     
     [self.view addSubview:self.tableView];
     
-    [self addItemWithTitle:@"web页面" selector:@selector(btnClick) location:NO];
+    [self addItemWithTitle:@"star" selector:@selector(btnClick) location:NO];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -327,16 +327,16 @@
 - (void)btnClick
 {
     
-    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"前往web页面 请点确定" isother:@"前往web页面"];
+    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking" isother:@"立即前往"];
 }
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex==0) {
-        NSLog(@"取消");
+   
         
     }else if(buttonIndex==1){
-        NSLog(@"立即前往");
+      
         WebViewController *web=[[WebViewController alloc]init];
         web.delegate=self;
         web.weburl=@"https://github.com/Suzhibin/ZBNetworking";
