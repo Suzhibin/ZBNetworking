@@ -65,7 +65,7 @@
 
 6.html 下载
 ```objective-c
-    if ([[ZBWebViewManager shareManager]fileAtPath:self.weburl]==YES) {
+    if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.webur]==YES) {
         NSLog(@"UIWebView读缓存");
         NSString *html=[[ZBWebViewManager shareManager]htmlString:self.weburl];
         [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
