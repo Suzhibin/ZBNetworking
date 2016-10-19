@@ -48,6 +48,13 @@ typedef void(^ZBHTMLManagerBlock)();
  @param htmlString html地址
  */
 - (void)writeToCache:(NSString *)htmlString;
+
+/**
+ 写入沙盒
+
+ @param htmlString html地址
+ @param operation  回调
+ */
 - (void)writeToCache:(NSString *)htmlString Operation:(ZBHTMLManagerBlock)operation;
 
 @end
