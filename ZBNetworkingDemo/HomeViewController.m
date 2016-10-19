@@ -27,7 +27,7 @@
     _dataArray=[[NSMutableArray alloc]init];
    
     /**
-     *  默认缓存路径/Library/Caches/AppCache/DataCache
+     *  默认缓存路径/Library/Caches/AppCache
      */
     [[ZBURLSessionManager shareManager]getRequestWithUrlString:home_URL target:self];
 

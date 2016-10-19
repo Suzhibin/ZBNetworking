@@ -60,9 +60,8 @@
         
         float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float webSize=[[ZBCacheManager shareCacheManager]getHtmlCacheSize];//html缓存文件大小
         float SnapshotsSize=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];//某个沙盒文件大小
-        float AppCacheSize=cacheSize+imageSize+webSize+SnapshotsSize;
+        float AppCacheSize=cacheSize+imageSize+SnapshotsSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",AppCacheSize];
@@ -74,9 +73,8 @@
         
         float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//html缓存文件个数
         float SnapshotsCount=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];//某个沙盒文件个数
-        float AppCacheCount=cacheCount+imageCount+webCount+SnapshotsCount;
+        float AppCacheCount=cacheCount+imageCount+SnapshotsCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
     }
@@ -121,22 +119,6 @@
     }
     
     if (indexPath.row==6) {
-        cell.textLabel.text=@"清除html缓存";
-        float webSize = [[ZBCacheManager shareCacheManager]getHtmlCacheSize];//html缓存大小
-        webSize=webSize/1000.0/1000.0;
-        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",webSize];
-    }
-    
-    if (indexPath.row==7) {
-        cell.textLabel.text=@"html缓存数量";
-        cell.userInteractionEnabled = NO;
-        
-        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//html缓存个数
-        
-        cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",webCount];
-    }
-    
-    if (indexPath.row==8) {
         cell.textLabel.text=@"清除某个沙盒文件";
     
         float size=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];
@@ -145,7 +127,7 @@
         cell.detailTextLabel.text=[[ZBCacheManager shareCacheManager] fileUnitWithSize:size];
     }
     
-    if (indexPath.row==9) {
+    if (indexPath.row==7) {
         cell.textLabel.text=@"某个沙盒文件数量";
         cell.userInteractionEnabled = NO;
         
@@ -155,7 +137,7 @@
         
     }
  
-    if (indexPath.row==10) {
+    if (indexPath.row==8) {
         cell.textLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
@@ -170,7 +152,7 @@
     
     if (indexPath.row==0) {
         
-        //清除全部缓存(此方法 包含 jsonData和html 文件夹)
+        //清除json缓存后的操作
         [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
@@ -186,7 +168,7 @@
     }
     if (indexPath.row==2) {
         //清除json缓存
-        [[ZBCacheManager shareCacheManager]clearDataCache];
+        [[ZBCacheManager shareCacheManager]clearCache];
           [self.tableView reloadData];
     }
     
@@ -200,15 +182,8 @@
         }];
      
     }
+
     if (indexPath.row==6) {
-
-        //清除html缓存
-        [[ZBCacheManager shareCacheManager]clearHtmlCache];
-
-        [self.tableView reloadData];
-     
-    }
-    if (indexPath.row==8) {
 
         //清除某个沙盒文件内容
         [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path operation:^{
@@ -218,7 +193,7 @@
         }];
     }
 
-    if (indexPath.row==10) {
+    if (indexPath.row==8) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;

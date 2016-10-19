@@ -106,14 +106,6 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSString *)pathWithFileName:(NSString *)key;
 
 /**
- *  查找存储Html的文件
- *  @param NSString key 存储的文件
- *
- *  @return 根据存储的文件，返回在本地的存储路径
- */
-- (NSString *)pathWithHtmlFileName:(NSString *)key;
-
-/**
  拼接路径与编码后的文件
 
  @param key       文件
@@ -134,18 +126,6 @@ typedef void(^ZBCacheManagerBlock)();
  * Get the number of file in the disk cache
  */
 - (NSUInteger)getCacheCount;
-
-/**
- * 显示Html文件缓存大小
- * Get the size used by the disk cache
- */
-- (NSUInteger)getHtmlCacheSize;
-
-/**
- * 显示Html文件缓存个数
- * Get the number of file in the disk cache
- */
-- (NSUInteger)getHtmlCacheCount;
 
 /**
  显示文件大小
@@ -195,12 +175,6 @@ typedef void(^ZBCacheManagerBlock)();
 - (void)clearCacheForkey:(NSString *)key;
 
 /**
- *  清除某一个Html缓存文件
- *  @param key 请求的协议地址
- */
-- (void)clearHtmlCacheForkey:(NSString *)key;
-
-/**
  *  清除某一个缓存文件
  *
  *  @param key       请求的协议地址
@@ -208,17 +182,6 @@ typedef void(^ZBCacheManagerBlock)();
  */
 - (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation;
 
-/**
- *  清除Data缓存 /Library/Caches/AppCache/DataCache
- *  Clear AppCache disk cached
- */
-- (void)clearDataCache;
-
-/**
- *  清除Data缓存 /Library/Caches/AppCache/HtmlCache
- *  Clear AppCache disk cached
- */
-- (void)clearHtmlCache;
 /**
  *  清除全部缓存 /Library/Caches/AppCache
  *  Clear AppCache disk cached

@@ -10,7 +10,6 @@
 #import "DetailsModel.h"
 #import "ZBNetworking.h"
 #import "UIImageView+WebCache.h"
-#import "WebViewController.h"
 @interface DetailViewController ()<ZBURLSessionDelegate,UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
@@ -111,15 +110,7 @@
 
     return cell;
 }
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    DetailsModel *model=[_dataArray objectAtIndex:indexPath.row];
-    NSLog(@"model.weburl:%@:",model.weburl);
-    WebViewController *web=[[WebViewController alloc]init];
-    web.weburl=model.weburl;
-    [self.navigationController pushViewController:web animated:YES];
 
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

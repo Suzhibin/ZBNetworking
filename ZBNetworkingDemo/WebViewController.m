@@ -8,10 +8,9 @@
 
 #import "WebViewController.h"
 #import "ZBNetworking.h"
-#import "ZBHTMLManager.h"
+
 @interface WebViewController ()<UIWebViewDelegate>
 @property (nonatomic,strong)UIWebView *webView;
-
 @end
 
 
@@ -21,25 +20,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    /**
-     *  默认缓存路径/Library/Caches/AppCache/HtmlCache
-     */
-    //UIWebView 内存泄漏 内存上涨
+    //UIWebView 内存泄漏 内存会上涨
     self.title=@"UIWebView";
     self.webView=[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:self.webView];
-    
-    if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
-        NSLog(@"UIWebView读缓存");
-        NSString *html=[[ZBHTMLManager shareManager]htmlString:self.weburl];
-        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
-    }else{
-        NSLog(@"UIWebView重新请求");
-        NSURL *url = [NSURL URLWithString:self.weburl];
-        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-    }
+
+    NSURL *url = [NSURL URLWithString:self.weburl];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+
     
     
+
+   
   
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView

@@ -41,13 +41,7 @@ static ZBRequestManager *requestManager=nil;
     }
     return _requestDic;
 }
-- (NSMutableDictionary *)htmlRequestDic
-{
-    if (!_htmlRequestDic) {
-        _htmlRequestDic  = [[NSMutableDictionary alloc]init];
-    }
-    return _htmlRequestDic;
-}
+
 - (NSMutableArray *)channelUrlArray
 {
     if (!_channelUrlArray) {
@@ -154,17 +148,6 @@ static ZBRequestManager *requestManager=nil;
     self.manager.delegate = nil;
 }
 
-- (void)setHtmlRequestObject:(id)obj forkey:(NSString *)key{
-    
-    if (obj) {
-        [self.htmlRequestDic setObject:obj forKey:key];
-    }
-}
-
-- (void)removeHtmlRequestForkey:(NSString *)key{
-    if(!key)return;
-    [self.htmlRequestDic removeObjectForKey:key];
-}
 
 
 

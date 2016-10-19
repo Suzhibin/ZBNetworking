@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D0281241DB760EC00E13171 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0281231DB760EC00E13171 /* WebViewController.m */; };
 		7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */; };
-		7D4744E71DB462FE00636E3F /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4744E61DB462FE00636E3F /* WebViewController.m */; };
 		7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */; };
 		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
 		7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */; };
@@ -30,7 +30,6 @@
 		7DB651EC1DA8A7D8005286C7 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB651DC1DA8A7D8005286C7 /* UIView+WebCacheOperation.m */; };
 		7DD2C0E11D92379000AE0413 /* offlineDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */; };
 		7DDF4D291D94B7E600BDE173 /* h1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DDF4D281D94B7E600BDE173 /* h1.jpg */; };
-		7DF688D61DB704E100E03C53 /* ZBHTMLManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF688D51DB704E100E03C53 /* ZBHTMLManager.m */; };
 		7DF826321D5815BE000D1109 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826311D5815BE000D1109 /* main.m */; };
 		7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826341D5815BE000D1109 /* AppDelegate.m */; };
 		7DF826381D5815BE000D1109 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826371D5815BE000D1109 /* ViewController.m */; };
@@ -66,10 +65,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D0281221DB760EC00E13171 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		7D0281231DB760EC00E13171 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		7D27F5F91D98FB5B0065B1A2 /* OfflineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineView.h; sourceTree = "<group>"; };
 		7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineView.m; sourceTree = "<group>"; };
-		7D4744E51DB462FE00636E3F /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
-		7D4744E61DB462FE00636E3F /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
@@ -112,8 +111,6 @@
 		7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = offlineDownloadViewController.h; sourceTree = "<group>"; };
 		7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = offlineDownloadViewController.m; sourceTree = "<group>"; };
 		7DDF4D281D94B7E600BDE173 /* h1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = h1.jpg; sourceTree = "<group>"; };
-		7DF688D41DB704E100E03C53 /* ZBHTMLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBHTMLManager.h; sourceTree = "<group>"; };
-		7DF688D51DB704E100E03C53 /* ZBHTMLManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBHTMLManager.m; sourceTree = "<group>"; };
 		7DF8262D1D5815BE000D1109 /* ZBNetworkingDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZBNetworkingDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF826311D5815BE000D1109 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7DF826331D5815BE000D1109 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -256,8 +253,8 @@
 				7DF8267A1D58170C000D1109 /* DetailsModel.m */,
 				7DF8267B1D58170C000D1109 /* RootModel.h */,
 				7DF8267C1D58170C000D1109 /* RootModel.m */,
-				7D4744E51DB462FE00636E3F /* WebViewController.h */,
-				7D4744E61DB462FE00636E3F /* WebViewController.m */,
+				7D0281221DB760EC00E13171 /* WebViewController.h */,
+				7D0281231DB760EC00E13171 /* WebViewController.m */,
 				7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */,
 				7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */,
 				7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */,
@@ -315,8 +312,6 @@
 				7DF8266A1D581622000D1109 /* ZBURLSessionManager.h */,
 				7DF8266B1D581622000D1109 /* ZBURLSessionManager.m */,
 				7DF826731D581665000D1109 /* ZBNetworking.h */,
-				7DF688D41DB704E100E03C53 /* ZBHTMLManager.h */,
-				7DF688D51DB704E100E03C53 /* ZBHTMLManager.m */,
 			);
 			name = ZBNetworking;
 			path = ZBNetworkingDemo/ZBNetworking;
@@ -466,11 +461,10 @@
 				7DB651E81DA8A7D8005286C7 /* UIImage+MultiFormat.m in Sources */,
 				7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */,
 				7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */,
+				7D0281241DB760EC00E13171 /* WebViewController.m in Sources */,
 				7DB651EC1DA8A7D8005286C7 /* UIView+WebCacheOperation.m in Sources */,
-				7D4744E71DB462FE00636E3F /* WebViewController.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
 				7DB651E91DA8A7D8005286C7 /* UIImage+WebP.m in Sources */,
-				7DF688D61DB704E100E03C53 /* ZBHTMLManager.m in Sources */,
 				7DB651E51DA8A7D8005286C7 /* SDWebImagePrefetcher.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
 				7DF826821D58170C000D1109 /* DetailsModel.m in Sources */,
