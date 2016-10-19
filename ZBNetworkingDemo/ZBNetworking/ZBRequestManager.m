@@ -41,12 +41,12 @@ static ZBRequestManager *requestManager=nil;
     }
     return _requestDic;
 }
-- (NSMutableDictionary *)webRequestDic
+- (NSMutableDictionary *)htmlRequestDic
 {
-    if (!_webRequestDic) {
-        _webRequestDic  = [[NSMutableDictionary alloc]init];
+    if (!_htmlRequestDic) {
+        _htmlRequestDic  = [[NSMutableDictionary alloc]init];
     }
-    return _webRequestDic;
+    return _htmlRequestDic;
 }
 - (NSMutableArray *)channelUrlArray
 {
@@ -154,17 +154,16 @@ static ZBRequestManager *requestManager=nil;
     self.manager.delegate = nil;
 }
 
-- (void)setWebRequestObject:(id)obj forkey:(NSString *)key{
+- (void)setHtmlRequestObject:(id)obj forkey:(NSString *)key{
     
     if (obj) {
-        [self.webRequestDic setObject:obj forKey:key];
-        NSLog(@"webRequestDic:%@",self.webRequestDic);
+        [self.htmlRequestDic setObject:obj forKey:key];
     }
 }
 
-- (void)removeWebRequestForkey:(NSString *)key{
+- (void)removeHtmlRequestForkey:(NSString *)key{
     if(!key)return;
-    [self.webRequestDic removeObjectForKey:key];
+    [self.htmlRequestDic removeObjectForKey:key];
 }
 
 

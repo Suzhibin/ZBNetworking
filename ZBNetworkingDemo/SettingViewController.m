@@ -14,7 +14,8 @@
 #import "OfflineView.h"
 #import "DetailsModel.h"
 #import <WebKit/WebKit.h>
-@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate>
+#import "WebViewController.h"
+@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate,WebViewControllerDelegate>
 
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)NSMutableArray *imageArray;
@@ -39,7 +40,7 @@
     
     [self.view addSubview:self.tableView];
     
-    [self addItemWithTitle:@"star" selector:@selector(btnClick) location:NO];
+    [self addItemWithTitle:@"web页面" selector:@selector(btnClick) location:NO];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -60,7 +61,7 @@
         
         float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float webSize=[[ZBCacheManager shareCacheManager]getWebCacheSize];//json缓存文件大小
+        float webSize=[[ZBCacheManager shareCacheManager]getHtmlCacheSize];//json缓存文件大小
         float SnapshotsSize=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];//某个沙盒文件大小
         float AppCacheSize=cacheSize+imageSize+webSize+SnapshotsSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
@@ -74,7 +75,7 @@
         
         float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-        float webCount=[[ZBCacheManager shareCacheManager]getWebCacheCount];//json缓存文件个数
+        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//json缓存文件个数
         float SnapshotsCount=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];//某个沙盒文件个数
         float AppCacheCount=cacheCount+imageCount+webCount+SnapshotsCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
@@ -121,17 +122,17 @@
     }
     
     if (indexPath.row==6) {
-        cell.textLabel.text=@"清除web缓存";
-        float webSize = [[ZBCacheManager shareCacheManager]getWebCacheSize];//web缓存大小
+        cell.textLabel.text=@"清除html缓存";
+        float webSize = [[ZBCacheManager shareCacheManager]getHtmlCacheSize];//web缓存大小
         webSize=webSize/1000.0/1000.0;
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",webSize];
     }
     
     if (indexPath.row==7) {
-        cell.textLabel.text=@"web缓存数量";
+        cell.textLabel.text=@"html缓存数量";
         cell.userInteractionEnabled = NO;
         
-        float webCount=[[ZBCacheManager shareCacheManager]getWebCacheCount];//web缓存个数
+        float webCount=[[ZBCacheManager shareCacheManager]getHtmlCacheCount];//web缓存个数
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",webCount];
     }
@@ -206,7 +207,7 @@
     if (indexPath.row==6) {
 
         //清除web缓存
-        [[ZBCacheManager shareCacheManager]clearWebCache];
+        [[ZBCacheManager shareCacheManager]clearHtmlCache];
 
         #warning 注意 如果使用了WkWebView 要加上这个方法
         [self clearWkWebViewCache];
@@ -235,7 +236,7 @@
 }
 - (void)btnClick
 {
-     [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
+     [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"前往web页面 请点确定"];
 }
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray
@@ -330,7 +331,25 @@
     [self.offlineView hide];
     NSLog(@"取消下载");
 }
-
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex==0) {
+        NSLog(@"取消");
+        
+    }else if(buttonIndex==1){
+        NSLog(@"立即前往");
+        WebViewController *web=[[WebViewController alloc]init];
+        web.delegate=self;
+        web.weburl=@"https://github.com/Suzhibin/ZBNetworking";
+        [self.navigationController pushViewController:web animated:YES];
+    }
+}
+#pragma mark - WebViewControllerDelegate
+- (void)reloadData
+{
+    [self.tableView reloadData];
+}
 //懒加载
 - (UITableView *)tableView
 {

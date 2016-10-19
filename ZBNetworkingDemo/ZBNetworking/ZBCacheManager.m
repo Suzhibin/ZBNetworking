@@ -23,7 +23,7 @@
 
 NSString *const PathDefault =@"AppCache";
 NSString *const PathData =@"DataCache";
-NSString *const PathWeb =@"WebCache";
+NSString *const PathHtml =@"HtmlCache";
 static const NSInteger cacheMaxCacheAge  = 60*60*24*7;
 static const CGFloat unit = 1000.0;
 //static NSInteger cacheMixCacheAge = 60;
@@ -31,7 +31,7 @@ static const CGFloat unit = 1000.0;
 
 @property (nonatomic ,copy)NSString *diskCachePath;
 @property (nonatomic ,copy)NSString *dataCachePath;
-@property (nonatomic ,copy)NSString *webCachePath;
+@property (nonatomic ,copy)NSString *htmlCachePath;
 @end
 
 static ZBCacheManager *Cachemanager=nil;
@@ -53,7 +53,7 @@ static ZBCacheManager *Cachemanager=nil;
         
         [self initCachesfileWithName:PathDefault];
         [self initCachesDatafileWithName:PathData];
-        [self initCachesWebfileWithName:PathWeb];
+        [self initCachesHtmlfileWithName:PathHtml];
       
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
@@ -105,11 +105,11 @@ static ZBCacheManager *Cachemanager=nil;
     }
 }
 
-- (void)initCachesWebfileWithName:(NSString *)name
+- (void)initCachesHtmlfileWithName:(NSString *)name
 {
-    self.webCachePath = [NSString stringWithFormat:@"%@/%@", self.diskCachePath,name];
+    self.htmlCachePath = [NSString stringWithFormat:@"%@/%@", self.diskCachePath,name];
     if (self.diskCachePath) {
-        [self createDirectoryAtPath:self.webCachePath];
+        [self createDirectoryAtPath:self.htmlCachePath];
     }
 }
 
@@ -148,9 +148,9 @@ static ZBCacheManager *Cachemanager=nil;
         
 }
 
-- (NSString *)pathWithWebFileName:(NSString *)key{
+- (NSString *)pathWithHtmlFileName:(NSString *)key{
     
-    NSString *path=[self cachePathForKey:key inPath:self.webCachePath];
+    NSString *path=[self cachePathForKey:key inPath:self.htmlCachePath];
     
     return path;
     
@@ -187,13 +187,13 @@ static ZBCacheManager *Cachemanager=nil;
     return [self getFileCountWithpath:self.dataCachePath];
 }
 
-- (NSUInteger)getWebCacheSize {
+- (NSUInteger)getHtmlCacheSize {
     
-    return [self getFileSizeWithpath:self.webCachePath];
+    return [self getFileSizeWithpath:self.htmlCachePath];
 }
 
-- (NSUInteger)getWebCacheCount {
-    return [self getFileCountWithpath:self.webCachePath];
+- (NSUInteger)getHtmlCacheCount {
+    return [self getFileCountWithpath:self.htmlCachePath];
 }
 
 - (NSUInteger)getFileSizeWithpath:(NSString *)path
@@ -241,7 +241,7 @@ static ZBCacheManager *Cachemanager=nil;
 -(void)automaticCleanCache{
     
     [self automaticCleanCacheWithPath:self.dataCachePath Operation:nil];
-    [self automaticCleanCacheWithPath:self.webCachePath Operation:nil];
+    [self automaticCleanCacheWithPath:self.htmlCachePath Operation:nil];
 }
 
 - (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation
@@ -294,7 +294,7 @@ static ZBCacheManager *Cachemanager=nil;
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
-    [self automaticCleanCacheWithPath:self.webCachePath Operation:^{
+    [self automaticCleanCacheWithPath:self.htmlCachePath Operation:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
@@ -306,9 +306,9 @@ static ZBCacheManager *Cachemanager=nil;
     [self clearCacheForPath:path operation:nil];
 }
 
-- (void)clearWebCacheForkey:(NSString *)key
+- (void)clearHtmlCacheForkey:(NSString *)key
 {
-    NSString *path=[self pathWithWebFileName:key];
+    NSString *path=[self pathWithHtmlFileName:key];
     [self clearCacheForPath:path operation:nil];
 }
 
@@ -340,7 +340,7 @@ static ZBCacheManager *Cachemanager=nil;
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
         [self createDirectoryAtPath:self.diskCachePath];
         [self createDirectoryAtPath:self.dataCachePath];
-        [self createDirectoryAtPath:self.webCachePath];
+        [self createDirectoryAtPath:self.htmlCachePath];
         if (operation) {
             dispatch_sync(dispatch_get_main_queue(),^{
                 operation();
@@ -354,9 +354,9 @@ static ZBCacheManager *Cachemanager=nil;
     [self clearDiskWithpath:self.dataCachePath];
 }
 
-- (void)clearWebCache
+- (void)clearHtmlCache
 {
-    [self clearDiskWithpath:self.webCachePath];
+    [self clearDiskWithpath:self.htmlCachePath];
 }
 
 - (void)clearDiskWithpath:(NSString *)path

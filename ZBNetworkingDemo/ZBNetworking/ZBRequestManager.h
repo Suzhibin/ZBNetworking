@@ -44,9 +44,9 @@
 @property ( nonatomic, strong) NSMutableDictionary *requestDic;
 
 /**
- *  用于维护多个webRequest对象
+ *  用于维护多个HtmlRequest对象
  */
-@property ( nonatomic, strong) NSMutableDictionary *webRequestDic;
+@property ( nonatomic, strong) NSMutableDictionary *htmlRequestDic;
 
 /**
  *  离线下载栏目url容器
@@ -143,9 +143,20 @@
  */
 //- (void)clearDelegateForKey:(NSString *)key;
 
-- (void)setWebRequestObject:(id)obj forkey:(NSString *)key;
+/**
+ 添加html
 
-- (void)removeWebRequestForkey:(NSString *)key;
+ @param obj 对象
+ @param key html
+ */
+- (void)setHtmlRequestObject:(id)obj forkey:(NSString *)key;
+
+/**
+ 删除html
+
+ @param key html
+ */
+- (void)removeHtmlRequestForkey:(NSString *)key;
 
 @end
 

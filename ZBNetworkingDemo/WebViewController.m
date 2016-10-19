@@ -9,6 +9,7 @@
 #import "WebViewController.h"
 #import <WebKit/WebKit.h>
 #import "ZBNetworking.h"
+#import "ZBHTMLManager.h"
 @interface WebViewController ()<UIWebViewDelegate>
 @property (nonatomic,strong)UIWebView *webView;
 @property (nonatomic,strong)WKWebView *wkWebView;
@@ -32,15 +33,14 @@
         self.webView=[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         [self.view addSubview:self.webView];
         
-        if ([[ZBWebViewManager shareManager]fileAtPath:self.weburl]==YES) {
+        if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
             NSLog(@"UIWebView读缓存");
-            NSString *html=[[ZBWebViewManager shareManager]htmlString:self.weburl];
+            NSString *html=[[ZBHTMLManager shareManager]htmlString:self.weburl];
             [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
         }else{
             NSLog(@"UIWebView重新请求");
             NSURL *url = [NSURL URLWithString:self.weburl];
             [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-           
         }
     }else{
         //WKWebView  读缓存会慢一点,暂时没找到原因
@@ -48,9 +48,9 @@
         self.wkWebView=[[WKWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         [self.view addSubview:self.wkWebView];
         
-        if ([[ZBWebViewManager shareManager]fileAtPath:self.weburl]==YES) {
+        if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
             NSLog(@"WKWebView读缓存");
-            NSString *html=[[ZBWebViewManager shareManager]htmlString:self.weburl];
+            NSString *html=[[ZBHTMLManager shareManager]htmlString:self.weburl];
             [self.wkWebView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
         }else{
             NSLog(@"WKWebView重新请求");
@@ -78,6 +78,7 @@
     [self.webView stopLoading];
     [self.webView removeFromSuperview];
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [self.delegate reloadData];
     
 }
 - (void)didReceiveMemoryWarning {
