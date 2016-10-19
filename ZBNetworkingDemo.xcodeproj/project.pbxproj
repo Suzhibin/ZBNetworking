@@ -29,7 +29,6 @@
 		7DB651EB1DA8A7D8005286C7 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB651DA1DA8A7D8005286C7 /* UIImageView+WebCache.m */; };
 		7DB651EC1DA8A7D8005286C7 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB651DC1DA8A7D8005286C7 /* UIView+WebCacheOperation.m */; };
 		7DD2C0E11D92379000AE0413 /* offlineDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */; };
-		7DDA1BD01DB5E994006986AC /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDA1BCF1DB5E994006986AC /* WebKit.framework */; };
 		7DDF4D291D94B7E600BDE173 /* h1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DDF4D281D94B7E600BDE173 /* h1.jpg */; };
 		7DF688D61DB704E100E03C53 /* ZBHTMLManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF688D51DB704E100E03C53 /* ZBHTMLManager.m */; };
 		7DF826321D5815BE000D1109 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826311D5815BE000D1109 /* main.m */; };
@@ -112,7 +111,6 @@
 		7DB651DC1DA8A7D8005286C7 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
 		7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = offlineDownloadViewController.h; sourceTree = "<group>"; };
 		7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = offlineDownloadViewController.m; sourceTree = "<group>"; };
-		7DDA1BCF1DB5E994006986AC /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		7DDF4D281D94B7E600BDE173 /* h1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = h1.jpg; sourceTree = "<group>"; };
 		7DF688D41DB704E100E03C53 /* ZBHTMLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBHTMLManager.h; sourceTree = "<group>"; };
 		7DF688D51DB704E100E03C53 /* ZBHTMLManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBHTMLManager.m; sourceTree = "<group>"; };
@@ -154,7 +152,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DDA1BD01DB5E994006986AC /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,7 +215,6 @@
 		7DDA1BCE1DB5E994006986AC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7DDA1BCF1DB5E994006986AC /* WebKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

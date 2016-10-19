@@ -7,12 +7,11 @@
 //
 
 #import "WebViewController.h"
-#import <WebKit/WebKit.h>
 #import "ZBNetworking.h"
 #import "ZBHTMLManager.h"
 @interface WebViewController ()<UIWebViewDelegate>
 @property (nonatomic,strong)UIWebView *webView;
-@property (nonatomic,strong)WKWebView *wkWebView;
+
 @end
 
 
@@ -25,41 +24,21 @@
     /**
      *  默认缓存路径/Library/Caches/AppCache/WebCache
      */
-   
-    int num = arc4random()%2;
-    if (num) {
-           //UIWebView 内存泄漏 内存会上涨
-        self.title=@"UIWebView";
-        self.webView=[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-        [self.view addSubview:self.webView];
-        
-        if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
-            NSLog(@"UIWebView读缓存");
-            NSString *html=[[ZBHTMLManager shareManager]htmlString:self.weburl];
-            [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
-        }else{
-            NSLog(@"UIWebView重新请求");
-            NSURL *url = [NSURL URLWithString:self.weburl];
-            [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
-        }
+    self.title=@"UIWebView";
+    self.webView=[[UIWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    [self.view addSubview:self.webView];
+    
+    if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
+        NSLog(@"UIWebView读缓存");
+        NSString *html=[[ZBHTMLManager shareManager]htmlString:self.weburl];
+        [self.webView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
     }else{
-        //WKWebView  读缓存会慢一点,暂时没找到原因
-         self.title=@"WKWebView";
-        self.wkWebView=[[WKWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-        [self.view addSubview:self.wkWebView];
-        
-        if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
-            NSLog(@"WKWebView读缓存");
-            NSString *html=[[ZBHTMLManager shareManager]htmlString:self.weburl];
-            [self.wkWebView loadHTMLString:html baseURL:[NSURL URLWithString:self.weburl]];
-        }else{
-            NSLog(@"WKWebView重新请求");
-            NSURL *url = [NSURL URLWithString:self.weburl];
-            [self.wkWebView loadRequest:[NSURLRequest requestWithURL:url]];
-            
-        }
+        NSLog(@"UIWebView重新请求");
+        NSURL *url = [NSURL URLWithString:self.weburl];
+        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
     }
-  
+    
+    
   
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView

@@ -13,7 +13,6 @@
 #import "SDWebImageManager.h"
 #import "OfflineView.h"
 #import "DetailsModel.h"
-#import <WebKit/WebKit.h>
 #import "WebViewController.h"
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate,WebViewControllerDelegate>
 
@@ -181,9 +180,6 @@
             //清除系统内存文件
             [[NSURLCache sharedURLCache]removeAllCachedResponses];
             
-            #warning 注意 如果使用了WkWebView 要加上这个方法
-            [self clearWkWebViewCache];
-            
             [self.tableView reloadData];
             
         }];
@@ -208,9 +204,6 @@
 
         //清除html缓存
         [[ZBCacheManager shareCacheManager]clearHtmlCache];
-
-        #warning 注意 如果使用了WkWebView 要加上这个方法
-        [self clearWkWebViewCache];
 
         [self.tableView reloadData];
      
@@ -362,43 +355,7 @@
     
     return _tableView;
 }
-- (void)clearWkWebViewCache
-{
 
-    if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
-        
-        NSSet *websiteDataTypes = [NSSet setWithArray:@[ WKWebsiteDataTypeDiskCache,
-                                                         WKWebsiteDataTypeOfflineWebApplicationCache,
-                                                         WKWebsiteDataTypeMemoryCache,
-                                                         WKWebsiteDataTypeLocalStorage,
-                                                         WKWebsiteDataTypeCookies,
-                                                         WKWebsiteDataTypeSessionStorage,
-                                                         WKWebsiteDataTypeIndexedDBDatabases,
-                                                         WKWebsiteDataTypeWebSQLDatabases]];
-        NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
-        
-        //// Execute
-        
-        [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom completionHandler:^{
-            
-            // Done
-            
-        }];
-        
-        
-    } else {
-
-        NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        
-        NSString *cookiesFolderPath = [libraryPath stringByAppendingString:@"/Cookies"];
-        
-        NSError *errors;
-        
-        [[NSFileManager defaultManager] removeItemAtPath:cookiesFolderPath error:&errors];
-        
-    }
-
-}
 - (NSString *)progressStrWithSize:(double)size
 {
     NSString *progressStr = [NSString stringWithFormat:@"图片下载:%.1f",size* 100];
