@@ -63,7 +63,7 @@
 ```
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
 
-6.html缓存 uiwebView只要一句判断就可以使用缓存。 由于uiwebView内存泄漏 demo里进入web页面内存会涨
+6.html缓存 uiwebView只要一句判断就可以使用缓存。html缓存 只是在有网的状态下加快读取速度 ,在无网状态下有缓存也无法显示。 由于uiwebView内存泄漏 demo里进入web页面内存会涨
 ```objective-c
     if ([[ZBHTMLManager shareManager]diskhtmlUrl:self.weburl]==YES) {
         NSLog(@"UIWebView读缓存");
