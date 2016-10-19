@@ -234,10 +234,7 @@
     }
     
 }
-- (void)btnClick
-{
-     [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"前往web页面 请点确定"];
-}
+
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray
 {   
@@ -291,7 +288,7 @@
                     NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
                     if ([imageURLStr isEqualToString:lastImage]) {
                         NSLog(@"下载完成");
-                        [self alertTitle:@"下载完成" andMessage:@""];
+                        [self alertTitle:@"下载完成"andMessage:@"" isother:nil];
                         [self.offlineView hide];
                         // [self.tableView reloadData];
                     }
@@ -309,19 +306,15 @@
 }
 - (void)urlRequestFailed:(ZBURLSessionManager *)request
 {
-//    if (request.apiType==ZBRequestTypeHtml) {
-//        NSLog(@"html下载失败");
-//    }else{
-        if (request.error.code==NSURLErrorCancelled)return;
-        if (request.error.code==NSURLErrorTimedOut) {
-            
-            [self alertTitle:@"请求超时" andMessage:@""];
-        }else{
-            
-            [self alertTitle:@"请求失败" andMessage:@""];
-        }
 
-  //  }
+    if (request.error.code==NSURLErrorCancelled)return;
+    if (request.error.code==NSURLErrorTimedOut) {
+        [self alertTitle:@"请求超时" andMessage:@"" isother:nil];
+    }else{
+        [self alertTitle:@"请求失败" andMessage:@"" isother:nil];
+    }
+
+
 }
 
 - (void)cancelClick
@@ -330,6 +323,11 @@
     [[SDWebImageManager sharedManager] cancelAll];
     [self.offlineView hide];
     NSLog(@"取消下载");
+}
+- (void)btnClick
+{
+    
+    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"前往web页面 请点确定" isother:@"前往web页面"];
 }
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

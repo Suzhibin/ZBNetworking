@@ -65,11 +65,9 @@
 {
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
-        
-        [self alertTitle:@"请求超时" andMessage:@""];
+        [self alertTitle:@"请求超时" andMessage:@"" isother:nil];
     }else{
-        
-        [self alertTitle:@"请求失败" andMessage:@""];
+        [self alertTitle:@"请求失败" andMessage:@"" isother:nil];
     }
 }
 //懒加载
