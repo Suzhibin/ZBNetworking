@@ -227,7 +227,6 @@
             model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
             [self.imageArray addObject:model];
             
-            //暂时不支持 html离线
             //使用SDWebImage 下载图片
             
             NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
