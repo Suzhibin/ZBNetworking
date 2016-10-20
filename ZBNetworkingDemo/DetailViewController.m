@@ -96,7 +96,6 @@
     if (cell==nil) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     
     DetailsModel *model=[_dataArray objectAtIndex:indexPath.row];
