@@ -180,14 +180,14 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  离线下载 将栏目名字 添加到容器
  
- @param url 请求地址
+ @param name 栏目名字 或 其他 key
  */
 - (void)addObjectWithName:(NSString *)name;
 
 /**
  离线下载 将栏目名字 从容器删除
  
- @param url 请求地址
+ @param name 请求地址 或 其他 key
  */
 - (void)removeObjectWithName:(NSString *)name;
 
@@ -219,7 +219,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  post 请求
  *
  *  @param requestString 请求的协议地址
- *  @param dict          请求所用的字典
+ *  @param parameters          请求所用的字典
  *  @param delegate      代理 传实现协议的对象
  *
  */
@@ -248,7 +248,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  post 请求
  *
  *  @param requestString 请求的协议地址
- *  @param dict          请求所用的字典
+ *  @param parameters    请求所用的字典
  *  @param delegate      代理 传实现协议的对象
  *
  */

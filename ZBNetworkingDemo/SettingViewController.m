@@ -255,8 +255,9 @@
                     NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
                     if ([imageURLStr isEqualToString:lastImage]) {
                         NSLog(@"下载完成");
-                        [self alertTitle:@"下载完成"andMessage:@"" isother:nil];
+                      
                         [self.offlineView hide];
+                        [self alertTitle:@"下载完成"andMessage:@"" isother:nil];
                         // [self.tableView reloadData];
                     }
                  

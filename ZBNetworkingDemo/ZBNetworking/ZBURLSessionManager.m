@@ -221,8 +221,6 @@ static ZBURLSessionManager *sessionManager=nil;
     
         [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
         
-        [self requestToCancel:NO];
-        
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
     }else{
