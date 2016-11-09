@@ -55,7 +55,7 @@ static ZBCacheManager *Cachemanager=nil;
                                                      name:UIApplicationWillTerminateNotification
                                                    object:nil];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
         
         
     }
@@ -117,14 +117,20 @@ static ZBCacheManager *Cachemanager=nil;
 #pragma  mark - 存储
 - (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path
 {
-    if (!data) return;
-    [data writeToFile:path atomically:YES];
+    if (!data||!path) return;
+    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+        [data writeToFile:path atomically:YES];
+    });
+
 }
 
 - (void)setString:(NSString*)string writeToFile:(NSString *)path
 {
-    if (!string) return;
-    [string writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    if (!string||!path) return;
+    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+        [string writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    });
+ 
 }
 
 - (NSString *)pathWithFileName:(NSString *)key{
@@ -245,7 +251,7 @@ static ZBCacheManager *Cachemanager=nil;
     });
 }
 
-- (void)backgroundCleanDisk {
+- (void)backgroundCleanCache {
     Class UIApplicationClass = NSClassFromString(@"UIApplication");
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
         return;
