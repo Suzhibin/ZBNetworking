@@ -28,7 +28,7 @@ static const CGFloat unit = 1000.0;
 @interface ZBCacheManager ()
 
 @property (nonatomic ,copy)NSString *diskCachePath;
-@property (nonatomic, strong, nullable) dispatch_queue_t operationQueue;
+@property (nonatomic ,strong) dispatch_queue_t operationQueue;
 
 @end
 
@@ -36,7 +36,7 @@ static ZBCacheManager *Cachemanager=nil;
 
 @implementation ZBCacheManager
 
-+ (ZBCacheManager *)shareCacheManager {
++ (ZBCacheManager *)sharedCacheManager {
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -178,8 +178,8 @@ static ZBCacheManager *Cachemanager=nil;
 - (NSUInteger)getFileSizeWithpath:(NSString *)path
 {
     __block NSUInteger size = 0;
-    
-    dispatch_async(self.operationQueue, ^{
+    //sync
+    dispatch_sync(self.operationQueue, ^{
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         for (NSString *fileName in fileEnumerator) {
             NSString *filePath = [path stringByAppendingPathComponent:fileName];
@@ -195,7 +195,8 @@ static ZBCacheManager *Cachemanager=nil;
 - (NSUInteger)getFileCountWithpath:(NSString *)path
 {
     __block NSUInteger count = 0;
-    dispatch_async(self.operationQueue, ^{
+    //sync
+    dispatch_sync(self.operationQueue, ^{
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         count = [[fileEnumerator allObjects] count];
     });

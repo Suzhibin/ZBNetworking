@@ -115,7 +115,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 
  @return  “ZBURLSessionManager”对象
  */
-+ (ZBURLSessionManager *)shareManager;
++ (ZBURLSessionManager *)sharedManager;
 
 /**
  *  设置请求头 请在请求前使用该方法 如果在请求后使用 则不会起作用。

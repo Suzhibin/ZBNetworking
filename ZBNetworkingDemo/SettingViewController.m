@@ -32,7 +32,7 @@
     self.imageArray=[[NSMutableArray alloc]init];
     self.webArray=[[NSMutableArray alloc]init];
     //得到沙盒cache文件夹
-    NSString *cachePath= [[ZBCacheManager shareCacheManager]getCachesDirectory];
+    NSString *cachePath= [[ZBCacheManager sharedCacheManager]getCachesDirectory];
     NSString *Snapshots=@"Snapshots";
     //拼接cache文件夹下的 Snapshots 文件夹
     self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
@@ -58,9 +58,9 @@
     if (indexPath.row==0) {
         cell.textLabel.text=@"清除全部缓存";
         
-        float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
+        float cacheSize=[[ZBCacheManager sharedCacheManager]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float SnapshotsSize=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];//某个沙盒文件大小
+        float SnapshotsSize=[[ZBCacheManager sharedCacheManager]getFileSizeWithpath:self.path];//某个沙盒文件大小
         float AppCacheSize=cacheSize+imageSize+SnapshotsSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         
@@ -71,9 +71,9 @@
         cell.textLabel.text=@"全部缓存数量";
         cell.userInteractionEnabled = NO;
         
-        float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
+        float cacheCount=[[ZBCacheManager sharedCacheManager]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-        float SnapshotsCount=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];//某个沙盒文件个数
+        float SnapshotsCount=[[ZBCacheManager sharedCacheManager]getFileCountWithpath:self.path];//某个沙盒文件个数
         float AppCacheCount=cacheCount+imageCount+SnapshotsCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
@@ -82,10 +82,10 @@
     if (indexPath.row==2) {
         cell.textLabel.text=@"清除json缓存";
         
-        float cacheSize=[[ZBCacheManager shareCacheManager]getCacheSize];//json缓存文件大小
+        float cacheSize=[[ZBCacheManager sharedCacheManager]getCacheSize];//json缓存文件大小
     
         cacheSize=cacheSize/1000.0/1000.0;
-  
+        NSLog(@"cacheSize:%f",cacheSize);
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",cacheSize];
 
     }
@@ -94,7 +94,7 @@
         cell.textLabel.text=@"json缓存数量";
          cell.userInteractionEnabled = NO;
         
-        float cacheCount=[[ZBCacheManager shareCacheManager]getCacheCount];//json缓存文件个数
+        float cacheCount=[[ZBCacheManager sharedCacheManager]getCacheCount];//json缓存文件个数
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",cacheCount];
         
@@ -121,17 +121,17 @@
     if (indexPath.row==6) {
         cell.textLabel.text=@"清除某个沙盒文件";
     
-        float size=[[ZBCacheManager shareCacheManager]getFileSizeWithpath:self.path];
+        float size=[[ZBCacheManager sharedCacheManager]getFileSizeWithpath:self.path];
 
         //fileUnitWithSize 转换单位方法
-        cell.detailTextLabel.text=[[ZBCacheManager shareCacheManager] fileUnitWithSize:size];
+        cell.detailTextLabel.text=[[ZBCacheManager sharedCacheManager] fileUnitWithSize:size];
     }
     
     if (indexPath.row==7) {
         cell.textLabel.text=@"某个沙盒文件数量";
         cell.userInteractionEnabled = NO;
         
-        float count=[[ZBCacheManager shareCacheManager]getFileCountWithpath:self.path];
+        float count=[[ZBCacheManager sharedCacheManager]getFileCountWithpath:self.path];
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
@@ -153,12 +153,12 @@
     if (indexPath.row==0) {
         
         //清除json缓存后的操作
-        [[ZBCacheManager shareCacheManager]clearCacheOnOperation:^{
+        [[ZBCacheManager sharedCacheManager]clearCacheOnOperation:^{
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
             [[SDImageCache sharedImageCache] clearMemory];
             //清除沙盒某个文件夹
-            [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path];
+            [[ZBCacheManager sharedCacheManager]clearDiskWithpath:self.path];
             //清除系统内存文件
             [[NSURLCache sharedURLCache]removeAllCachedResponses];
             
@@ -168,7 +168,7 @@
     }
     if (indexPath.row==2) {
         //清除json缓存
-        [[ZBCacheManager shareCacheManager]clearCache];
+        [[ZBCacheManager sharedCacheManager]clearCache];
           [self.tableView reloadData];
     }
     
@@ -186,7 +186,7 @@
     if (indexPath.row==6) {
 
         //清除某个沙盒文件内容
-        [[ZBCacheManager shareCacheManager]clearDiskWithpath:self.path operation:^{
+        [[ZBCacheManager sharedCacheManager]clearDiskWithpath:self.path operation:^{
             
             [self.tableView reloadData];
             
@@ -207,7 +207,7 @@
 - (void)downloadWithArray:(NSMutableArray *)offlineArray
 {   
     //离线请求 apiType:ZBRequestTypeOffline
-    [[ZBURLSessionManager shareManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
+    [[ZBURLSessionManager sharedManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
     
     self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
     [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
@@ -231,7 +231,7 @@
             
             NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
             //如果sdwebImage 有这个图片 则不下载
-            if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]) {
+            if ([[ZBCacheManager sharedCacheManager]fileExistsAtPath:path]) {
                 NSLog(@"已经下载了");
                 self.offlineView.progressLabel.text=@"已经下载了";
             } else{
@@ -287,7 +287,7 @@
 
 - (void)cancelClick
 {
-    [[ZBURLSessionManager shareManager] requestToCancel:YES];
+    [[ZBURLSessionManager sharedManager] requestToCancel:YES];
     [[SDWebImageManager sharedManager] cancelAll];
     [self.offlineView hide];
     NSLog(@"取消下载");

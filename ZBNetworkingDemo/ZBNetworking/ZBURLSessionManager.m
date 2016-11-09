@@ -27,7 +27,7 @@ static const NSInteger timeOut = 60*60;
 static ZBURLSessionManager *sessionManager=nil;
 @implementation ZBURLSessionManager
 
-+ (ZBURLSessionManager *)shareManager {
++ (ZBURLSessionManager *)sharedManager {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sessionManager = [[ZBURLSessionManager alloc] init];
@@ -55,12 +55,12 @@ static ZBURLSessionManager *sessionManager=nil;
 
 - (NSMutableArray *)offlineUrlArray
 {
-    return [NSMutableArray arrayWithArray:[ZBRequestManager shareManager].channelUrlArray];
+    return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].channelUrlArray];
 }
 
 - (NSMutableArray *)offlineNameArray
 {
-    return [NSMutableArray arrayWithArray:[ZBRequestManager shareManager].channelNameArray];
+    return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].channelNameArray];
 }
 
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
@@ -91,30 +91,30 @@ static ZBURLSessionManager *sessionManager=nil;
 
 - (void)addObjectWithUrl:(NSString *)url
 {
-    [[ZBRequestManager shareManager]addObjectWithForKey:url isUrl:YES];
+    [[ZBRequestManager sharedManager]addObjectWithForKey:url isUrl:YES];
 }
 
 - (void)removeObjectWithUrl:(NSString *)url
 {
-    [[ZBRequestManager shareManager]removeObjectWithForkey:url isUrl:YES];
+    [[ZBRequestManager sharedManager]removeObjectWithForkey:url isUrl:YES];
 }
 
 - (void)addObjectWithName:(NSString *)name
 {
-     [[ZBRequestManager shareManager]addObjectWithForKey:name isUrl:NO];
+     [[ZBRequestManager sharedManager]addObjectWithForKey:name isUrl:NO];
 }
 
 - (void)removeObjectWithName:(NSString *)name
 {
-    [[ZBRequestManager shareManager]removeObjectWithForkey:name isUrl:NO];
+    [[ZBRequestManager sharedManager]removeObjectWithForkey:name isUrl:NO];
 }
 
 - (void)removeOfflineArray
 {
     [self.offlineUrlArray removeAllObjects];
     [self.offlineNameArray removeAllObjects];
-    [[ZBRequestManager shareManager].channelUrlArray removeAllObjects];
-    [[ZBRequestManager shareManager].channelNameArray removeAllObjects];
+    [[ZBRequestManager sharedManager].channelUrlArray removeAllObjects];
+    [[ZBRequestManager sharedManager].channelNameArray removeAllObjects];
 }
 
 #pragma  mark -  请求
@@ -156,9 +156,9 @@ static ZBURLSessionManager *sessionManager=nil;
     request.delegate = delegate;
     request.apiType = type;
        
-     NSString *path =[[ZBCacheManager shareCacheManager] pathWithFileName:requestString];
+     NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:requestString];
     
-    if ([[ZBCacheManager shareCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
+    if ([[ZBCacheManager sharedCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
     
@@ -177,7 +177,7 @@ static ZBURLSessionManager *sessionManager=nil;
        
     }
  
-    [[ZBRequestManager shareManager] setRequestObject:request forkey:requestString];
+    [[ZBRequestManager sharedManager] setRequestObject:request forkey:requestString];
     
    
     
@@ -211,15 +211,15 @@ static ZBURLSessionManager *sessionManager=nil;
 {
     if(error == nil)
     {
-        NSString *path =[[ZBCacheManager shareCacheManager] pathWithFileName:_requestString];
+        NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:_requestString];
        
-        [[ZBCacheManager shareCacheManager] setMutableData:self.downloadData writeToFile:path];
+        [[ZBCacheManager sharedCacheManager] setMutableData:self.downloadData writeToFile:path];
         
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self];
         }
     
-        [[ZBRequestManager shareManager] removeRequestForkey:_requestString];
+        [[ZBRequestManager sharedManager] removeRequestForkey:_requestString];
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         
@@ -242,17 +242,17 @@ static ZBURLSessionManager *sessionManager=nil;
 - (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field
 {
     if (value) {
-        [ZBRequestManager shareManager].value =value;
-        [[ZBRequestManager shareManager] setValue:value forHeaderField:field ];
+        [ZBRequestManager sharedManager].value =value;
+        [[ZBRequestManager sharedManager] setValue:value forHeaderField:field ];
     }
     else {
-        [[ZBRequestManager shareManager] removeHeaderForkey:field];
+        [[ZBRequestManager sharedManager] removeHeaderForkey:field];
     }
 }
 
 - (NSString *)valueForHTTPHeaderField:(NSString *)field {
     
-    return [[ZBRequestManager shareManager]objectHeaderForKey:field];
+    return [[ZBRequestManager sharedManager]objectHeaderForKey:field];
     
 }
 
@@ -298,11 +298,11 @@ static ZBURLSessionManager *sessionManager=nil;
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
     
-    if ([ZBRequestManager shareManager].value) {
+    if ([ZBRequestManager sharedManager].value) {
         
         NSMutableURLRequest *mutableRequest = [request mutableCopy];
         
-        [[[ZBRequestManager shareManager]mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+        [[[ZBRequestManager sharedManager]mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
             
             if (![mutableRequest valueForHTTPHeaderField:field]) {
                 [mutableRequest addValue: value forHTTPHeaderField:field];
@@ -333,9 +333,9 @@ static ZBURLSessionManager *sessionManager=nil;
     
     [mutableRequest setHTTPMethod: @"POST"];
     
-    if ([ZBRequestManager shareManager].value) {
+    if ([ZBRequestManager sharedManager].value) {
         
-        [[[ZBRequestManager shareManager]mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+        [[[ZBRequestManager sharedManager]mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
             
             if (![mutableRequest valueForHTTPHeaderField:field]) {
                 [mutableRequest setValue:value forHTTPHeaderField:field];

@@ -66,7 +66,7 @@
 /**
     返回单例对象
  */
-+(ZBRequestManager *)shareManager;
++(ZBRequestManager *)sharedManager;
 
 /**
  *  添加请求头

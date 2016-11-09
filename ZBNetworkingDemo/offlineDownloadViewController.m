@@ -22,7 +22,7 @@
 
 - (ZBURLSessionManager *)session {
     
-    return [ZBURLSessionManager shareManager];
+    return [ZBURLSessionManager sharedManager];
     
 }
 - (void)viewDidDisappear:(BOOL)animated

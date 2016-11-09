@@ -20,7 +20,7 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
-    NSString *path = [[ZBCacheManager shareCacheManager]getCachesDirectory];
+    NSString *path = [[ZBCacheManager sharedCacheManager]getCachesDirectory];
     NSLog(@"path = %@",path);
 
     HomeViewController *home = [[HomeViewController alloc]init];

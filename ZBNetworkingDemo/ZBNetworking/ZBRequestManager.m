@@ -25,7 +25,7 @@ static ZBRequestManager *requestManager=nil;
 
 @implementation ZBRequestManager
 
-+ (ZBRequestManager *)shareManager {
++ (ZBRequestManager *)sharedManager {
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

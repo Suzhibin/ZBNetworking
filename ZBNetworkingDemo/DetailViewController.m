@@ -26,7 +26,7 @@
      1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
      2.系统的session.delegate 是强引用, 手动取消 避免造成内存泄露.
      */
-    [[ZBURLSessionManager shareManager] requestToCancel:YES];
+    [[ZBURLSessionManager sharedManager] requestToCancel:YES];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,7 +41,7 @@
      *  [[ZBURLSessionManager shareManager] getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
      */
 
-     [[ZBURLSessionManager shareManager] getRequestWithUrlString:_urlString target:self];
+     [[ZBURLSessionManager sharedManager] getRequestWithUrlString:_urlString target:self];
 
 }
 #pragma mark - ZBURLSessionManager Delegate
