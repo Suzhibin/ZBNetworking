@@ -155,6 +155,20 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSUInteger)getFileCountWithpath:(NSString *)path;
 
 /**
+  磁盘总空间大小
+ 
+ @return size 大小
+ */
+- (NSUInteger)diskSystemSpace;
+
+/**
+ 磁盘空闲系统空间
+
+ @return size 大小
+ */
+- (NSUInteger)diskFreeSystemSpace;
+
+/**
  *
  *  Remove all expired cached file from disk
  */

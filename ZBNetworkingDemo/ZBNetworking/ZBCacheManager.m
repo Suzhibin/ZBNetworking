@@ -28,6 +28,8 @@ static const CGFloat unit = 1000.0;
 @interface ZBCacheManager ()
 
 @property (nonatomic ,copy)NSString *diskCachePath;
+@property (nonatomic, strong, nullable) dispatch_queue_t operationQueue;
+
 @end
 
 static ZBCacheManager *Cachemanager=nil;
@@ -46,6 +48,8 @@ static ZBCacheManager *Cachemanager=nil;
 - (id)init{
     self = [super init];
     if (self) {
+        
+         _operationQueue = dispatch_queue_create("ZBCacheOperation", DISPATCH_QUEUE_SERIAL);
         
         [self initCachesfileWithName:PathDefault];
       
@@ -118,7 +122,7 @@ static ZBCacheManager *Cachemanager=nil;
 - (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path
 {
     if (!data||!path) return;
-    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(self.operationQueue, ^{
         [data writeToFile:path atomically:YES];
     });
 
@@ -127,7 +131,7 @@ static ZBCacheManager *Cachemanager=nil;
 - (void)setString:(NSString*)string writeToFile:(NSString *)path
 {
     if (!string||!path) return;
-    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(self.operationQueue, ^{
         [string writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
     });
  
@@ -175,7 +179,7 @@ static ZBCacheManager *Cachemanager=nil;
 {
     __block NSUInteger size = 0;
     
-    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(self.operationQueue, ^{
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         for (NSString *fileName in fileEnumerator) {
             NSString *filePath = [path stringByAppendingPathComponent:fileName];
@@ -186,13 +190,12 @@ static ZBCacheManager *Cachemanager=nil;
     });
     
     return size;
-
 }
 
 - (NSUInteger)getFileCountWithpath:(NSString *)path
 {
     __block NSUInteger count = 0;
-    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(self.operationQueue, ^{
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         count = [[fileEnumerator allObjects] count];
     });
@@ -211,6 +214,41 @@ static ZBCacheManager *Cachemanager=nil;
   
 }
 
+- (NSUInteger)diskSystemSpace{
+    
+    __block NSUInteger size = 0.0;
+    dispatch_async(self.operationQueue, ^{
+        NSError *error=nil;
+        NSDictionary *dic = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[self getHomeDirectory] error:&error];
+        if (error) {
+            NSLog(@"error: %@", error.localizedDescription);
+        }else{
+            NSNumber *systemNumber = [dic objectForKey:NSFileSystemSize];
+            size = [systemNumber floatValue]/unit/unit/unit;
+            
+        }
+    });
+    return size;
+}
+
+- (NSUInteger)diskFreeSystemSpace{
+    
+    __block NSUInteger size = 0.0;
+    dispatch_async(self.operationQueue, ^{
+        NSError *error=nil;
+        NSDictionary *dic = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[self getHomeDirectory] error:&error];
+        if (error) {
+            NSLog(@"error: %@", error.localizedDescription);
+        }else{
+            NSNumber *freeSystemNumber = [dic objectForKey:NSFileSystemFreeSize];
+            size = [freeSystemNumber floatValue]/unit/unit/unit;
+            
+        }
+        
+    });
+    return size;
+}
+
 #pragma  mark - 清除文件
 
 -(void)automaticCleanCache{
@@ -221,7 +259,7 @@ static ZBCacheManager *Cachemanager=nil;
 
 - (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation
 {
-    dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL),^{
+    dispatch_async(self.operationQueue,^{
         
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMaxCacheAge];
         
@@ -279,12 +317,12 @@ static ZBCacheManager *Cachemanager=nil;
 
 - (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation
 {
-    dispatch_sync(dispatch_queue_create(0,DISPATCH_QUEUE_SERIAL),^{
+    dispatch_async(self.operationQueue,^{
         
         [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
         
         if (operation) {
-            dispatch_sync(dispatch_get_main_queue(),^{
+            dispatch_async(dispatch_get_main_queue(),^{
                 operation();
             });
         }
@@ -299,13 +337,13 @@ static ZBCacheManager *Cachemanager=nil;
 
 - (void)clearCacheOnOperation:(ZBCacheManagerBlock)operation{
 
-    dispatch_async(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(self.operationQueue, ^{
 
             //[self clearDiskWithpath:self.diskCachePath];
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
         [self createDirectoryAtPath:self.diskCachePath];
         if (operation) {
-            dispatch_sync(dispatch_get_main_queue(),^{
+            dispatch_async(dispatch_get_main_queue(),^{
                 operation();
             });
         }
@@ -319,7 +357,7 @@ static ZBCacheManager *Cachemanager=nil;
 
 - (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation
 {
-     dispatch_async(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
+     dispatch_async(self.operationQueue, ^{
   
            NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
          for (NSString *fileName in fileEnumerator)
@@ -330,7 +368,7 @@ static ZBCacheManager *Cachemanager=nil;
        
          }
          if (operation) {
-             dispatch_sync(dispatch_get_main_queue(),^{
+             dispatch_async(dispatch_get_main_queue(),^{
                  operation();
              });
          }
