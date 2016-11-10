@@ -228,10 +228,9 @@
             [self.imageArray addObject:model];
             
             //使用SDWebImage 下载图片
-            
-            NSString *path= [[SDImageCache sharedImageCache]defaultCachePathForKey:model.thumb];
-            //如果sdwebImage 有这个图片 则不下载
-            if ([[ZBCacheManager sharedCacheManager]fileExistsAtPath:path]) {
+            BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
+            if (isKey) {
+                
                 NSLog(@"已经下载了");
                 self.offlineView.progressLabel.text=@"已经下载了";
             } else{
