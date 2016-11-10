@@ -99,7 +99,7 @@ typedef void(^ZBCacheManagerBlock)();
 
 /**
  *  查找存储的文件
- *  @param NSString fileName 存储的文件
+ *  @param key  存储的文件
  *
  *  @return 根据存储的文件，返回在本地的存储路径
  */
@@ -191,7 +191,7 @@ typedef void(^ZBCacheManagerBlock)();
 /**
  *  清除某一个缓存文件
  *
- *  @param key       请求的协议地址
+ *  @param path       编码后的文件路径
  *  @param Operation  block 后续操作
  */
 - (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation;

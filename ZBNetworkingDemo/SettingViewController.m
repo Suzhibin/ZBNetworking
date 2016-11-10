@@ -13,8 +13,7 @@
 #import <SDWebImageManager.h>
 #import "OfflineView.h"
 #import "DetailsModel.h"
-#import "WebViewController.h"
-@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate,WebViewControllerDelegate>
+@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate>
 
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)NSMutableArray *imageArray;
@@ -85,7 +84,6 @@
         float cacheSize=[[ZBCacheManager sharedCacheManager]getCacheSize];//json缓存文件大小
     
         cacheSize=cacheSize/1000.0/1000.0;
-        NSLog(@"cacheSize:%f",cacheSize);
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",cacheSize];
 
     }
@@ -205,7 +203,7 @@
 
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray
-{   
+{
     //离线请求 apiType:ZBRequestTypeOffline
     [[ZBURLSessionManager sharedManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
     
@@ -213,7 +211,11 @@
     [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:self.offlineView];
 }
-
+- (void)reloadJsonNumber
+{
+    //离线页面的频道列表也会缓存的 如果无缓存，就刷新显示出来+1个缓存数量
+    [self.tableView reloadData];
+}
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request
 {
@@ -257,7 +259,7 @@
                         NSLog(@"下载完成");
                       
                         [self.offlineView hide];
-                        [self alertTitle:@"下载完成"andMessage:@"" isother:nil];
+                        [self alertTitle:@"下载完成"andMessage:@""];
                         // [self.tableView reloadData];
                     }
                  
@@ -277,9 +279,9 @@
 
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
-        [self alertTitle:@"请求超时" andMessage:@"" isother:nil];
+        [self alertTitle:@"请求超时" andMessage:@""];
     }else{
-        [self alertTitle:@"请求失败" andMessage:@"" isother:nil];
+        [self alertTitle:@"请求失败" andMessage:@""];
     }
 
 
@@ -295,28 +297,10 @@
 - (void)btnClick
 {
     
-    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking" isother:@"立即前往"];
+    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
 }
-#pragma mark - UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex==0) {
-   
-        
-    }else if(buttonIndex==1){
-      
-        WebViewController *web=[[WebViewController alloc]init];
-        web.delegate=self;
-        web.weburl=@"https://github.com/Suzhibin/ZBNetworking";
-        web.title=@"github";
-        [self.navigationController pushViewController:web animated:YES];
-    }
-}
-#pragma mark - WebViewControllerDelegate
-- (void)reloadData
-{
-    [self.tableView reloadData];
-}
+
+
 //懒加载
 - (UITableView *)tableView
 {

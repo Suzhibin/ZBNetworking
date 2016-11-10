@@ -79,9 +79,9 @@
     }
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
-        [self alertTitle:@"请求超时" andMessage:@"" isother:nil];
+        [self alertTitle:@"请求超时" andMessage:@""];
     }else{
-        [self alertTitle:@"请求失败" andMessage:@"" isother:nil];
+        [self alertTitle:@"请求失败" andMessage:@""];
     }
 }
 

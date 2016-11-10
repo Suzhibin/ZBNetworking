@@ -36,9 +36,9 @@
     }
     
 }
-- (void)alertTitle:(NSString *)title andMessage:(NSString *)message isother:(NSString *)other
+- (void)alertTitle:(NSString *)title andMessage:(NSString *)message
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:other, nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     //
     [alertView show];
 }

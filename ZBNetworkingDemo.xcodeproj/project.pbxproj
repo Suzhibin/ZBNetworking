@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5858D131DA3F67455D1FBE08 /* libPods-ZBNetworkingDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC7D594D1C3900452288F761 /* libPods-ZBNetworkingDemo.a */; };
-		7D0281241DB760EC00E13171 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0281231DB760EC00E13171 /* WebViewController.m */; };
 		7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */; };
 		7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */; };
 		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
@@ -50,8 +49,6 @@
 
 /* Begin PBXFileReference section */
 		1CA1FAC5ED551289DF1EC78C /* Pods-ZBNetworkingDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNetworkingDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNetworkingDemo/Pods-ZBNetworkingDemo.release.xcconfig"; sourceTree = "<group>"; };
-		7D0281221DB760EC00E13171 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
-		7D0281231DB760EC00E13171 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		7D27F5F91D98FB5B0065B1A2 /* OfflineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineView.h; sourceTree = "<group>"; };
 		7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineView.m; sourceTree = "<group>"; };
 		7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -176,8 +173,6 @@
 				7DF8267A1D58170C000D1109 /* DetailsModel.m */,
 				7DF8267B1D58170C000D1109 /* RootModel.h */,
 				7DF8267C1D58170C000D1109 /* RootModel.m */,
-				7D0281221DB760EC00E13171 /* WebViewController.h */,
-				7D0281231DB760EC00E13171 /* WebViewController.m */,
 				7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */,
 				7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */,
 				7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */,
@@ -427,7 +422,6 @@
 				7DF826381D5815BE000D1109 /* ViewController.m in Sources */,
 				7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */,
 				7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */,
-				7D0281241DB760EC00E13171 /* WebViewController.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
 				7DF826821D58170C000D1109 /* DetailsModel.m in Sources */,

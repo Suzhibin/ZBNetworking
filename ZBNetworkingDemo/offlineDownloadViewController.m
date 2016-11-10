@@ -31,7 +31,7 @@
    
     NSLog(@"离开页面时 清空容器");
     [self.manager removeOfflineArray];
-    
+    [self.delegate reloadJsonNumber];
 }
 
 - (void)viewDidLoad {
@@ -72,9 +72,9 @@
 {
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
-        [self alertTitle:@"请求超时" andMessage:@"" isother:nil];
+        [self alertTitle:@"请求超时" andMessage:@""];
     }else{
-        [self alertTitle:@"请求失败" andMessage:@"" isother:nil];
+        [self alertTitle:@"请求失败" andMessage:@""];
     }
 }
 
@@ -126,7 +126,7 @@
     
     if (self.manager.offlineUrlArray.count==0) {
         
-        [self alertTitle:@"请添加栏目" andMessage:@"" isother:nil];
+        [self alertTitle:@"请添加栏目" andMessage:@""];
         
     }else{
        
