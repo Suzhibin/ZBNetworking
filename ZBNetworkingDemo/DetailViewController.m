@@ -9,7 +9,7 @@
 #import "DetailViewController.h"
 #import "DetailsModel.h"
 #import "ZBNetworking.h"
-#import "UIImageView+WebCache.h"
+#import <UIImageView+WebCache.h>
 @interface DetailViewController ()<ZBURLSessionDelegate,UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;

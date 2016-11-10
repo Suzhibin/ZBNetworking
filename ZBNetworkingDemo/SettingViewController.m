@@ -9,8 +9,8 @@
 #import "SettingViewController.h"
 #import "ZBNetworking.h"
 #import "offlineDownloadViewController.h"
-#import "SDImageCache.h"
-#import "SDWebImageManager.h"
+#import <SDImageCache.h>
+#import <SDWebImageManager.h>
 #import "OfflineView.h"
 #import "DetailsModel.h"
 #import "WebViewController.h"
@@ -235,7 +235,7 @@
                 self.offlineView.progressLabel.text=@"已经下载了";
             } else{
              
-                [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
                     
                     NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
                     self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
@@ -244,6 +244,7 @@
                 } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
                 
                     NSLog(@"单个图片下载完成");
+                    self.offlineView.progressLabel.text=nil;
                     self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
                     
                     self.offlineView.pv.progress = 0.0;
