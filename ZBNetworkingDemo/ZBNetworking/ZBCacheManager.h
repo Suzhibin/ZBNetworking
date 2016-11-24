@@ -73,10 +73,12 @@ typedef void(^ZBCacheManagerBlock)();
  @param path 路径
  */
 - (void)createDirectoryAtPath:(NSString *)path;
+
 /**
- * 把data内容,写入到文件
- *  @param data 
- *  @param path 路径
+  把data内容,写入到文件
+
+ @param data 数据
+ @param path  路径
  */
 - (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path;
 
@@ -192,7 +194,7 @@ typedef void(^ZBCacheManagerBlock)();
  *  清除某一个缓存文件
  *
  *  @param path       编码后的文件路径
- *  @param Operation  block 后续操作
+ *  @param operation  block 后续操作
  */
 - (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation;
 
@@ -204,7 +206,7 @@ typedef void(^ZBCacheManagerBlock)();
 
 /**
  *  清除全部缓存 /Library/Caches/AppCache
- *  @param Operation block 后续操作
+ *  @param operation block 后续操作
  */
 - (void)clearCacheOnOperation:(ZBCacheManagerBlock)operation;
 
@@ -220,7 +222,7 @@ typedef void(^ZBCacheManagerBlock)();
  清除某一路径下的文件
 
  @param path      路径
- @param Operation block 后续操作
+ @param operation block 后续操作
  */
 - (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation;
 

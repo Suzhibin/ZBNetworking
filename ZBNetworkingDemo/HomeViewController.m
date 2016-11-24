@@ -24,7 +24,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    _dataArray=[[NSMutableArray alloc]init];
    
     /**
      *  默认缓存路径/Library/Caches/AppCache
@@ -39,12 +38,11 @@
 }
 
 #pragma mark - ZBURLSessionManager Delegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFinished:(ZBURLSessionManager *)request{
      //如果是刷新的数据
     if (request.apiType==ZBRequestTypeRefresh) {
         
-        [_dataArray removeAllObjects];
+        [self.dataArray removeAllObjects];
         //结束刷新
         [_refreshControl endRefreshing];
         
@@ -61,14 +59,13 @@
         model.name=[dic objectForKey:@"name"];
         model.wid=[dic objectForKey:@"id"];
         model.detail=[dic objectForKey:@"detail"];
-        [_dataArray addObject:model];
+        [self.dataArray addObject:model];
         
     }
     [_tableView reloadData];
     
 }
-- (void)urlRequestFailed:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFailed:(ZBURLSessionManager *)request{
     //如果是下拉刷新的数据
     if (request.apiType==ZBRequestTypeRefresh) {
         //结束刷新
@@ -87,8 +84,7 @@
 
 
 #pragma mark - 刷新
-- (UIRefreshControl *)refreshControl
-{
+- (UIRefreshControl *)refreshControl{
     if (!_refreshControl) {
 
     //下拉刷新
@@ -115,7 +111,6 @@
    [[ZBURLSessionManager sharedManager] getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
     
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
-    
     /**
      * 上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore
      */
@@ -125,8 +120,7 @@
 #pragma mark tableView
 
 //懒加载
-- (UITableView *)tableView
-{
+- (UITableView *)tableView{
     
     if (!_tableView) {
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -138,14 +132,12 @@
     return _tableView;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return _dataArray.count;
+    return self.dataArray.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     static NSString *iden=@"iden";
     
@@ -155,40 +147,39 @@
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     
-    RootModel *model=[_dataArray objectAtIndex:indexPath.row];
+    RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
     
     cell.textLabel.text=model.name;
     cell.detailTextLabel.text=[NSString stringWithFormat:@"更新时间:%@",model.detail];
-    
-    
-    
-    
     return cell;
     
 }
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    RootModel *model=[_dataArray objectAtIndex:indexPath.row];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
     DetailViewController *detailsVC=[[DetailViewController alloc]init];
     
     NSString *url=[NSString stringWithFormat:details_URL,model.wid];
     detailsVC.urlString=url;
     [self.navigationController pushViewController:detailsVC animated:YES];
-    
-    
+
 }
 
-
-- (void)btnClick
-{
+- (void)btnClick{
     
     SettingViewController *settingVC=[[SettingViewController alloc]init];
     
     [self.navigationController pushViewController:settingVC animated:YES];
     
 }
-- (void)viewDidLayoutSubviews
-{
+
+- (NSMutableArray *)dataArray {
+    if (!_dataArray) {
+        _dataArray = [[NSMutableArray alloc] init];
+    }
+    return _dataArray;
+}
+
+- (void)viewDidLayoutSubviews{
     [self.refreshControl.superview sendSubviewToBack:self.refreshControl];
 }
 

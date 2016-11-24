@@ -65,9 +65,7 @@ static ZBCacheManager *Cachemanager=nil;
     }
     return self;
 }
-- (void)dealloc
-{
-
+- (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
@@ -97,15 +95,13 @@ static ZBCacheManager *Cachemanager=nil;
 }
 
 #pragma mark - 创建存储文件夹
-- (void)initCachesfileWithName:(NSString *)name
-{
+- (void)initCachesfileWithName:(NSString *)name{
     self.diskCachePath = [NSString stringWithFormat:@"%@/%@", [self getCachesDirectory],name];
 
     [self createDirectoryAtPath:self.diskCachePath];
 }
 
-- (void)createDirectoryAtPath:(NSString *)path
-{
+- (void)createDirectoryAtPath:(NSString *)path{
     if (![self fileExistsAtPath:path]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
     } else {
@@ -113,14 +109,12 @@ static ZBCacheManager *Cachemanager=nil;
     }
 }
 
-- (BOOL)fileExistsAtPath:(NSString *)path
-{
+- (BOOL)fileExistsAtPath:(NSString *)path{
   return  [[NSFileManager defaultManager] fileExistsAtPath:path];
 }
 
 #pragma  mark - 存储
-- (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path
-{
+- (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path{
     if (!data||!path) return;
     dispatch_async(self.operationQueue, ^{
         [data writeToFile:path atomically:YES];
@@ -128,8 +122,7 @@ static ZBCacheManager *Cachemanager=nil;
 
 }
 
-- (void)setString:(NSString*)string writeToFile:(NSString *)path
-{
+- (void)setString:(NSString*)string writeToFile:(NSString *)path{
     if (!string||!path) return;
     dispatch_async(self.operationQueue, ^{
         [string writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
@@ -175,8 +168,7 @@ static ZBCacheManager *Cachemanager=nil;
     return [self getFileCountWithpath:self.diskCachePath];
 }
 
-- (NSUInteger)getFileSizeWithpath:(NSString *)path
-{
+- (NSUInteger)getFileSizeWithpath:(NSString *)path{
     __block NSUInteger size = 0;
     //sync
     dispatch_sync(self.operationQueue, ^{
@@ -192,8 +184,7 @@ static ZBCacheManager *Cachemanager=nil;
     return size;
 }
 
-- (NSUInteger)getFileCountWithpath:(NSString *)path
-{
+- (NSUInteger)getFileCountWithpath:(NSString *)path{
     __block NSUInteger count = 0;
     //sync
     dispatch_sync(self.operationQueue, ^{
@@ -203,8 +194,7 @@ static ZBCacheManager *Cachemanager=nil;
     return count;
 }
 
-- (NSString *)fileUnitWithSize:(float)size
-{
+- (NSString *)fileUnitWithSize:(float)size{
     if (size >= unit * unit * unit) { // >= 1GB
         return [NSString stringWithFormat:@"%.2fGB", size / unit / unit / unit];
     } else if (size >= unit * unit) { // >= 1MB
@@ -258,8 +248,7 @@ static ZBCacheManager *Cachemanager=nil;
    
 }
 
-- (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation
-{
+- (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation{
     dispatch_async(self.operationQueue,^{
         
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMaxCacheAge];
@@ -310,14 +299,12 @@ static ZBCacheManager *Cachemanager=nil;
     }];
 }
 
-- (void)clearCacheForkey:(NSString *)key
-{
+- (void)clearCacheForkey:(NSString *)key{
     NSString *path=[self pathWithFileName:key];
     [self clearCacheForPath:path operation:nil];
 }
 
-- (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation
-{
+- (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation{
     dispatch_async(self.operationQueue,^{
         
         [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
@@ -331,8 +318,7 @@ static ZBCacheManager *Cachemanager=nil;
     });
 }
 
-- (void)clearCache
-{
+- (void)clearCache{
      [self clearCacheOnOperation:nil];
 }
 
@@ -351,13 +337,11 @@ static ZBCacheManager *Cachemanager=nil;
     });
 }
 
-- (void)clearDiskWithpath:(NSString *)path
-{
+- (void)clearDiskWithpath:(NSString *)path{
     [self clearDiskWithpath:path operation:nil];
 }
 
-- (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation
-{
+- (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation{
      dispatch_async(self.operationQueue, ^{
   
            NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];

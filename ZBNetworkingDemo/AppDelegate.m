@@ -31,8 +31,7 @@
     [self.window makeKeyAndVisible];
     return YES;
 }
-- (void)applicationDidReceiveMemoryWarning:(UIApplication*)application
-{  
+- (void)applicationDidReceiveMemoryWarning:(UIApplication*)application{  
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 - (void)applicationWillResignActive:(UIApplication *)application {

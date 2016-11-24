@@ -18,8 +18,7 @@
 
 @implementation DetailViewController
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
 #warning 可选实现
     /**
@@ -32,7 +31,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets=NO;
-    _dataArray=[[NSMutableArray alloc]init];
     
     //    NSLog(@"urlString:%@",_urlString);
     
@@ -45,13 +43,12 @@
 
 }
 #pragma mark - ZBURLSessionManager Delegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFinished:(ZBURLSessionManager *)request{
     NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
     NSArray *array=[dataDict objectForKey:@"videos"];
     for (NSDictionary *dict in array) {
         DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
-        [_dataArray addObject:model];
+        [self.dataArray addObject:model];
         
     }
     
@@ -61,8 +58,7 @@
     
 }
 
-- (void)urlRequestFailed:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFailed:(ZBURLSessionManager *)request{
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
         [self alertTitle:@"请求超时" andMessage:@""];
@@ -71,8 +67,7 @@
     }
 }
 //懒加载
-- (UITableView *)tableView
-{
+- (UITableView *)tableView{
     
     if (!_tableView) {
         _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height-64) style:UITableViewStylePlain];
@@ -83,13 +78,11 @@
     
     return _tableView;
 }
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return _dataArray.count;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.dataArray.count;
     
 }
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *iden=@"iden";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:iden];
     
@@ -98,7 +91,7 @@
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
     }
     
-    DetailsModel *model=[_dataArray objectAtIndex:indexPath.row];
+    DetailsModel *model=[self.dataArray objectAtIndex:indexPath.row];
     
     cell.textLabel.text=model.title;
     
@@ -108,6 +101,13 @@
 
 
     return cell;
+}
+
+- (NSMutableArray *)dataArray {
+    if (!_dataArray) {
+        _dataArray = [[NSMutableArray alloc] init];
+    }
+    return _dataArray;
 }
 
 - (void)didReceiveMemoryWarning {

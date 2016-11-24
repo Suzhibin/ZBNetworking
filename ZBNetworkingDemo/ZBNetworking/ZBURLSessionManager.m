@@ -53,64 +53,52 @@ static ZBURLSessionManager *sessionManager=nil;
 
 #pragma mark - 离线下载
 
-- (NSMutableArray *)offlineUrlArray
-{
+- (NSMutableArray *)offlineUrlArray{
     return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].channelUrlArray];
 }
 
-- (NSMutableArray *)offlineNameArray
-{
+- (NSMutableArray *)offlineNameArray{
     return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].channelNameArray];
 }
 
-- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
-{
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
     [self offlineDownload:downloadArray target:delegate apiType:type operation:nil];
 }
 
-- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type operation:(ZBURLSessionManagerBlock)operation
-{
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type operation:(ZBURLSessionManagerBlock)operation{
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
     
         for (NSString *urlStr in downloadArray) {
     
             [self getRequestWithUrlString:urlStr target:delegate apiType:type];
         }
-        
         if (operation) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 operation();
             });
-            
         }
-        
     });  
 }
 
-- (void)addObjectWithUrl:(NSString *)url
-{
+- (void)addObjectWithUrl:(NSString *)url{
     [[ZBRequestManager sharedManager]addObjectWithForKey:url isUrl:YES];
 }
 
-- (void)removeObjectWithUrl:(NSString *)url
-{
+- (void)removeObjectWithUrl:(NSString *)url{
     [[ZBRequestManager sharedManager]removeObjectWithForkey:url isUrl:YES];
 }
 
-- (void)addObjectWithName:(NSString *)name
-{
+- (void)addObjectWithName:(NSString *)name{
      [[ZBRequestManager sharedManager]addObjectWithForKey:name isUrl:NO];
 }
 
-- (void)removeObjectWithName:(NSString *)name
-{
+- (void)removeObjectWithName:(NSString *)name{
     [[ZBRequestManager sharedManager]removeObjectWithForkey:name isUrl:NO];
 }
 
-- (void)removeOfflineArray
-{
+- (void)removeOfflineArray{
     [self.offlineUrlArray removeAllObjects];
     [self.offlineNameArray removeAllObjects];
     [[ZBRequestManager sharedManager].channelUrlArray removeAllObjects];
@@ -118,23 +106,19 @@ static ZBURLSessionManager *sessionManager=nil;
 }
 
 #pragma  mark -  请求
--(void)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate
-{
+-(void)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
     [ZBURLSessionManager postRequestWithUrlString:requestString parameters:parameters target:delegate];
 }
 
-- (void)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate
-{
+- (void)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate{
     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate];
 }
 
-- (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
-{
+- (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
     [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:type];
 }
 
-+(ZBURLSessionManager *)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate
-{
++(ZBURLSessionManager *)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
     ZBURLSessionManager *request = [[ZBURLSessionManager alloc] init];
     request.requestString = requestString;
     request.delegate = delegate;
@@ -144,44 +128,36 @@ static ZBURLSessionManager *sessionManager=nil;
 }
 
 +(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate{
-    
     return [ZBURLSessionManager getRequestWithUrlString:requestString target:delegate apiType:ZBRequestTypeDefault];
-    
 }
 
-+(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type
-{
++(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
     ZBURLSessionManager *request = [[ZBURLSessionManager alloc] init];
-    request.requestString = requestString;
-    request.delegate = delegate;
-    request.apiType = type;
-       
-     NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:requestString];
+    __weak __typeof(request) weakRequest = request;
+    weakRequest.requestString = requestString;
+    weakRequest.delegate = delegate;
+    weakRequest.apiType = type;
+    
+    NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:requestString];
     
     if ([[ZBCacheManager sharedCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
-    
-        ZBLog(@"cache");
-        [request.downloadData appendData:data];
-
-        if ([request.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
-            [request.delegate urlRequestFinished:request];
-        }
         
-        return request;
+        ZBLog(@"cache");
+        [weakRequest.downloadData appendData:data];
+        
+        if ([weakRequest.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
+            [weakRequest.delegate urlRequestFinished:request];
+        }
+        return weakRequest;
         
     }else{
-
-        [request getStartRequest];
-       
+        [weakRequest getStartRequest];
     }
- 
-    [[ZBRequestManager sharedManager] setRequestObject:request forkey:requestString];
     
-   
-    
-    return request;
+    [[ZBRequestManager sharedManager] setRequestObject:weakRequest forkey:requestString];
+    return weakRequest;
 }
 
 #pragma mark - NSURLSessionDelegate
@@ -189,42 +165,33 @@ static ZBURLSessionManager *sessionManager=nil;
 /**
  *  1.接收到服务器响应的时候调用该方法
  */
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
-{
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler{
     completionHandler(NSURLSessionResponseAllow);
 }
 
 /**
  *  接收到服务器返回数据的时候会调用该方法，如果数据较大那么该方法可能会调用多次
  */
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
-{
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data{
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-   
     [self.downloadData appendData:data];
 }
 
 /**
  *  请求完成(成功|失败)的时候会调用该方法，如果请求失败，则error有值
  */
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
-{
-    if(error == nil)
-    {
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
+    if(error == nil){
         NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:_requestString];
-       
         [[ZBCacheManager sharedCacheManager] setMutableData:self.downloadData writeToFile:path];
         
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self];
         }
-    
         [[ZBRequestManager sharedManager] removeRequestForkey:_requestString];
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        
     }else{
-
          ZBLog(@"error:%@",[error localizedDescription]);
         self.error=nil;
         self.error=error;
@@ -232,15 +199,12 @@ static ZBURLSessionManager *sessionManager=nil;
         if ([_delegate respondsToSelector:@selector(urlRequestFailed:)]) {
             [_delegate urlRequestFailed:self];
         }
-        
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
     }
 }
 
 #pragma mark - request Operation
-- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field
-{
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field{
     if (value) {
         [ZBRequestManager sharedManager].value =value;
         [[ZBRequestManager sharedManager] setValue:value forHeaderField:field ];
@@ -251,9 +215,7 @@ static ZBURLSessionManager *sessionManager=nil;
 }
 
 - (NSString *)valueForHTTPHeaderField:(NSString *)field {
-    
     return [[ZBRequestManager sharedManager]objectHeaderForKey:field];
-    
 }
 
 - (void)setTimeoutInterval:(NSTimeInterval)timeoutInterval {
@@ -263,35 +225,26 @@ static ZBURLSessionManager *sessionManager=nil;
     [self didChangeValueForKey:NSStringFromSelector(@selector(timeoutInterval))];
 }
 
-- (NSURLSession *)session
-{
+- (NSURLSession *)session{
     if (_session == nil) {
-        
         _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     }
     return _session;
 }
 
 - (void)requestToCancel:(BOOL)cancelPendingTasks{
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        
         if (cancelPendingTasks) {
-            
             [self.session invalidateAndCancel];
         } else {
-            
             [self.session finishTasksAndInvalidate];
         }
-        
     });
 }
 
 #pragma mark - get Request
-- (void)getStartRequest
-{
+- (void)getStartRequest{
      ZBLog(@"get");
-    
     NSString *string = [self.requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSURL *url = [NSURL URLWithString:string];
@@ -314,17 +267,16 @@ static ZBURLSessionManager *sessionManager=nil;
         
         ZBLog(@"get_HeaderField%@", request.allHTTPHeaderFields);
     }
-    _dataTask = [self.session dataTaskWithRequest:request];
     
-    [_dataTask resume];
+    NSURLSessionDataTask *dataTask = [self.session dataTaskWithRequest:request];
+    
+    [dataTask resume];
 
 }
 
 #pragma mark - post Request
 - (void)postStartRequestWithParameters:(NSDictionary *)parameters;{
-    
      ZBLog(@"post");
-    
     NSString *string = [_requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSURL *url = [NSURL URLWithString:string];
@@ -340,7 +292,6 @@ static ZBURLSessionManager *sessionManager=nil;
             if (![mutableRequest valueForHTTPHeaderField:field]) {
                 [mutableRequest setValue:value forHTTPHeaderField:field];
             }
-            
         }];
         
         ZBLog(@"POST_HeaderField%@", mutableRequest.allHTTPHeaderFields);
@@ -362,10 +313,9 @@ static ZBURLSessionManager *sessionManager=nil;
     
     [mutableRequest setHTTPBody:data];
     
-    _dataTask = [self.session dataTaskWithRequest:mutableRequest];
+    NSURLSessionDataTask *dataTask = [self.session dataTaskWithRequest:mutableRequest];
     
-    [_dataTask resume];
-    
+    [dataTask resume];
     
 }
 

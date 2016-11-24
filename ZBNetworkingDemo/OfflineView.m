@@ -12,8 +12,7 @@
 @end
 
 @implementation OfflineView
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -30,8 +29,7 @@
     return self;
 }
 
-- (void)hide
-{
+- (void)hide{
     [UIView animateWithDuration:0.50 animations:^{
         self.alpha = 0.0f;
     
@@ -41,8 +39,7 @@
     }];
 }
 
-- (UIView *)bjView
-{
+- (UIView *)bjView{
     if (!_bjView) {
         _bjView=[[UIView alloc]initWithFrame:CGRectMake(0, 0,self.frame.size.width, 64)];
         _bjView.backgroundColor=[UIColor whiteColor];
@@ -58,8 +55,7 @@
     return _pv;
     
 }
-- (UIButton *)cancelButton
-{
+- (UIButton *)cancelButton{
     if (!_cancelButton) {
         _cancelButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
         _cancelButton.frame=CGRectMake(10, 30, 100, 30);

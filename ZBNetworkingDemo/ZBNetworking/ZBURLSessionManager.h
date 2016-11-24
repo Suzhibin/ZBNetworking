@@ -42,14 +42,14 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  数据请求成功调用的方法
  *
- *  @param request
+ *  @param request ZBURLSessionManager
  */
 - (void)urlRequestFinished:(ZBURLSessionManager *)request;
 @optional
 /**
  *  数据请求失败调用的方法
  *
- *  @param request
+ *  @param request  ZBURLSessionManager
  */
 - (void)urlRequestFailed:(ZBURLSessionManager *)request;
 
@@ -58,8 +58,6 @@ typedef NS_ENUM(NSInteger,apiType) {
 @interface ZBURLSessionManager : NSObject<NSURLSessionDelegate>
 
 @property (nonatomic,copy)NSURLSession *session;
-
-@property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 
 @property (nonatomic, strong) NSMutableURLRequest *request;
 
@@ -71,7 +69,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  数据,提供给外部使用
  */
-@property (nonatomic,retain) NSMutableData *downloadData;
+@property (nonatomic,strong) NSMutableData *downloadData;
 
 /**
  *  delegate 赋值为实现协议的对象
@@ -147,7 +145,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  离线下载 请求方法
  *
- *  @param DownloadArray 请求列队
+ *  @param downloadArray 请求列队
  *  @param delegate      代理  传实现协议的对象
  *   @param type         用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
  */

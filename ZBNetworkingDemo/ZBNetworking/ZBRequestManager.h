@@ -24,9 +24,9 @@
 #import <UIKit/UIKit.h>
 @class ZBURLSessionManager;
 
-#define DEBUG_LOG 0
+#define ZBBUG_LOG 0
 
-#if(DEBUG_LOG == 1)
+#if(ZBBUG_LOG == 1)
 # define ZBLog(fmt, ...) NSLog((@"[函数名:%s]" " [第 %d 行]\n" fmt),  __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #else
 # define ZBLog(...);
@@ -71,8 +71,8 @@
 /**
  *  添加请求头
  *
- *  @param value
- *  @param field
+ *  @param value value
+ *  @param field field
  */
 - (void)setValue:(NSString *)value forHeaderField:(NSString *)field;
 
@@ -80,14 +80,14 @@
  *  
  *  @param key request 对象
  *
- *  @return
+ *  @return request 对象
  */
 - (NSString *)objectHeaderForKey:(NSString *)key;
 
 /**
  *  删除请求头的key
  *
- *  @param key
+ *  @param key key
  */
 - (void)removeHeaderForkey:(NSString *)key;
 
@@ -120,13 +120,14 @@
 /**
  *
  *  @param obj request 对象
- *  @param key
+ *  @param key key
  */
 - (void)setRequestObject:(id)obj forkey:(NSString *)key;
 
 /**
- *
- *  @param key 
+ 删除对应的key
+
+ @param key key
  */
 - (void)removeRequestForkey:(NSString *)key;
 

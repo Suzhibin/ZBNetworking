@@ -13,11 +13,10 @@
 #import <SDWebImageManager.h>
 #import "OfflineView.h"
 #import "DetailsModel.h"
-@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate,SDWebImageManagerDelegate>
+@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate>
 
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)NSMutableArray *imageArray;
-@property (nonatomic,strong)NSMutableArray *webArray;
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)OfflineView *offlineView;
 
@@ -28,8 +27,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.imageArray=[[NSMutableArray alloc]init];
-    self.webArray=[[NSMutableArray alloc]init];
+    
     //得到沙盒cache文件夹
     NSString *cachePath= [[ZBCacheManager sharedCacheManager]getCachesDirectory];
     NSString *Snapshots=@"Snapshots";
@@ -202,8 +200,7 @@
 }
 
 #pragma mark offlineDelegate
-- (void)downloadWithArray:(NSMutableArray *)offlineArray
-{
+- (void)downloadWithArray:(NSMutableArray *)offlineArray{
     //离线请求 apiType:ZBRequestTypeOffline
     [[ZBURLSessionManager sharedManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
     
@@ -211,14 +208,12 @@
     [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:self.offlineView];
 }
-- (void)reloadJsonNumber
-{
+- (void)reloadJsonNumber{
     //离线页面的频道列表也会缓存的 如果无缓存，就刷新显示出来+1个缓存数量
     [self.tableView reloadData];
 }
 #pragma mark - ZBURLSessionManager Delegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFinished:(ZBURLSessionManager *)request{
     //如果是离线数据
     if (request.apiType==ZBRequestTypeOffline) {
         NSLog(@"添加了几个url  就会走几遍");
@@ -240,13 +235,16 @@
                 [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
                     
                     NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
+                    
                     self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
+                    
                     self.offlineView.pv.progress =(double)receivedSize/expectedSize;
                     
                 } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
                 
                     NSLog(@"单个图片下载完成");
                     self.offlineView.progressLabel.text=nil;
+                    
                     self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
                     
                     self.offlineView.pv.progress = 0.0;
@@ -255,6 +253,7 @@
                     //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                     NSString *imageURLStr = [imageURL absoluteString];
                     NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
+                    
                     if ([imageURLStr isEqualToString:lastImage]) {
                         NSLog(@"下载完成");
                       
@@ -274,8 +273,7 @@
         
     }
 }
-- (void)urlRequestFailed:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFailed:(ZBURLSessionManager *)request{
 
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
@@ -287,23 +285,19 @@
 
 }
 
-- (void)cancelClick
-{
+- (void)cancelClick{
     [[ZBURLSessionManager sharedManager] requestToCancel:YES];
     [[SDWebImageManager sharedManager] cancelAll];
     [self.offlineView hide];
     NSLog(@"取消下载");
 }
-- (void)btnClick
-{
+- (void)btnClick{
     
     [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
 }
 
-
 //懒加载
-- (UITableView *)tableView
-{
+- (UITableView *)tableView{
     
     if (!_tableView) {
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -316,8 +310,14 @@
     return _tableView;
 }
 
-- (NSString *)progressStrWithSize:(double)size
-{
+- (NSMutableArray *)imageArray {
+    if (!_imageArray) {
+        _imageArray = [[NSMutableArray alloc] init];
+    }
+    return _imageArray;
+}
+
+- (NSString *)progressStrWithSize:(double)size{
     NSString *progressStr = [NSString stringWithFormat:@"图片下载:%.1f",size* 100];
     return  progressStr = [progressStr stringByAppendingString:@"%"];
 }

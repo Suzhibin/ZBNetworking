@@ -25,8 +25,7 @@
     return [ZBURLSessionManager sharedManager];
     
 }
-- (void)viewDidDisappear:(BOOL)animated
-{
+- (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
    
     NSLog(@"离开页面时 清空容器");
@@ -51,8 +50,7 @@
  
 }
 #pragma mark - ZBURLSessionManager Delegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFinished:(ZBURLSessionManager *)request{
 
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
     
@@ -68,8 +66,7 @@
     [_tableView reloadData];
     
 }
-- (void)urlRequestFailed:(ZBURLSessionManager *)request
-{
+- (void)urlRequestFailed:(ZBURLSessionManager *)request{
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
         [self alertTitle:@"请求超时" andMessage:@""];
@@ -102,8 +99,7 @@
     
     return cell;
 }
-- (void)switchValueChanged:(UISwitch *)sw
-{
+- (void)switchValueChanged:(UISwitch *)sw{
     RootModel *model=[self.dataArray objectAtIndex:sw.tag];
     NSString *url=[NSString stringWithFormat:details_URL,model.wid];
     
@@ -121,8 +117,7 @@
 }
 
 
-- (void)offlineBtnClick
-{
+- (void)offlineBtnClick{
     
     if (self.manager.offlineUrlArray.count==0) {
         
@@ -144,8 +139,7 @@
 }
 
 //懒加载
-- (UITableView *)tableView
-{
+- (UITableView *)tableView{
     
     if (!_tableView) {
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];

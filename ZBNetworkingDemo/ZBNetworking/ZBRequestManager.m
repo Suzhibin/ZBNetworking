@@ -34,24 +34,24 @@ static ZBRequestManager *requestManager=nil;
     return requestManager;
 }
 
-- (NSMutableDictionary *)requestDic
-{
+- (NSMutableDictionary *)requestDic{
+    
     if (!_requestDic) {
         _requestDic  = [[NSMutableDictionary alloc]init];
     }
     return _requestDic;
 }
 
-- (NSMutableArray *)channelUrlArray
-{
+- (NSMutableArray *)channelUrlArray{
+    
     if (!_channelUrlArray) {
         _channelUrlArray=[[NSMutableArray alloc]init];
     }
     return _channelUrlArray;
 }
 
-- (NSMutableArray *)channelNameArray
-{
+- (NSMutableArray *)channelNameArray{
+    
     if (!_channelNameArray) {
         _channelNameArray=[[NSMutableArray alloc]init];
     }
@@ -59,6 +59,7 @@ static ZBRequestManager *requestManager=nil;
 }
 
 - (NSMutableDictionary *)mutableHTTPRequestHeaders{
+    
     if (!_mutableHTTPRequestHeaders) {
         _mutableHTTPRequestHeaders  = [[NSMutableDictionary alloc]init];
     }
