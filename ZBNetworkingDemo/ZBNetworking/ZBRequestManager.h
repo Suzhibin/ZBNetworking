@@ -81,8 +81,14 @@
  */
 - (void)removeHeaderForkey:(NSString *)key;
 
+/**
+ *  @return urlArray 返回url数组
+ */
 - (NSMutableArray *)urlArray;
 
+/**
+ *  @return urlArray 返回name数组
+ */
 - (NSMutableArray *)nameArray;
 
 /**
