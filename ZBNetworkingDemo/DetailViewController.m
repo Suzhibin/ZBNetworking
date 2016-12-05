@@ -49,7 +49,6 @@
     for (NSDictionary *dict in array) {
         DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
         [self.dataArray addObject:model];
-        
     }
     
     [self.view addSubview:self.tableView];

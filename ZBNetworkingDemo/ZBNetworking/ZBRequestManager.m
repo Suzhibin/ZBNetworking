@@ -82,9 +82,13 @@ static ZBRequestManager *requestManager=nil;
 - (BOOL)isAddForKey:(NSString *)key isUrl:(BOOL)isUrl{
    
     if (isUrl==YES) {
-        return  [self.channelUrlArray containsObject: key];
+        @synchronized (self.channelUrlArray) {
+            return  [self.channelUrlArray containsObject: key];
+        }
     }else{
-        return  [self.channelNameArray containsObject: key];
+        @synchronized (self.channelNameArray) {
+            return  [self.channelNameArray containsObject: key];
+        }
     }
 }
 
@@ -94,26 +98,28 @@ static ZBRequestManager *requestManager=nil;
         if ([self isAddForKey:key isUrl:isUrl]==1) {
             ZBLog(@"已经包含该栏目URL");
         }else{
-            [self.channelUrlArray addObject:key];
+            @synchronized (self.channelUrlArray) {
+                [self.channelUrlArray addObject:key];
+            }
         }
-
     }else{
        
         if ([self isAddForKey:key isUrl:isUrl]==1) {
             ZBLog(@"已经包含该栏目名字");
         }else{
-            [self.channelNameArray addObject:key];
+            @synchronized (self.channelNameArray ) {
+                [self.channelNameArray addObject:key];
+            }
         }
-
     }
-    
 }
 
 - (void)removeObjectWithForkey:(NSString *)key isUrl:(BOOL)isUrl{
     if (isUrl==YES) {
          if ([self isAddForKey:key isUrl:isUrl]==1) {
-            [self.channelUrlArray removeObject:key];
-            
+             @synchronized (self.channelUrlArray) {
+                   [self.channelUrlArray removeObject:key];
+             }
         }else{
             ZBLog(@"已经删除该栏目URL");
         }
@@ -121,8 +127,9 @@ static ZBRequestManager *requestManager=nil;
     }else{
     
         if ([self isAddForKey:key isUrl:isUrl]==1) {
-            [self.channelNameArray removeObject:key];
-            
+            @synchronized (self.channelNameArray) {
+                [self.channelNameArray removeObject:key];
+            }
         }else{
             ZBLog(@"已经删除该栏目名字");
         }

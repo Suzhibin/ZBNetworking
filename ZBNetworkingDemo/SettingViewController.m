@@ -211,6 +211,8 @@
 - (void)reloadJsonNumber{
     //离线页面的频道列表也会缓存的 如果无缓存，就刷新显示出来+1个缓存数量
     [self.tableView reloadData];
+    
+
 }
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request{

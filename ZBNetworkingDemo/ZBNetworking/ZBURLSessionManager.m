@@ -68,13 +68,12 @@ static ZBURLSessionManager *sessionManager=nil;
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type operation:(ZBURLSessionManagerBlock)operation{
     dispatch_sync(dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL), ^{
     
-        for (NSString *urlStr in downloadArray) {
-    
-            [self getRequestWithUrlString:urlStr target:delegate apiType:type];
-        }
+        [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
+            [self getRequestWithUrlString:urlString target:delegate apiType:type];
+        }];
         if (operation) {
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_sync(dispatch_get_main_queue(), ^{
                 
                 operation();
             });
