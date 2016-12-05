@@ -74,29 +74,29 @@ static ZBCacheManager *Cachemanager=nil;
 }
 
 #pragma mark - 获取沙盒目录
-- (NSString *)getHomeDirectory {
+- (NSString *)homePath {
     return NSHomeDirectory();
 }
 
-- (NSString *)getDocumentDirectory{
+- (NSString *)documentPath{
     return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 }
 
-- (NSString *)getLibraryDirectory{
+- (NSString *)libraryPath{
     return [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject];
 }
 
-- (NSString *)getCachesDirectory{
+- (NSString *)cachesPath{
     return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
 }
 
-- (NSString *)getTmpDirectory{
+- (NSString *)tmpPath{
     return NSTemporaryDirectory();
 }
 
 #pragma mark - 创建存储文件夹
 - (void)initCachesfileWithName:(NSString *)name{
-    self.diskCachePath = [NSString stringWithFormat:@"%@/%@", [self getCachesDirectory],name];
+    self.diskCachePath = [NSString stringWithFormat:@"%@/%@", [self cachesPath],name];
 
     [self createDirectoryAtPath:self.diskCachePath];
 }
@@ -210,7 +210,7 @@ static ZBCacheManager *Cachemanager=nil;
     __block NSUInteger size = 0.0;
     dispatch_async(self.operationQueue, ^{
         NSError *error=nil;
-        NSDictionary *dic = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[self getHomeDirectory] error:&error];
+        NSDictionary *dic = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[self homePath] error:&error];
         if (error) {
             NSLog(@"error: %@", error.localizedDescription);
         }else{
@@ -227,7 +227,7 @@ static ZBCacheManager *Cachemanager=nil;
     __block NSUInteger size = 0.0;
     dispatch_async(self.operationQueue, ^{
         NSError *error=nil;
-        NSDictionary *dic = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[self getHomeDirectory] error:&error];
+        NSDictionary *dic = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[self homePath] error:&error];
         if (error) {
             NSLog(@"error: %@", error.localizedDescription);
         }else{

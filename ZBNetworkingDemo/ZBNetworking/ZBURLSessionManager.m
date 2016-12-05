@@ -54,11 +54,11 @@ static ZBURLSessionManager *sessionManager=nil;
 #pragma mark - 离线下载
 
 - (NSMutableArray *)offlineUrlArray{
-    return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].channelUrlArray];
+    return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].urlArray];
 }
 
 - (NSMutableArray *)offlineNameArray{
-    return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].channelNameArray];
+    return [NSMutableArray arrayWithArray:[ZBRequestManager sharedManager].nameArray];
 }
 
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
@@ -100,8 +100,8 @@ static ZBURLSessionManager *sessionManager=nil;
 - (void)removeOfflineArray{
     [self.offlineUrlArray removeAllObjects];
     [self.offlineNameArray removeAllObjects];
-    [[ZBRequestManager sharedManager].channelUrlArray removeAllObjects];
-    [[ZBRequestManager sharedManager].channelNameArray removeAllObjects];
+    [[ZBRequestManager sharedManager].urlArray removeAllObjects];
+    [[ZBRequestManager sharedManager].nameArray removeAllObjects];
 }
 
 #pragma  mark -  请求

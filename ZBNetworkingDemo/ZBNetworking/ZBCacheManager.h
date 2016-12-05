@@ -37,35 +37,35 @@ typedef void(^ZBCacheManagerBlock)();
 
  @return Home 路径
  */
-- (NSString *)getHomeDirectory;
+- (NSString *)homePath;
 
 /**
   获取沙盒Document的文件目录
 
  @return Document 路径
  */
-- (NSString *)getDocumentDirectory;
+- (NSString *)documentPath;
 
 /**
   获取沙盒Library的文件目录
  
  @return Document 路径
  */
-- (NSString *)getLibraryDirectory;
+- (NSString *)libraryPath;
 
 /**
  获取沙盒Library/Caches的文件目录
  
  @return Library/Caches 路径
  */
-- (NSString *)getCachesDirectory;
+- (NSString *)cachesPath;
 
 /**
  获取沙盒tmp的文件目录
  
  @return tmp路径
  */
-- (NSString *)getTmpDirectory;
+- (NSString *)tmpPath;
 
 /**
  创建沙盒文件夹

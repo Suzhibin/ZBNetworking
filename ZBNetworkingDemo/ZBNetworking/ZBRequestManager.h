@@ -44,16 +44,6 @@
 @property ( nonatomic, strong) NSMutableDictionary *requestDic;
 
 /**
- *  离线下载栏目url容器
- */
-@property (nonatomic,strong) NSMutableArray *channelUrlArray;
-
-/**
- *  离线下载栏目名字容器
- */
-@property (nonatomic,strong) NSMutableArray *channelNameArray;
-
-/**
  *  用于维护 请求头的request对象
  */
 @property ( nonatomic, strong) NSMutableDictionary *mutableHTTPRequestHeaders;
@@ -90,6 +80,10 @@
  *  @param key key
  */
 - (void)removeHeaderForkey:(NSString *)key;
+
+- (NSMutableArray *)urlArray;
+
+- (NSMutableArray *)nameArray;
 
 /**
  离线下载 判断栏目url 或 其他参数 是否已添加到请求容器

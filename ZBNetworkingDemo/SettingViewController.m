@@ -29,7 +29,7 @@
     // Do any additional setup after loading the view.
     
     //得到沙盒cache文件夹
-    NSString *cachePath= [[ZBCacheManager sharedCacheManager]getCachesDirectory];
+    NSString *cachePath= [[ZBCacheManager sharedCacheManager]cachesPath];
     NSString *Snapshots=@"Snapshots";
     //拼接cache文件夹下的 Snapshots 文件夹
     self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
@@ -211,8 +211,7 @@
 - (void)reloadJsonNumber{
     //离线页面的频道列表也会缓存的 如果无缓存，就刷新显示出来+1个缓存数量
     [self.tableView reloadData];
-    
-
+   
 }
 #pragma mark - ZBURLSessionManager Delegate
 - (void)urlRequestFinished:(ZBURLSessionManager *)request{

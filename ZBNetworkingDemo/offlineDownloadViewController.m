@@ -130,7 +130,7 @@
         for (NSString *name in self.manager.offlineNameArray) {
             NSLog(@"离线请求的name:%@",name);
         }
-
+       
         [self.delegate downloadWithArray:self.manager.offlineUrlArray];
         
         [self.navigationController popViewControllerAnimated:YES];

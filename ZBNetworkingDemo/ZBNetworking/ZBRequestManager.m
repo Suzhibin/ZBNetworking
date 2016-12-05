@@ -21,6 +21,19 @@
 #import "ZBRequestManager.h"
 #import "ZBURLSessionManager.h"
 
+@interface ZBRequestManager()
+/**
+ *  离线下载栏目url容器
+ */
+@property (nonatomic,strong) NSMutableArray *channelUrlArray;
+
+/**
+ *  离线下载栏目名字容器
+ */
+@property (nonatomic,strong) NSMutableArray *channelNameArray;
+
+@end
+
 static ZBRequestManager *requestManager=nil;
 
 @implementation ZBRequestManager
@@ -77,6 +90,14 @@ static ZBRequestManager *requestManager=nil;
 - (void)removeHeaderForkey:(NSString *)key{
     if(!key)return;
     [self.mutableHTTPRequestHeaders removeObjectForKey:key];
+}
+
+- (NSMutableArray *)urlArray{
+    return self.channelUrlArray;
+}
+
+- (NSMutableArray *)nameArray{
+    return self.channelNameArray;
 }
 
 - (BOOL)isAddForKey:(NSString *)key isUrl:(BOOL)isUrl{
