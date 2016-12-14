@@ -39,7 +39,7 @@
      *  [[ZBURLSessionManager shareManager] getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
      */
 
-     [[ZBURLSessionManager sharedManager] getRequestWithUrlString:_urlString target:self];
+     [[ZBURLSessionManager sharedManager]getRequestWithURL:_urlString target:self];
 
 }
 #pragma mark - ZBURLSessionManager Delegate

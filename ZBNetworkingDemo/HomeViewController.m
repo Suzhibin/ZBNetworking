@@ -28,7 +28,7 @@
     /**
      *  默认缓存路径/Library/Caches/AppCache
      */
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:home_URL target:self];
+    [[ZBURLSessionManager sharedManager]getRequestWithURL:home_URL target:self];
 
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
@@ -109,7 +109,7 @@
      *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      *  请求下来的缓存会覆盖原有的缓存文件
      */
-   [[ZBURLSessionManager sharedManager] getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+   [[ZBURLSessionManager sharedManager]getRequestWithURL:home_URL target:self apiType:ZBRequestTypeRefresh];
     
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     /**

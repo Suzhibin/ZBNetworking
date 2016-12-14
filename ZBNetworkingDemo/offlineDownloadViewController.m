@@ -42,7 +42,7 @@
      self.manager=[self session];
     
     //保证频道是最新的 不要取缓存
-    [self.manager getRequestWithUrlString:home_URL target:self apiType:ZBRequestTypeRefresh];
+    [self.manager getRequestWithURL:home_URL target:self apiType:ZBRequestTypeRefresh];
     
     [self.view addSubview:self.tableView];
   

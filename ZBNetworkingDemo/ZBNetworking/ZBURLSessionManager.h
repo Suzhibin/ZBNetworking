@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  接口(请求地址)
  */
-@property (nonatomic,copy) NSString *requestString;
+@property (nonatomic,copy) NSString *urlString;
 
 /**
  *  数据,提供给外部使用
@@ -201,7 +201,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param delegate      代理  传实现协议的对象
  *
  */
-- (void)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate;
+- (void)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate;
 
 /**
  *  get请求
@@ -211,7 +211,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
  */
-- (void )getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+- (void )getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
  *  post 请求
@@ -221,7 +221,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param delegate      代理 传实现协议的对象
  *
  */
-- (void)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
+- (void)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
 
 /**
  *  get请求
@@ -230,7 +230,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param delegate      代理  传实现协议的对象
  *
  */
-+(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate;
++(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate;
 
 /**
  *  get请求
@@ -240,7 +240,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
  */
-+(ZBURLSessionManager *)getRequestWithUrlString:(NSString *)requestString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
++(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
  *  post 请求
@@ -250,7 +250,7 @@ typedef NS_ENUM(NSInteger,apiType) {
  *  @param delegate      代理 传实现协议的对象
  *
  */
-+(ZBURLSessionManager *)postRequestWithUrlString:(NSString *)requestString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
++(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
 
 
 
