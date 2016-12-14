@@ -81,12 +81,12 @@ static ZBURLSessionManager *sessionManager=nil;
     });  
 }
 
-- (void)addObjectWithUrl:(NSString *)url{
-    [[ZBRequestManager sharedManager]addObjectWithForKey:url isUrl:YES];
+- (void)addObjectWithUrl:(NSString *)urlString{
+    [[ZBRequestManager sharedManager]addObjectWithForKey:urlString isUrl:YES];
 }
 
-- (void)removeObjectWithUrl:(NSString *)url{
-    [[ZBRequestManager sharedManager]removeObjectWithForkey:url isUrl:YES];
+- (void)removeObjectWithUrl:(NSString *)urlString{
+    [[ZBRequestManager sharedManager]removeObjectWithForkey:urlString isUrl:YES];
 }
 
 - (void)addObjectWithName:(NSString *)name{

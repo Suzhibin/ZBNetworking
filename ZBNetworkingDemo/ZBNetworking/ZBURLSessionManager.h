@@ -166,14 +166,14 @@ typedef NS_ENUM(NSInteger,apiType) {
 
  @param url 请求地址
  */
-- (void)addObjectWithUrl:(NSString *)url;
+- (void)addObjectWithUrl:(NSString *)urlString;
 
 /**
  离线下载 将url 从请求列队删除
 
  @param url 请求地址
  */
-- (void)removeObjectWithUrl:(NSString *)url;
+- (void)removeObjectWithUrl:(NSString *)urlString;
 
 /**
  离线下载 将栏目名字 添加到容器
