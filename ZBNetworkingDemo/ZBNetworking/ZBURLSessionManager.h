@@ -164,14 +164,14 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  离线下载 将url 添加到请求列队
 
- @param url 请求地址
+ @param urlString 请求地址
  */
 - (void)addObjectWithUrl:(NSString *)urlString;
 
 /**
  离线下载 将url 从请求列队删除
 
- @param url 请求地址
+ @param urlString 请求地址
  */
 - (void)removeObjectWithUrl:(NSString *)urlString;
 
@@ -197,7 +197,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param requestString 请求的协议地址
+ *  @param urlString 请求的协议地址
  *  @param delegate      代理  传实现协议的对象
  *
  */
@@ -206,7 +206,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param requestString 请求的协议地址
+ *  @param urlString 请求的协议地址
  *  @param delegate      代理 传实现协议的对象
  *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
@@ -216,7 +216,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  post 请求
  *
- *  @param requestString 请求的协议地址
+ *  @param urlString 请求的协议地址
  *  @param parameters          请求所用的字典
  *  @param delegate      代理 传实现协议的对象
  *
@@ -226,7 +226,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param requestString 请求的协议地址
+ *  @param urlString 请求的协议地址
  *  @param delegate      代理  传实现协议的对象
  *
  */
@@ -235,7 +235,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param requestString 请求的协议地址
+ *  @param urlString 请求的协议地址
  *  @param delegate      代理 传实现协议的对象
  *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
@@ -245,7 +245,7 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  post 请求
  *
- *  @param requestString 请求的协议地址
+ *  @param urlString 请求的协议地址
  *  @param parameters    请求所用的字典
  *  @param delegate      代理 传实现协议的对象
  *
