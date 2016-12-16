@@ -197,8 +197,8 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param urlString 请求的协议地址
- *  @param delegate      代理  传实现协议的对象
+ *  @param urlString    请求的协议地址
+ *  @param delegate     代理  传实现协议的对象
  *
  */
 - (void)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate;
@@ -206,9 +206,9 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param urlString 请求的协议地址
- *  @param delegate      代理 传实现协议的对象
- *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ *  @param urlString    请求的协议地址
+ *  @param delegate     代理 传实现协议的对象
+ *  @param type         用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
  */
 - (void )getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
@@ -216,8 +216,8 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  post 请求
  *
- *  @param urlString 请求的协议地址
- *  @param parameters          请求所用的字典
+ *  @param urlString    请求的协议地址
+ *  @param parameters    请求所用的字典
  *  @param delegate      代理 传实现协议的对象
  *
  */
@@ -226,8 +226,8 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param urlString 请求的协议地址
- *  @param delegate      代理  传实现协议的对象
+ *  @param urlString    请求的协议地址
+ *  @param delegate     代理  传实现协议的对象
  *
  */
 +(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate;
@@ -235,9 +235,9 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  get请求
  *
- *  @param urlString 请求的协议地址
- *  @param delegate      代理 传实现协议的对象
- *  @param type          用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ *  @param urlString    请求的协议地址
+ *  @param delegate     代理 传实现协议的对象
+ *  @param type         用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
  */
 +(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
@@ -245,9 +245,9 @@ typedef NS_ENUM(NSInteger,apiType) {
 /**
  *  post 请求
  *
- *  @param urlString 请求的协议地址
- *  @param parameters    请求所用的字典
- *  @param delegate      代理 传实现协议的对象
+ *  @param urlString    请求的协议地址
+ *  @param parameters   请求所用的字典
+ *  @param delegate     代理 传实现协议的对象
  *
  */
 +(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
