@@ -3,7 +3,7 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
 低耦合，易扩展。
 
 看的见的缓存文件
-![](http://a1.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/m/dPgAAAAAAAAA&bo=aAHwAAAAAAACB7o!&rf=photolist)
+![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
 ## 使用 AFNetworking 
 ```objective-c
