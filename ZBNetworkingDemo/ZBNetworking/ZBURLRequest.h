@@ -11,15 +11,13 @@
 
 @interface ZBURLRequest : NSObject
 
-#define ZBBUG_LOG 1
+#define ZBBUG_LOG 0
 
 #if(ZBBUG_LOG == 1)
 # define ZBLog(fmt, ...) NSLog((@"[函数名:%s]" " [第 %d 行]\n" fmt),  __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #else
 # define ZBLog(...);
 #endif
-
-typedef void(^offlineCompletion)();
 
 //用于标识不同类型的请求
 typedef NS_ENUM(NSInteger,apiType) {

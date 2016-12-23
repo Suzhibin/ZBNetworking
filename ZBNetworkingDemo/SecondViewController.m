@@ -26,17 +26,17 @@
      *  默认缓存路径/Library/Caches/AppCache
      *
      *  ZBAFNetworkHelper(AFNetworking)与 ZBURLSessionManager(自己封装的NSURLSession) 缓存策略都是ZBCacheManager来管理的 缓存文件是相通共用的   换句话说，俩个类的三种请求方法可以共存
-     */
+     */  
     if (_functionType==AFNetworking) {
-        
+        //AFNetworkHelper方法
         [self getAFdataWithApiType:ZBRequestTypeDefault];
  
     }else if (_functionType==sessionblock){
-        
+        //ZBURLSessionBlock方法
         [self getSessionBlockWithApiType:ZBRequestTypeDefault];
  
     }else if(_functionType==sessiondelegate){
-        
+        //ZBURLSessionDelegate方法
         //需要 ZBURLSessionDelegate 协议
         [[ZBURLSessionManager sharedManager]getRequestWithURL:list_URL target:self apiType:ZBRequestTypeDefault];
      
@@ -60,7 +60,8 @@
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=type;//默认为default
         request.timeoutInterval=10;
-   
+       // request.parameters=@{@"1": @"one", @"2": @"two"};
+        [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,apiType type){
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
