@@ -10,7 +10,7 @@
 #import "DetailsModel.h"
 #import "ZBNetworking.h"
 #import <UIImageView+WebCache.h>
-@interface DetailViewController ()<ZBURLSessionDelegate,UITableViewDataSource,UITableViewDelegate>
+@interface DetailViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
 
@@ -25,46 +25,46 @@
      1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
      2.系统的session.delegate 是强引用, 手动取消 避免造成内存泄露.
      */
-    [[ZBURLSessionManager sharedManager] requestToCancel:YES];
+    [[ZBAFNetworkHelper sharedHelper] requestToCancel:YES];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets=NO;
     
-    //    NSLog(@"urlString:%@",_urlString);
+        NSLog(@"urlString:%@",_urlString);
     
     /**
      *  如果页面不想要缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
-     *  [[ZBURLSessionManager shareManager] getRequestWithUrlString:url target:self apiType:ZBRequestTypeRefresh];
+     *  request.apiType==ZBRequestTypeRefresh
      */
 
-     [[ZBURLSessionManager sharedManager]getRequestWithURL:_urlString target:self];
+    [ZBAFNetworkHelper requestWithConfig:^(ZBURLRequest *request){
+        request.urlString=_urlString;
+        // request.apiType=ZBRequestTypeDefault;//默认为default
+        request.timeoutInterval=10;
+    }  success:^(id responseObj,apiType type){
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        NSArray *array=[dataDict objectForKey:@"videos"];
+        for (NSDictionary *dict in array) {
+            DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
+            [self.dataArray addObject:model];
+        }
+        [self.view addSubview:self.tableView];
+        [self.tableView reloadData];
+        
+    } failed:^(NSError *error){
+        if (error.code==NSURLErrorCancelled)return;
+        if (error.code==NSURLErrorTimedOut){
+            [self alertTitle:@"请求超时" andMessage:@""];
+        }else{
+            [self alertTitle:@"请求失败" andMessage:@""];
+        }
+    }];
 
-}
-#pragma mark - ZBURLSessionManager Delegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request{
-    NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
-    NSArray *array=[dataDict objectForKey:@"videos"];
-    for (NSDictionary *dict in array) {
-        DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
-        [self.dataArray addObject:model];
-    }
-    
-    [self.view addSubview:self.tableView];
-    [self.tableView reloadData];
-    
     
 }
 
-- (void)urlRequestFailed:(ZBURLSessionManager *)request{
-    if (request.error.code==NSURLErrorCancelled)return;
-    if (request.error.code==NSURLErrorTimedOut) {
-        [self alertTitle:@"请求超时" andMessage:@""];
-    }else{
-        [self alertTitle:@"请求失败" andMessage:@""];
-    }
-}
 //懒加载
 - (UITableView *)tableView{
     

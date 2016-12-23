@@ -23,6 +23,7 @@
     NSString *path = [[ZBCacheManager sharedCacheManager]cachesPath];
     NSLog(@"path = %@",path);
 
+   
     HomeViewController *home = [[HomeViewController alloc]init];
     UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:home];
     

@@ -19,23 +19,15 @@
 
 
 #import <Foundation/Foundation.h>
+#import "ZBURLRequest.h"
 
-@class ZBURLSessionManager;
+typedef void (^requestConfig)(ZBURLRequest *request);
 
+typedef void (^requestSuccess)(id responseObj,apiType type);
 
-typedef void(^ZBURLSessionManagerBlock)();
-//用于标识不同类型的请求
-typedef NS_ENUM(NSInteger,apiType) {
-    
-    ZBRequestTypeDefault,   //默认类型
-    ZBRequestTypeRefresh,   //重新请求 （有缓存，不读取，重新请求）
-    ZBRequestTypeLoadMore,  //加载更多
-    ZBRequestTypeDetail,    //详情
-    ZBRequestTypeOffline,   //离线    （有缓存，不读取，重新请求）
-    ZBRequestTypeCustom     //自定义
+typedef void (^requestFailed)(NSError *error);
 
-} ;
-
+typedef void (^progressBlock)(NSProgress * progress);
 
 @protocol ZBURLSessionDelegate <NSObject>
 @required
@@ -44,63 +36,30 @@ typedef NS_ENUM(NSInteger,apiType) {
  *
  *  @param request ZBURLSessionManager
  */
-- (void)urlRequestFinished:(ZBURLSessionManager *)request;
+- (void)urlRequestFinished:(ZBURLRequest *)request;
 @optional
 /**
  *  数据请求失败调用的方法
  *
  *  @param request  ZBURLSessionManager
  */
-- (void)urlRequestFailed:(ZBURLSessionManager *)request;
+- (void)urlRequestFailed:(ZBURLRequest *)request;
 
 @end
 
 @interface ZBURLSessionManager : NSObject<NSURLSessionDelegate>
 
-@property (nonatomic,copy)NSURLSession *session;
+@property (nonatomic,copy)NSURLSession *urlSession;
 
-@property (nonatomic, strong) NSMutableURLRequest *request;
+@property (nonatomic,strong) ZBURLRequest *request;
 
-/**
- *  接口(请求地址)
- */
-@property (nonatomic,copy) NSString *urlString;
+@property (nonatomic, strong) void (^requestSuccess)(id responseObj,apiType type);
 
-/**
- *  数据,提供给外部使用
- */
-@property (nonatomic,strong) NSMutableData *downloadData;
-
+@property (nonatomic, strong) void (^requestFailed)(NSError *error);
 /**
  *  delegate 赋值为实现协议的对象
  */
 @property (nonatomic,weak) id<ZBURLSessionDelegate>delegate;
-
-/**
- *  用于标识不同类型的request
- */
-@property (nonatomic,assign) apiType apiType;
-
-/**
- *  请求错误
- */
-@property (nonatomic,strong)NSError *error;
-
-/**
- *  设置超时时间  默认15秒
- *   The timeout interval, in seconds, for created requests. The default timeout interval is 15 seconds.
- */
-@property (nonatomic, assign) NSTimeInterval timeoutInterval;
-
-/**
-    离线下载 请求url列队容器
- */
-@property (nonatomic,strong) NSMutableArray *offlineUrlArray;
-
-/**
-    离线下载 请求名字列队容器
- */
-@property (nonatomic,strong) NSMutableArray *offlineNameArray;
 
 /**
  *  创建并返回一个“ZBURLSessionManager”对象
@@ -147,53 +106,12 @@ typedef NS_ENUM(NSInteger,apiType) {
  *
  *  @param downloadArray 请求列队
  *  @param delegate      代理  传实现协议的对象
- *   @param type         用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
+ *  @param type         用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
  */
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
-/**
- 离线下载 请求方法
 
- @param downloadArray 请求列队
- @param delegate      代理  传实现协议的对象
- @param type          用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
- @param operation     block 回调
- */
-- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type operation:(ZBURLSessionManagerBlock)operation;
-
-/**
- 离线下载 将url 添加到请求列队
-
- @param urlString 请求地址
- */
-- (void)addObjectWithUrl:(NSString *)urlString;
-
-/**
- 离线下载 将url 从请求列队删除
-
- @param urlString 请求地址
- */
-- (void)removeObjectWithUrl:(NSString *)urlString;
-
-/**
- 离线下载 将栏目名字 添加到容器
- 
- @param name 栏目名字 或 其他 key
- */
-- (void)addObjectWithName:(NSString *)name;
-
-/**
- 离线下载 将栏目名字 从容器删除
- 
- @param name 请求地址 或 其他 key
- */
-- (void)removeObjectWithName:(NSString *)name;
-
-/**
- 离线下载 删除全部请求列队
- */
-- (void)removeOfflineArray;
-
+- (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)faile;
 /**
  *  get请求
  *
@@ -212,6 +130,16 @@ typedef NS_ENUM(NSInteger,apiType) {
  *
  */
 - (void )getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+
+/**
+ *  get请求
+ *
+ *  @param urlString        请求的协议地址
+ *  @param type             用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ *  @param success          请求成功的 Block
+ *  @param failed           请求失败的 Block
+ */
+- (void )getRequestWithURL:(NSString *)urlString apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
  *  post 请求
