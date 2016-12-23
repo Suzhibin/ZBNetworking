@@ -14,7 +14,7 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
         request.apiType=ZBRequestTypeDefault;//默认为default
         request.timeoutInterval=10;
        // request.parameters=@{@"1": @"one", @"2": @"two"};
-       // [request setValue:@"1234567890" forKey:@"apitype"];
+       // [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,apiType type){
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
