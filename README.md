@@ -1,8 +1,54 @@
 # ZBNetworking
-NSURLSession 封装 添加了请求缓存,离线下载,显示缓存大小,删除缓存等功能 — 
+AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓存大小,删除缓存等功能 — 
 低耦合，易扩展。
 
-## 使用
+看的见的缓存文件
+![](http://a1.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/m/dPgAAAAAAAAA&bo=aAHwAAAAAAACB7o!&rf=photolist)
+
+## 使用 AFNetworking 
+```objective-c
+//get请求方法 会默认创建缓存路径    
+  [ZBAFNetworkHelper requestWithConfig:^(ZBURLRequest *request){
+        request.urlString=list_URL;
+        request.methodType=ZBMethodTypeGET;//默认为GET
+        request.apiType=ZBRequestTypeDefault;//默认为default
+        request.timeoutInterval=10;
+       // request.parameters=@{@"1": @"one", @"2": @"two"};
+       // [request setValue:@"1234567890" forKey:@"apitype"];
+    }  success:^(id responseObj,apiType type){
+        //如果是刷新的数据
+        if (type==ZBRequestTypeRefresh) {
+            [self.dataArray removeAllObjects];
+            [_refreshControl endRefreshing];    //结束刷新
+        }
+        if (type==ZBRequestTypeLoadMore) {
+            //上拉加载
+        }
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        NSArray *array=[dict objectForKey:@"authors"];
+        
+        for (NSDictionary *dic in array) {
+            RootModel *model=[[RootModel alloc]init];
+            model.name=[dic objectForKey:@"name"];
+            model.wid=[dic objectForKey:@"id"];
+            model.detail=[dic objectForKey:@"detail"];
+            [self.dataArray addObject:model];
+        }
+        [self.tableView reloadData];
+        
+    } failed:^(NSError *error){
+        if (error.code==NSURLErrorCancelled)return;
+        if (error.code==NSURLErrorTimedOut){
+            [self alertTitle:@"请求超时" andMessage:@""];
+        }else{
+            [self alertTitle:@"请求失败" andMessage:@""];
+        }
+    }];
+
+```
+
+
+## 使用 NSURLSession
 1.添加#import "ZBNetworking.h"
 
 2.添加 delegate
@@ -40,8 +86,6 @@ NSURLSession 封装 添加了请求缓存,离线下载,显示缓存大小,删除
         
     }
     [_tableView reloadData];
-    
-    
     
 }
 //请求失败的方法里 进行异常判断 支持error.code所有异常
