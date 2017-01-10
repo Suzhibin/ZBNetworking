@@ -13,8 +13,8 @@
 #import <SDWebImageManager.h>
 #import "OfflineView.h"
 #import "DetailsModel.h"
-#import "ZBAFNetworkHelper.h"
-@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate,ZBURLSessionDelegate>
+#import "ZBAFNetworkManager.h"
+@interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
 
 @property (nonatomic,copy)NSString *path;
 @property (nonatomic,strong)NSMutableArray *imageArray;
@@ -199,24 +199,10 @@
 }
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
-    
-    // ZBAFNetworkHelper与 ZBURLSessionManager 缓存策略都是ZBCacheManager来管理的 不管前面页面用了哪个类的请求方法 离线下载的缓存文件是共用的  离线方法用哪个都可以
-    
-    int functionType=0;
-    
-    if (functionType==0) {
-        
-        [self AFRequestOffline:offlineArray];
-        
-    }else if (functionType==1){
-      
-        [self sessionBlockOffline:offlineArray];
 
-    }else if (functionType==2){
-        //需要 ZBURLSessionDelegate 协议
-      [[ZBURLSessionManager sharedManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];//离线请求 apiType:ZBRequestTypeOffline
-    }
+    [self requestOffline:offlineArray];
 
+    //创建下载进度视图
     self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
     [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:self.offlineView];
@@ -230,8 +216,8 @@
 }
 
 #pragma mark - AFNetworking
-- (void)AFRequestOffline:(NSMutableArray *)offlineArray{
-    [ZBAFNetworkHelper requestWithConfig:^(ZBURLRequest *request){
+- (void)requestOffline:(NSMutableArray *)offlineArray{
+    [ZBAFNetworkManager requestWithConfig:^(ZBURLRequest *request){
         
         request.urlArray=offlineArray;
         request.apiType=ZBRequestTypeOffline;   //离线请求 apiType:ZBRequestTypeOffline
@@ -280,7 +266,7 @@
                         if ([imageURLStr isEqualToString:lastImage]) {
                             NSLog(@"下载完成");
                             
-                            [self.offlineView hide];
+                            [self.offlineView hide];//取消下载进度视图
                             [self alertTitle:@"下载完成"andMessage:@""];
                             // [self.tableView reloadData];
                         }
@@ -295,7 +281,6 @@
             }
             
         }
-        
         
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
@@ -308,162 +293,10 @@
     
 }
 
-#pragma mark -sessionblock
-- (void)sessionBlockOffline:(NSMutableArray *)offlineArray{
-
-    [[ZBURLSessionManager sharedManager]requestWithConfig:^(ZBURLRequest *request){
-        request.urlArray=offlineArray;
-        request.apiType=ZBRequestTypeOffline;//离线请求 apiType:ZBRequestTypeOffline
-        NSLog(@"sessionblock 请求类型:%zd", request.apiType);
-    } success:^(id responseObj,apiType type){
-        //如果是刷新的数据
-        if (type==ZBRequestTypeOffline) {
-            NSLog(@"添加了几个url  就会走几遍");
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-            NSArray *array=[dict objectForKey:@"videos"];
-            for (NSDictionary *dic in array) {
-                DetailsModel *model=[[DetailsModel alloc]init];
-                model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
-                [self.imageArray addObject:model];
-                
-                //使用SDWebImage 下载图片
-                BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
-                if (isKey) {
-                    
-                    NSLog(@"已经下载了");
-                    self.offlineView.progressLabel.text=@"已经下载了";
-                } else{
-                    
-                    [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-                        
-                        NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
-                        
-                        self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
-                        
-                        self.offlineView.pv.progress =(double)receivedSize/expectedSize;
-                        
-                    } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
-                        
-                        NSLog(@"单个图片下载完成");
-                        self.offlineView.progressLabel.text=nil;
-                        
-                        self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
-                        
-                        self.offlineView.pv.progress = 0.0;
-                        
-                        [self.tableView reloadData];
-                        //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
-                        NSString *imageURLStr = [imageURL absoluteString];
-                        NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
-                        
-                        if ([imageURLStr isEqualToString:lastImage]) {
-                            NSLog(@"下载完成");
-                            
-                            [self.offlineView hide];
-                            [self alertTitle:@"下载完成"andMessage:@""];
-                            // [self.tableView reloadData];
-                        }
-                        
-                        if (error) {
-                            NSLog(@"下载失败");
-                        }
-                    }];
-                    
-                }
-                
-            }
-            
-        }
-        
-    } failed:^(NSError *error){
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut) {
-            [self alertTitle:@"请求超时" andMessage:@""];
-        }else{
-            [self alertTitle:@"请求失败" andMessage:@""];
-        }
-    }];
-    
-}
-
-#pragma mark - ZBURLSessionManager Delegate
-- (void)urlRequestFinished:(ZBURLRequest *)request{
-    //如果是离线数据
-      NSLog(@"sessiondelegate 请求类型:%zd",request.apiType);
-    if (request.apiType==ZBRequestTypeOffline) {
-        NSLog(@"添加了几个url  就会走几遍");
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
-        NSArray *array=[dict objectForKey:@"videos"];
-        for (NSDictionary *dic in array) {
-            DetailsModel *model=[[DetailsModel alloc]init];
-            model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
-            [self.imageArray addObject:model];
-            
-            //使用SDWebImage 下载图片
-            BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
-            if (isKey) {
-                
-                NSLog(@"已经下载了");
-                self.offlineView.progressLabel.text=@"已经下载了";
-            } else{
-             
-                [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-                    
-                    NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
-                    
-                    self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
-                    
-                    self.offlineView.pv.progress =(double)receivedSize/expectedSize;
-                    
-                } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
-                
-                    NSLog(@"单个图片下载完成");
-                    self.offlineView.progressLabel.text=nil;
-                    
-                    self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
-                    
-                    self.offlineView.pv.progress = 0.0;
-                    
-                    [self.tableView reloadData];
-                    //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
-                    NSString *imageURLStr = [imageURL absoluteString];
-                    NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
-                    
-                    if ([imageURLStr isEqualToString:lastImage]) {
-                        NSLog(@"下载完成");
-                      
-                        [self.offlineView hide];
-                        [self alertTitle:@"下载完成"andMessage:@""];
-                        // [self.tableView reloadData];
-                    }
-                 
-                    if (error) {
-                        NSLog(@"下载失败");
-                    }
-                }];
-                
-            }
-            
-        }
-        
-    }
-}
-- (void)urlRequestFailed:(ZBURLRequest *)request{
-
-    if (request.error.code==NSURLErrorCancelled)return;
-    if (request.error.code==NSURLErrorTimedOut) {
-        [self alertTitle:@"请求超时" andMessage:@""];
-    }else{
-        [self alertTitle:@"请求失败" andMessage:@""];
-    }
-
-
-}
-
 - (void)cancelClick{
-    [[ZBAFNetworkHelper sharedHelper] requestToCancel:YES];
-    [[SDWebImageManager sharedManager] cancelAll];
-    [self.offlineView hide];
+    [[ZBAFNetworkManager sharedHelper] requestToCancel:YES];//取消网络请求
+    [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
+    [self.offlineView hide];//取消下载进度视图
     NSLog(@"取消下载");
 }
 - (void)starBtnClick{

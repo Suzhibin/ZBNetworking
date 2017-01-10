@@ -18,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    NSArray *titleArr=[NSArray arrayWithObjects:@"AFNetworkHelper方法",@"ZBURLSessionBlock方法",@"ZBURLSessionDelegate方法", nil];
+    NSArray *titleArr=[NSArray arrayWithObjects:@"AFNetworking",@"NSURLSessionBlock",@"NSURLSessionDelegate", nil];
     for (int i=0; i<titleArr.count; i++) {
         UIButton *btn=[UIButton buttonWithType:UIButtonTypeCustom];
         btn.frame=CGRectMake(30,150+i*80,SCREEN_WIDTH-60, 40);
@@ -30,6 +30,7 @@
   
         [self.view addSubview:btn];
     }
+        [self addItemWithTitle:@"star" selector:@selector(starBtnClick) location:NO];
 }
 - (void)btnClicked:(UIButton *)btn
 {
@@ -51,7 +52,10 @@
             break;
     }
 }
-
+- (void)starBtnClick{
+    
+    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

@@ -9,7 +9,7 @@
 #ifndef ZBNetworking_h
 #define ZBNetworking_h
 
-#import "ZBAFNetworkHelper.h"
+#import "ZBAFNetworkManager.h"
 #import "ZBURLSessionManager.h"
 #import "ZBURLRequest.h"
 #import "ZBCacheManager.h"

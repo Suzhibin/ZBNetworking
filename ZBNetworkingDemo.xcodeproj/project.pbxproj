@@ -10,11 +10,11 @@
 		5858D131DA3F67455D1FBE08 /* libPods-ZBNetworkingDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC7D594D1C3900452288F761 /* libPods-ZBNetworkingDemo.a */; };
 		7D279F841E08BD0F000A62C8 /* ZBURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D279F831E08BD0F000A62C8 /* ZBURLRequest.m */; };
 		7D279F961E092EFF000A62C8 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D279F951E092EFF000A62C8 /* SecondViewController.m */; };
-		7D279F991E0931C3000A62C8 /* ZBAFNetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D279F981E0931C3000A62C8 /* ZBAFNetworkHelper.m */; };
 		7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */; };
 		7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */; };
 		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
 		7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */; };
+		7D7EC8A81E247C5300663313 /* ZBAFNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7EC8A71E247C5300663313 /* ZBAFNetworkManager.m */; };
 		7DD2C0E11D92379000AE0413 /* offlineDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */; };
 		7DF826321D5815BE000D1109 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826311D5815BE000D1109 /* main.m */; };
 		7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826341D5815BE000D1109 /* AppDelegate.m */; };
@@ -55,8 +55,6 @@
 		7D279F831E08BD0F000A62C8 /* ZBURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBURLRequest.m; sourceTree = "<group>"; };
 		7D279F941E092EFF000A62C8 /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
 		7D279F951E092EFF000A62C8 /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
-		7D279F971E0931C3000A62C8 /* ZBAFNetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBAFNetworkHelper.h; sourceTree = "<group>"; };
-		7D279F981E0931C3000A62C8 /* ZBAFNetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBAFNetworkHelper.m; sourceTree = "<group>"; };
 		7D27F5F91D98FB5B0065B1A2 /* OfflineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineView.h; sourceTree = "<group>"; };
 		7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineView.m; sourceTree = "<group>"; };
 		7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -65,6 +63,8 @@
 		7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		7D4C69D11D6D8D23006CCE4C /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7D4C69D21D6D8D23006CCE4C /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
+		7D7EC8A61E247C5300663313 /* ZBAFNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBAFNetworkManager.h; sourceTree = "<group>"; };
+		7D7EC8A71E247C5300663313 /* ZBAFNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBAFNetworkManager.m; sourceTree = "<group>"; };
 		7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = offlineDownloadViewController.h; sourceTree = "<group>"; };
 		7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = offlineDownloadViewController.m; sourceTree = "<group>"; };
 		7DF8262D1D5815BE000D1109 /* ZBNetworkingDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZBNetworkingDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -237,8 +237,8 @@
 				7D279F831E08BD0F000A62C8 /* ZBURLRequest.m */,
 				7DF8266A1D581622000D1109 /* ZBURLSessionManager.h */,
 				7DF8266B1D581622000D1109 /* ZBURLSessionManager.m */,
-				7D279F971E0931C3000A62C8 /* ZBAFNetworkHelper.h */,
-				7D279F981E0931C3000A62C8 /* ZBAFNetworkHelper.m */,
+				7D7EC8A61E247C5300663313 /* ZBAFNetworkManager.h */,
+				7D7EC8A71E247C5300663313 /* ZBAFNetworkManager.m */,
 				7DF826731D581665000D1109 /* ZBNetworking.h */,
 			);
 			name = ZBNetworking;
@@ -433,6 +433,7 @@
 				7D279F841E08BD0F000A62C8 /* ZBURLRequest.m in Sources */,
 				7DF826381D5815BE000D1109 /* ViewController.m in Sources */,
 				7D4C69D31D6D8D23006CCE4C /* SettingViewController.m in Sources */,
+				7D7EC8A81E247C5300663313 /* ZBAFNetworkManager.m in Sources */,
 				7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
@@ -440,7 +441,6 @@
 				7DD2C0E11D92379000AE0413 /* offlineDownloadViewController.m in Sources */,
 				7DF8266C1D581622000D1109 /* NSFileManager+pathMethod.m in Sources */,
 				7DF8266F1D581622000D1109 /* ZBURLSessionManager.m in Sources */,
-				7D279F991E0931C3000A62C8 /* ZBAFNetworkHelper.m in Sources */,
 				7DF826831D58170C000D1109 /* RootModel.m in Sources */,
 				7DF826321D5815BE000D1109 /* main.m in Sources */,
 				7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */,

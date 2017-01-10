@@ -1,30 +1,31 @@
 //
-//  ZBAFNetworkHelper.m
+//  ZBAFNetworkManager.m
 //  ZBNetworkingDemo
 //
-//  Created by NQ UEC on 16/12/20.
-//  Copyright © 2016年 Suzhibin. All rights reserved.
+//  Created by NQ UEC on 17/1/10.
+//  Copyright © 2017年 Suzhibin. All rights reserved.
 //
 
-#import "ZBAFNetworkHelper.h"
+#import "ZBAFNetworkManager.h"
 #import "ZBCacheManager.h"
 #import "NSFileManager+pathMethod.h"
 #import <AFNetworkActivityIndicatorManager.h>
 static const NSInteger timeOut = 60*60;
-@interface ZBAFNetworkHelper()
+@interface ZBAFNetworkManager()
 @property (nonatomic, strong) AFHTTPSessionManager *AFmanager;
 
 @property AFNetworkReachabilityStatus netStatus;
 @end
-@implementation ZBAFNetworkHelper
+
+@implementation ZBAFNetworkManager
 /**
  Returns the default shared `XMCenter` singleton object.
  */
-+ (ZBAFNetworkHelper *)sharedHelper {
++ (ZBAFNetworkManager *)sharedHelper {
     static id sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[ZBAFNetworkHelper alloc] init];
+        sharedInstance = [[ZBAFNetworkManager alloc] init];
     });
     return sharedInstance;
 }
@@ -46,13 +47,13 @@ static const NSInteger timeOut = 60*60;
     }
 }
 
-+ (ZBAFNetworkHelper*)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
-    return [ZBAFNetworkHelper requestWithConfig:config progress:nil success:success failedBlock:failed];
++ (ZBAFNetworkManager*)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
+    return [ZBAFNetworkManager requestWithConfig:config progress:nil success:success failedBlock:failed];
 }
 
-+ (ZBAFNetworkHelper*)requestWithConfig:(requestConfig)config progress:(progressBlock)progressBlock  success:(requestSuccess)success failedBlock:(requestFailed)failed{
-   
-    ZBAFNetworkHelper *helper=[[ZBAFNetworkHelper alloc]init];
++ (ZBAFNetworkManager*)requestWithConfig:(requestConfig)config progress:(progressBlock)progressBlock  success:(requestSuccess)success failedBlock:(requestFailed)failed{
+    
+    ZBAFNetworkManager *helper=[[ZBAFNetworkManager alloc]init];
     
     config ? config(helper.request) : nil;
     
@@ -105,20 +106,20 @@ static const NSInteger timeOut = 60*60;
     if(!urlString)return;
     ZBLog(@"AF get");
     [self.AFmanager GET:urlString parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
-            
+        
         progressBlock ? progressBlock(downloadProgress) : nil;
-            
+        
     }success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject) {
-            
+        
         [[ZBCacheManager sharedCacheManager] setMutableData:responseObject writeToFile:path];
-            
+        
         success ? success(responseObject,self.request.apiType) : nil;
-            
+        
     }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull   error) {
-            failed ? failed(error) : nil;
+        failed ? failed(error) : nil;
     }];
-
-
+    
+    
 }
 
 - (void)POST:(NSString *)urlString parameters:(id)parameters success:(requestSuccess)success failed:(requestFailed)failed{
@@ -178,9 +179,9 @@ static const NSInteger timeOut = 60*60;
         //和urlsession类 公用一个chche容器 返回类型全部是二进制
         _AFmanager.requestSerializer  = [AFHTTPRequestSerializer serializer];// 设置请求格式
         _AFmanager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 设置返回格式
-    
+        
         [[self.request mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-                ZBLog(@"%@-%@",field,value);
+            ZBLog(@"%@-%@",field,value);
             [_AFmanager.requestSerializer setValue:value forHTTPHeaderField:field];
         }];
         [_AFmanager.requestSerializer setTimeoutInterval:self.request.timeoutInterval];

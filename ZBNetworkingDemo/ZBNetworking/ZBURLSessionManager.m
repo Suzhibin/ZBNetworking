@@ -76,7 +76,6 @@ static ZBURLSessionManager *sessionManager=nil;
         if (self.request.apiType==ZBRequestTypeOffline) {
             [self offlineDownload:self.request.urlArray apiType:self.request.apiType success:success failed:failed];
         }else{
-        NSLog(@"self.request.urlString:%@",self.request.urlString);
             [self getRequestWithURL:self.request.urlString apiType:self.request.apiType success:success failed:failed];
         }
     }
