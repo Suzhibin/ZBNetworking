@@ -61,11 +61,6 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
 ```objective-c
 //get请求方法 会默认创建缓存路径    
   [[ZBURLSessionManager shareManager] getRequestWithUrlString:URL target:self];
- 
- // 还可以做其他操作 注意:要放在请求前
-  [[ZBURLSessionManager shareManager] setTimeoutInterval:10];//更改超时时间 
-  [[ZBURLSessionManager shareManager] setValue:@"my the apikey" forHTTPHeaderField:@"apikey"]//设置请求头
-
 ```
 
 4.完成和失败俩个代理回调
