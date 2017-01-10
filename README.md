@@ -103,7 +103,7 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
 
 ```
 ## 使用 其他功能
-5.离线下载
+1.离线下载
 
 ```objective-c
  [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request)
@@ -130,8 +130,8 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
 ```
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
 
-```
-6.其他操作
+
+2.缓存相关
 ```objective-c
 //显示缓存大小
  [[ZBCacheManager shareCacheManager]getCacheSize];
