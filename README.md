@@ -124,7 +124,7 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
     }];
    
  或是用URLSession的方法  
-[[ZBURLSessionManager shareManager] offlineDownload:[ZBURLSessionManager shareManager].offlineUrlArray target:self apiType:ZBRequestTypeOffline];
+[[ZBURLSessionManager shareManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
 
 //具体演示看demo
 ```
