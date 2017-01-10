@@ -27,7 +27,7 @@ typedef void (^progressBlock)(NSProgress * progress);
  */
 @property (nonatomic,assign) MethodType methodType;
 
-+ (ZBNetworkManager *)sharedHelper;
++ (ZBNetworkManager *)sharedManager;
 /**
  *  get请求
  *

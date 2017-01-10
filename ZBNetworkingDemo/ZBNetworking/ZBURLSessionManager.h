@@ -110,7 +110,13 @@ typedef void (^progressBlock)(NSProgress * progress);
  */
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
-
+/**
+ *  get请求
+ *
+ *  @param config           请求配置  Block
+ *  @param success         请求成功的 Block
+ *  @param failed           请求失败的 Block
+ */
 - (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)faile;
 /**
  *  get请求

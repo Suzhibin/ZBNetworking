@@ -29,7 +29,7 @@
      */  
     if (_functionType==AFNetworking) {
         //AFNetworking方法
-        [self getAFdataWithApiType:ZBRequestTypeDefault];
+        [self getAFNetworkWithApiType:ZBRequestTypeDefault];
  
     }else if (_functionType==sessionblock){
         //NSURLSessionBlock方法
@@ -51,7 +51,7 @@
 }
 #pragma mark - AFNetworking
 //apiType 是请求类型 在ZBURLRequest 里
-- (void)getAFdataWithApiType:(apiType)type{
+- (void)getAFNetworkWithApiType:(apiType)type{
     
     NSLog(@"AFNetworking 请求类型:%zd",type);
     
@@ -204,7 +204,7 @@
  
     if (_functionType==AFNetworking) {
         
-        [self getAFdataWithApiType:ZBRequestTypeRefresh];
+        [self getAFNetworkWithApiType:ZBRequestTypeRefresh];
         
     }else if (_functionType==sessionblock){
         

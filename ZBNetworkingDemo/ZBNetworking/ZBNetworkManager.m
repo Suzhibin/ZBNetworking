@@ -19,7 +19,7 @@ static const NSInteger timeOut = 60*60;
 
 @implementation ZBNetworkManager
 
-+ (ZBNetworkManager *)sharedHelper {
++ (ZBNetworkManager *)sharedManager {
     static id sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

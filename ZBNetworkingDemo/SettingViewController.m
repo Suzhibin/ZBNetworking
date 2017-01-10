@@ -217,11 +217,13 @@
 #pragma mark - AFNetworking
 - (void)requestOffline:(NSMutableArray *)offlineArray{
     
+    //[ZBURLSessionManager sharedManager]requestWithConfig
+    
     [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         
         request.urlArray=offlineArray;
         request.apiType=ZBRequestTypeOffline;   //离线请求 apiType:ZBRequestTypeOffline
-        NSLog(@"AFNetworking 请求类型:%zd",request.apiType);
+ 
     }  success:^(id responseObj,apiType type){
         //如果是离线请求的数据
         if (type==ZBRequestTypeOffline) {
@@ -294,7 +296,7 @@
 }
 
 - (void)cancelClick{
-    [[ZBNetworkManager sharedHelper] requestToCancel:YES];//取消网络请求
+    [[ZBNetworkManager sharedManager] requestToCancel:YES];//取消网络请求
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.offlineView hide];//取消下载进度视图
     NSLog(@"取消下载");
