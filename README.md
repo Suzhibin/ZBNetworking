@@ -9,7 +9,7 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
 ## 使用 AFNetworking 
 ```objective-c
 //get请求方法 会默认创建缓存路径    
-  [ZBAFNetworkHelper requestWithConfig:^(ZBURLRequest *request){
+  [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeDefault;//默认为default
@@ -100,10 +100,32 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
     }
 
 }
+
 ```
+## 使用 其他功能
 5.离线下载
+
 ```objective-c
+ [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request)
+        request.urlArray=offlineArray;
+        request.apiType=ZBRequestTypeOffline;   //离线请求 apiType:ZBRequestTypeOffline
+    }  success:^(id responseObj,apiType type){
+        //如果是离线请求的数据
+        if (type==ZBRequestTypeOffline) {
+        
+        } 
+    } failed:^(NSError *error){
+        if (error.code==NSURLErrorCancelled)return;
+        if (error.code==NSURLErrorTimedOut){
+            [self alertTitle:@"请求超时" andMessage:@""];
+        }else{
+            [self alertTitle:@"请求失败" andMessage:@""];
+        }
+    }];
+   
+ 或是用URLSession的方法  
 [[ZBURLSessionManager shareManager] offlineDownload:[ZBURLSessionManager shareManager].offlineUrlArray target:self apiType:ZBRequestTypeOffline];
+
 //具体演示看demo
 ```
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
