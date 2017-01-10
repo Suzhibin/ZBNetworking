@@ -1,5 +1,5 @@
 //
-//  ZBAFNetworkManager.h
+//  ZBNetworkManager.h
 //  ZBNetworkingDemo
 //
 //  Created by NQ UEC on 17/1/10.
@@ -18,14 +18,16 @@ typedef void (^requestFailed)(NSError *error);
 
 typedef void (^progressBlock)(NSProgress * progress);
 
-@interface ZBAFNetworkManager : NSObject
+
+@interface ZBNetworkManager : NSObject
+
 @property (nonatomic,strong) ZBURLRequest *request;
 /**
  *  用于标识不同类型的方法
  */
 @property (nonatomic,assign) MethodType methodType;
 
-+ (ZBAFNetworkManager *)sharedHelper;
++ (ZBNetworkManager *)sharedHelper;
 /**
  *  get请求
  *
@@ -33,7 +35,7 @@ typedef void (^progressBlock)(NSProgress * progress);
  *  @param success         请求成功的 Block
  *  @param failed           请求失败的 Block
  */
-+ (ZBAFNetworkManager *)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed;
++ (ZBNetworkManager *)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed;
 /**
  *  get请求
  *
@@ -42,7 +44,7 @@ typedef void (^progressBlock)(NSProgress * progress);
  *  @param success         请求成功的 Block
  *  @param failed           请求失败的 Block
  */
-+ (ZBAFNetworkManager *)requestWithConfig:(requestConfig)config progress:(progressBlock)progressBlock  success:(requestSuccess)success failedBlock:(requestFailed)failed;
++ (ZBNetworkManager *)requestWithConfig:(requestConfig)config progress:(progressBlock)progressBlock  success:(requestSuccess)success failedBlock:(requestFailed)failed;
 
 /**
  *  get请求

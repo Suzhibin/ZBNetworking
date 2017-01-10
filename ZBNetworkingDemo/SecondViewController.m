@@ -55,7 +55,7 @@
     
     NSLog(@"AFNetworking 请求类型:%zd",type);
     
-    [ZBAFNetworkManager requestWithConfig:^(ZBURLRequest *request){
+    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=type;//默认为default

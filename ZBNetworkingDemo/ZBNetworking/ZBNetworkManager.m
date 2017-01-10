@@ -1,31 +1,29 @@
 //
-//  ZBAFNetworkManager.m
+//  ZBNetworkManager.m
 //  ZBNetworkingDemo
 //
 //  Created by NQ UEC on 17/1/10.
 //  Copyright © 2017年 Suzhibin. All rights reserved.
 //
 
-#import "ZBAFNetworkManager.h"
+#import "ZBNetworkManager.h"
 #import "ZBCacheManager.h"
 #import "NSFileManager+pathMethod.h"
 #import <AFNetworkActivityIndicatorManager.h>
 static const NSInteger timeOut = 60*60;
-@interface ZBAFNetworkManager()
+@interface ZBNetworkManager()
 @property (nonatomic, strong) AFHTTPSessionManager *AFmanager;
 
 @property AFNetworkReachabilityStatus netStatus;
 @end
 
-@implementation ZBAFNetworkManager
-/**
- Returns the default shared `XMCenter` singleton object.
- */
-+ (ZBAFNetworkManager *)sharedHelper {
+@implementation ZBNetworkManager
+
++ (ZBNetworkManager *)sharedHelper {
     static id sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[ZBAFNetworkManager alloc] init];
+        sharedInstance = [[ZBNetworkManager alloc] init];
     });
     return sharedInstance;
 }
@@ -47,26 +45,26 @@ static const NSInteger timeOut = 60*60;
     }
 }
 
-+ (ZBAFNetworkManager*)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
-    return [ZBAFNetworkManager requestWithConfig:config progress:nil success:success failedBlock:failed];
++ (ZBNetworkManager *)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
+    return [ZBNetworkManager requestWithConfig:config progress:nil success:success failedBlock:failed];
 }
 
-+ (ZBAFNetworkManager*)requestWithConfig:(requestConfig)config progress:(progressBlock)progressBlock  success:(requestSuccess)success failedBlock:(requestFailed)failed{
++ (ZBNetworkManager *)requestWithConfig:(requestConfig)config progress:(progressBlock)progressBlock  success:(requestSuccess)success failedBlock:(requestFailed)failed{
     
-    ZBAFNetworkManager *helper=[[ZBAFNetworkManager alloc]init];
+    ZBNetworkManager *manager=[[ZBNetworkManager alloc]init];
     
-    config ? config(helper.request) : nil;
+    config ? config(manager.request) : nil;
     
-    if (helper.request.methodType==ZBMethodTypePOST) {
-        [helper POST:helper.request.urlString parameters:helper.request.parameters progress:progressBlock success:success failed:failed];
+    if (manager.request.methodType==ZBMethodTypePOST) {
+        [manager POST:manager.request.urlString parameters:manager.request.parameters progress:progressBlock success:success failed:failed];
     }else{
-        if (helper.request.apiType==ZBRequestTypeOffline) {
-            [helper offlineDownload:helper.request.urlArray apiType:helper.request.apiType success:success failed:failed];
+        if (manager.request.apiType==ZBRequestTypeOffline) {
+            [manager offlineDownload:manager.request.urlArray apiType:manager.request.apiType success:success failed:failed];
         }else{
-            [helper GET:helper.request.urlString parameters:helper.request.parameters apiType:helper.request.apiType progress:progressBlock success:success failed:failed];
+            [manager GET:manager.request.urlString parameters:manager.request.parameters apiType:manager.request.apiType progress:progressBlock success:success failed:failed];
         }
     }
-    return helper;
+    return manager;
 }
 
 - (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{

@@ -25,7 +25,7 @@
      1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
      2.系统的session.delegate 是强引用, 手动取消 避免造成内存泄露.
      */
-    [[ZBAFNetworkManager sharedHelper] requestToCancel:YES];
+    [[ZBNetworkManager sharedHelper] requestToCancel:YES];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -39,7 +39,7 @@
      *  request.apiType==ZBRequestTypeRefresh
      */
 
-    [ZBAFNetworkManager requestWithConfig:^(ZBURLRequest *request){
+    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=_urlString;
         // request.apiType=ZBRequestTypeDefault;//默认为default
         request.timeoutInterval=10;

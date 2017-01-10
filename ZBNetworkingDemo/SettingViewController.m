@@ -13,7 +13,6 @@
 #import <SDWebImageManager.h>
 #import "OfflineView.h"
 #import "DetailsModel.h"
-#import "ZBAFNetworkManager.h"
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
 
 @property (nonatomic,copy)NSString *path;
@@ -210,22 +209,23 @@
    
 }
 - (void)reloadJsonNumber{
-    //离线页面的频道列表也会缓存的 如果无缓存，就刷新显示出来+1个缓存数量
+    //离线页面的频道列表也会缓存的 如果之前清除了缓存，就刷新显示出来+1个缓存数量
     [self.tableView reloadData];
    
 }
 
 #pragma mark - AFNetworking
 - (void)requestOffline:(NSMutableArray *)offlineArray{
-    [ZBAFNetworkManager requestWithConfig:^(ZBURLRequest *request){
+    
+    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         
         request.urlArray=offlineArray;
         request.apiType=ZBRequestTypeOffline;   //离线请求 apiType:ZBRequestTypeOffline
         NSLog(@"AFNetworking 请求类型:%zd",request.apiType);
     }  success:^(id responseObj,apiType type){
-        //如果是刷新的数据
+        //如果是离线请求的数据
         if (type==ZBRequestTypeOffline) {
-            NSLog(@"添加了几个url  就会走几遍");
+            NSLog(@"添加了几个url请求  就会走几遍");
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
             NSArray *array=[dict objectForKey:@"videos"];
             for (NSDictionary *dic in array) {
@@ -294,7 +294,7 @@
 }
 
 - (void)cancelClick{
-    [[ZBAFNetworkManager sharedHelper] requestToCancel:YES];//取消网络请求
+    [[ZBNetworkManager sharedHelper] requestToCancel:YES];//取消网络请求
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.offlineView hide];//取消下载进度视图
     NSLog(@"取消下载");
