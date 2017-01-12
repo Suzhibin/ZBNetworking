@@ -10,7 +10,7 @@
 #import "HomeViewController.h"
 #import "ZBNetworking.h"
 @interface AppDelegate ()
-@property (nonatomic,strong)NSMutableArray *dataArray;
+
 @end
 
 @implementation AppDelegate
@@ -22,7 +22,7 @@
     
     NSString *cachePath = [[ZBCacheManager sharedCacheManager]cachesPath];
     NSLog(@"cachePath = %@",cachePath);
-     _dataArray = [[NSMutableArray alloc] init];
+
    
     HomeViewController *home = [[HomeViewController alloc]init];
     UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:home];
