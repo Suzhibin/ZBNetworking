@@ -106,16 +106,16 @@ typedef void (^progressBlock)(NSProgress * progress);
  *
  *  @param downloadArray 请求列队
  *  @param delegate      代理  传实现协议的对象
- *  @param type         用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
+ *  @param type          用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
  */
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
  *  get请求 不能post
  *
- *  @param config           请求配置  Block
+ *  @param config          请求配置  Block
  *  @param success         请求成功的 Block
- *  @param failed           请求失败的 Block
+ *  @param failed          请求失败的 Block
  */
 - (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed;
 /**
