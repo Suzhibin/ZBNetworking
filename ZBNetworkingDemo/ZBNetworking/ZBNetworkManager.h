@@ -141,7 +141,7 @@ typedef void (^progressBlock)(NSProgress * progress);
  *   请求会话管理,取消请求任务
  *  Invalidates the managed session, optionally canceling pending tasks.
  *
- *  @param cancelPendingTasks Whether or not to cancel pending tasks.
+ *  @param cancelPendingTask Whether or not to cancel pending tasks.
  */
 + (void)requestToCancel:(BOOL)cancelPendingTask;
 

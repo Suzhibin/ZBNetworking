@@ -193,7 +193,7 @@ typedef void(^ZBCacheManagerBlock)();
 /**
  *  清除某一个缓存文件
  *
- *  @param path       编码后的文件路径
+ *  @param key        请求的协议地址
  *  @param operation  block 后续操作
  */
 - (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation;

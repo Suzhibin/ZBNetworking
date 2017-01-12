@@ -117,7 +117,7 @@ typedef void (^progressBlock)(NSProgress * progress);
  *  @param success         请求成功的 Block
  *  @param failed           请求失败的 Block
  */
-- (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)faile;
+- (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed;
 /**
  *  get请求
  *
