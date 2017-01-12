@@ -66,7 +66,7 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
 4.完成和失败俩个代理回调
 ```objective-c
 //请求完成的代理方法里进行解析或赋值
-- (void)urlRequestFinished:(ZBURLSessionManager *)request
+- (void)urlRequestFinished:(ZBURLRequest *)request
 {
     
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
@@ -85,7 +85,7 @@ AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓�
     
 }
 //请求失败的方法里 进行异常判断 支持error.code所有异常
-- (void)urlRequestFailed:(ZBURLSessionManager *)request
+- (void)urlRequestFailed:(ZBURLRequest *)request
 {
     if (request.error.code==-999)return;
     if (request.error.code==NSURLErrorTimedOut) {
