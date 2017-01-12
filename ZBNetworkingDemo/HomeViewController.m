@@ -30,7 +30,6 @@
   
         [self.view addSubview:btn];
     }
-        [self addItemWithTitle:@"star" selector:@selector(starBtnClick) location:NO];
 }
 - (void)btnClicked:(UIButton *)btn
 {
@@ -52,10 +51,7 @@
             break;
     }
 }
-- (void)starBtnClick{
-    
-    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
-}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

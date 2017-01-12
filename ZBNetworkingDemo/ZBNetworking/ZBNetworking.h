@@ -13,4 +13,5 @@
 #import "ZBURLSessionManager.h"
 #import "ZBURLRequest.h"
 #import "ZBCacheManager.h"
+#import "NSFileManager+pathMethod.h"
 #endif /* ZBNetworking_h */

@@ -41,7 +41,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 9;
+    return 10;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -115,7 +115,7 @@
     }
     
     if (indexPath.row==6) {
-        cell.textLabel.text=@"清除某个沙盒文件";
+        cell.textLabel.text=@"清除某个路径下的所有文件";
     
         float size=[[ZBCacheManager sharedCacheManager]getFileSizeWithpath:self.path];
 
@@ -124,7 +124,7 @@
     }
     
     if (indexPath.row==7) {
-        cell.textLabel.text=@"某个沙盒文件数量";
+        cell.textLabel.text=@"某个路径下所有文件数量";
         cell.userInteractionEnabled = NO;
         
         float count=[[ZBCacheManager sharedCacheManager]getFileCountWithpath:self.path];
@@ -132,8 +132,11 @@
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
     }
- 
     if (indexPath.row==8) {
+        cell.textLabel.text=@"清除单个缓存文件(例:删除首页)";
+        
+    }
+    if (indexPath.row==9) {
         cell.textLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
@@ -164,12 +167,16 @@
     }
     if (indexPath.row==2) {
         //清除json缓存
-        [[ZBCacheManager sharedCacheManager]clearCache];
-          [self.tableView reloadData];
+        //[[ZBCacheManager sharedCacheManager]clearCache];
+        [[ZBCacheManager sharedCacheManager]clearCacheOnOperation:^{
+             [self.tableView reloadData];
+        }];
+        
     }
     
     if (indexPath.row==4) {
         //清除图片缓存
+      //  [[SDImageCache sharedImageCache] clearDisk];
         [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
             [[SDImageCache sharedImageCache] clearMemory];
             
@@ -180,15 +187,27 @@
 
     if (indexPath.row==6) {
 
-        //清除某个沙盒文件内容
+        //清除某个路径下所有文件
+       // [[ZBCacheManager sharedCacheManager]clearDiskWithpath:self.path];
         [[ZBCacheManager sharedCacheManager]clearDiskWithpath:self.path operation:^{
             
             [self.tableView reloadData];
             
         }];
     }
-
     if (indexPath.row==8) {
+        
+        //清除单个缓存文件
+        // [[ZBCacheManager sharedCacheManager]clearCacheForkey:list_URL];
+        [[ZBCacheManager sharedCacheManager]clearCacheForkey:list_URL operation:^{
+            
+         [self.tableView reloadData];
+            
+        }];
+       
+    }
+    
+    if (indexPath.row==9) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;
@@ -296,7 +315,7 @@
 }
 
 - (void)cancelClick{
-    [[ZBNetworkManager sharedManager] requestToCancel:YES];//取消网络请求
+    [ZBNetworkManager requestToCancel:YES];//取消网络请求
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.offlineView hide];//取消下载进度视图
     NSLog(@"取消下载");

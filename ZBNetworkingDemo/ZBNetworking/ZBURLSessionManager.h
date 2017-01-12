@@ -111,7 +111,7 @@ typedef void (^progressBlock)(NSProgress * progress);
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
- *  get请求
+ *  get请求 不能post
  *
  *  @param config           请求配置  Block
  *  @param success         请求成功的 Block

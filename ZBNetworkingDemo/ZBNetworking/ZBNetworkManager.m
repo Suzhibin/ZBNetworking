@@ -20,7 +20,7 @@ static const NSInteger timeOut = 60*60;
 @implementation ZBNetworkManager
 
 + (ZBNetworkManager *)sharedManager {
-    static id sharedInstance = nil;
+    static ZBNetworkManager *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[ZBNetworkManager alloc] init];
@@ -41,7 +41,7 @@ static const NSInteger timeOut = 60*60;
 }
 - (void)dealloc {
     if (self.AFmanager) {
-        [self requestToCancel:YES];
+        [ZBNetworkManager requestToCancel:YES];
     }
 }
 
@@ -61,7 +61,7 @@ static const NSInteger timeOut = 60*60;
         if (manager.request.apiType==ZBRequestTypeOffline) {
             [manager offlineDownload:manager.request.urlArray apiType:manager.request.apiType success:success failed:failed];
         }else{
-            [manager GET:manager.request.urlString parameters:manager.request.parameters apiType:manager.request.apiType progress:progressBlock success:success failed:failed];
+            [manager GET:manager.request.urlString parameters:manager.request.parameters apiType:manager.request.apiType newPath:manager.request.path progress:progressBlock success:success failed:failed];
         }
     }
     return manager;
@@ -70,8 +70,12 @@ static const NSInteger timeOut = 60*60;
 - (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{
     if (downloadArray.count==0)return;
     [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
-        [self GET:urlString parameters:nil apiType:type progress:nil success:success failed:failed];
+        [self GET:urlString parameters:nil apiType:type newPath:nil progress:nil success:success failed:failed ];
     }];
+}
+
+- (void)GET:(NSString *)urlString success:(requestSuccess)success failed:(requestFailed)failed{
+    [self GET:urlString parameters:nil success:success failed:failed];
 }
 
 - (void)GET:(NSString *)urlString parameters:(id)parameters success:(requestSuccess)success failed:(requestFailed)failed{
@@ -79,13 +83,25 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)GET:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
-    
     [self GET:urlString parameters:parameters apiType:ZBRequestTypeDefault progress:progressBlock success:success failed:failed];
 }
 
 - (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
-    
-    NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:urlString];
+     [self GET:urlString parameters:parameters apiType:type newPath:nil progress:progressBlock success:success failed:failed ];
+}
+
+- (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type newPath:(NSString *)newpath progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
+    if (newpath) {
+        [[ZBCacheManager sharedCacheManager] createDirectoryAtPath:newpath];
+        NSString *path =[[ZBCacheManager sharedCacheManager]cachePathForKey:urlString inPath:newpath];
+        [self GET:urlString parameters:parameters apiType:type setPath:path progress:progressBlock success:success failed:failed ];
+    }else{
+        NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:urlString];
+        [self GET:urlString parameters:parameters apiType:type setPath:path progress:progressBlock success:success failed:failed];
+    }
+}
+
+- (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type setPath:(NSString *)path progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
     
     if ([[ZBCacheManager sharedCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
         ZBLog(@"AF cache");
@@ -93,16 +109,15 @@ static const NSInteger timeOut = 60*60;
         
         [self.request.responseObj appendData:data];
         
-        success ? success(self.request.responseObj ,self.request.apiType) : nil;
+        success ? success(self.request.responseObj ,type) : nil;
     }else{
-        
-        [self GET:urlString parameters:parameters progress:progressBlock success:success failed:failed path:path];
+        [self GET:urlString parameters:parameters path:path progress:progressBlock success:success failed:failed];
     }
 }
 
-- (void)GET:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed path:(NSString *)path{
+- (void)GET:(NSString *)urlString parameters:(id)parameters path:(NSString *)path progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
     if(!urlString)return;
-    ZBLog(@"AF get");
+    ZBLog(@"AF GET");
     [self.AFmanager GET:urlString parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
         progressBlock ? progressBlock(downloadProgress) : nil;
@@ -116,10 +131,9 @@ static const NSInteger timeOut = 60*60;
     }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull   error) {
         failed ? failed(error) : nil;
     }];
-    
+
     
 }
-
 - (void)POST:(NSString *)urlString parameters:(id)parameters success:(requestSuccess)success failed:(requestFailed)failed{
     [self POST:urlString parameters:parameters progress:nil success:success failed:failed];
 }
@@ -141,8 +155,8 @@ static const NSInteger timeOut = 60*60;
     
 }
 
-- (void)requestToCancel:(BOOL)cancelPendingTasks{
-    [self.AFmanager invalidateSessionCancelingTasks:cancelPendingTasks];
++ (void)requestToCancel:(BOOL)cancelPendingTasks{
+    [[ZBNetworkManager sharedManager].AFmanager invalidateSessionCancelingTasks:cancelPendingTasks];
 }
 
 - (NSInteger)startNetWorkMonitoring{

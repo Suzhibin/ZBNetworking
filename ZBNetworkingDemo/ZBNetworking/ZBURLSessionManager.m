@@ -24,10 +24,11 @@
 #import "NSFileManager+pathMethod.h"
 #import "ZBCacheManager.h"
 static const NSInteger timeOut = 60*60;
-static ZBURLSessionManager *sessionManager=nil;
+
 @implementation ZBURLSessionManager
 
 + (ZBURLSessionManager *)sharedManager {
+    static ZBURLSessionManager *sessionManager=nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sessionManager = [[ZBURLSessionManager alloc] init];
@@ -68,16 +69,14 @@ static ZBURLSessionManager *sessionManager=nil;
 
 #pragma  mark -  请求
 
-- (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
-       config ? config(self.request) : nil;
-    if (self.request.methodType==ZBMethodTypePOST) {
-    //    [self POST:self.request.urlString  success:success failed:failed];
+- (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
+    
+    config ? config(self.request) : nil;
+    
+    if (self.request.apiType==ZBRequestTypeOffline) {
+        [self offlineDownload:self.request.urlArray apiType:self.request.apiType success:success failed:failed];
     }else{
-        if (self.request.apiType==ZBRequestTypeOffline) {
-            [self offlineDownload:self.request.urlArray apiType:self.request.apiType success:success failed:failed];
-        }else{
-            [self getRequestWithURL:self.request.urlString apiType:self.request.apiType success:success failed:failed];
-        }
+        [self getRequestWithURL:self.request.urlString apiType:self.request.apiType success:success failed:failed];
     }
 }
 

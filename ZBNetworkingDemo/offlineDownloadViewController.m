@@ -35,8 +35,8 @@
     
     self.request=[[ZBURLRequest alloc]init];
     
-    //保证频道是最新的 不要取缓存
-    [[ZBURLSessionManager sharedManager] getRequestWithURL:list_URL target:self apiType:ZBRequestTypeDefault];
+    
+    [[ZBURLSessionManager sharedManager] getRequestWithURL:list_URL target:self];
     
     [self.view addSubview:self.tableView];
   

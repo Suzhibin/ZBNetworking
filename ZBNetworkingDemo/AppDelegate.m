@@ -10,7 +10,7 @@
 #import "HomeViewController.h"
 #import "ZBNetworking.h"
 @interface AppDelegate ()
-
+@property (nonatomic,strong)NSMutableArray *dataArray;
 @end
 
 @implementation AppDelegate
@@ -20,9 +20,9 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
-    NSString *path = [[ZBCacheManager sharedCacheManager]cachesPath];
-    NSLog(@"path = %@",path);
-
+    NSString *cachePath = [[ZBCacheManager sharedCacheManager]cachesPath];
+    NSLog(@"cachePath = %@",cachePath);
+     _dataArray = [[NSMutableArray alloc] init];
    
     HomeViewController *home = [[HomeViewController alloc]init];
     UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:home];
@@ -30,11 +30,15 @@
     self.window.rootViewController = nc;
     
     [self.window makeKeyAndVisible];
+
     return YES;
 }
+
+
 - (void)applicationDidReceiveMemoryWarning:(UIApplication*)application{  
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

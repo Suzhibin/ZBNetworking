@@ -32,12 +32,12 @@ static const CGFloat unit = 1000.0;
 
 @end
 
-static ZBCacheManager *Cachemanager=nil;
+
 
 @implementation ZBCacheManager
 
 + (ZBCacheManager *)sharedCacheManager {
-    
+    static ZBCacheManager *Cachemanager=nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Cachemanager = [[ZBCacheManager alloc] init];
@@ -300,12 +300,15 @@ static ZBCacheManager *Cachemanager=nil;
 }
 
 - (void)clearCacheForkey:(NSString *)key{
-    NSString *path=[self pathWithFileName:key];
-    [self clearCacheForPath:path operation:nil];
+    
+    [self clearCacheForkey:key operation:nil];
 }
 
-- (void)clearCacheForPath:(NSString *)path operation:(ZBCacheManagerBlock)operation{
+- (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation{
+    
     dispatch_async(self.operationQueue,^{
+        
+        NSString *path=[self pathWithFileName:key];
         
         [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
         

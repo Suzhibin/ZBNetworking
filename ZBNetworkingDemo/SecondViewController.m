@@ -39,10 +39,7 @@
         //NSURLSessionDelegate方法
         //需要 ZBURLSessionDelegate 协议
         [[ZBURLSessionManager sharedManager]getRequestWithURL:list_URL target:self apiType:ZBRequestTypeDefault];
-     
     }
-   
-   
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     
@@ -51,18 +48,17 @@
 }
 #pragma mark - AFNetworking
 //apiType 是请求类型 在ZBURLRequest 里
-- (void)getAFNetworkWithApiType:(apiType)type{
-    
-    NSLog(@"AFNetworking 请求类型:%zd",type);
+- (void)getAFNetworkWithApiType:(apiType)requestType{
     
     [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
-        request.apiType=type;//默认为default
+        request.apiType=requestType;//默认为default
         request.timeoutInterval=10;
        // request.parameters=@{@"1": @"one", @"2": @"two"};
        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,apiType type){
+        NSLog(@"type:%zd",type);
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];
@@ -71,7 +67,9 @@
         if (type==ZBRequestTypeLoadMore) {
             //上拉加载
         }
+   
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+       // NSLog(@"ZBNetworkManagerdict:%@",dict);
         NSArray *array=[dict objectForKey:@"authors"];
         
         for (NSDictionary *dic in array) {
@@ -94,15 +92,15 @@
 }
 #pragma mark -sessionblock
 //apiType 是请求类型 在ZBURLRequest 里
-- (void)getSessionBlockWithApiType:(apiType)type{
-    
-    NSLog(@"sessionblock 请求类型:%zd",type);
+- (void)getSessionBlockWithApiType:(apiType)requestType{
     
     [[ZBURLSessionManager sharedManager]requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
-        request.apiType=type;//默认为default
         request.methodType=ZBMethodTypeGET;//默认为GET
+        request.apiType=requestType;//默认为default
+       
     } success:^(id responseObj,apiType type){
+        NSLog(@"type:%zd",type);
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];
@@ -111,6 +109,7 @@
         if (type==ZBRequestTypeLoadMore) {
             //上拉加载
         }
+
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
         NSArray *array=[dict objectForKey:@"authors"];
         
@@ -139,8 +138,7 @@
     //如果是刷新的数据
     if (request.apiType==ZBRequestTypeRefresh) {
         [self.dataArray removeAllObjects];
-        //结束刷新
-        [_refreshControl endRefreshing];
+        [_refreshControl endRefreshing]; //结束刷新
     }
     if (request.apiType==ZBRequestTypeLoadMore) {
         //上拉加载
@@ -158,7 +156,6 @@
     }
     [self.tableView reloadData];
 }
-//ZBURLRequest
 - (void)urlRequestFailed:(ZBURLRequest *)request{
     //如果是下拉刷新的数据
     if (request.apiType==ZBRequestTypeRefresh) {
