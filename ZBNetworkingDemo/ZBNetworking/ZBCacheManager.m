@@ -49,7 +49,7 @@ static const CGFloat unit = 1000.0;
     self = [super init];
     if (self) {
         
-         _operationQueue = dispatch_queue_create("ZBCacheOperation", DISPATCH_QUEUE_SERIAL);
+         _operationQueue = dispatch_queue_create("com.dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
         
         [self initCachesfileWithName:PathDefault];
       

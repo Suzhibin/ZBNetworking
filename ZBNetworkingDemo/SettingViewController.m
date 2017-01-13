@@ -57,7 +57,7 @@
         
         float cacheSize=[[ZBCacheManager sharedCacheManager]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float SnapshotsSize=[[ZBCacheManager sharedCacheManager]getFileSizeWithpath:self.path];//某个沙盒文件大小
+        float SnapshotsSize=[[ZBCacheManager sharedCacheManager]getFileSizeWithpath:self.path];//某个沙盒路径文件大小
         float AppCacheSize=cacheSize+imageSize+SnapshotsSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         
@@ -70,7 +70,7 @@
         
         float cacheCount=[[ZBCacheManager sharedCacheManager]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-        float SnapshotsCount=[[ZBCacheManager sharedCacheManager]getFileCountWithpath:self.path];//某个沙盒文件个数
+        float SnapshotsCount=[[ZBCacheManager sharedCacheManager]getFileCountWithpath:self.path];//某个沙盒路径文件个数
         float AppCacheCount=cacheCount+imageCount+SnapshotsCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
@@ -257,8 +257,6 @@
                 //使用SDWebImage 下载图片
                 BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
                 if (isKey) {
-                    
-                    NSLog(@"已经下载了");
                     self.offlineView.progressLabel.text=@"已经下载了";
                 } else{
                     
