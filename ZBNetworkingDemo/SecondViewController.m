@@ -23,7 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     /**
-     *  默认缓存路径/Library/Caches/AppCache
+     *  默认缓存路径/Library/Caches/ZBKit/AppCache
      *
      *  ZBAFNetworkManager(AFNetworking)与 ZBURLSessionManager(NSURLSession) 缓存策略都是ZBCacheManager来管理的 缓存文件是相通共用的   换句话说，俩个类的三种请求方法可以共存
      */  
