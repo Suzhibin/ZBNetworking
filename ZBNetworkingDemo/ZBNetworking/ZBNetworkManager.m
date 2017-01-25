@@ -20,12 +20,12 @@ static const NSInteger timeOut = 60*60;
 @implementation ZBNetworkManager
 
 + (ZBNetworkManager *)sharedManager {
-    static ZBNetworkManager *sharedInstance = nil;
+    static ZBNetworkManager *sharedManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[ZBNetworkManager alloc] init];
+        sharedManager = [[ZBNetworkManager alloc] init];
     });
-    return sharedInstance;
+    return sharedManager;
 }
 
 - (id)init{
@@ -92,18 +92,18 @@ static const NSInteger timeOut = 60*60;
 
 - (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type newPath:(NSString *)newpath progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
     if (newpath) {
-        [[ZBCacheManager sharedCacheManager] createDirectoryAtPath:newpath];
-        NSString *path =[[ZBCacheManager sharedCacheManager]cachePathForKey:urlString inPath:newpath];
+        [[ZBCacheManager sharedManager] createDirectoryAtPath:newpath];
+        NSString *path =[[ZBCacheManager sharedManager]cachePathForKey:urlString inPath:newpath];
         [self GET:urlString parameters:parameters apiType:type setPath:path progress:progressBlock success:success failed:failed ];
     }else{
-        NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:urlString];
+        NSString *path =[[ZBCacheManager sharedManager] pathWithFileName:urlString];
         [self GET:urlString parameters:parameters apiType:type setPath:path progress:progressBlock success:success failed:failed];
     }
 }
 
 - (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type setPath:(NSString *)path progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
     
-    if ([[ZBCacheManager sharedCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
+    if ([[ZBCacheManager sharedManager]isExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
         ZBLog(@"AF cache");
         NSData *data = [NSData dataWithContentsOfFile:path];
         
@@ -124,8 +124,8 @@ static const NSInteger timeOut = 60*60;
         
     }success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject) {
         
-        [[ZBCacheManager sharedCacheManager] setMutableData:responseObject writeToFile:path];
-        
+        [[ZBCacheManager sharedManager] setContent:responseObject writeToFile:path];
+       
         success ? success(responseObject,self.request.apiType) : nil;
         
     }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull   error) {

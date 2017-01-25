@@ -120,9 +120,9 @@ static const NSInteger timeOut = 60*60;
     session.delegate = delegate;
     session.requestSuccess=success;
     session.requestFailed=failed;
-    NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:urlString];
+    NSString *path =[[ZBCacheManager sharedManager] pathWithFileName:urlString];
     
-    if ([[ZBCacheManager sharedCacheManager]fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
+    if ([[ZBCacheManager sharedManager]isExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
         
@@ -166,9 +166,10 @@ static const NSInteger timeOut = 60*60;
  */
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
     if(error == nil){
-        NSString *path =[[ZBCacheManager sharedCacheManager] pathWithFileName:self.request.urlString ];
-        [[ZBCacheManager sharedCacheManager] setMutableData:self.request.responseObj writeToFile:path];
-       
+        NSString *path =[[ZBCacheManager sharedManager] pathWithFileName:self.request.urlString];
+        
+        [[ZBCacheManager sharedManager] setContent:self.request.responseObj writeToFile:path];
+        
         if (self.requestSuccess) {
            self.requestSuccess(self.request.responseObj,self.request.apiType);
         }

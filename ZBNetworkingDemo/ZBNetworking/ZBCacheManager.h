@@ -30,7 +30,7 @@ typedef void(^ZBCacheManagerBlock)();
 
 
 //返回单例对象
-+ (ZBCacheManager *)sharedCacheManager;
++ (ZBCacheManager *)sharedManager;
 
 /**
  获取沙盒Home的文件目录
@@ -68,40 +68,46 @@ typedef void(^ZBCacheManagerBlock)();
 - (NSString *)tmpPath;
 
 /**
+ 获取沙盒自创建的ZBKit文件目录
+ 
+ @return Library/Caches/ZBKit路径
+ */
+- (NSString *)ZBKitPath;
+
+/**
+ 获取沙盒自创建的AppCache文件目录
+ 
+ @return Library/Caches/ZBKit/AppCache路径
+ */
+- (NSString *)ZBAppCachePath;
+
+/**
  创建沙盒文件夹
 
- @param path 路径
+ @param path    路径
  */
 - (void)createDirectoryAtPath:(NSString *)path;
 
 /**
-  把data内容,写入到文件
-
- @param data 数据
- @param path  路径
+ 把内容,写入到文件
+ 
+ @param content    数据
+ @param path    路径
  */
-- (void)setMutableData:(NSMutableData*)data writeToFile:(NSString *)path;
-
-/**
- 把字符串内容,写入到文件
-
- @param string 字符串
- @param path   路径
- */
-- (void)setString:(NSString*)string writeToFile:(NSString *)path;
+- (BOOL)setContent:(NSObject *)content writeToFile:(NSString *)path;
 
 /**
  判断沙盒是否对应的值
 
- @param path 路径
+ @param path    路径
 
- @return YES NO
+ @return YES/NO
  */
-- (BOOL)fileExistsAtPath:(NSString *)path;
+- (BOOL)isExistsAtPath:(NSString *)path;
 
 /**
- *  查找存储的文件
- *  @param key  存储的文件
+ *  查找存储的文件 默认缓存路径/Library/Caches/ZBKit/AppCache
+ *  @param  key  存储的文件
  *
  *  @return 根据存储的文件，返回在本地的存储路径
  */
@@ -111,20 +117,20 @@ typedef void(^ZBCacheManagerBlock)();
  拼接路径与编码后的文件
 
  @param key       文件
- @param CachePath 路径
+ @param CachePath 自定义路径
 
  @return 完整的文件路径
  */
 - (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)CachePath;
 
 /**
- * 显示data文件缓存大小
+ * 显示data文件缓存大小 默认缓存路径/Library/Caches/ZBKit/AppCache
  * Get the size used by the disk cache
  */
 - (NSUInteger)getCacheSize;
 
 /**
- * 显示data文件缓存个数
+ * 显示data文件缓存个数 默认缓存路径/Library/Caches/ZBKit/AppCache
  * Get the number of file in the disk cache
  */
 - (NSUInteger)getCacheCount;
@@ -132,52 +138,64 @@ typedef void(^ZBCacheManagerBlock)();
 /**
  显示文件大小
 
- @param path 沙盒路径
+ @param path        自定义路径
 
- @return size 大小
+ @return size       大小
  */
 - (NSUInteger)getFileSizeWithpath:(NSString *)path;
 
 /**
+ 显示文件个数
+ 
+ @param  path       自定义路径
+ 
+ @return count      数量
+ */
+- (NSUInteger)getFileCountWithpath:(NSString *)path;
+/**
  显示文件的大小单位
  
- @param size 得到的大小
+ @param size        得到的大小
  
  @return 显示的单位 GB/MB/KB
  */
 - (NSString *)fileUnitWithSize:(float)size;
 
 /**
- 显示文件个数
- 
- @param path 沙盒路径
-
- @return count 大小
- */
-- (NSUInteger)getFileCountWithpath:(NSString *)path;
-
-/**
   磁盘总空间大小
  
- @return size 大小
+ @return size       大小
  */
 - (NSUInteger)diskSystemSpace;
 
 /**
  磁盘空闲系统空间
 
- @return size 大小
+ @return size       大小
  */
 - (NSUInteger)diskFreeSystemSpace;
 
 /**
- *
+ *返回某个路径下的所有数据文件
+ * @param path      路径
+ * @return array    所有数据
+ */
+- (NSArray *)getCacheFileWithPath:(NSString *)path;
+
+/**
+ *  缓存文件的属性
+ *  @param key      缓存文件
+ */
+-(NSDictionary* )getFileAttributes:(NSString *)key;
+
+/**
+ *  自动清除过期缓存
  *  Remove all expired cached file from disk
  */
 - (void)automaticCleanCache;
 
 /** 
- *  
+ *  自动清除过期缓存
  *  Remove all expired cached file from disk
  *  @param path   路径
  *  @param operation  block 后续操作
@@ -185,13 +203,13 @@ typedef void(^ZBCacheManagerBlock)();
 - (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation;
 
 /**
- *  清除某一个缓存文件
+ *  清除某一个缓存文件    默认路径/Library/Caches/ZBKit/AppCache
  *  @param key 请求的协议地址
  */
 - (void)clearCacheForkey:(NSString *)key;
 
 /**
- *  清除某一个缓存文件
+ *  清除某一个缓存文件   默认路径/Library/Caches/ZBKit/AppCache
  *
  *  @param key        请求的协议地址
  *  @param operation  block 后续操作
@@ -199,13 +217,21 @@ typedef void(^ZBCacheManagerBlock)();
 - (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation;
 
 /**
- *  清除全部缓存 /Library/Caches/AppCache
+ *  清除某一个缓存文件   自定义路径
+ *  @param key        请求的协议地址
+ *  @param path       自定义路径
+ *  @param operation  block 后续操作
+ */
+- (void)clearCacheForkey:(NSString *)key path:(NSString *)path operation:(ZBCacheManagerBlock)operation;
+
+/**
+ *  清除全部缓存 /Library/Caches/ZBKit/AppCache
  *  Clear AppCache disk cached
  */
 - (void)clearCache;
 
 /**
- *  清除全部缓存 /Library/Caches/AppCache
+ *  清除全部缓存 /Library/Caches/ZBKit/AppCache
  *  @param operation block 后续操作
  */
 - (void)clearCacheOnOperation:(ZBCacheManagerBlock)operation;

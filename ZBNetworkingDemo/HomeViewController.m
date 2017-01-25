@@ -8,7 +8,7 @@
 
 #import "HomeViewController.h"
 #import "SecondViewController.h"
-
+#import "ZBNetworking.h"
 @interface HomeViewController ()
 
 @end
@@ -30,6 +30,7 @@
   
         [self.view addSubview:btn];
     }
+  
 }
 - (void)btnClicked:(UIButton *)btn
 {
