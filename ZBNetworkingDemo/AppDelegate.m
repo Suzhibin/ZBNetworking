@@ -20,7 +20,7 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
-    NSString *cachePath = [[ZBCacheManager sharedManager]cachesPath];
+    NSString *cachePath = [[ZBCacheManager sharedInstance]ZBKitPath];
     NSLog(@"cachePath = %@",cachePath);
 
    

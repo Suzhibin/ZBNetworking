@@ -36,7 +36,7 @@
     self.request=[[ZBURLRequest alloc]init];
     
     
-    [[ZBURLSessionManager sharedManager] getRequestWithURL:list_URL target:self];
+    [[ZBURLSessionManager sharedInstance] getRequestWithURL:list_URL target:self];
     
     [self.view addSubview:self.tableView];
   

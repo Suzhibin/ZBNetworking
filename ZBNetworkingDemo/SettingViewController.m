@@ -29,7 +29,7 @@
     // Do any additional setup after loading the view.
     
     //得到沙盒cache文件夹
-    NSString *cachePath= [[ZBCacheManager sharedManager]cachesPath];
+    NSString *cachePath= [[ZBCacheManager sharedInstance]cachesPath];
     NSString *Snapshots=@"Snapshots";
     //拼接cache文件夹下的 Snapshots 文件夹
     self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
@@ -55,9 +55,9 @@
     if (indexPath.row==0) {
         cell.textLabel.text=@"清除全部缓存";
         
-        float cacheSize=[[ZBCacheManager sharedManager]getCacheSize];//json缓存文件大小
+        float cacheSize=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float SnapshotsSize=[[ZBCacheManager sharedManager]getFileSizeWithpath:self.path];//某个沙盒路径文件大小
+        float SnapshotsSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:self.path];//某个沙盒路径文件大小
         float AppCacheSize=cacheSize+imageSize+SnapshotsSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         
@@ -68,9 +68,9 @@
         cell.textLabel.text=@"全部缓存数量";
         cell.userInteractionEnabled = NO;
         
-        float cacheCount=[[ZBCacheManager sharedManager]getCacheCount];//json缓存文件个数
+        float cacheCount=[[ZBCacheManager sharedInstance]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-        float SnapshotsCount=[[ZBCacheManager sharedManager]getFileCountWithpath:self.path];//某个沙盒路径文件个数
+        float SnapshotsCount=[[ZBCacheManager sharedInstance]getFileCountWithpath:self.path];//某个沙盒路径文件个数
         float AppCacheCount=cacheCount+imageCount+SnapshotsCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
@@ -79,7 +79,7 @@
     if (indexPath.row==2) {
         cell.textLabel.text=@"清除json缓存";
         
-        float cacheSize=[[ZBCacheManager sharedManager]getCacheSize];//json缓存文件大小
+        float cacheSize=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
     
         cacheSize=cacheSize/1000.0/1000.0;
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",cacheSize];
@@ -90,7 +90,7 @@
         cell.textLabel.text=@"json缓存数量";
          cell.userInteractionEnabled = NO;
         
-        float cacheCount=[[ZBCacheManager sharedManager]getCacheCount];//json缓存文件个数
+        float cacheCount=[[ZBCacheManager sharedInstance]getCacheCount];//json缓存文件个数
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",cacheCount];
         
@@ -117,17 +117,17 @@
     if (indexPath.row==6) {
         cell.textLabel.text=@"清除某个路径下的所有文件";
     
-        float size=[[ZBCacheManager sharedManager]getFileSizeWithpath:self.path];
+        float size=[[ZBCacheManager sharedInstance]getFileSizeWithpath:self.path];
 
         //fileUnitWithSize 转换单位方法
-        cell.detailTextLabel.text=[[ZBCacheManager sharedManager] fileUnitWithSize:size];
+        cell.detailTextLabel.text=[[ZBCacheManager sharedInstance] fileUnitWithSize:size];
     }
     
     if (indexPath.row==7) {
         cell.textLabel.text=@"某个路径下所有文件数量";
         cell.userInteractionEnabled = NO;
         
-        float count=[[ZBCacheManager sharedManager]getFileCountWithpath:self.path];
+        float count=[[ZBCacheManager sharedInstance]getFileCountWithpath:self.path];
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
@@ -152,12 +152,12 @@
     if (indexPath.row==0) {
         
         //清除json缓存后的操作
-        [[ZBCacheManager sharedManager]clearCacheOnOperation:^{
+        [[ZBCacheManager sharedInstance]clearCacheOnOperation:^{
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
             [[SDImageCache sharedImageCache] clearMemory];
             //清除沙盒某个文件夹
-            [[ZBCacheManager sharedManager]clearDiskWithpath:self.path];
+            [[ZBCacheManager sharedInstance]clearDiskWithpath:self.path];
             //清除系统内存文件
             [[NSURLCache sharedURLCache]removeAllCachedResponses];
             
@@ -168,7 +168,7 @@
     if (indexPath.row==2) {
         //清除json缓存
         //[[ZBCacheManager sharedManager]clearCache];
-        [[ZBCacheManager sharedManager]clearCacheOnOperation:^{
+        [[ZBCacheManager sharedInstance]clearCacheOnOperation:^{
              [self.tableView reloadData];
         }];
         
@@ -189,7 +189,7 @@
 
         //清除某个路径下所有文件
        // [[ZBCacheManager sharedManager]clearDiskWithpath:self.path];
-        [[ZBCacheManager sharedManager]clearDiskWithpath:self.path operation:^{
+        [[ZBCacheManager sharedInstance]clearDiskWithpath:self.path operation:^{
             
             [self.tableView reloadData];
             
@@ -199,7 +199,7 @@
         
         //清除单个缓存文件
         // [[ZBCacheManager sharedManager]clearCacheForkey:list_URL];
-        [[ZBCacheManager sharedManager]clearCacheForkey:list_URL operation:^{
+        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL operation:^{
             
          [self.tableView reloadData];
             

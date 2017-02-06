@@ -32,7 +32,7 @@ typedef void (^progressBlock)(NSProgress * progress);
  
  @return  ZBNetworkManager 对象
  */
-+ (ZBNetworkManager *)sharedManager;
++ (ZBNetworkManager *)sharedInstance;
 /**
  *  请求方法 get/post
  *
@@ -92,19 +92,6 @@ typedef void (^progressBlock)(NSProgress * progress);
  *  @param failed           请求失败的 Block
  */
 - (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed;
-
-/**
- *  get请求
- *
- *  @param urlString        请求的协议地址
- *  @param parameters       请求所用的参数
- *  @param type             请求类型
- *  @param newpath          新的存储路径
- *  @param progressBlock    请求进度  Block
- *  @param success          请求成功的 Block
- *  @param failed           请求失败的 Block
- */
-- (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type newPath:(NSString *)newpath progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
  *  post 请求

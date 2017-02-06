@@ -67,11 +67,6 @@ typedef NS_ENUM(NSInteger,MethodType) {
 @property (nonatomic,strong) NSMutableData *responseObj;
 
 /**
- *  重新创建存储路径
- */
-@property (nonatomic,copy) NSString *path;
-
-/**
  *  设置超时时间  默认15秒
  *   The timeout interval, in seconds, for created requests. The default timeout interval is 15 seconds.
  */

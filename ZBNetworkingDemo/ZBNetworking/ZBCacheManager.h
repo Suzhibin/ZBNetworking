@@ -30,7 +30,7 @@ typedef void(^ZBCacheManagerBlock)();
 
 
 //返回单例对象
-+ (ZBCacheManager *)sharedManager;
++ (ZBCacheManager *)sharedInstance;
 
 /**
  获取沙盒Home的文件目录

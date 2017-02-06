@@ -36,13 +36,13 @@ static const NSInteger cacheMixCacheAge = 60;
 
 @implementation ZBCacheManager
 
-+ (ZBCacheManager *)sharedManager {
-    static ZBCacheManager *cacheManager=nil;
++ (ZBCacheManager *)sharedInstance{
+    static ZBCacheManager *cacheInstance=nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cacheManager = [[ZBCacheManager alloc] init];
+        cacheInstance = [[ZBCacheManager alloc] init];
     });
-    return cacheManager;
+    return cacheInstance;
 }
 
 - (id)init{
@@ -278,7 +278,7 @@ static const NSInteger cacheMixCacheAge = 60;
 }
 
 -(NSDictionary* )getFileAttributes:(NSString *)key{
-    NSString *path =[[ZBCacheManager sharedManager] pathWithFileName:key];
+    NSString *path =[self pathWithFileName:key];
     NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
     return info;
 }
@@ -386,7 +386,7 @@ static const NSInteger cacheMixCacheAge = 60;
 
 - (void)clearCacheForkey:(NSString *)key path:(NSString *)path operation:(ZBCacheManagerBlock)operation{
     
-    NSString *filePath=[[ZBCacheManager sharedManager] cachePathForKey:key inPath:path];
+    NSString *filePath=[self cachePathForKey:key inPath:path];
     dispatch_async(self.operationQueue,^{
         
         [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];

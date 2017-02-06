@@ -27,13 +27,13 @@ static const NSInteger timeOut = 60*60;
 
 @implementation ZBURLSessionManager
 
-+ (ZBURLSessionManager *)sharedManager {
-    static ZBURLSessionManager *sessionManager=nil;
++ (ZBURLSessionManager *)sharedInstance{
+    static ZBURLSessionManager *sessionInstance=nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sessionManager = [[ZBURLSessionManager alloc] init];
+        sessionInstance = [[ZBURLSessionManager alloc] init];
     });
-    return sessionManager;
+    return sessionInstance;
 }
 
 - (id)init{
@@ -120,9 +120,9 @@ static const NSInteger timeOut = 60*60;
     session.delegate = delegate;
     session.requestSuccess=success;
     session.requestFailed=failed;
-    NSString *path =[[ZBCacheManager sharedManager] pathWithFileName:urlString];
+    NSString *path =[[ZBCacheManager sharedInstance] pathWithFileName:urlString];
     
-    if ([[ZBCacheManager sharedManager]isExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
+    if ([[ZBCacheManager sharedInstance]isExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
         
         NSData *data = [NSData dataWithContentsOfFile:path];
         
@@ -166,9 +166,9 @@ static const NSInteger timeOut = 60*60;
  */
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
     if(error == nil){
-        NSString *path =[[ZBCacheManager sharedManager] pathWithFileName:self.request.urlString];
+        NSString *path =[[ZBCacheManager sharedInstance] pathWithFileName:self.request.urlString];
         
-        [[ZBCacheManager sharedManager] setContent:self.request.responseObj writeToFile:path];
+        [[ZBCacheManager sharedInstance] setContent:self.request.responseObj writeToFile:path];
         
         if (self.requestSuccess) {
            self.requestSuccess(self.request.responseObj,self.request.apiType);
