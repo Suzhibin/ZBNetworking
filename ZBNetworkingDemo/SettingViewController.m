@@ -28,11 +28,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    //得到沙盒cache文件夹
+    //得到沙盒cache文件夹下的系统缓存文件路径
     NSString *cachePath= [[ZBCacheManager sharedInstance]cachesPath];
-    NSString *Snapshots=@"Snapshots";
-    //拼接cache文件夹下的 Snapshots 文件夹
-    self.path=[NSString stringWithFormat:@"%@/%@",cachePath,Snapshots];
+    NSString *appID=@"github.com-Suzhibin.ZBNetworkingDemo";
+    NSString *fsCachedData=@"fsCachedData";
+    self.path=[NSString stringWithFormat:@"%@/%@/%@",cachePath,appID,fsCachedData];
     
     [self.view addSubview:self.tableView];
     
@@ -57,8 +57,8 @@
         
         float cacheSize=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
         float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
-        float SnapshotsSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:self.path];//某个沙盒路径文件大小
-        float AppCacheSize=cacheSize+imageSize+SnapshotsSize;
+        float fsCachedDataSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:self.path];//系统缓存沙盒路径文件大小
+        float AppCacheSize=cacheSize+imageSize+fsCachedDataSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",AppCacheSize];
@@ -70,8 +70,8 @@
         
         float cacheCount=[[ZBCacheManager sharedInstance]getCacheCount];//json缓存文件个数
         float imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
-        float SnapshotsCount=[[ZBCacheManager sharedInstance]getFileCountWithpath:self.path];//某个沙盒路径文件个数
-        float AppCacheCount=cacheCount+imageCount+SnapshotsCount;
+        float fsCachedDataCount=[[ZBCacheManager sharedInstance]getFileCountWithpath:self.path];//某个沙盒路径文件个数
+        float AppCacheCount=cacheCount+imageCount+fsCachedDataCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
     }
@@ -115,7 +115,7 @@
     }
     
     if (indexPath.row==6) {
-        cell.textLabel.text=@"清除某个路径下的所有文件";
+        cell.textLabel.text=@"清除系统缓存路径下的所有文件";
     
         float size=[[ZBCacheManager sharedInstance]getFileSizeWithpath:self.path];
 
@@ -124,7 +124,7 @@
     }
     
     if (indexPath.row==7) {
-        cell.textLabel.text=@"某个路径下所有文件数量";
+        cell.textLabel.text=@"系统缓存路径下所有文件数量";
         cell.userInteractionEnabled = NO;
         
         float count=[[ZBCacheManager sharedInstance]getFileCountWithpath:self.path];
@@ -156,10 +156,10 @@
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
             [[SDImageCache sharedImageCache] clearMemory];
-            //清除沙盒某个文件夹
+            //清除系统缓存文件
+            //[[NSURLCache sharedURLCache]removeAllCachedResponses];
+            //用ZBCacheManager 方法代替上面的系统方法 清除系统缓存文件
             [[ZBCacheManager sharedInstance]clearDiskWithpath:self.path];
-            //清除系统内存文件
-            [[NSURLCache sharedURLCache]removeAllCachedResponses];
             
             [self.tableView reloadData];
             
@@ -187,8 +187,11 @@
 
     if (indexPath.row==6) {
 
-        //清除某个路径下所有文件
-       // [[ZBCacheManager sharedManager]clearDiskWithpath:self.path];
+        //清除系统缓存路径下所有文件
+        //[[NSURLCache sharedURLCache]removeAllCachedResponses];
+        
+        //用ZBCacheManager 方法代替上面的系统方法 清除系统缓存文件
+        // [[ZBCacheManager sharedManager]clearDiskWithpath:self.path];
         [[ZBCacheManager sharedInstance]clearDiskWithpath:self.path operation:^{
             
             [self.tableView reloadData];

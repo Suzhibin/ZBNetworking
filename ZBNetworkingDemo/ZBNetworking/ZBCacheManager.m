@@ -340,40 +340,6 @@ static const NSInteger cacheMixCacheAge = 60;
     }];
 }
 
-- (void)clearCacheWithTime{
-    dispatch_async(self.operationQueue,^{
-        
-        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMixCacheAge];
-        
-        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:self.diskCachePath];
-        
-        for (NSString *fileName in fileEnumerator)
-        {
-            NSString *filePath = [self.diskCachePath stringByAppendingPathComponent:fileName];
-            
-            NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
-            NSDate *current = [info objectForKey:NSFileModificationDate];
-            
-            if ([[current laterDate:expirationDate] isEqualToDate:expirationDate])
-            {
-                
-                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-                
-            }
-        }
-        /*
-        if (operation) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                operation();
-            });
-        }
-         */
-    });
-
-}
-
 - (void)clearCacheForkey:(NSString *)key{
  
     [self clearCacheForkey:key operation:nil];
