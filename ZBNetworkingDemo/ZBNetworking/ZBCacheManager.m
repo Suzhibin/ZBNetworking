@@ -286,10 +286,10 @@ static const NSInteger cacheMixCacheAge = 60;
 #pragma  mark - 清除文件
 
 -(void)automaticCleanCache{
-    [self automaticCleanCacheWithPath:self.diskCachePath Operation:nil];
+    [self automaticCleanCacheWithPath:self.diskCachePath completion:nil];
 }
 
-- (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation{
+- (void)automaticCleanCacheWithPath:(NSString *)path completion:(ZBCacheManagerBlock)completion{
     dispatch_async(self.operationQueue,^{
         
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMaxCacheAge];
@@ -310,11 +310,11 @@ static const NSInteger cacheMixCacheAge = 60;
                 
             }
         }
-        if (operation) {
+        if (completion) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
             
-                operation();
+                completion();
             });
         }
     });
@@ -334,61 +334,95 @@ static const NSInteger cacheMixCacheAge = 60;
     }];
     
     // Start the long-running task and return immediately.
-    [self automaticCleanCacheWithPath:self.diskCachePath Operation:^{
+    [self automaticCleanCacheWithPath:self.diskCachePath completion:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
 }
 
+- (void)clearCacheWithTime{
+    dispatch_async(self.operationQueue,^{
+        
+        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMixCacheAge];
+        
+        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:self.diskCachePath];
+        
+        for (NSString *fileName in fileEnumerator)
+        {
+            NSString *filePath = [self.diskCachePath stringByAppendingPathComponent:fileName];
+            
+            NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+            NSDate *current = [info objectForKey:NSFileModificationDate];
+            
+            if ([[current laterDate:expirationDate] isEqualToDate:expirationDate])
+            {
+                
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                
+            }
+        }
+        /*
+        if (operation) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                operation();
+            });
+        }
+         */
+    });
+
+}
+
 - (void)clearCacheForkey:(NSString *)key{
  
-    [self clearCacheForkey:key operation:nil];
+    [self clearCacheForkey:key completion:nil];
 }
 
-- (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation{
+- (void)clearCacheForkey:(NSString *)key completion:(ZBCacheManagerBlock)completion{
     
-    [self clearCacheForkey:key path:self.diskCachePath operation:operation];
+    [self clearCacheForkey:key path:self.diskCachePath completion:completion];
 }
 
-- (void)clearCacheForkey:(NSString *)key path:(NSString *)path operation:(ZBCacheManagerBlock)operation{
+- (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheManagerBlock)completion{
     
     NSString *filePath=[self cachePathForKey:key inPath:path];
     dispatch_async(self.operationQueue,^{
         
         [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
         
-        if (operation) {
+        if (completion) {
             dispatch_async(dispatch_get_main_queue(),^{
-                operation();
+                completion();
             });
         }
     });
 }
 
 - (void)clearCache{
-     [self clearCacheOnOperation:nil];
+     [self clearCacheOnCompletion:nil];
 }
 
-- (void)clearCacheOnOperation:(ZBCacheManagerBlock)operation{
+- (void)clearCacheOnCompletion:(ZBCacheManagerBlock)completion{
 
     dispatch_async(self.operationQueue, ^{
 
             //[self clearDiskWithpath:self.diskCachePath];
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
         [self createDirectoryAtPath:self.diskCachePath];
-        if (operation) {
+        if (completion) {
             dispatch_async(dispatch_get_main_queue(),^{
-                operation();
+                completion();
             });
         }
     });
 }
 
 - (void)clearDiskWithpath:(NSString *)path{
-    [self clearDiskWithpath:path operation:nil];
+    [self clearDiskWithpath:path completion:nil];
 }
 
-- (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation{
+- (void)clearDiskWithpath:(NSString *)path completion:(ZBCacheManagerBlock)completion{
      dispatch_async(self.operationQueue, ^{
   
            NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
@@ -399,9 +433,9 @@ static const NSInteger cacheMixCacheAge = 60;
              [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     
          }
-         if (operation) {
+         if (completion) {
              dispatch_async(dispatch_get_main_queue(),^{
-                 operation();
+                 completion();
              });
          }
 

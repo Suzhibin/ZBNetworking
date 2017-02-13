@@ -198,9 +198,9 @@ typedef void(^ZBCacheManagerBlock)();
  *  自动清除过期缓存
  *  Remove all expired cached file from disk
  *  @param path   路径
- *  @param operation  block 后续操作
+ *  @param completion  block 后续操作
  */
-- (void)automaticCleanCacheWithPath:(NSString *)path Operation:(ZBCacheManagerBlock)operation;
+- (void)automaticCleanCacheWithPath:(NSString *)path completion:(ZBCacheManagerBlock)completion;
 
 /**
  *  清除某一个缓存文件    默认路径/Library/Caches/ZBKit/AppCache
@@ -212,17 +212,17 @@ typedef void(^ZBCacheManagerBlock)();
  *  清除某一个缓存文件   默认路径/Library/Caches/ZBKit/AppCache
  *
  *  @param key        请求的协议地址
- *  @param operation  block 后续操作
+ *  @param completion  block 后续操作
  */
-- (void)clearCacheForkey:(NSString *)key operation:(ZBCacheManagerBlock)operation;
+- (void)clearCacheForkey:(NSString *)key completion:(ZBCacheManagerBlock)completion;
 
 /**
  *  清除某一个缓存文件   自定义路径
  *  @param key        请求的协议地址
  *  @param path       自定义路径
- *  @param operation  block 后续操作
+ *  @param completion  block 后续操作
  */
-- (void)clearCacheForkey:(NSString *)key path:(NSString *)path operation:(ZBCacheManagerBlock)operation;
+- (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheManagerBlock)completion;
 
 /**
  *  清除全部缓存 /Library/Caches/ZBKit/AppCache
@@ -232,9 +232,9 @@ typedef void(^ZBCacheManagerBlock)();
 
 /**
  *  清除全部缓存 /Library/Caches/ZBKit/AppCache
- *  @param operation block 后续操作
+ *  @param completion block 后续操作
  */
-- (void)clearCacheOnOperation:(ZBCacheManagerBlock)operation;
+- (void)clearCacheOnCompletion:(ZBCacheManagerBlock)completion;
 
 
 /**
@@ -248,9 +248,9 @@ typedef void(^ZBCacheManagerBlock)();
  清除某一路径下的文件
 
  @param path      路径
- @param operation block 后续操作
+ @param completion block 后续操作
  */
-- (void)clearDiskWithpath:(NSString *)path operation:(ZBCacheManagerBlock)operation;
+- (void)clearDiskWithpath:(NSString *)path completion:(ZBCacheManagerBlock)completion;
 
 /**
  Posted when a task name.

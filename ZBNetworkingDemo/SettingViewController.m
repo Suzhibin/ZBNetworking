@@ -152,7 +152,7 @@
     if (indexPath.row==0) {
         
         //清除json缓存后的操作
-        [[ZBCacheManager sharedInstance]clearCacheOnOperation:^{
+        [[ZBCacheManager sharedInstance]clearCacheOnCompletion:^{
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
             [[SDImageCache sharedImageCache] clearMemory];
@@ -168,7 +168,7 @@
     if (indexPath.row==2) {
         //清除json缓存
         //[[ZBCacheManager sharedManager]clearCache];
-        [[ZBCacheManager sharedInstance]clearCacheOnOperation:^{
+        [[ZBCacheManager sharedInstance]clearCacheOnCompletion:^{
              [self.tableView reloadData];
         }];
         
@@ -192,7 +192,7 @@
         
         //用ZBCacheManager 方法代替上面的系统方法 清除系统缓存文件
         // [[ZBCacheManager sharedManager]clearDiskWithpath:self.path];
-        [[ZBCacheManager sharedInstance]clearDiskWithpath:self.path operation:^{
+        [[ZBCacheManager sharedInstance]clearDiskWithpath:self.path completion:^{
             
             [self.tableView reloadData];
             
@@ -202,7 +202,7 @@
         
         //清除单个缓存文件
         // [[ZBCacheManager sharedManager]clearCacheForkey:list_URL];
-        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL operation:^{
+        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL completion:^{
             
          [self.tableView reloadData];
             

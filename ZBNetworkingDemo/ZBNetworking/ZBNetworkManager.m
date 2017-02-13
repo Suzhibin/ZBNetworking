@@ -87,7 +87,11 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type  progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
-    
+
+    if (![urlString isKindOfClass:NSString.class]) {
+        urlString = nil;
+    }
+
     NSString *path =[[ZBCacheManager sharedInstance] pathWithFileName:urlString];
     
     if ([[ZBCacheManager sharedInstance]isExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
@@ -146,13 +150,13 @@ static const NSInteger timeOut = 60*60;
     [[ZBNetworkManager sharedInstance].AFmanager invalidateSessionCancelingTasks:cancelPendingTasks];
 }
 
-- (NSInteger)startNetWorkMonitoring{
-    self.netStatus=[AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
++ (NSInteger)startNetWorkMonitoring{
+    [ZBNetworkManager sharedInstance].netStatus=[AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
     // 设置网络状态改变后的处理
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
         // 当网络状态改变了, 就会调用这个block
-        self.netStatus=status;
-        switch (self.netStatus)
+         [ZBNetworkManager sharedInstance].netStatus=status;
+        switch ( [ZBNetworkManager sharedInstance].netStatus)
         {
             case AFNetworkReachabilityStatusUnknown: // 未知网络
                 
@@ -169,7 +173,7 @@ static const NSInteger timeOut = 60*60;
         }
     }];
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-    return self.netStatus;
+    return  [ZBNetworkManager sharedInstance].netStatus;
 }
 
 - (AFHTTPSessionManager*)AFmanager{
