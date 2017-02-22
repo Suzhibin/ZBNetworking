@@ -69,20 +69,22 @@
 
 
 ## 使用 NSURLSession
-1.添加#import "ZBNetworking.h"
+添加#import "ZBNetworking.h"
 
-2.添加 delegate
+一、代理方法
+
+1.添加 delegate
 ```objective-c
 <ZBURLSessionDelegate>
 ```
 
-3.使用简单:  一行代码调用 
+2.使用简单:  一行代码调用 
 ```objective-c
 //get请求方法 会默认创建缓存路径    
   [[ZBURLSessionManager shareManager] getRequestWithUrlString:URL target:self];
 ```
 
-4.完成和失败俩个代理回调
+3.完成和失败俩个代理回调
 ```objective-c
 //请求完成的代理方法里进行解析或赋值
 - (void)urlRequestFinished:(ZBURLRequest *)request
@@ -116,6 +118,51 @@
 }
 
 ```
+
+二、Block方法
+
+```objective-c
+
+ [[ZBURLSessionManager sharedInstance]requestWithConfig:^(ZBURLRequest *request){
+        request.urlString=menu_URL;
+        request.methodType=ZBMethodTypeGET;//默认为GET
+        request.apiType=requestType;//默认为default
+        
+    } success:^(id responseObj,apiType type){
+        NSLog(@"type:%zd",type);
+        //如果是刷新的数据
+        if (type==ZBRequestTypeRefresh) {
+            [self.dataArray removeAllObjects];
+            [_refreshControl endRefreshing];    //结束刷新
+        }
+        if (type==ZBRequestTypeLoadMore) {
+            //上拉加载
+        }
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+       
+        NSArray *array=[dict objectForKey:@"authors"];
+        
+        for (NSDictionary *dic in array) {
+            MenuModel *model=[[MenuModel alloc]init];
+            model.name=[dic objectForKey:@"name"];
+            model.wid=[dic objectForKey:@"id"];
+            model.detail=[dic objectForKey:@"detail"];
+            [self.dataArray addObject:model];
+        }
+        [self.tableView reloadData];
+    } failed:^(NSError *error){
+        if (error.code==NSURLErrorCancelled)return;
+        if (error.code==NSURLErrorTimedOut) {
+            [self alertTitle:@"请求超时" andMessage:@""];
+        }else{
+            [self alertTitle:@"请求失败" andMessage:@""];
+        }
+    }];
+
+```
+
+
 ## 使用 其他功能
 1.离线下载
 
