@@ -25,6 +25,11 @@
 
 
 @implementation ZBURLRequest
+
+- (void)dealloc{
+    ZBLog(@"%s",__func__);
+}
+
 + (ZBURLRequest *)sharedInstance {
     static ZBURLRequest *request=nil;
     static dispatch_once_t onceToken;
@@ -188,5 +193,6 @@
     }
     return _mutableHTTPRequestHeaders;
 }
+
 
 @end

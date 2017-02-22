@@ -8,9 +8,8 @@
 
 #import "ZBNetworkManager.h"
 #import "ZBCacheManager.h"
-#import "NSFileManager+pathMethod.h"
 #import <AFNetworkActivityIndicatorManager.h>
-static const NSInteger timeOut = 60*60;
+
 @interface ZBNetworkManager()
 @property (nonatomic, strong) AFHTTPSessionManager *AFmanager;
 
@@ -71,6 +70,7 @@ static const NSInteger timeOut = 60*60;
     if (downloadArray.count==0)return;
     [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
         [self GET:urlString parameters:nil apiType:type progress:nil success:success failed:failed ];
+    
     }];
 }
 
@@ -92,31 +92,28 @@ static const NSInteger timeOut = 60*60;
         urlString = nil;
     }
 
-    NSString *path =[[ZBCacheManager sharedInstance] pathWithFileName:urlString];
-    
-    if ([[ZBCacheManager sharedInstance]isExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
-        ZBLog(@"AF cache");
-        NSData *data = [NSData dataWithContentsOfFile:path];
+    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:urlString]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
         
-        [self.request.responseObj appendData:data];
+        [[ZBCacheManager sharedInstance]getCacheDataWithForKey:urlString value:^(NSData *data) {
+            [self.request.responseObj appendData:data];
+            success ? success(self.request.responseObj ,type) : nil;
+        }];
         
-        success ? success(self.request.responseObj ,type) : nil;
     }else{
-        [self GET:urlString parameters:parameters path:path progress:progressBlock success:success failed:failed];
+        [self GETRequest:urlString parameters:parameters progress:progressBlock success:success failed:failed];
     }
 }
 
-- (void)GET:(NSString *)urlString parameters:(id)parameters path:(NSString *)path progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
+- (void)GETRequest:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
     if(!urlString)return;
-    ZBLog(@"AF GET");
     [self.AFmanager GET:urlString parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
         progressBlock ? progressBlock(downloadProgress) : nil;
         
     }success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject) {
+   
+       [[ZBCacheManager sharedInstance] storeContent:responseObject forKey:urlString];
         
-        [[ZBCacheManager sharedInstance] setContent:responseObject writeToFile:path];
-       
         success ? success(responseObject,self.request.apiType) : nil;
         
     }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull   error) {
@@ -131,7 +128,6 @@ static const NSInteger timeOut = 60*60;
 
 - (void)POST:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
     if(!urlString)return;
-    ZBLog(@"AF POST");
     [self.AFmanager POST:urlString parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
         progressBlock ? progressBlock(uploadProgress) : nil;
@@ -184,7 +180,6 @@ static const NSInteger timeOut = 60*60;
         _AFmanager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 设置返回格式
         
         [[self.request mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-            ZBLog(@"%@-%@",field,value);
             [_AFmanager.requestSerializer setValue:value forHTTPHeaderField:field];
         }];
         [_AFmanager.requestSerializer setTimeoutInterval:self.request.timeoutInterval];
