@@ -1,9 +1,20 @@
 # ZBNetworking
-AFNetworking和NSURLSession 封装 添加了请求缓存,离线下载,显示缓存大小,删除缓存等功能 — 
-低耦合，易扩展。
-
-可见的缓存文件
-
+优点:
+1 低耦合，易扩展。
+5.AFNetworking和NSURLSession 两种选择，NSURLSession 还分 delegate 方法 和 block 方法 缓存文件通用 自由选择。
+2.有缓存文件过期机制 默认一周
+3.显示缓存大小/个数，全部清除操作/单个文件清除操作/清除其他路径文件  方法多样
+5.离线下载功能 
+6.多种请求类型的判断。也可不遵循，自由随你定。
+```objective-c
+    ZBRequestTypeDefault,   //默认类型
+    ZBRequestTypeRefresh,   //重新请求 （有缓存，不读取，重新请求）
+    ZBRequestTypeLoadMore,  //加载更多
+    ZBRequestTypeDetail,    //详情
+    ZBRequestTypeOffline,   //离线    （有缓存，不读取，重新请求）
+    ZBRequestTypeCustom     //自定义
+```
+7.可见的缓存文件
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
 ## 使用 AFNetworking 
