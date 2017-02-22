@@ -166,6 +166,8 @@
 ## 使用 其他功能
 1.离线下载
 
+三种请求方式 都可以使用离线下载功能 
+
 ```objective-c
  [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request)
         request.urlArray=offlineArray;
@@ -183,9 +185,6 @@
             [self alertTitle:@"请求失败" andMessage:@""];
         }
     }];
-   
- 或是用URLSession的方法  
-[[ZBURLSessionManager shareManager] offlineDownload:offlineArray target:self apiType:ZBRequestTypeOffline];
 
 //具体演示看demo
 ```
