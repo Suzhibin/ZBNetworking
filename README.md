@@ -3,7 +3,7 @@
 
 1 低耦合，易扩展。
 
-5.AFNetworking和NSURLSession 两种选择，NSURLSession 还分 delegate 方法 和 block 方法    三种请求方式缓存文件通用 自由选择。
+2.AFNetworking和NSURLSession 两种选择，NSURLSession 还分 delegate 方法 和 block 方法    三种请求方式缓存文件通用 自由选择。
 
 2.有缓存文件过期机制 默认一周
 
