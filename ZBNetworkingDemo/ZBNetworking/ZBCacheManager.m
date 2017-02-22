@@ -72,7 +72,6 @@ static const NSInteger timeOut = 60*60;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-     NSLog(@"%s",__func__);
 }
 
 #pragma mark - 获取沙盒目录

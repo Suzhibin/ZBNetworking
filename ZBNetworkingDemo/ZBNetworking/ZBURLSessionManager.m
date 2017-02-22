@@ -69,12 +69,19 @@
 - (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
     
     config ? config(self.request) : nil;
-    
-    if (self.request.apiType==ZBRequestTypeOffline) {
-        [self offlineDownload:self.request.urlArray apiType:self.request.apiType success:success failed:failed];
+    if (self.request.methodType==ZBMethodTypePOST) {
+        [self postRequestWithURL:self.request.urlString parameters:self.request.parameters success:success failed:failed];
     }else{
-        [self getRequestWithURL:self.request.urlString apiType:self.request.apiType success:success failed:failed];
+        if (self.request.apiType==ZBRequestTypeOffline) {
+            [self offlineDownload:self.request.urlArray apiType:self.request.apiType success:success failed:failed];
+        }else{
+            [self getRequestWithURL:self.request.urlString apiType:self.request.apiType success:success failed:failed];
+        }
     }
+}
+
+-(void)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed{
+     [ZBURLSessionManager postRequestWithURL:urlString parameters:parameters success:success failed:failed];
 }
 
 -(void)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
@@ -94,9 +101,21 @@
 }
 
 +(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
+
+    return  [ZBURLSessionManager postRequestWithURL:urlString parameters:parameters target:delegate success:nil failed:nil];
+}
+
++(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed{
+    
+    return  [ZBURLSessionManager postRequestWithURL:urlString parameters:parameters target:nil success:success failed:failed];
+}
+
++(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate success:(requestSuccess)success failed:(requestFailed)failed{
     ZBURLSessionManager *session = [[ZBURLSessionManager alloc] init];
     session.request.urlString = urlString;
     session.delegate = delegate;
+    session.requestSuccess=success;
+    session.requestFailed=failed;
     [session postStartRequestWithParameters:parameters];
     return  session;
 }

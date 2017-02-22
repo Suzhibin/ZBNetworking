@@ -38,6 +38,7 @@
     }else if(_functionType==sessiondelegate){
         //NSURLSessionDelegate方法
         //需要 ZBURLSessionDelegate 协议
+        //注意 ZBURLSessionManager 是 单列
         [[ZBURLSessionManager sharedInstance]getRequestWithURL:list_URL target:self apiType:ZBRequestTypeDefault];
     }
     [self.tableView addSubview:self.refreshControl];
@@ -93,7 +94,7 @@
 #pragma mark -sessionblock
 //apiType 是请求类型 在ZBURLRequest 里
 - (void)getSessionBlockWithApiType:(apiType)requestType{
-    
+    //注意 ZBURLSessionManager 是 单列
     [[ZBURLSessionManager sharedInstance]requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
