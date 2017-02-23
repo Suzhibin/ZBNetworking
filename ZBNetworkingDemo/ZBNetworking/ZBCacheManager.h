@@ -118,15 +118,6 @@ typedef void(^ZBCacheCompletedBlock)();
 /**
  判断沙盒是否对应的值
  
- @param path            路径
- 
- @return YES/NO
- */
-- (BOOL)isExistsAtPath:(NSString *)path;
-
-/**
- 判断沙盒是否对应的值
- 
  @param key             url
  
  @return YES/NO
@@ -147,7 +138,7 @@ typedef void(^ZBCacheCompletedBlock)();
  *  @param  key         存储的文件的url
  *  @param  value       返回在本地的存储文件的二进制数据
  */
-- (void)getCacheDataWithForKey:(NSString *)key value:(ZBCacheValueBlock)value;
+- (void)getCacheDataForKey:(NSString *)key value:(ZBCacheValueBlock)value;
 
 /**
  *  返回二进制数据
@@ -155,7 +146,7 @@ typedef void(^ZBCacheCompletedBlock)();
  *  @param  path        存储的文件的路径
  *  @param  value       返回在本地的存储文件的二进制数据
  */
-- (void)getCacheDataWithForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value;
+- (void)getCacheDataForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value;
 
 /**
  *返回某个路径下的所有数据文件
@@ -176,7 +167,7 @@ typedef void(^ZBCacheCompletedBlock)();
  *
  *  @return 根据存储的文件，返回在本地的存储路径
  */
-- (NSString *)diskCachePathWithForKey:(NSString *)key;
+- (NSString *)diskCachePathForKey:(NSString *)key;
 
 /**
  拼接路径与编码后的文件

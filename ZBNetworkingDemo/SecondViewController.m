@@ -44,7 +44,7 @@
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     
-    [self addItemWithTitle:@"设置" selector:@selector(btnClick) location:NO];
+    [self addItemWithTitle:@"Cache Settings" selector:@selector(btnClick) location:NO];
 
 }
 #pragma mark - AFNetworking

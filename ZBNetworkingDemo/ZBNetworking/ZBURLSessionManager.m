@@ -139,7 +139,7 @@
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:urlString]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
 
-         [[ZBCacheManager sharedInstance]getCacheDataWithForKey:urlString value:^(NSData *data) {
+         [[ZBCacheManager sharedInstance]getCacheDataForKey:urlString value:^(NSData *data) {
              [session.request.responseObj appendData:data];
              success ? success(session.request.responseObj,type) : nil;
              

@@ -113,28 +113,33 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)createDirectoryAtPath:(NSString *)path{
-    if (![self isExistsAtPath:path]) {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
     } else {
        // NSLog(@"FileDir is exists.%@",path);
     }
 }
 
-- (BOOL)isExistsAtPath:(NSString *)path{
-    return  [[NSFileManager defaultManager] fileExistsAtPath:path];
-}
-
 - (BOOL)diskCacheExistsWithKey:(NSString *)key{
  
-    return [self diskCacheExistsWithKey:key path:self.diskCachePath];
+    NSString *codingPath=[self diskCachePathForKey:key];
+    
+    return [self isExistsForKey:key path:codingPath];
 }
 
 - (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path{
     
-    BOOL exists =[self isExistsAtPath:[self cachePathForKey:key inPath:path]]&&[NSFileManager isTimeOutWithPath:[self cachePathForKey:key inPath:path] timeOut:timeOut]==NO;
+    NSString *codingPath=[self cachePathForKey:key inPath:path];
+    
+    return [self isExistsForKey:key path:codingPath];
+}
+
+- (BOOL)isExistsForKey:(NSString *)key path:(NSString *)path{
+    
+    BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:[self cachePathForKey:key inPath:path] timeOut:timeOut]==NO;
     
     if(!exists){
-        exists = [self isExistsAtPath:[[self cachePathForKey:key inPath:path] stringByDeletingPathExtension]];
+        exists = [[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]];
     }
     return exists;
 }
@@ -185,12 +190,12 @@ static const NSInteger timeOut = 60*60;
 }
 
 #pragma  mark - 获取存储数据
-- (void)getCacheDataWithForKey:(NSString *)key value:(ZBCacheValueBlock)value{
+- (void)getCacheDataForKey:(NSString *)key value:(ZBCacheValueBlock)value{
     
-    [self getCacheDataWithForKey:key path:self.diskCachePath value:value];
+    [self getCacheDataForKey:key path:self.diskCachePath value:value];
 }
 
-- (void)getCacheDataWithForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value{
+- (void)getCacheDataForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value{
     if (!key)return value(nil);
     
     dispatch_async(self.operationQueue,^{
@@ -220,13 +225,13 @@ static const NSInteger timeOut = 60*60;
 }
 
 -(NSDictionary* )getDiskFileAttributes:(NSString *)key{
-    NSString *path =[self diskCachePathWithForKey:key];
+    NSString *path =[self diskCachePathForKey:key];
     NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
     return info;
 }
 
 #pragma mark -  编码
-- (NSString *)diskCachePathWithForKey:(NSString *)key{
+- (NSString *)diskCachePathForKey:(NSString *)key{
         
     NSString *path=[self cachePathForKey:key inPath:self.diskCachePath];
     return path;
