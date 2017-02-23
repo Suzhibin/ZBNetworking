@@ -191,7 +191,7 @@ static const NSInteger timeOut = 60*60;
     
     dispatch_async(self.operationQueue,^{
         @autoreleasepool {
-            NSData *diskdata= [NSData dataWithContentsOfFile:[self cachePathForKey:key path:path]];
+            NSData *diskdata= [NSData dataWithContentsOfFile:[[self cachePathForKey:key path:path]stringByDeletingPathExtension]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 value(diskdata);
             });
