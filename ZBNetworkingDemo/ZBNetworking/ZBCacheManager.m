@@ -126,7 +126,7 @@ static const NSInteger timeOut = 60*60;
 
 - (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path{
     
-    NSString *codingPath=[self cachePathForKey:key inPath:path];
+    NSString *codingPath=[self cachePathForKey:key path:path];
     BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO;
     
     if(!exists){
@@ -137,13 +137,13 @@ static const NSInteger timeOut = 60*60;
 
 #pragma  mark - 存储
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key {
-    [self storeContent:content forKey:key cachePath:self.diskCachePath];
+    [self storeContent:content forKey:key path:self.diskCachePath];
 }
 
-- (void)storeContent:(NSObject *)content forKey:(NSString *)key cachePath:(NSString *)cachePath {
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path {
     dispatch_async(self.operationQueue,^{
-        NSString *path =[[self cachePathForKey:key inPath:cachePath]stringByDeletingPathExtension];
-        [self setContent:content writeToFile:path];
+        NSString *codingPath =[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
+        [self setContent:content writeToFile:codingPath];
     });
 }
 
@@ -191,7 +191,7 @@ static const NSInteger timeOut = 60*60;
     
     dispatch_async(self.operationQueue,^{
         @autoreleasepool {
-            NSData *diskdata= [NSData dataWithContentsOfFile:[self cachePathForKey:key inPath:path]];
+            NSData *diskdata= [NSData dataWithContentsOfFile:[self cachePathForKey:key path:path]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 value(diskdata);
             });
@@ -224,14 +224,14 @@ static const NSInteger timeOut = 60*60;
 #pragma mark -  编码
 - (NSString *)diskCachePathForKey:(NSString *)key{
         
-    NSString *path=[self cachePathForKey:key inPath:self.diskCachePath];
+    NSString *path=[self cachePathForKey:key path:self.diskCachePath];
     return path;
 }
 
-- (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)CachePath {
+- (NSString *)cachePathForKey:(NSString *)key path:(NSString *)path {
     @synchronized (self) {
         NSString *filename = [self cachedFileNameForKey:key];
-        return [[CachePath stringByAppendingPathComponent:filename]stringByDeletingPathExtension];
+        return [[path stringByAppendingPathComponent:filename]stringByDeletingPathExtension];
     }
 }
 
@@ -394,7 +394,7 @@ static const NSInteger timeOut = 60*60;
 
 - (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     if (!key)return;
-    NSString *filePath=[self cachePathForKey:key inPath:path];
+    NSString *filePath=[self cachePathForKey:key path:path];
     dispatch_async(self.operationQueue,^{
         
         [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];

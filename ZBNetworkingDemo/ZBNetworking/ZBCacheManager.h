@@ -105,7 +105,7 @@ typedef void(^ZBCacheCompletedBlock)();
  @param key             url
  @param cachePath       路径
  */
-- (void)storeContent:(NSObject *)content forKey:(NSString *)key cachePath:(NSString *)cachePath;
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path;
 
 /**
  把内容,写入到文件
@@ -177,7 +177,7 @@ typedef void(^ZBCacheCompletedBlock)();
 
  @return 完整的文件路径
  */
-- (NSString *)cachePathForKey:(NSString *)key inPath:(NSString *)CachePath;
+- (NSString *)cachePathForKey:(NSString *)key path:(NSString *)path;
 
 /**
  * 显示data文件缓存大小 默认缓存路径/Library/Caches/ZBKit/AppCache
