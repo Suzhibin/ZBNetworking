@@ -121,25 +121,16 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (BOOL)diskCacheExistsWithKey:(NSString *)key{
- 
-    NSString *codingPath=[self diskCachePathForKey:key];
-    
-    return [self isExistsForKey:key path:codingPath];
+    return [self diskCacheExistsWithKey:key path:self.diskCachePath];
 }
 
 - (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path{
     
     NSString *codingPath=[self cachePathForKey:key inPath:path];
-    
-    return [self isExistsForKey:key path:codingPath];
-}
-
-- (BOOL)isExistsForKey:(NSString *)key path:(NSString *)path{
-    
-    BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:path]&&[NSFileManager isTimeOutWithPath:path timeOut:timeOut]==NO;
+    BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO;
     
     if(!exists){
-        exists = [[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]];
+        exists = [[NSFileManager defaultManager] fileExistsAtPath:[codingPath stringByDeletingPathExtension]];
     }
     return exists;
 }

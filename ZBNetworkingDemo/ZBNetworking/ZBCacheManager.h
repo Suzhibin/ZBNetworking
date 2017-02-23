@@ -156,7 +156,7 @@ typedef void(^ZBCacheCompletedBlock)();
 - (NSArray *)getDiskCacheFileWithPath:(NSString *)path;
 
 /**
- *  缓存文件的属性
+ *  返回缓存文件的属性     只支持默认缓存路径
  *  @param key          缓存文件
  */
 -(NSDictionary* )getDiskFileAttributes:(NSString *)key;
