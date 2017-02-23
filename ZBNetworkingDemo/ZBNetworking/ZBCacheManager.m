@@ -230,12 +230,12 @@ static const NSInteger timeOut = 60*60;
 
 - (NSString *)cachePathForKey:(NSString *)key path:(NSString *)path {
     @synchronized (self) {
-        NSString *filename = [self cachedFileNameForKey:key];
+        NSString *filename = [self codingFileNameForKey:key];
         return [[path stringByAppendingPathComponent:filename]stringByDeletingPathExtension];
     }
 }
 
-- (NSString *)cachedFileNameForKey:(NSString *)key {
+- (NSString *)codingFileNameForKey:(NSString *)key {
     const char *str = [key UTF8String];
     if (str == NULL) {
         str = "";
