@@ -81,7 +81,7 @@
 2.使用简单:  一行代码调用 
 ```objective-c
 //get请求方法 会默认创建缓存路径    
-  [[ZBURLSessionManager shareManager] getRequestWithUrlString:URL target:self];
+  [[ZBURLSessionManager sharedInstance] getRequestWithUrlString:URL target:self];
 ```
 
 3.完成和失败俩个代理回调
