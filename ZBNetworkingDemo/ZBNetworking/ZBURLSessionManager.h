@@ -21,15 +21,8 @@
 #import <Foundation/Foundation.h>
 #import "ZBURLRequest.h"
 
-typedef void (^requestConfig)(ZBURLRequest *request);
-
-typedef void (^requestSuccess)(id responseObj,apiType type);
-
-typedef void (^requestFailed)(NSError *error);
-
-typedef void (^progressBlock)(NSProgress * progress);
-
 @protocol ZBURLSessionDelegate <NSObject>
+
 @required
 /**
  *  数据请求成功调用的方法

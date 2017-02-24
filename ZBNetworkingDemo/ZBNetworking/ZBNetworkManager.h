@@ -10,15 +10,6 @@
 #import <AFNetworking.h>
 #import "ZBURLRequest.h"
 
-typedef void (^requestConfig)(ZBURLRequest *request);
-
-typedef void (^requestSuccess)(id responseObj,apiType type);
-
-typedef void (^requestFailed)(NSError *error);
-
-typedef void (^progressBlock)(NSProgress * progress);
-
-
 @interface ZBNetworkManager : NSObject
 
 @property (nonatomic,strong) ZBURLRequest *request;

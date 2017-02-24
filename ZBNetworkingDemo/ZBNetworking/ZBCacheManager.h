@@ -103,7 +103,7 @@ typedef void(^ZBCacheCompletedBlock)();
  
  @param content         数据
  @param key             url
- @param cachePath       路径
+ @param path            路径
  */
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path;
 
@@ -173,7 +173,7 @@ typedef void(^ZBCacheCompletedBlock)();
  拼接路径与编码后的文件
 
  @param key             文件
- @param CachePath       自定义路径
+ @param path            自定义路径
 
  @return 完整的文件路径
  */

@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 @class  ZBURLRequest;
 
-@interface ZBURLRequest : NSObject
-
 #define ZBBUG_LOG 0
 
 #if(ZBBUG_LOG == 1)
@@ -31,12 +29,21 @@ typedef NS_ENUM(NSInteger,apiType) {
     
 } ;
 
-
 typedef NS_ENUM(NSInteger,MethodType) {
     
     ZBMethodTypeGET,
     ZBMethodTypePOST
 } ;
+
+typedef void (^requestConfig)(ZBURLRequest *request);
+
+typedef void (^requestSuccess)(id responseObj,apiType type);
+
+typedef void (^requestFailed)(NSError *error);
+
+typedef void (^progressBlock)(NSProgress * progress);
+
+@interface ZBURLRequest : NSObject
 
 /**
  *  用于标识不同类型的request
