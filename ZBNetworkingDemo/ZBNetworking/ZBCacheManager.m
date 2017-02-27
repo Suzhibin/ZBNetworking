@@ -130,7 +130,7 @@ static const NSInteger timeOut = 60*60;
     BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO;
     
     if(!exists){
-        exists = [[NSFileManager defaultManager] fileExistsAtPath:[codingPath stringByDeletingPathExtension]];
+        exists = [[NSFileManager defaultManager] fileExistsAtPath:codingPath];
     }
     return exists;
 }
@@ -142,7 +142,7 @@ static const NSInteger timeOut = 60*60;
 
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path {
     dispatch_async(self.operationQueue,^{
-        NSString *codingPath =[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
+        NSString *codingPath =[self cachePathForKey:key path:path];
         [self setContent:content writeToFile:codingPath];
     });
 }
@@ -191,7 +191,7 @@ static const NSInteger timeOut = 60*60;
     
     dispatch_async(self.operationQueue,^{
         @autoreleasepool {
-            NSData *diskdata= [NSData dataWithContentsOfFile:[[self cachePathForKey:key path:path]stringByDeletingPathExtension]];
+            NSData *diskdata= [NSData dataWithContentsOfFile:[self cachePathForKey:key path:path]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 value(diskdata);
             });
