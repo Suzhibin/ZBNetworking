@@ -45,22 +45,22 @@
 }
 
 + (ZBNetworkManager *)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
-    return [ZBNetworkManager requestWithConfig:config progress:nil success:success failedBlock:failed];
+    return [ZBNetworkManager requestWithConfig:config progress:nil success:success failed:failed];
 }
 
-+ (ZBNetworkManager *)requestWithConfig:(requestConfig)config progress:(progressBlock)progressBlock  success:(requestSuccess)success failedBlock:(requestFailed)failed{
++ (ZBNetworkManager *)requestWithConfig:(requestConfig)config progress:(progressBlock)progress  success:(requestSuccess)success failed:(requestFailed)failed{
     
     ZBNetworkManager *manager=[[ZBNetworkManager alloc]init];
     
     config ? config(manager.request) : nil;
     
     if (manager.request.methodType==ZBMethodTypePOST) {
-        [manager POST:manager.request.urlString parameters:manager.request.parameters progress:progressBlock success:success failed:failed];
+        [manager POST:manager.request.urlString parameters:manager.request.parameters progress:progress success:success failed:failed];
     }else{
         if (manager.request.apiType==ZBRequestTypeOffline) {
             [manager offlineDownload:manager.request.urlArray apiType:manager.request.apiType success:success failed:failed];
         }else{
-            [manager GET:manager.request.urlString parameters:manager.request.parameters apiType:manager.request.apiType progress:progressBlock success:success failed:failed];
+            [manager GET:manager.request.urlString parameters:manager.request.parameters apiType:manager.request.apiType progress:progress success:success failed:failed];
         }
     }
     return manager;
@@ -82,11 +82,11 @@
     [self GET:urlString parameters:parameters progress:nil success:success failed:failed];
 }
 
-- (void)GET:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
-    [self GET:urlString parameters:parameters apiType:ZBRequestTypeDefault progress:progressBlock success:success failed:failed];
+- (void)GET:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
+    [self GET:urlString parameters:parameters apiType:ZBRequestTypeDefault progress:progress success:success failed:failed];
 }
 
-- (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type  progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
+- (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
 
     if (![urlString isKindOfClass:NSString.class]) {
         urlString = nil;
@@ -100,15 +100,15 @@
         }];
         
     }else{
-        [self GETRequest:urlString parameters:parameters progress:progressBlock success:success failed:failed];
+        [self GETRequest:urlString parameters:parameters progress:progress success:success failed:failed];
     }
 }
 
-- (void)GETRequest:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
+- (void)GETRequest:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     if(!urlString)return;
     [self.AFmanager GET:urlString parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
-        progressBlock ? progressBlock(downloadProgress) : nil;
+        progress ? progress(downloadProgress) : nil;
         
     }success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject) {
    
@@ -126,11 +126,11 @@
     [self POST:urlString parameters:parameters progress:nil success:success failed:failed];
 }
 
-- (void)POST:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progressBlock success:(requestSuccess)success failed:(requestFailed)failed{
+- (void)POST:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     if(!urlString)return;
     [self.AFmanager POST:urlString parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
-        progressBlock ? progressBlock(uploadProgress) : nil;
+        progress ? progress(uploadProgress) : nil;
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         

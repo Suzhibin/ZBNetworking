@@ -290,7 +290,7 @@
                             
                             [self.offlineView hide];//取消下载进度视图
                             [self alertTitle:@"下载完成"andMessage:@""];
-                            // [self.tableView reloadData];
+                             self.imageArray=nil;
                         }
                         
                         if (error) {

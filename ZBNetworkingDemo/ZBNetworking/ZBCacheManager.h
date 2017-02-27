@@ -30,7 +30,6 @@ typedef void(^ZBCacheCompletedBlock)();
  */
 @interface ZBCacheManager : NSObject
 
-
 //返回单例对象
 + (ZBCacheManager *)sharedInstance;
 
