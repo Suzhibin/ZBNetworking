@@ -94,7 +94,7 @@
 
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:urlString]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
         
-        [[ZBCacheManager sharedInstance]getCacheDataForKey:urlString value:^(NSData *data) {
+        [[ZBCacheManager sharedInstance]getCacheDataForKey:urlString value:^(NSData *data,NSString *filePath) {
             [self.request.responseObj appendData:data];
             success ? success(self.request.responseObj ,type) : nil;
         }];

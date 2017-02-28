@@ -21,14 +21,15 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef void(^ZBCacheIsExistsBlock)(BOOL isExists);
-typedef void(^ZBCacheValueBlock)(NSData *data);
+typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
+typedef void(^ZBCacheValueBlock)(NSData *data,NSString *filePath);
 typedef void(^ZBCacheCompletedBlock)();
 
 /**
  *  文件管理类:管理文件的路径,创建,存储,编码,显示,删除等功能.
  */
 @interface ZBCacheManager : NSObject
+
 
 //返回单例对象
 + (ZBCacheManager *)sharedInstance;
@@ -102,9 +103,28 @@ typedef void(^ZBCacheCompletedBlock)();
  
  @param content         数据
  @param key             url
+ @param isSuccess       是否存储成功
+ */
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key isSuccess:(ZBCacheIsSuccessBlock)isSuccess;
+
+/**
+ 把内容,存储到文件
+ 
+ @param content         数据
+ @param key             url
  @param path            路径
  */
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path;
+
+/**
+ 把内容,存储到文件
+ 
+ @param content         数据
+ @param key             url
+ @param path            路径
+ @param isSuccess       是否存储成功
+ */
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess;
 
 /**
  把内容,写入到文件
