@@ -128,10 +128,6 @@ static const NSInteger timeOut = 60*60;
     
     NSString *codingPath=[self cachePathForKey:key path:path];
     BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO;
-    
-    if(!exists){
-        exists = [[NSFileManager defaultManager] fileExistsAtPath:codingPath];
-    }
     return exists;
 }
 
