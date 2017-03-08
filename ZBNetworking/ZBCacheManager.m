@@ -126,7 +126,7 @@ static const NSInteger timeOut = 60*60;
 
 - (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path{
     
-    NSString *codingPath=[self cachePathForKey:key path:path];
+    NSString *codingPath=[[self cachePathForKey:key path:path] stringByDeletingPathExtension];
     BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO;
     return exists;
 }
@@ -146,7 +146,7 @@ static const NSInteger timeOut = 60*60;
 
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
     dispatch_async(self.operationQueue,^{
-        NSString *codingPath =[self cachePathForKey:key path:path];
+        NSString *codingPath =[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
         BOOL result=[self setContent:content writeToFile:codingPath];
         if (isSuccess) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -200,7 +200,7 @@ static const NSInteger timeOut = 60*60;
     
     dispatch_async(self.operationQueue,^{
         @autoreleasepool {
-            NSString *filePath=[self cachePathForKey:key path:path];
+            NSString *filePath=[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
             NSData *diskdata= [NSData dataWithContentsOfFile:filePath];
             if (value) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -404,7 +404,7 @@ static const NSInteger timeOut = 60*60;
 
 - (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     if (!key)return;
-    NSString *filePath=[self cachePathForKey:key path:path];
+    NSString *filePath=[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
     dispatch_async(self.operationQueue,^{
         
         [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
