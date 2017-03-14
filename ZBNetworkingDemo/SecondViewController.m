@@ -91,7 +91,7 @@
         }
     }];
 }
-#pragma mark -sessionblock
+#pragma mark -ZBURLSessionManager block
 //apiType 是请求类型 在ZBURLRequest 里
 - (void)getSessionBlockWithApiType:(apiType)requestType{
     //注意 ZBURLSessionManager 是 单例
@@ -105,10 +105,11 @@
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];
-            [_refreshControl endRefreshing];    //结束刷新
+            [_refreshControl endRefreshing];  //下拉结束刷新
         }
+        //如果是上拉加载
         if (type==ZBRequestTypeLoadMore) {
-            //上拉加载
+              // 上拉结束刷新
         }
 
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];

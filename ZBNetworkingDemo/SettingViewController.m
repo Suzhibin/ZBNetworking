@@ -236,7 +236,6 @@
    
 }
 
-#pragma mark - AFNetworking
 - (void)requestOffline:(NSMutableArray *)offlineArray{
     
     //[ZBURLSessionManager sharedManager]requestWithConfig

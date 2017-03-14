@@ -424,8 +424,6 @@ static const NSInteger timeOut = 60*60;
 - (void)clearCacheOnCompletion:(ZBCacheCompletedBlock)completion{
 
     dispatch_async(self.operationQueue, ^{
-
-            //[self clearDiskWithpath:self.diskCachePath];
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
         [self createDirectoryAtPath:self.diskCachePath];
         if (completion) {
