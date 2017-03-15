@@ -148,9 +148,9 @@
 
 + (NSInteger)startNetWorkMonitoring{
     [ZBNetworkManager sharedInstance].netStatus=[AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
-    // 设置网络状态改变后的处理
+
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        // 当网络状态改变了, 就会调用这个block
+      
          [ZBNetworkManager sharedInstance].netStatus=status;
         switch ( [ZBNetworkManager sharedInstance].netStatus)
         {
