@@ -171,7 +171,6 @@
         [[ZBCacheManager sharedInstance]clearCacheOnCompletion:^{
              [self.tableView reloadData];
         }];
-        
     }
     
     if (indexPath.row==4) {
@@ -179,9 +178,7 @@
       //  [[SDImageCache sharedImageCache] clearDisk];
         [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
             [[SDImageCache sharedImageCache] clearMemory];
-            
             [self.tableView reloadData];
-        
         }];
     }
 
@@ -227,18 +224,16 @@
     self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
     [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
     [[UIApplication sharedApplication].keyWindow addSubview:self.offlineView];
-
-   
 }
+
 - (void)reloadJsonNumber{
     //离线页面的频道列表也会缓存的 如果之前清除了缓存，就刷新显示出来+1个缓存数量
     [self.tableView reloadData];
-   
 }
 
 - (void)requestOffline:(NSMutableArray *)offlineArray{
     
-    //[ZBURLSessionManager sharedManager]requestWithConfig
+    //[ZBURLSessionManager sharedInstance]requestWithConfig
     
     [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         
