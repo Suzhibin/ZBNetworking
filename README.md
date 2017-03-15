@@ -36,26 +36,14 @@
        // request.parameters=@{@"1": @"one", @"2": @"two"};
        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,apiType type){
-        //如果是刷新的数据
-        if (type==ZBRequestTypeRefresh) {
-            [self.dataArray removeAllObjects];
-            [_refreshControl endRefreshing];    //结束刷新
+        if (type==ZBRequestTypeRefresh) 
+             //结束刷新
         }
         if (type==ZBRequestTypeLoadMore) {
-            //上拉加载
-        }
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-        NSArray *array=[dict objectForKey:@"authors"];
-        
-        for (NSDictionary *dic in array) {
-            RootModel *model=[[RootModel alloc]init];
-            model.name=[dic objectForKey:@"name"];
-            model.wid=[dic objectForKey:@"id"];
-            model.detail=[dic objectForKey:@"detail"];
-            [self.dataArray addObject:model];
-        }
-        [self.tableView reloadData];
-        
+            //结束上拉加载
+        }
+        //请求成功
+        
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
@@ -89,21 +77,7 @@
 //请求完成的代理方法里进行解析或赋值
 - (void)urlRequestFinished:(ZBURLRequest *)request
 {
-    
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
-    NSArray *array=[dict objectForKey:@"authors"];
-    
-    for (NSDictionary *dic in array) {
-        RootModel *model=[[RootModel alloc]init];
-        model.icon=[dic objectForKey:@"icon"];
-        model.name=[dic objectForKey:@"name"];
-        model.wid=[dic objectForKey:@"id"];
-        model.detail=[dic objectForKey:@"detail"];
-        [_dataArray addObject:model];
-        
-    }
-    [_tableView reloadData];
-    
+    //请求成功
 }
 //请求失败的方法里 进行异常判断 支持error.code所有异常
 - (void)urlRequestFailed:(ZBURLRequest *)request
@@ -129,28 +103,16 @@
         request.apiType=requestType;//默认为default
         
     } success:^(id responseObj,apiType type){
-        NSLog(@"type:%zd",type);
-        //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
-            [self.dataArray removeAllObjects];
-            [_refreshControl endRefreshing];    //结束刷新
+          
+            //结束刷新
         }
         if (type==ZBRequestTypeLoadMore) {
-            //上拉加载
+            //结束上拉加载
         }
         
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-       
-        NSArray *array=[dict objectForKey:@"authors"];
-        
-        for (NSDictionary *dic in array) {
-            MenuModel *model=[[MenuModel alloc]init];
-            model.name=[dic objectForKey:@"name"];
-            model.wid=[dic objectForKey:@"id"];
-            model.detail=[dic objectForKey:@"detail"];
-            [self.dataArray addObject:model];
-        }
-        [self.tableView reloadData];
+         //请求成功
+         
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut) {
