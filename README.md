@@ -1,4 +1,4 @@
-# ZBNetworking    [博客介绍](http://www.jianshu.com/p/55cda3341d11)
+# ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
 优点:
 
 1 低耦合，易扩展。
