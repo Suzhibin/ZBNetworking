@@ -301,9 +301,9 @@
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
-            [self alertTitle:@"请求超时" andMessage:@""];
+            NSLog(@"请求超时");
         }else{
-            [self alertTitle:@"请求失败" andMessage:@""];
+            NSLog(@"请求失败");
         }
     }];
     
