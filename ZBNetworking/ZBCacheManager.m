@@ -23,8 +23,8 @@
 #import <CommonCrypto/CommonDigest.h>
 NSString *const PathSpace =@"ZBKit";
 NSString *const CacheDefaultPath =@"AppCache";
-static const NSInteger cacheMaxCacheAge  = 60*60*24*7;
-//static const NSInteger cacheMixCacheAge = 60;
+static const NSInteger defaultCacheMaxCacheAge  = 60*60*24*7;
+//static const NSInteger defaultCacheMixCacheAge = 60;
 static const CGFloat unit = 1000.0;
 static const NSInteger timeOut = 60*60;
 @interface ZBCacheManager ()
@@ -337,42 +337,39 @@ static const NSInteger timeOut = 60*60;
 }
 
 #pragma  mark - 清除文件
--(void)automaticCleanCache{
-    [self automaticCleanCacheWithPath:self.diskCachePath completion:nil];
+- (void)automaticCleanCache{
+   [self automaticCleanCacheWithTime:-defaultCacheMaxCacheAge completion:nil];
 }
 
-- (void)automaticCleanCacheWithPath:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+- (void)automaticCleanCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
+     [self automaticCleanCacheWithTime:time path:self.diskCachePath completion:completion];
+}
+
+- (void)automaticCleanCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     dispatch_async(self.operationQueue,^{
         
-        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-cacheMaxCacheAge];
+        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:time];
         
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         
-        for (NSString *fileName in fileEnumerator)
-        {
+        for (NSString *fileName in fileEnumerator){
             NSString *filePath = [path stringByAppendingPathComponent:fileName];
             
             NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
             NSDate *current = [info objectForKey:NSFileModificationDate];
-            
-            if ([[current laterDate:expirationDate] isEqualToDate:expirationDate])
-            {
-                
+            if ([[current laterDate:expirationDate] isEqualToDate:expirationDate]){
                 [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-                
             }
         }
         if (completion) {
-            
             dispatch_async(dispatch_get_main_queue(), ^{
-            
                 completion();
             });
         }
     });
 }
 
-- (void)backgroundCleanCache {
+- (void)backgroundCleanCacheWithPath:(NSString *)path{
     Class UIApplicationClass = NSClassFromString(@"UIApplication");
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
         return;
@@ -384,12 +381,15 @@ static const NSInteger timeOut = 60*60;
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
-    
     // Start the long-running task and return immediately.
-    [self automaticCleanCacheWithPath:self.diskCachePath completion:^{
+    [self automaticCleanCacheWithTime:-defaultCacheMaxCacheAge path:path completion:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
+}
+
+- (void)backgroundCleanCache {
+    [self backgroundCleanCacheWithPath:self.diskCachePath];
 }
 
 - (void)clearCacheForkey:(NSString *)key{
@@ -424,6 +424,8 @@ static const NSInteger timeOut = 60*60;
 - (void)clearCacheOnCompletion:(ZBCacheCompletedBlock)completion{
 
     dispatch_async(self.operationQueue, ^{
+
+            //[self clearDiskWithpath:self.diskCachePath];
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
         [self createDirectoryAtPath:self.diskCachePath];
         if (completion) {

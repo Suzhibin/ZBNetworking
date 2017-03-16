@@ -13,6 +13,7 @@
 #import <SDWebImageManager.h>
 #import "OfflineView.h"
 #import "DetailsModel.h"
+static const NSInteger cacheTime = 30;
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
 
 @property (nonatomic,copy)NSString *path;
@@ -41,7 +42,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 10;
+    return 11;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -136,7 +137,12 @@
         cell.textLabel.text=@"清除单个缓存文件(例:删除首页)";
         
     }
+    
     if (indexPath.row==9) {
+        cell.textLabel.text=@"按时间清除json缓存(例:超过30秒)";
+    }
+    
+    if (indexPath.row==10) {
         cell.textLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
@@ -204,10 +210,16 @@
          [self.tableView reloadData];
             
         }];
-       
     }
     
     if (indexPath.row==9) {
+        //时间前要加 “-” 减号
+        [[ZBCacheManager sharedInstance]automaticCleanCacheWithTime:-cacheTime completion:^{
+            [self.tableView reloadData];
+        }];
+    }
+    
+    if (indexPath.row==10) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;

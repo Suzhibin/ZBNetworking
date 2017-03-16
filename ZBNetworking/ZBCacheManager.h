@@ -256,17 +256,32 @@ typedef void(^ZBCacheCompletedBlock)();
  */
 - (void)automaticCleanCache;
 
+/**
+ *  自动清除过期缓存
+ *  Remove all expired cached file from disk
+ *  @param time         时间
+ *  @param completion   block 后续操作
+ */
+- (void)automaticCleanCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion;
+
 /** 
  *  自动清除过期缓存
  *  Remove all expired cached file from disk
+ *  @param time         时间
  *  @param path         路径
  *  @param completion   block 后续操作
  */
-- (void)automaticCleanCacheWithPath:(NSString *)path completion:(ZBCacheCompletedBlock)completion;
+- (void)automaticCleanCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion;
+
+/**
+ *  接收到进入后台通知，后台清理缓存方法
+ *  @param path         自定义路径
+ */
+- (void)backgroundCleanCacheWithPath:(NSString *)path;
 
 /**
  *  清除某一个缓存文件      默认路径/Library/Caches/ZBKit/AppCache
- *  @param key 请求的协议地址
+ *  @param key          请求的协议地址
  */
 - (void)clearCacheForkey:(NSString *)key;
 
