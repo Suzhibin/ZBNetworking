@@ -251,7 +251,7 @@ typedef void(^ZBCacheCompletedBlock)();
 - (NSUInteger)diskFreeSystemSpace;
 
 /**
- *  自动清除过期缓存
+ *  清除过期缓存
  *  Remove all expired cached file from disk
  *  @param time         时间
  *  @param completion   block 后续操作
@@ -259,7 +259,7 @@ typedef void(^ZBCacheCompletedBlock)();
 - (void)clearCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion;
 
 /** 
- *  自动清除过期缓存
+ *  清除过期缓存 自定义路径
  *  Remove all expired cached file from disk
  *  @param time         时间
  *  @param path         路径
