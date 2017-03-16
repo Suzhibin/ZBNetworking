@@ -27,15 +27,13 @@
         [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         btn.tag=i+100;
         [btn addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];
-  
         [self.view addSubview:btn];
     }
   
 }
-- (void)btnClicked:(UIButton *)btn
-{
+- (void)btnClicked:(UIButton *)sender{
     SecondViewController *secondVC=[[SecondViewController alloc]init];
-    switch (btn.tag) {
+    switch (sender.tag) {
         case 100:
             secondVC.functionType=AFNetworking;
             [self.navigationController pushViewController:secondVC animated:YES];
