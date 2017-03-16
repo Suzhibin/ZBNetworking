@@ -26,6 +26,8 @@
      2.系统的session.delegate 是强引用, 手动取消 避免造成内存泄露.
      */
      [ZBNetworkManager requestToCancel:YES];//取消网络请求
+    
+    [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

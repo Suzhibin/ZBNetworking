@@ -338,14 +338,14 @@ static const NSInteger timeOut = 60*60;
 
 #pragma  mark - 清除文件
 - (void)automaticCleanCache{
-   [self automaticCleanCacheWithTime:-defaultCacheMaxCacheAge completion:nil];
+   [self clearCacheWithTime:-defaultCacheMaxCacheAge completion:nil];
 }
 
-- (void)automaticCleanCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
-     [self automaticCleanCacheWithTime:time path:self.diskCachePath completion:completion];
+- (void)clearCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
+     [self clearCacheWithTime:time path:self.diskCachePath completion:completion];
 }
 
-- (void)automaticCleanCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+- (void)clearCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     dispatch_async(self.operationQueue,^{
         
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:time];
@@ -382,7 +382,7 @@ static const NSInteger timeOut = 60*60;
         bgTask = UIBackgroundTaskInvalid;
     }];
     // Start the long-running task and return immediately.
-    [self automaticCleanCacheWithTime:-defaultCacheMaxCacheAge path:path completion:^{
+    [self clearCacheWithTime:-defaultCacheMaxCacheAge path:path completion:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];

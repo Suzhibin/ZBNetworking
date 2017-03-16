@@ -17,6 +17,7 @@ static const NSInteger cacheTime = 30;
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
 
 @property (nonatomic,copy)NSString *path;
+@property (nonatomic,copy)NSString *imagePath;
 @property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)OfflineView *offlineView;
@@ -35,6 +36,9 @@ static const NSInteger cacheTime = 30;
     NSString *fsCachedData=@"fsCachedData";
     self.path=[NSString stringWithFormat:@"%@/%@/%@",cachePath,appID,fsCachedData];
     
+    NSString *sdImage=@"default/com.hackemist.SDWebImageCache.default";
+    self.imagePath=[NSString stringWithFormat:@"%@/%@",cachePath,sdImage];
+    
     [self.view addSubview:self.tableView];
     
     [self addItemWithTitle:@"star" selector:@selector(starBtnClick) location:NO];
@@ -42,7 +46,7 @@ static const NSInteger cacheTime = 30;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 11;
+    return 12;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -143,6 +147,10 @@ static const NSInteger cacheTime = 30;
     }
     
     if (indexPath.row==10) {
+        cell.textLabel.text=@"按时间清除某路径缓存(例:SDimage,超过30秒)";
+    }
+    
+    if (indexPath.row==11) {
         cell.textLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
@@ -214,12 +222,18 @@ static const NSInteger cacheTime = 30;
     
     if (indexPath.row==9) {
         //时间前要加 “-” 减号
-        [[ZBCacheManager sharedInstance]automaticCleanCacheWithTime:-cacheTime completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }
     
     if (indexPath.row==10) {
+         //时间前要加 “-” 减号 ， 路径要准确
+        [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime path:self.imagePath completion:^{
+            [self.tableView reloadData];
+        }];
+    }
+    if (indexPath.row==11) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;

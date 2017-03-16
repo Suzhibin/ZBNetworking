@@ -253,16 +253,10 @@ typedef void(^ZBCacheCompletedBlock)();
 /**
  *  自动清除过期缓存
  *  Remove all expired cached file from disk
- */
-- (void)automaticCleanCache;
-
-/**
- *  自动清除过期缓存
- *  Remove all expired cached file from disk
  *  @param time         时间
  *  @param completion   block 后续操作
  */
-- (void)automaticCleanCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion;
+- (void)clearCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion;
 
 /** 
  *  自动清除过期缓存
@@ -271,7 +265,7 @@ typedef void(^ZBCacheCompletedBlock)();
  *  @param path         路径
  *  @param completion   block 后续操作
  */
-- (void)automaticCleanCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion;
+- (void)clearCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion;
 
 /**
  *  接收到进入后台通知，后台清理缓存方法
