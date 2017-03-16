@@ -147,7 +147,7 @@ static const NSInteger cacheTime = 30;
     }
     
     if (indexPath.row==10) {
-        cell.textLabel.text=@"按时间清除某路径缓存(例:SDimage,超过30秒)";
+        cell.textLabel.text=@"按时间清除图片缓存(例:超过30秒)";
     }
     
     if (indexPath.row==11) {
