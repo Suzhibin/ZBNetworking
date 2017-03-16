@@ -22,7 +22,7 @@
 #import "NSFileManager+pathMethod.h"
 #import <CommonCrypto/CommonDigest.h>
 NSString *const PathSpace =@"ZBKit";
-NSString *const CacheDefaultPath =@"AppCache";
+NSString *const defaultCachePath =@"AppCache";
 static const NSInteger defaultCacheMaxCacheAge  = 60*60*24*7;
 //static const NSInteger defaultCacheMixCacheAge = 60;
 static const CGFloat unit = 1000.0;
@@ -51,7 +51,7 @@ static const NSInteger timeOut = 60*60;
         
          _operationQueue = dispatch_queue_create("com.dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
         
-        [self initCachesfileWithName:CacheDefaultPath];
+        [self initCachesfileWithName:defaultCachePath];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
