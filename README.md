@@ -7,7 +7,7 @@
 
 2.有缓存文件过期机制 默认一周
 
-3.显示缓存大小/个数，全部清除操作/单个文件清除操作/自动清除  方法多样  并且都可以自定义路径   可扩展性强
+3.显示缓存大小/个数，全部清除缓存/单个文件清除缓存/按时间清除缓存  方法多样  并且都可以自定义路径   可扩展性强
 
 4.离线下载功能 
 
@@ -156,7 +156,7 @@
 2.缓存相关
 ```objective-c
 //显示缓存大小
- [[ZBCacheManager shareCacheManager]getCacheSize];
+ [[ZBCacheManager sharedInstance]getCacheSize];
  //删除缓存
-[[ZBCacheManager shareCacheManager]clearCache];
+[[ZBCacheManager sharedInstance]clearCache];
  ```
