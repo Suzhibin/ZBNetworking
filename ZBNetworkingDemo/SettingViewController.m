@@ -36,6 +36,7 @@ static const NSInteger cacheTime = 30;
     NSString *fsCachedData=@"fsCachedData";
     self.path=[NSString stringWithFormat:@"%@/%@/%@",cachePath,appID,fsCachedData];
     
+    //得到沙盒cache文件夹下的 SDWebImage 存储路径
     NSString *sdImage=@"default/com.hackemist.SDWebImageCache.default";
     self.imagePath=[NSString stringWithFormat:@"%@/%@",cachePath,sdImage];
     
