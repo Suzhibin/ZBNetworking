@@ -104,7 +104,7 @@
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
- *  get请求 不能post
+ *  实例请求方法 
  *
  *  @param config          请求配置  Block
  *  @param success         请求成功的 Block
