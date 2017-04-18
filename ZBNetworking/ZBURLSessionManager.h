@@ -27,14 +27,14 @@
 /**
  *  数据请求成功调用的方法
  *
- *  @param request ZBURLSessionManager
+ *  @param request ZBURLRequest
  */
 - (void)urlRequestFinished:(ZBURLRequest *)request;
 @optional
 /**
  *  数据请求失败调用的方法
  *
- *  @param request  ZBURLSessionManager
+ *  @param request  ZBURLRequest
  */
 - (void)urlRequestFailed:(ZBURLRequest *)request;
 

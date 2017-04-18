@@ -179,7 +179,7 @@ static const NSInteger timeOut = 60*60;
     }else if ([content isKindOfClass:[NSString class]]) {
         [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[UIImage class]]) {
-        [UIImageJPEGRepresentation((UIImage *)content,0.9) writeToFile:path atomically:YES];
+        [UIImageJPEGRepresentation((UIImage *)content,(CGFloat)0.9) writeToFile:path atomically:YES];
     }else if ([content conformsToProtocol:@protocol(NSCoding)]) {
         [NSKeyedArchiver archiveRootObject:content toFile:path];
     }else {
