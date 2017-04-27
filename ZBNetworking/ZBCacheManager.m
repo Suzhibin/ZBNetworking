@@ -161,32 +161,32 @@ static const NSInteger timeOut = 60*60;
         return NO;
     }
     if ([content isKindOfClass:[NSMutableArray class]]) {
-        [(NSMutableArray *)content writeToFile:path atomically:YES];
+        return  [(NSMutableArray *)content writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSArray class]]) {
-        [(NSArray *)content writeToFile:path atomically:YES];
+        return [(NSArray *)content writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSMutableData class]]) {
-        [(NSMutableData *)content writeToFile:path atomically:YES];
+        return [(NSMutableData *)content writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSData class]]) {
-        [(NSData *)content writeToFile:path atomically:YES];
+        return  [(NSData *)content writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSMutableDictionary class]]) {
         [(NSMutableDictionary *)content writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSDictionary class]]) {
-        [(NSDictionary *)content writeToFile:path atomically:YES];
+        return  [(NSDictionary *)content writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSJSONSerialization class]]) {
-        [(NSDictionary *)content writeToFile:path atomically:YES];
+        return [(NSDictionary *)content writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSMutableString class]]) {
-        [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
+        return  [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[NSString class]]) {
-        [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
+        return [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[UIImage class]]) {
-        [UIImageJPEGRepresentation((UIImage *)content,(CGFloat)0.9) writeToFile:path atomically:YES];
+        return [UIImageJPEGRepresentation((UIImage *)content,(CGFloat)0.9) writeToFile:path atomically:YES];
     }else if ([content conformsToProtocol:@protocol(NSCoding)]) {
-        [NSKeyedArchiver archiveRootObject:content toFile:path];
+        return [NSKeyedArchiver archiveRootObject:content toFile:path];
     }else {
         [NSException raise:@"非法的文件内容" format:@"文件类型%@异常。", NSStringFromClass([content class])];
         return NO;
     }
-    return YES;
+    return NO;
 }
 
 #pragma  mark - 获取存储数据
