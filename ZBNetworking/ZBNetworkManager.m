@@ -38,11 +38,6 @@
     }
     return self;
 }
-- (void)dealloc {
-    if (self.AFmanager) {
-        [ZBNetworkManager requestToCancel:YES];
-    }
-}
 
 + (ZBNetworkManager *)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
     return [ZBNetworkManager requestWithConfig:config progress:nil success:success failed:failed];
