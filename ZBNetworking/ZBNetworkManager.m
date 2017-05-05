@@ -99,7 +99,8 @@
 
 - (void)GETRequest:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     if(!urlString)return;
-    [self.AFmanager GET:urlString parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+    NSString *URL = [urlString  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [self.AFmanager GET:URL parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
         progress ? progress(downloadProgress) : nil;
         
