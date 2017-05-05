@@ -153,17 +153,17 @@ typedef void(^ZBCacheCompletedBlock)();
 - (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path;
 
 /**
- *  返回二进制数据
+ *  返回数据及路径
  *  @param  key         存储的文件的url
- *  @param  value       返回在本地的存储文件的二进制数据
+ *  @param  value       返回在本地的数据及存储文件路径
  */
 - (void)getCacheDataForKey:(NSString *)key value:(ZBCacheValueBlock)value;
 
 /**
- *  返回二进制数据
+ *  返回数据及路径
  *  @param  key         存储的文件的url
  *  @param  path        存储的文件的路径
- *  @param  value       返回在本地的存储文件的二进制数据
+ *  @param  value       返回在本地的数据及存储文件路径
  */
 - (void)getCacheDataForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value;
 

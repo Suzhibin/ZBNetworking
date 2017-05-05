@@ -36,9 +36,7 @@
 - (id)init{
     self = [super init];
     if (self) {
-        
-        self.request.responseObj = [[NSMutableData alloc] init];
-      
+ 
         self.request.timeoutInterval=15;
         
     }

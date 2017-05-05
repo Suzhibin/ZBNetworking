@@ -194,5 +194,11 @@
     return _mutableHTTPRequestHeaders;
 }
 
+- (NSMutableData *)responseObj {
+    if (!_responseObj) {
+        _responseObj=[[NSMutableData alloc]init];
+    }
+    return _responseObj;
+}
 
 @end
