@@ -47,7 +47,7 @@ static const NSInteger cacheTime = 30;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 12;
+    return 13;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -139,19 +139,23 @@ static const NSInteger cacheTime = 30;
         
     }
     if (indexPath.row==8) {
-        cell.textLabel.text=@"清除单个缓存文件(例:删除首页)";
+        cell.textLabel.text=@"清除单个json缓存文件(例:删除首页)";
         
     }
-    
     if (indexPath.row==9) {
+        cell.textLabel.text=@"按时间清除“单个”json缓存文件(例:删除menu,超30秒)";
+        cell.textLabel.font=[UIFont systemFontOfSize:14];
+    }
+
+    if (indexPath.row==10) {
         cell.textLabel.text=@"按时间清除json缓存(例:超过30秒)";
     }
     
-    if (indexPath.row==10) {
+    if (indexPath.row==11) {
         cell.textLabel.text=@"按时间清除图片缓存(例:超过30秒)";
     }
     
-    if (indexPath.row==11) {
+    if (indexPath.row==12) {
         cell.textLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
@@ -223,18 +227,26 @@ static const NSInteger cacheTime = 30;
     
     if (indexPath.row==9) {
         //时间前要加 “-” 减号
-        [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime completion:^{
+        //[[ZBCacheManager sharedInstance]clearCacheForkey:menu_URL time:-cacheTime]
+        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL time:-cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }
     
     if (indexPath.row==10) {
+               //时间前要加 “-” 减号
+        [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime completion:^{
+            [self.tableView reloadData];
+        }];
+    }
+    
+    if (indexPath.row==11) {
          //时间前要加 “-” 减号 ， 路径要准确
         [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime path:self.imagePath completion:^{
             [self.tableView reloadData];
         }];
     }
-    if (indexPath.row==11) {
+    if (indexPath.row==12) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;

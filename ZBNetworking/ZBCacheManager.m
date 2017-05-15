@@ -53,7 +53,6 @@ static const NSInteger timeOut = 60*60;
         
         [self initCachesfileWithName:defaultCachePath];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(automaticCleanCache)
                                                      name:UIApplicationWillTerminateNotification
@@ -67,7 +66,6 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     
@@ -346,6 +344,7 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)clearCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+    if (!time||!path)return;
     dispatch_async(self.operationQueue,^{
         
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:time];
@@ -357,6 +356,7 @@ static const NSInteger timeOut = 60*60;
             
             NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
             NSDate *current = [info objectForKey:NSFileModificationDate];
+
             if ([[current laterDate:expirationDate] isEqualToDate:expirationDate]){
                 [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
             }
@@ -403,14 +403,46 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
-    if (!key)return;
-    NSString *filePath=[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
+    if (!key||!path)return;
     dispatch_async(self.operationQueue,^{
+        
+        NSString *filePath=[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
         
         [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
         
         if (completion) {
             dispatch_async(dispatch_get_main_queue(),^{
+                completion();
+            });
+        }
+    });
+}
+
+- (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time{
+    [self clearCacheForkey:key time:time completion:nil];
+}
+
+- (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
+    [self clearCacheForkey:key time:time path:self.diskCachePath completion:completion];
+}
+
+- (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+    if (!time||!key||!path)return;
+    dispatch_async(self.operationQueue,^{
+        
+        NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:time];
+        
+        NSString *filePath=[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
+        
+        NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+        NSDate *current = [info objectForKey:NSFileModificationDate];
+        
+        if ([[current laterDate:expirationDate] isEqualToDate:expirationDate]){
+            [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
+        }
+        
+        if (completion) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completion();
             });
         }
@@ -441,6 +473,7 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)clearDiskWithpath:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+    if (!path)return;
      dispatch_async(self.operationQueue, ^{
   
            NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
