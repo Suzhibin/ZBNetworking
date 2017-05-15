@@ -95,7 +95,7 @@
     cell.textLabel.text=model.title;
     
     cell.detailTextLabel.text=[NSString stringWithFormat:@"发布时间:%@",model.date];
- 
+    //NSLog(@"model.thumb:%@",model.thumb);
     [cell.imageView sd_setImageWithURL:[NSURL URLWithString:model.thumb] placeholderImage:[UIImage imageNamed:@"h1.jpg"]];
 
 

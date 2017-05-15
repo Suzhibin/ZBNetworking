@@ -47,7 +47,7 @@ static const NSInteger cacheTime = 30;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 13;
+    return 15;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -143,19 +143,28 @@ static const NSInteger cacheTime = 30;
         
     }
     if (indexPath.row==9) {
+        cell.textLabel.text=@"清除单个图片缓存文件(手动添加url)";
+    }
+    
+    if (indexPath.row==10) {
         cell.textLabel.text=@"按时间清除“单个”json缓存文件(例:删除menu,超30秒)";
         cell.textLabel.font=[UIFont systemFontOfSize:14];
     }
-
-    if (indexPath.row==10) {
-        cell.textLabel.text=@"按时间清除json缓存(例:超过30秒)";
-    }
     
     if (indexPath.row==11) {
-        cell.textLabel.text=@"按时间清除图片缓存(例:超过30秒)";
+        cell.textLabel.text=@"按时间清除“单个”图片缓存文件(手动添加url)";
+        cell.textLabel.font=[UIFont systemFontOfSize:14];
+    }
+
+    if (indexPath.row==12) {
+        cell.textLabel.text=@"按时间清除全部过期json缓存(例:超过30秒)";
     }
     
-    if (indexPath.row==12) {
+    if (indexPath.row==13) {
+        cell.textLabel.text=@"按时间清除全部过期图片缓存(例:超过30秒)";
+    }
+    
+    if (indexPath.row==14) {
         cell.textLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
@@ -226,32 +235,47 @@ static const NSInteger cacheTime = 30;
     }
     
     if (indexPath.row==9) {
+        
+        //清除单个图片缓存文件
+        //url 过期 去log里找新的
+        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" path:self.imagePath  completion:^{
+            
+            [self.tableView reloadData];
+        }];
+    }
+    
+    if (indexPath.row==10) {
         //时间前要加 “-” 减号
         //[[ZBCacheManager sharedInstance]clearCacheForkey:menu_URL time:-cacheTime]
         [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL time:-cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }
-    
-    if (indexPath.row==10) {
-               //时间前要加 “-” 减号
+    if (indexPath.row==11) {
+        //时间前要加 “-” 减号
+        //url 过期 去log里找新的
+        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" time:-cacheTime path:self.imagePath completion:^{
+            [self.tableView reloadData];
+        }];
+    }
+    if (indexPath.row==12) {
+        //时间前要加 “-” 减号
         [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }
     
-    if (indexPath.row==11) {
+    if (indexPath.row==13) {
          //时间前要加 “-” 减号 ， 路径要准确
         [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime path:self.imagePath completion:^{
             [self.tableView reloadData];
         }];
     }
-    if (indexPath.row==12) {
+    if (indexPath.row==14) {
        
         offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
         offlineVC.delegate=self;
         [self.navigationController pushViewController:offlineVC animated:YES];
-        
     }
 }
 #pragma mark offlineDelegate
@@ -322,7 +346,6 @@ static const NSInteger cacheTime = 30;
                             NSLog(@"下载完成");
                             
                             [self.offlineView hide];//取消下载进度视图
-                            [self alertTitle:@"下载完成"andMessage:@""];
                              self.imageArray=nil;
                         }
                         
