@@ -147,12 +147,12 @@ static const NSInteger cacheTime = 30;
     }
     
     if (indexPath.row==10) {
-        cell.textLabel.text=@"按时间清除“单个”json缓存文件(例:删除menu,超30秒)";
+        cell.textLabel.text=@"按时间清除“单个”json缓存文件(例:删除menu,例:超30秒)";
         cell.textLabel.font=[UIFont systemFontOfSize:14];
     }
     
     if (indexPath.row==11) {
-        cell.textLabel.text=@"按时间清除“单个”图片缓存文件(手动添加url)";
+        cell.textLabel.text=@"按时间清除“单个”图片缓存文件(手动添加url,例:超30秒)";
         cell.textLabel.font=[UIFont systemFontOfSize:14];
     }
 
