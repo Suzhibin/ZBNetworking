@@ -69,7 +69,7 @@
 2.使用简单:  一行代码调用 
 ```objective-c
 //get请求方法 会默认创建缓存路径    
-  [[ZBURLSessionManager sharedInstance] getRequestWithUrlString:URL target:self];
+  [[ZBURLSessionManager sharedInstance] getRequestWithUrlString:URL parameters:nil target:self];
 ```
 
 3.完成和失败俩个代理回调
@@ -97,7 +97,7 @@
 
 ```objective-c
 
- [[ZBURLSessionManager sharedInstance]requestWithConfig:^(ZBURLRequest *request){
+ [ZBURLSessionManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=menu_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=requestType;//默认为default
