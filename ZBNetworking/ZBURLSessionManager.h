@@ -46,19 +46,13 @@
 
 @property (nonatomic,strong) ZBURLRequest *request;
 
-@property (nonatomic, strong) void (^requestSuccess)(id responseObj,apiType type);
+@property (nonatomic, copy) requestSuccess success;
 
-@property (nonatomic, strong) void (^requestFailed)(NSError *error);
+@property (nonatomic, copy) requestFailed failed;
 /**
  *  delegate 赋值为实现协议的对象
  */
 @property (nonatomic,weak) id<ZBURLSessionDelegate>delegate;
-
-/**
- *  创建并返回一个“ZBURLSessionManager”对象
- *  Creates and returns an `ZBURLSessionManager` object
- */
-+ (instancetype)manager;
 
 /**
  返回单例对象
@@ -92,94 +86,134 @@
  *
  *  @param cancelPendingTasks Whether or not to cancel pending tasks.
  */
-- (void)requestToCancel:(BOOL)cancelPendingTasks;
++ (void)requestToCancel:(BOOL)cancelPendingTasks;
 
 /**
- *  离线下载 请求方法
+ *  类请求方法 get/post
  *
- *  @param downloadArray 请求列队
- *  @param delegate      代理  传实现协议的对象
- *  @param type          用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
+ *  @param config           请求配置  Block
+ *  @param success          请求成功的 Block
+ *  @param failed           请求失败的 Block
  */
-- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
++ (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
- *  实例请求方法 
+ *  实例请求方法 get/post
  *
- *  @param config          请求配置  Block
- *  @param success         请求成功的 Block
- *  @param failed          请求失败的 Block
+ *  @param config           请求配置  Block
+ *  @param success          请求成功的 Block
+ *  @param failed           请求失败的 Block
  */
 - (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed;
-/**
- *  get请求
- *
- *  @param urlString    请求的协议地址
- *  @param delegate     代理  传实现协议的对象
- *
- */
-- (void)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate;
 
 /**
- *  get请求
+ *  实例请求 get
  *
- *  @param urlString    请求的协议地址
- *  @param delegate     代理 传实现协议的对象
- *  @param type         用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ *  @param urlString        请求的协议地址
+ *  @param delegate         代理  传实现协议的对象
  *
  */
-- (void )getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+- (void)GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate;
 
 /**
- *  get请求
+ *  实例请求 get
+ *
+ *  @param urlString        请求的协议地址
+ *  @param delegate         代理 传实现协议的对象
+ *  @param type             用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ *
+ */
+- (void )GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+
+/**
+ *  实例请求 get
  *
  *  @param urlString        请求的协议地址
  *  @param type             用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *  @param success          请求成功的 Block
  *  @param failed           请求失败的 Block
  */
-- (void )getRequestWithURL:(NSString *)urlString apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed;
+- (void )GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
- *  post 请求
+ *  离线下载 请求方法
  *
- *  @param urlString    请求的协议地址
- *  @param parameters    请求所用的字典
- *  @param delegate      代理 传实现协议的对象
- *
+ *  @param downloadArray    请求列队
+ *  @param delegate         代理  传实现协议的对象
+ *  @param type             用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
  */
-- (void)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
 /**
- *  get请求
+ *  离线下载 请求方法
  *
- *  @param urlString    请求的协议地址
- *  @param delegate     代理  传实现协议的对象
- *
+ *  @param downloadArray    请求列队
+ *  @param type             用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
+ *  @param success          请求成功的 Block
+ *  @param failed           请求失败的 Block
  */
-+(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate;
+- (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
- *  get请求
+ *  类请求 get
  *
- *  @param urlString    请求的协议地址
- *  @param delegate     代理 传实现协议的对象
- *  @param type         用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
+ *  @param urlString        请求的协议地址
+ *  @param delegate         代理  传实现协议的对象
  *
  */
-+(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
++ (ZBURLSessionManager *)GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate;
 
 /**
- *  post 请求
+ *  类请求 get
  *
- *  @param urlString    请求的协议地址
- *  @param parameters   请求所用的字典
- *  @param delegate     代理 传实现协议的对象
+ *  @param urlString        请求的协议地址
+ *  @param delegate         代理 传实现协议的对象
+ *  @param type             用于直接区分不同的request对象 默认类型为 ZBRequestTypeDefault
  *
  */
-+(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
++ (ZBURLSessionManager *)GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
 
+/**
+ *  实例请求 post
+ *
+ *  @param urlString        请求的协议地址
+ *  @param parameters       请求所用的字典
+ *  @param success          请求成功的 Block
+ *  @param failed           请求失败的 Block
+ *
+ */
+- (void)POST:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed;
 
+/**
+ *  实例请求 post
+ *
+ *  @param urlString        请求的协议地址
+ *  @param parameters       请求所用的字典
+ *  @param delegate         代理 传实现协议的对象
+ *
+ */
+- (void)POST:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
+
+/**
+ *  类请求 post
+ *
+ *  @param urlString        请求的协议地址
+ *  @param parameters       请求所用的字典
+ *  @param delegate         代理 传实现协议的对象
+ *
+ */
++ (ZBURLSessionManager *)POST:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate;
+
+/**
+ *  类请求 post
+ *
+ *  @param urlString        请求的协议地址
+ *  @param parameters       请求所用的字典
+ *  @param success          请求成功的 Block
+ *  @param failed           请求失败的 Block
+ *
+ */
++ (ZBURLSessionManager *)POST:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed;
 
 
 @end

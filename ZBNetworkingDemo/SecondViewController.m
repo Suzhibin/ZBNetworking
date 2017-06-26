@@ -39,7 +39,7 @@
         //NSURLSessionDelegate方法
         //需要 ZBURLSessionDelegate 协议
         //注意 ZBURLSessionManager 是 单例
-        [[ZBURLSessionManager sharedInstance]getRequestWithURL:list_URL target:self apiType:ZBRequestTypeDefault];
+        [[ZBURLSessionManager sharedInstance]GET:list_URL parameters:nil target:self apiType:ZBRequestTypeDefault];
     }
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
@@ -53,7 +53,7 @@
     
     [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
-        request.methodType=ZBMethodTypeGET;//默认为GET
+        request.methodType=GET;//默认为GET
         request.apiType=requestType;//默认为default
         request.timeoutInterval=10;
        // request.parameters=@{@"1": @"one", @"2": @"two"};
@@ -97,7 +97,7 @@
     //注意 ZBURLSessionManager 是 单例
     [[ZBURLSessionManager sharedInstance]requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
-        request.methodType=ZBMethodTypeGET;//默认为GET
+        request.methodType=GET;//默认为GET
         request.apiType=requestType;//默认为default
        
     } success:^(id responseObj,apiType type){
@@ -211,7 +211,8 @@
         
     }else if(_functionType==sessiondelegate){
         //需要 ZBURLSessionDelegate 协议
-        [[ZBURLSessionManager sharedInstance]getRequestWithURL:list_URL target:self apiType:ZBRequestTypeRefresh];
+  
+         [[ZBURLSessionManager sharedInstance]GET:list_URL parameters:nil target:self apiType:ZBRequestTypeRefresh];
     }
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     /**

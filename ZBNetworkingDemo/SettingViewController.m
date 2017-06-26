@@ -21,7 +21,6 @@ static const NSInteger cacheTime = 30;
 @property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)OfflineView *offlineView;
-
 @end
 
 @implementation SettingViewController
@@ -247,27 +246,27 @@ static const NSInteger cacheTime = 30;
     if (indexPath.row==10) {
         //时间前要加 “-” 减号
         //[[ZBCacheManager sharedInstance]clearCacheForkey:menu_URL time:-cacheTime]
-        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL time:-cacheTime completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL time:cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }
     if (indexPath.row==11) {
         //时间前要加 “-” 减号
         //url 过期 去log里找新的
-        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" time:-cacheTime path:self.imagePath completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" time:cacheTime path:self.imagePath completion:^{
             [self.tableView reloadData];
         }];
     }
     if (indexPath.row==12) {
         //时间前要加 “-” 减号
-        [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheWithTime:cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }
     
     if (indexPath.row==13) {
          //时间前要加 “-” 减号 ， 路径要准确
-        [[ZBCacheManager sharedInstance]clearCacheWithTime:-cacheTime path:self.imagePath completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheWithTime:cacheTime path:self.imagePath completion:^{
             [self.tableView reloadData];
         }];
     }
@@ -295,14 +294,11 @@ static const NSInteger cacheTime = 30;
 }
 
 - (void)requestOffline:(NSMutableArray *)offlineArray{
-    
     //[ZBURLSessionManager sharedInstance]requestWithConfig
-    
-    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
-        
+    __weak typeof(self) weakSelf = self;
+    [ZBURLSessionManager requestWithConfig:^(ZBURLRequest *request){
         request.urlArray=offlineArray;
         request.apiType=ZBRequestTypeOffline;   //离线请求 apiType:ZBRequestTypeOffline
- 
     }  success:^(id responseObj,apiType type){
         //如果是离线请求的数据
         if (type==ZBRequestTypeOffline) {
@@ -312,41 +308,41 @@ static const NSInteger cacheTime = 30;
             for (NSDictionary *dic in array) {
                 DetailsModel *model=[[DetailsModel alloc]init];
                 model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
-                [self.imageArray addObject:model];
+                [weakSelf.imageArray addObject:model];
                 
                 //使用SDWebImage 下载图片
                 BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
                 if (isKey) {
-                    self.offlineView.progressLabel.text=@"已经下载了";
+                    weakSelf.offlineView.progressLabel.text=@"已经下载了";
                 } else{
                     
                     [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
                         
-                        NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
+                        NSLog(@"%@",[weakSelf progressStrWithSize:(CGFloat)receivedSize/expectedSize]);
+                    
+                        weakSelf.offlineView.progressLabel.text=[weakSelf progressStrWithSize:(CGFloat)receivedSize/expectedSize];
                         
-                        self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
-                        
-                        self.offlineView.pv.progress =(double)receivedSize/expectedSize;
+                        weakSelf.offlineView.pv.progress =(CGFloat)receivedSize/expectedSize;
                         
                     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
                         
-                        NSLog(@"单个图片下载完成");
-                        self.offlineView.progressLabel.text=nil;
+                        NSLog(@"单个图片完成");
                         
-                        self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
+                        weakSelf.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
                         
-                        self.offlineView.pv.progress = 0.0;
+                        weakSelf.offlineView.pv.progress = 0.0;
                         
-                        [self.tableView reloadData];
+                        [weakSelf.tableView reloadData];
+                        
                         //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                         NSString *imageURLStr = [imageURL absoluteString];
                         NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
                         
                         if ([imageURLStr isEqualToString:lastImage]) {
-                            NSLog(@"下载完成");
-                            
-                            [self.offlineView hide];//取消下载进度视图
-                             self.imageArray=nil;
+                            NSLog(@"url相同下载完成");
+                      
+                            [weakSelf.offlineView hide];//取消下载进度视图
+                         
                         }
                         
                         if (error) {
@@ -370,13 +366,18 @@ static const NSInteger cacheTime = 30;
     }];
     
 }
-
-- (void)cancelClick{
+- (void)cancel{
     [ZBNetworkManager requestToCancel:YES];//取消网络请求
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.offlineView hide];//取消下载进度视图
+    [self.imageArray removeAllObjects];
     NSLog(@"取消下载");
 }
+
+- (void)cancelClick{
+    [self cancel];
+}
+
 - (void)starBtnClick{
     
     [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
@@ -403,7 +404,8 @@ static const NSInteger cacheTime = 30;
     return _imageArray;
 }
 
-- (NSString *)progressStrWithSize:(double)size{
+- (NSString *)progressStrWithSize:(CGFloat)size{
+
     NSString *progressStr = [NSString stringWithFormat:@"下载进度:%.1f",size* 100];
     return  progressStr = [progressStr stringByAppendingString:@"%"];
 }

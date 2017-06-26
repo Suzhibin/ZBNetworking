@@ -43,6 +43,7 @@
 
     [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=_urlString;
+        request.apiType=ZBRequestTypeDefault;
     }  success:^(id responseObj,apiType type){
         NSLog(@"type:%zd",type);
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];

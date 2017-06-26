@@ -22,7 +22,7 @@
 #import <UIKit/UIKit.h>
 
 typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
-typedef void(^ZBCacheValueBlock)(NSData *data,NSString *filePath);
+typedef void(^ZBCacheValueBlock)(id responseObj,NSString *filePath);
 typedef void(^ZBCacheCompletedBlock)();
 
 /**
@@ -30,6 +30,17 @@ typedef void(^ZBCacheCompletedBlock)();
  */
 @interface ZBCacheManager : NSObject
 
+/**
+ * The maximum "total cost" of the in-memory image cache. The cost function is the number of pixels held in memory.
+ * 设置缓存占用的内存大小，并不是一个严格的限制，当总数超过了totalCostLimit设定的值，系统会清除一部分缓存，直至总消耗低于totalCostLimit的值。
+ */
+@property (assign, nonatomic) NSUInteger memoryTotalCost;
+
+/**
+ * The maximum number of objects the cache should hold.
+ * 设置内存对象的大小，这也不是一个严格的限制。
+ */
+@property (assign, nonatomic) NSUInteger memoryCountLimit;
 
 //返回单例对象
 + (ZBCacheManager *)sharedInstance;
@@ -175,10 +186,11 @@ typedef void(^ZBCacheCompletedBlock)();
 - (NSArray *)getDiskCacheFileWithPath:(NSString *)path;
 
 /**
- *  返回缓存文件的属性     只支持默认缓存路径
+ *  返回缓存文件的属性     
+ * @param path          路径
  *  @param key          缓存文件
  */
--(NSDictionary* )getDiskFileAttributes:(NSString *)key;
+-(NSDictionary* )getDiskFileAttributes:(NSString *)key path:(NSString *)path;
 
 /**
  *  查找存储的文件         默认缓存路径/Library/Caches/ZBKit/AppCache
@@ -296,7 +308,7 @@ typedef void(^ZBCacheCompletedBlock)();
  */
 - (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheCompletedBlock)completion;
 
-/**
+/** 
  *  设置过期时间 清除某一个缓存文件  默认路径/Library/Caches/ZBKit/AppCache
  *  @param key          请求的协议地址
  *  @param time         时间 注:时间前要加 “-” 减号

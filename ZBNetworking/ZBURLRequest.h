@@ -31,8 +31,8 @@ typedef NS_ENUM(NSInteger,apiType) {
 
 typedef NS_ENUM(NSInteger,MethodType) {
     
-    ZBMethodTypeGET,
-    ZBMethodTypePOST
+    GET,
+    POST
 } ;
 
 typedef void (^requestConfig)(ZBURLRequest *request);
@@ -46,7 +46,7 @@ typedef void (^progressBlock)(NSProgress * progress);
 @interface ZBURLRequest : NSObject
 
 /**
- *  用于标识不同类型的request
+ *  用于标识不同类型的request状态
  */
 @property (nonatomic,assign) apiType apiType;
 /**
@@ -134,7 +134,6 @@ typedef void (^progressBlock)(NSProgress * progress);
  */
 - (NSMutableArray *)offlineKeyArray;
 
-
 /**
  离线下载 将url 添加到请求列队
  
@@ -195,18 +194,35 @@ typedef void (^progressBlock)(NSProgress * progress);
 - (void)removeObjectWithForkey:(NSString *)key isUrl:(BOOL)isUrl;
 
 /**
- *
+ *  添加请求对象
  *  @param obj request 对象
  *  @param key key
  */
 - (void)setRequestObject:(id)obj forkey:(NSString *)key;
 
 /**
- 删除对应的key
+ 删除请求对象的key
  
  @param key key
  */
 - (void)removeRequestForkey:(NSString *)key;
 
+
+/**
+ UTF8 编码
+
+ @param urlString 请求协议
+ @return 编码后的字符串
+ */
+- (NSString *)stringUTF8Encoding:(NSString *)urlString;
+
+/**
+ 附加参数 拼接
+
+ @param urlString 请求主协议
+ @param parameters 附加参数
+ @return 完整的请求协议
+ */
+- (NSString *)urlString:(NSString *)urlString appendingParameters:(id)parameters;
 
 @end

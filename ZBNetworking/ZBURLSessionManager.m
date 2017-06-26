@@ -36,15 +36,9 @@
 - (id)init{
     self = [super init];
     if (self) {
- 
         self.request.timeoutInterval=15;
-        
     }
     return self;
-}
-
-+ (instancetype)manager {
-    return [[[self class] alloc] init];
 }
 
 #pragma mark - 离线下载
@@ -52,93 +46,76 @@
 - (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{
     if (downloadArray.count==0)return;
     [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
-        [self getRequestWithURL:urlString apiType:type success:success failed:failed];
+        [self GET:urlString parameters:nil apiType:type success:success failed:failed];
     }];
 }
 - (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
     if (downloadArray.count==0)return;
     [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
-        [self getRequestWithURL:urlString target:delegate apiType:type];
+        [self GET:urlString parameters:nil target:delegate apiType:type];
     }];
 }
 
 #pragma  mark -  请求
 
++ (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
+    [[ZBURLSessionManager sharedInstance]requestWithConfig:config success:success failed:failed];
+}
+
 - (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
     
     config ? config(self.request) : nil;
-    if (self.request.methodType==ZBMethodTypePOST) {
-        [self postRequestWithURL:self.request.urlString parameters:self.request.parameters success:success failed:failed];
+    if (self.request.methodType==POST) {
+        [self POST:self.request.urlString parameters:self.request.parameters success:success failed:failed];
     }else{
         if (self.request.apiType==ZBRequestTypeOffline) {
             [self offlineDownload:self.request.urlArray apiType:self.request.apiType success:success failed:failed];
         }else{
-            [self getRequestWithURL:self.request.urlString apiType:self.request.apiType success:success failed:failed];
+            [self GET:self.request.urlString parameters:self.request.parameters apiType:self.request.apiType success:success failed:failed];
         }
     }
 }
-
--(void)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed{
-     [ZBURLSessionManager postRequestWithURL:urlString parameters:parameters success:success failed:failed];
+#pragma mark - GET 请求
+- (void)GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate{
+    [ZBURLSessionManager GET:urlString parameters:parameters target:delegate];
 }
 
--(void)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
-    [ZBURLSessionManager postRequestWithURL:urlString parameters:parameters target:delegate];
+- (void )GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
+    [ZBURLSessionManager GET:urlString parameters:parameters target:delegate apiType:type];
 }
 
-- (void)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate{
-    [ZBURLSessionManager getRequestWithURL:urlString target:delegate];
+- (void )GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed {
+     [ZBURLSessionManager GET:urlString parameters:parameters target:nil apiType:type success:success failed:failed];
 }
 
-- (void )getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
-    [ZBURLSessionManager getRequestWithURL:urlString target:delegate apiType:type];
++ (ZBURLSessionManager *)GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate{
+    return [ZBURLSessionManager GET:urlString parameters:parameters target:delegate apiType:ZBRequestTypeDefault];
 }
 
-- (void )getRequestWithURL:(NSString *)urlString apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed {
-     [ZBURLSessionManager getRequestWithURL:urlString target:nil apiType:type success:success failed:failed];
++ (ZBURLSessionManager *)GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
+    return [ZBURLSessionManager GET:urlString parameters:parameters target:delegate apiType:type success:nil failed:nil];
 }
 
-+(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
-
-    return  [ZBURLSessionManager postRequestWithURL:urlString parameters:parameters target:delegate success:nil failed:nil];
-}
-
-+(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed{
++ (ZBURLSessionManager *)GET:(NSString *)urlString parameters:(id)parameters target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed {
     
-    return  [ZBURLSessionManager postRequestWithURL:urlString parameters:parameters target:nil success:success failed:failed];
-}
-
-+(ZBURLSessionManager *)postRequestWithURL:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate success:(requestSuccess)success failed:(requestFailed)failed{
-    ZBURLSessionManager *session = [[ZBURLSessionManager alloc] init];
-    session.request.urlString = urlString;
-    session.delegate = delegate;
-    session.requestSuccess=success;
-    session.requestFailed=failed;
-    [session postStartRequestWithParameters:parameters];
-    return  session;
-}
-
-+(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate{
-    return [ZBURLSessionManager getRequestWithURL:urlString target:delegate apiType:ZBRequestTypeDefault];
-}
-
-+(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
-    return [ZBURLSessionManager getRequestWithURL:urlString target:delegate apiType:type success:nil failed:nil];
-}
-
-+(ZBURLSessionManager *)getRequestWithURL:(NSString *)urlString target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed {
+    if([urlString isEqualToString:@""]||urlString==nil)return nil;
     
+    if (![urlString isKindOfClass:NSString.class]) {
+        urlString = nil;
+    }
     ZBURLSessionManager *session = [[ZBURLSessionManager alloc] init];
     session.request.urlString=urlString;
+    session.request.parameters=parameters;
     session.request.apiType=type;
     session.delegate = delegate;
-    session.requestSuccess=success;
-    session.requestFailed=failed;
+    session.success=success;
+    session.failed=failed;
     
-    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:urlString]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
-
-         [[ZBCacheManager sharedInstance]getCacheDataForKey:urlString value:^(NSData *data,NSString *filePath) {
-             [session.request.responseObj appendData:data];
+    NSString *key=[session.request stringUTF8Encoding:[session.request urlString:urlString appendingParameters:parameters]];
+    
+    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
+         [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(id responseObj,NSString * filePath) {
+             [session.request.responseObj appendData:responseObj];
              success ? success(session.request.responseObj,type) : nil;
              
              if ([session.delegate respondsToSelector:@selector(urlRequestFinished:)]) {
@@ -149,11 +126,40 @@
         return session;
         
     }else{
-        [session getStartRequest];
+        [session GETRequest:key];
     }
     
-    [session.request setRequestObject:session forkey:urlString];
+    [session.request setRequestObject:session forkey:key];
     return session;
+}
+#pragma mark - POST 请求
+- (void)POST:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed{
+    [ZBURLSessionManager POST:urlString parameters:parameters success:success failed:failed];
+}
+
+- (void)POST:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
+    [ZBURLSessionManager POST:urlString parameters:parameters target:delegate];
+}
+
++ (ZBURLSessionManager *)POST:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate{
+    
+    return  [ZBURLSessionManager POST:urlString parameters:parameters target:delegate success:nil failed:nil];
+}
+
++ (ZBURLSessionManager *)POST:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed{
+    
+    return  [ZBURLSessionManager POST:urlString parameters:parameters target:nil success:success failed:failed];
+}
+
++ (ZBURLSessionManager *)POST:(NSString *)urlString parameters:(NSDictionary*)parameters target:(id<ZBURLSessionDelegate>)delegate success:(requestSuccess)success failed:(requestFailed)failed{
+    ZBURLSessionManager *session = [[ZBURLSessionManager alloc] init];
+    session.request.urlString = urlString;
+    session.request.parameters=parameters;
+    session.delegate = delegate;
+    session.success=success;
+    session.failed=failed;
+    [session POSTRequest:urlString parameters:parameters];
+    return  session;
 }
 
 #pragma mark - NSURLSessionDelegate
@@ -178,17 +184,19 @@
  */
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
     if(error == nil){
-      
-         [[ZBCacheManager sharedInstance] storeContent:self.request.responseObj forKey:self.request.urlString];
         
-        if (self.requestSuccess) {
-           self.requestSuccess(self.request.responseObj,self.request.apiType);
+        NSString *key= [self.request stringUTF8Encoding:[self.request urlString:self.request.urlString appendingParameters:self.request.parameters]];
+       
+         [[ZBCacheManager sharedInstance] storeContent:self.request.responseObj forKey:key];
+        
+        if (self.success) {
+           self.success(self.request.responseObj,self.request.apiType);
         }
         
         if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
             [_delegate urlRequestFinished:self.request];
         }
-        [self.request removeRequestForkey:self.request.urlString ];
+        [self.request removeRequestForkey:key ];
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     }else{
@@ -196,8 +204,8 @@
         self.request.error=nil;
         self.request.error=error;
         
-        if (self.requestFailed) {
-            self.requestFailed(self.request.error);
+        if (self.failed) {
+            self.failed(self.request.error);
         }
         
         if ([_delegate respondsToSelector:@selector(urlRequestFailed:)]) {
@@ -258,7 +266,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 - (NSURLSession *)urlSession{
     if (_urlSession == nil) {
-        _urlSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        config.timeoutIntervalForRequest = self.request.timeoutInterval;
+        _urlSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     }
     return _urlSession;
 }
@@ -269,6 +280,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
     
     return _request;
+}
+
++ (void)requestToCancel:(BOOL)cancelPendingTasks{
+    [[ZBURLSessionManager sharedInstance]requestToCancel:cancelPendingTasks];
 }
 
 - (void)requestToCancel:(BOOL)cancelPendingTasks{
@@ -282,12 +297,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 }
 
 #pragma mark - get Request
-- (void)getStartRequest{
-    
-    if(!self.request.urlString)return;
-    NSString *string = [self.request.urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    NSURL *url = [NSURL URLWithString:string];
+- (void)GETRequest:(NSString *)urlString{
+  
+    NSURL *url = [NSURL URLWithString:urlString];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:self.request.timeoutInterval];
     if ([ZBURLRequest sharedInstance].value) {
@@ -299,7 +311,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             if (![mutableRequest valueForHTTPHeaderField:field]) {
                 [mutableRequest addValue: value forHTTPHeaderField:field];
             }
-            
         }];
         
         request = [mutableRequest copy];
@@ -314,11 +325,70 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 }
 
 #pragma mark - post Request
-- (void)postStartRequestWithParameters:(NSDictionary *)parameters;{
-   
-    NSString *string = [self.request.urlString  stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    NSURL *url = [NSURL URLWithString:string];
+- (void)POSTRequest:(NSString *)urlString parameters:(NSDictionary *)parameters; {
+
+     NSURLSession *session = [NSURLSession sharedSession];
+
+     NSURL *url = [NSURL URLWithString:[self.request stringUTF8Encoding:urlString]];
+
+     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+
+     request.HTTPMethod = @"POST";
+     
+     if (self.request.value) {
+         
+         [[self.request mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+             
+             if (![request valueForHTTPHeaderField:field]) {
+                 [request setValue:value forHTTPHeaderField:field];
+             }
+         }];
+     }
+     [request setTimeoutInterval:self.request.timeoutInterval];
+
+     NSMutableArray *array = [[NSMutableArray alloc] init];
+     for (NSString *key in parameters) {
+         id obj = [parameters objectForKey:key];
+         NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
+         [array addObject:str];
+     }
+     NSString *dataStr = [array componentsJoinedByString:@"&"];
+     NSData *data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
+
+     request.HTTPBody = data;
+
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if(error == nil){
+     
+            [self.request.responseObj appendData:data];
+            if (self.success) {
+                self.success(self.request.responseObj,self.request.apiType);
+            }
+            if ([_delegate respondsToSelector:@selector(urlRequestFinished:)]) {
+                [_delegate urlRequestFinished:self.request];
+            }
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        }else{
+            self.request.error=nil;
+            self.request.error=error;
+            
+            if (self.failed) {
+                self.failed(self.request.error);
+            }
+            if ([_delegate respondsToSelector:@selector(urlRequestFailed:)]) {
+                [_delegate urlRequestFailed:self.request];
+            }
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        }
+
+    }];
+     
+    [dataTask resume];
+}
+/*
+- (void)POSTRequest:(NSString *)urlString parameters:(NSDictionary *)parameters;{
+       
+    NSURL *url = [NSURL URLWithString:[self.request stringUTF8Encoding:urlString]];
     
     NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
     
@@ -332,7 +402,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                 [mutableRequest setValue:value forHTTPHeaderField:field];
             }
         }];
-        
     }
     
     [mutableRequest setTimeoutInterval:self.request.timeoutInterval];
@@ -356,6 +425,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     [dataTask resume];
     
 }
-
+*/
 
 @end
