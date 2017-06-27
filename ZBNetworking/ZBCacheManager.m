@@ -339,11 +339,11 @@ static const NSInteger timeOut = 60*60;
     return size;
 }
 
-#pragma  mark - 清除文件
+#pragma  mark - 设置过期时间 清除某路径缓存文件
 - (void)automaticCleanCache{
    [self clearCacheWithTime:defaultCacheMaxCacheAge completion:nil];
 }
-#pragma  mark - 设置过期时间 清除某路径缓存文件
+
 - (void)clearCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
      [self clearCacheWithTime:time path:self.diskCachePath completion:completion];
 }

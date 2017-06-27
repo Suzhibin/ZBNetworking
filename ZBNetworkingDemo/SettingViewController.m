@@ -329,7 +329,7 @@ static const NSInteger cacheTime = 30;
                         NSLog(@"单个图片完成");
                         
                         weakSelf.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
-                        
+                    
                         weakSelf.offlineView.pv.progress = 0.0;
                         
                         [weakSelf.tableView reloadData];
@@ -340,18 +340,16 @@ static const NSInteger cacheTime = 30;
                         
                         if ([imageURLStr isEqualToString:lastImage]) {
                             NSLog(@"url相同下载完成");
-                      
+                            
                             [weakSelf.offlineView hide];//取消下载进度视图
-                         
                         }
-                        
+
                         if (error) {
                             NSLog(@"下载失败");
                         }
                     }];
-                    
                 }
-                
+              
             }
             
         }

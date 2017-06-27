@@ -66,7 +66,7 @@
 
 - (UILabel *)progressLabel{
     if (!_progressLabel) {
-        _progressLabel=[[UILabel alloc]initWithFrame:CGRectMake(140, 40, 150, 20)];
+        _progressLabel=[[UILabel alloc]initWithFrame:CGRectMake(130, 40, 160, 20)];
         _progressLabel.textAlignment = NSTextAlignmentCenter;
     
     }
