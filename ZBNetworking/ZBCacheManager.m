@@ -244,11 +244,11 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (NSString *)cachePathForKey:(NSString *)key path:(NSString *)path {
-    NSString *filename = [self codingFileNameForKey:key];
+    NSString *filename = [self MD5StringForKey:key];
     return [path stringByAppendingPathComponent:filename];
 }
 
-- (NSString *)codingFileNameForKey:(NSString *)key {
+- (NSString *)MD5StringForKey:(NSString *)key {
     const char *str = [key UTF8String];
     if (str == NULL) {
         str = "";
