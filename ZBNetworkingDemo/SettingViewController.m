@@ -11,7 +11,6 @@
 #import "offlineDownloadViewController.h"
 #import <SDImageCache.h>
 #import <SDWebImageManager.h>
-#import "OfflineView.h"
 #import "DetailsModel.h"
 static const NSInteger cacheTime = 30;
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
@@ -20,7 +19,7 @@ static const NSInteger cacheTime = 30;
 @property (nonatomic,copy)NSString *imagePath;
 @property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
-@property (nonatomic,strong)OfflineView *offlineView;
+
 @end
 
 @implementation SettingViewController
@@ -41,7 +40,7 @@ static const NSInteger cacheTime = 30;
     
     [self.view addSubview:self.tableView];
     
-    [self addItemWithTitle:@"star" selector:@selector(starBtnClick) location:NO];
+    [self addItemWithTitle:@"取消离线下载" selector:@selector(cancelClick) location:NO];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -279,13 +278,7 @@ static const NSInteger cacheTime = 30;
 }
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
-
     [self requestOffline:offlineArray];
-
-    //创建下载进度视图
-    self.offlineView=[[OfflineView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
-    [self.offlineView.cancelButton addTarget:self action:@selector(cancelClick) forControlEvents:UIControlEventTouchUpInside];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.offlineView];
 }
 
 - (void)reloadJsonNumber{
@@ -313,24 +306,17 @@ static const NSInteger cacheTime = 30;
                 //使用SDWebImage 下载图片
                 BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
                 if (isKey) {
-                    weakSelf.offlineView.progressLabel.text=@"已经下载了";
+    
+                    NSLog(@"已经下载了");
                 } else{
                     
                     [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
                         
                         NSLog(@"%@",[weakSelf progressStrWithSize:(CGFloat)receivedSize/expectedSize]);
-                    
-                        weakSelf.offlineView.progressLabel.text=[weakSelf progressStrWithSize:(CGFloat)receivedSize/expectedSize];
-                        
-                        weakSelf.offlineView.pv.progress =(CGFloat)receivedSize/expectedSize;
                         
                     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
                         
                         NSLog(@"单个图片完成");
-                        
-                        weakSelf.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
-                    
-                        weakSelf.offlineView.pv.progress = 0.0;
                         
                         [weakSelf.tableView reloadData];
                         
@@ -340,8 +326,6 @@ static const NSInteger cacheTime = 30;
                         
                         if ([imageURLStr isEqualToString:lastImage]) {
                             NSLog(@"url相同下载完成");
-                            
-                            [weakSelf.offlineView hide];//取消下载进度视图
                         }
 
                         if (error) {
@@ -364,21 +348,12 @@ static const NSInteger cacheTime = 30;
     }];
     
 }
-- (void)cancel{
-    [ZBNetworkManager requestToCancel:YES];//取消网络请求
-    [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
-    [self.offlineView hide];//取消下载进度视图
-    [self.imageArray removeAllObjects];
-    NSLog(@"取消下载");
-}
 
 - (void)cancelClick{
-    [self cancel];
-}
-
-- (void)starBtnClick{
-    
-    [self alertTitle:@"感觉不错给star吧 谢谢" andMessage:@"https://github.com/Suzhibin/ZBNetworking"];
+    [ZBNetworkManager requestToCancel:NO];//取消网络请求
+    [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
+    [self.imageArray removeAllObjects];
+    NSLog(@"取消下载");
 }
 
 //懒加载

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5858D131DA3F67455D1FBE08 /* libPods-ZBNetworkingDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC7D594D1C3900452288F761 /* libPods-ZBNetworkingDemo.a */; };
 		7D279F961E092EFF000A62C8 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D279F951E092EFF000A62C8 /* SecondViewController.m */; };
-		7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */; };
 		7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */; };
 		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
 		7D7EC8B51E248FC500663313 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7EC8B41E248FC500663313 /* SettingViewController.m */; };
@@ -53,8 +52,6 @@
 		1CA1FAC5ED551289DF1EC78C /* Pods-ZBNetworkingDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNetworkingDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNetworkingDemo/Pods-ZBNetworkingDemo.release.xcconfig"; sourceTree = "<group>"; };
 		7D279F941E092EFF000A62C8 /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
 		7D279F951E092EFF000A62C8 /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
-		7D27F5F91D98FB5B0065B1A2 /* OfflineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineView.h; sourceTree = "<group>"; };
-		7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineView.m; sourceTree = "<group>"; };
 		7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
@@ -187,8 +184,6 @@
 		7DF8262F1D5815BE000D1109 /* ZBNetworkingDemo */ = {
 			isa = PBXGroup;
 			children = (
-				7D27F5F91D98FB5B0065B1A2 /* OfflineView.h */,
-				7D27F5FA1D98FB5B0065B1A2 /* OfflineView.m */,
 				7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */,
 				7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */,
 				7DF826791D58170C000D1109 /* DetailsModel.h */,
@@ -431,7 +426,6 @@
 				7D279F961E092EFF000A62C8 /* SecondViewController.m in Sources */,
 				7DF826381D5815BE000D1109 /* ViewController.m in Sources */,
 				7D7EC8B51E248FC500663313 /* SettingViewController.m in Sources */,
-				7D27F5FB1D98FB5B0065B1A2 /* OfflineView.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
 				7DD0B4391E65629500E5634E /* ZBNetworkManager.m in Sources */,
