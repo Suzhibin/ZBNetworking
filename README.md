@@ -5,13 +5,13 @@
 
 2.AFNetworking和NSURLSession 两种选择，NSURLSession 还分 delegate 方法 和 block 方法    三种请求方式缓存文件通用 自由选择。
 
-2.有缓存文件过期机制 默认一周
+3.有缓存文件过期机制 默认一周
 
-3.显示缓存大小/个数，全部清除缓存/单个文件清除缓存/按时间清除缓存  方法多样  并且都可以自定义路径   可扩展性强
+4.显示缓存大小/个数，全部清除缓存/单个文件清除缓存/按时间清除缓存  方法多样  并且都可以自定义路径   可扩展性强
 
-4.离线下载功能 
+5.离线下载功能 
 
-5.多种请求类型的判断。也可不遵循，自由随你定。
+6.多种请求类型的判断。也可不遵循，自由随你定。
 
 ```objective-c
     ZBRequestTypeDefault,   //默认类型
@@ -21,7 +21,7 @@
     ZBRequestTypeOffline,   //离线    （有缓存，不读取，重新请求）
     ZBRequestTypeCustom     //自定义
 ```
-6.可见的缓存文件
+7.可见的缓存文件
 
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
