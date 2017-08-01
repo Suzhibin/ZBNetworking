@@ -126,7 +126,7 @@
     
     NSString *key = [manager.request stringUTF8Encoding:[manager.request urlString:urlString appendingParameters:parameters]];
     
-    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline){
+    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline&&type!=ZBRequestTypeRefreshMore){
         
         [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(id responseObj,NSString *filePath) {
             [manager.request.responseObj appendData:responseObj];

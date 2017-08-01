@@ -23,6 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     /**
+     *  默认的方法 都是有缓存使用缓存 无缓存就重新请求
      *  默认缓存路径/Library/Caches/ZBKit/AppCache
      *
      *  ZBAFNetworkManager(AFNetworking)与 ZBURLSessionManager(NSURLSession) 缓存策略都是ZBCacheManager来管理的 缓存文件是相通共用的   换句话说，俩个类的三种请求方法可以共存
@@ -38,7 +39,6 @@
     }else if(_functionType==sessiondelegate){
         //NSURLSessionDelegate方法
         //需要 ZBURLSessionDelegate 协议
-        //注意 ZBURLSessionManager 是 单例
         [[ZBURLSessionManager sharedInstance]GET:list_URL parameters:nil target:self apiType:ZBRequestTypeDefault];
     }
     [self.tableView addSubview:self.refreshControl];
@@ -65,6 +65,7 @@
             [self.dataArray removeAllObjects];
             [_refreshControl endRefreshing];    //结束刷新
         }
+        //上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
         if (type==ZBRequestTypeLoadMore) {
             //上拉加载
         }
@@ -89,6 +90,7 @@
         }else{
             [self alertTitle:@"请求失败" andMessage:@""];
         }
+        [_refreshControl endRefreshing];  //结束刷新
     }];
 }
 #pragma mark -ZBURLSessionManager block
@@ -107,7 +109,7 @@
             [self.dataArray removeAllObjects];
             [_refreshControl endRefreshing];  //下拉结束刷新
         }
-        //如果是上拉加载
+        //上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
         if (type==ZBRequestTypeLoadMore) {
               // 上拉结束刷新
         }
@@ -130,6 +132,7 @@
         }else{
             [self alertTitle:@"请求失败" andMessage:@""];
         }
+        [_refreshControl endRefreshing];  //结束刷新
     }];
     
 }
@@ -142,6 +145,7 @@
         [self.dataArray removeAllObjects];
         [_refreshControl endRefreshing]; //结束刷新
     }
+   // 上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
     if (request.apiType==ZBRequestTypeLoadMore) {
         //上拉加载
     }
@@ -215,8 +219,10 @@
          [[ZBURLSessionManager sharedInstance]GET:list_URL parameters:nil target:self apiType:ZBRequestTypeRefresh];
     }
     _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
+    
+    
     /**
-     * 上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore
+     * 上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
      */
 }
 

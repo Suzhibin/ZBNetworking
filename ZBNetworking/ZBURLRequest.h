@@ -20,12 +20,13 @@
 //用于标识不同类型的请求
 typedef NS_ENUM(NSInteger,apiType) {
     
-    ZBRequestTypeDefault,   //默认类型
-    ZBRequestTypeRefresh,   //重新请求 （有缓存，不读取，重新请求）
-    ZBRequestTypeLoadMore,  //加载更多
-    ZBRequestTypeDetail,    //详情
-    ZBRequestTypeOffline,   //离线    （有缓存，不读取，重新请求）
-    ZBRequestTypeCustom     //自定义
+    ZBRequestTypeDefault,       //默认类型  （读取缓存，不请求）
+    ZBRequestTypeRefresh,       //重新请求  （不读取缓存，重新请求）
+    ZBRequestTypeRefreshMore,   //加载更多  （不读取缓存，重新请求）
+    ZBRequestTypeLoadMore,      //加载更多  （读取缓存，不请求）
+    ZBRequestTypeDetail,        //详情     （读取缓存，不请求）
+    ZBRequestTypeOffline,       //离线     （不读取缓存，重新请求）
+    ZBRequestTypeCustom         //自定义   （读取缓存，不请求）
     
 } ;
 

@@ -106,6 +106,27 @@
  */
 - (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed;
 
+//====================================================================
+/**
+ *  离线下载 实例请求方法
+ *
+ *  @param downloadArray    请求列队
+ *  @param delegate         代理  传实现协议的对象
+ *  @param type             用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
+ */
+- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
+
+/**
+ *  离线下载 实例请求方法
+ *
+ *  @param downloadArray    请求列队
+ *  @param type             用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
+ *  @param success          请求成功的 Block
+ *  @param failed           请求失败的 Block
+ */
+- (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed;
+//====================================================================
+
 /**
  *  实例请求 get
  *
@@ -134,25 +155,6 @@
  *  @param failed           请求失败的 Block
  */
 - (void )GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed;
-
-/**
- *  离线下载 请求方法
- *
- *  @param downloadArray    请求列队
- *  @param delegate         代理  传实现协议的对象
- *  @param type             用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
- */
-- (void)offlineDownload:(NSMutableArray *)downloadArray target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type;
-
-/**
- *  离线下载 请求方法
- *
- *  @param downloadArray    请求列队
- *  @param type             用于直接区分不同的request对象 离线下载 为 ZBRequestTypeOffline
- *  @param success          请求成功的 Block
- *  @param failed           请求失败的 Block
- */
-- (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
  *  类请求 get

@@ -113,7 +113,8 @@
     
     NSString *key=[session.request stringUTF8Encoding:[session.request urlString:urlString appendingParameters:parameters]];
     
-    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
+    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline&&type!=ZBRequestTypeRefreshMore) {
+        
          [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(id responseObj,NSString * filePath) {
              [session.request.responseObj appendData:responseObj];
              success ? success(session.request.responseObj,type) : nil;
