@@ -10,7 +10,7 @@
 #import "ZBNetworking.h"
 #import "RootModel.h"
 
-@interface offlineDownloadViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLSessionDelegate>
+@interface offlineDownloadViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 
@@ -35,38 +35,36 @@
     
     self.request=[[ZBURLRequest alloc]init];
     
-    
-    [[ZBURLSessionManager sharedInstance] GET:list_URL parameters:nil  target:self];
+    //请求最新频道列表
+    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request) {
+        request.urlString=list_URL;
+        request.apiType=ZBRequestTypeRefresh;
+    } success:^(id responseObj, apiType type) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        
+        NSArray *array=[dict objectForKey:@"authors"];
+        
+        for (NSDictionary *dic in array) {
+            RootModel *model=[[RootModel alloc]init];
+            model.name=[dic objectForKey:@"name"];
+            model.wid=[dic objectForKey:@"id"];
+            [self.dataArray addObject:model];
+            
+        }
+        [_tableView reloadData];
+    } failed:^(NSError *error) {
+        if (error.code==NSURLErrorCancelled)return;
+        if (error.code==NSURLErrorTimedOut) {
+            [self alertTitle:@"请求超时" andMessage:@""];
+        }else{
+            [self alertTitle:@"请求失败" andMessage:@""];
+        }
+    }];
     
     [self.view addSubview:self.tableView];
   
     [self addItemWithTitle:@"离线下载" selector:@selector(offlineBtnClick) location:NO];
  
-}
-#pragma mark - ZBURLSessionManager Delegate
-- (void)urlRequestFinished:(ZBURLRequest *)request{
-
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
-    
-    NSArray *array=[dict objectForKey:@"authors"];
-    
-    for (NSDictionary *dic in array) {
-        RootModel *model=[[RootModel alloc]init];
-        model.name=[dic objectForKey:@"name"];
-        model.wid=[dic objectForKey:@"id"];
-        [self.dataArray addObject:model];
-        
-    }
-    [_tableView reloadData];
-    
-}
-- (void)urlRequestFailed:(ZBURLRequest *)request{
-    if (request.error.code==NSURLErrorCancelled)return;
-    if (request.error.code==NSURLErrorTimedOut) {
-        [self alertTitle:@"请求超时" andMessage:@""];
-    }else{
-        [self alertTitle:@"请求失败" andMessage:@""];
-    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -88,8 +86,6 @@
     
     RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text=model.name;
-        
-
     
     return cell;
 }
@@ -110,7 +106,6 @@
     }
 }
 
-
 - (void)offlineBtnClick{
     
     if (self.request.offlineUrlArray.count==0) {
@@ -128,7 +123,6 @@
         [self.delegate downloadWithArray:self.request.offlineUrlArray];
         
         [self.navigationController popViewControllerAnimated:YES];
-
     }
 }
 

@@ -1,6 +1,6 @@
 //
 //  ZBCacheManager.m
-//  ZBURLSessionManager
+//  ZBNetworking
 //
 //  Created by NQ UEC on 16/6/8.
 //  Copyright © 2016年 Suzhibin. All rights reserved.
@@ -115,9 +115,9 @@ static const NSInteger timeOut = 60*60;
 
 - (void)createDirectoryAtPath:(NSString *)path{
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
     } else {
-       // NSLog(@"FileDir is exists.%@",path);
+        // NSLog(@"FileDir is exists.%@",path);
     }
 }
 
@@ -133,16 +133,8 @@ static const NSInteger timeOut = 60*60;
 }
 
 #pragma  mark - 存储
-- (void)storeContent:(NSObject *)content forKey:(NSString *)key {
-    [self storeContent:content forKey:key isSuccess:nil];
-}
-
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
     [self storeContent:content forKey:key path:self.diskCachePath isSuccess:isSuccess];
-}
-
-- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path {
-    [self storeContent:content forKey:key path:path isSuccess:nil];
 }
 
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess{

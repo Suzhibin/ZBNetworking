@@ -1,8 +1,6 @@
-
-
 //
 //  ZBURLRequest.m
-//  ZBNetworkingDemo
+//  ZBNetworking
 //
 //  Created by NQ UEC on 16/12/20.
 //  Copyright © 2016年 Suzhibin. All rights reserved.
@@ -28,15 +26,6 @@
 
 - (void)dealloc{
     ZBLog(@"%s",__func__);
-}
-
-+ (ZBURLRequest *)sharedInstance {
-    static ZBURLRequest *request=nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        request = [[ZBURLRequest alloc] init];
-    });
-    return request;
 }
 
 - (void)setValue:(NSString *)value forHeaderField:(NSString *)field{
@@ -143,51 +132,6 @@
             ZBLog(@"已经删除该栏目名字");
         }
     }
-}
-
-- (void)setRequestObject:(id)obj forkey:(NSString *)key{
-    
-    if (obj) {
-        @synchronized (self.requestDic){
-            [self.requestDic setObject:obj forKey:key];
-        }
-    }
-}
-
-- (void)removeRequestForkey:(NSString *)key{
-    
-    if(!key)return;
-        @synchronized (self.requestDic){
-          [self.requestDic removeObjectForKey:key];
-        }
-}
-
-- (NSString *)stringUTF8Encoding:(NSString *)urlString{
-    return [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)urlString:(NSString *)urlString appendingParameters:(id)parameters{
-    if (parameters==nil) {
-        return urlString;
-    }else{
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (NSString *key in parameters) {
-            id obj = [parameters objectForKey:key];
-            NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
-            [array addObject:str];
-        }
-        
-        NSString *parametersString = [array componentsJoinedByString:@"&"];
-        return  [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@",parametersString]];
-    }
-}
-
-- (NSMutableDictionary *)requestDic{
-    
-    if (!_requestDic) {
-        _requestDic  = [[NSMutableDictionary alloc]init];
-    }
-    return _requestDic;
 }
 
 - (NSMutableArray *)channelUrlArray{

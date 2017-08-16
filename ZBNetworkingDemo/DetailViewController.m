@@ -20,13 +20,13 @@
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-#warning 可选实现
     /**
-     1.防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消请求。
-     2.系统的session.delegate 是强引用, 手动取消 避免造成内存泄露.
+        防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消对应的请求。
      */
-     [ZBNetworkManager requestToCancel:YES];//取消网络请求
-    
+    [ZBNetworkManager cancelRequest:_urlString completion:^(NSString *urlString){
+        NSLog(@"取消对应url:%@ ",urlString);
+    }];
+ 
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
 }
 - (void)viewDidLoad {
@@ -34,18 +34,15 @@
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets=NO;
     
-        NSLog(@"urlString:%@",_urlString);
-    
     /**
-     *  如果页面不想要缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
-     *  request.apiType==ZBRequestTypeRefresh
+     *  如果页面不想使用缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      */
-
-    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
+    
+   [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=_urlString;
-        request.apiType=ZBRequestTypeDefault;
+        request.apiType=ZBRequestTypeDetail;
     }  success:^(id responseObj,apiType type){
-        NSLog(@"type:%zd",type);
+       // NSLog(@"type:%zd",type);
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
         NSArray *array=[dataDict objectForKey:@"videos"];
         for (NSDictionary *dict in array) {
@@ -63,21 +60,8 @@
             [self alertTitle:@"请求失败" andMessage:@""];
         }
     }];
-
 }
 
-//懒加载
-- (UITableView *)tableView{
-    
-    if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height-64) style:UITableViewStylePlain];
-        _tableView.delegate=self;
-        _tableView.dataSource=self;
-        
-    }
-    
-    return _tableView;
-}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
     
@@ -102,7 +86,15 @@
 
     return cell;
 }
-
+//懒加载
+- (UITableView *)tableView{
+    if (!_tableView) {
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height-64) style:UITableViewStylePlain];
+        _tableView.delegate=self;
+        _tableView.dataSource=self;
+    }
+    return _tableView;
+}
 - (NSMutableArray *)dataArray {
     if (!_dataArray) {
         _dataArray = [[NSMutableArray alloc] init];

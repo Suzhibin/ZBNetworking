@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ZBNetworking" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oFe-AQ-fUO">
-                                <rect key="frame" x="53" y="307" width="304" height="76"/>
+                                <rect key="frame" x="57" y="307" width="304" height="76"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="76" id="EhH-ZF-pn9"/>
                                     <constraint firstAttribute="width" constant="304" id="Y0f-dP-SSb"/>
@@ -49,7 +49,7 @@
                             <constraint firstItem="azl-hB-r61" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="I8a-rm-ebF"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="azl-hB-r61" secondAttribute="bottom" constant="32" id="V2Z-dK-jMy"/>
                             <constraint firstAttribute="trailing" secondItem="azl-hB-r61" secondAttribute="trailing" id="mCp-fk-ZEJ"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="oFe-AQ-fUO" secondAttribute="trailing" constant="37" id="oJn-Qt-vYV"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="oFe-AQ-fUO" secondAttribute="trailing" constant="33" id="ms2-QV-JmQ"/>
                         </constraints>
                     </view>
                 </viewController>

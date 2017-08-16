@@ -1,6 +1,6 @@
 //
 //  ZBCacheManager.h
-//  ZBURLSessionManager
+//  ZBNetworking
 //
 //  Created by NQ UEC on 16/6/8.
 //  Copyright © 2016年 Suzhibin. All rights reserved.
@@ -21,8 +21,11 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+/** 缓存是否存储成功的Block */
 typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
+/** 得到缓存的Block */
 typedef void(^ZBCacheValueBlock)(id responseObj,NSString *filePath);
+/** 缓存完成的后续操作Block */
 typedef void(^ZBCacheCompletedBlock)();
 
 /**
@@ -106,26 +109,9 @@ typedef void(^ZBCacheCompletedBlock)();
  
  @param content         数据
  @param key             url
- */
-- (void)storeContent:(NSObject *)content forKey:(NSString *)key;
-
-/**
- 把内容,存储到文件
- 
- @param content         数据
- @param key             url
  @param isSuccess       是否存储成功
  */
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key isSuccess:(ZBCacheIsSuccessBlock)isSuccess;
-
-/**
- 把内容,存储到文件
- 
- @param content         数据
- @param key             url
- @param path            路径
- */
-- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path;
 
 /**
  把内容,存储到文件

@@ -1,6 +1,6 @@
 //
 //  ZBNetworkManager.m
-//  ZBNetworkingDemo
+//  ZBNetworking
 //
 //  Created by NQ UEC on 17/1/10.
 //  Copyright © 2017年 Suzhibin. All rights reserved.
@@ -20,243 +20,171 @@
 
 #import "ZBNetworkManager.h"
 #import "ZBCacheManager.h"
-#import <AFNetworkActivityIndicatorManager.h>
-
-@interface ZBNetworkManager()
-@property (nonatomic, strong) AFHTTPSessionManager *AFmanager;
-
-@property AFNetworkReachabilityStatus netStatus;
-@end
+#import "ZBNetworkEngine.h"
 
 @implementation ZBNetworkManager
 
-+ (ZBNetworkManager *)sharedInstance {
-    static ZBNetworkManager *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[ZBNetworkManager alloc] init];
-    });
-    return sharedInstance;
-}
-
-- (id)init{
-    self = [super init];
-    if (self) {
-        self.request.timeoutInterval=15;
-    }
-    return self;
-}
 #pragma mark - GET/POST 配置请求
-+ (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed{
-    [[ZBNetworkManager sharedInstance]requestWithConfig:config success:success failed:failed];
-}
 
-+ (void)requestWithConfig:(requestConfig)config  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-    [[ZBNetworkManager sharedInstance]requestWithConfig:config progress:progress success:success failed:failed];
-}
-
-- (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
++ (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
     return [self requestWithConfig:config progress:nil success:success failed:failed];
 }
 
-- (void)requestWithConfig:(requestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
++ (void)requestWithConfig:(requestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    config ? config(self.request) : nil;
-    if (self.request.methodType==POST) {
-        [self POST:self.request.urlString parameters:self.request.parameters progress:progress success:success failed:failed];
+    ZBURLRequest *request=[[ZBURLRequest alloc]init];
+    config ? config(request) : nil;
+ 
+    if (request.methodType==POST) {
+        [self POST:request progress:progress success:success failed:failed];
     }else{
-        if (self.request.apiType==ZBRequestTypeOffline) {
-            [self offlineDownload:self.request.urlArray apiType:self.request.apiType success:success failed:failed];
+        if (request.apiType==ZBRequestTypeOffline) {
+            [self offlineDownload:request.urlArray apiType:request.apiType success:success failed:failed];
         }else{
-            [self GET:self.request.urlString parameters:self.request.parameters apiType:self.request.apiType progress:progress success:success failed:failed];
+            [self GET:request progress:progress success:success failed:failed];
         }
     }
 }
 
-- (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{
++ (void)offlineDownload:(NSMutableArray *)downloadArray success:(requestSuccess)success failed:(requestFailed)failed{
+    [self offlineDownload:downloadArray apiType:ZBRequestTypeOffline success:success failed:failed];
+}
+
++ (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{
     if (downloadArray.count==0)return;
     [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
-        [self GET:urlString parameters:nil apiType:type progress:nil success:success failed:failed ];
+         [self dataTaskWithGetURL:urlString parameters:nil apiType:type progress:nil success:success failed:failed];
     }];
 }
 
 #pragma mark - GET 请求
-- (void)GET:(NSString *)urlString success:(requestSuccess)success failed:(requestFailed)failed{
-    [ZBNetworkManager GET:urlString success:success failed:failed];
-}
 
-- (void)GET:(NSString *)urlString parameters:(id)parameters success:(requestSuccess)success failed:(requestFailed)failed{
-    [ZBNetworkManager GET:urlString parameters:parameters success:success failed:failed];
-}
-
-- (void)GET:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-    [ZBNetworkManager GET:urlString parameters:parameters progress:progress success:success failed:failed];
-}
-
-- (void)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-    [ZBNetworkManager GET:urlString parameters:parameters apiType:type progress:progress success:success failed:failed];
-}
-
-+ (ZBNetworkManager *)GET:(NSString *)urlString success:(requestSuccess)success failed:(requestFailed)failed{
-   return [ZBNetworkManager GET:urlString parameters:nil success:success failed:failed];
-}
-
-+ (ZBNetworkManager *)GET:(NSString *)urlString parameters:(id)parameters success:(requestSuccess)success failed:(requestFailed)failed{
-   return [ZBNetworkManager GET:urlString parameters:parameters progress:nil success:success failed:failed];
-}
-
-+ (ZBNetworkManager *)GET:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-  return [ZBNetworkManager GET:urlString parameters:parameters apiType:ZBRequestTypeDefault progress:progress success:success failed:failed];
-}
-
-+ (ZBNetworkManager *)GET:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-
-    if([urlString isEqualToString:@""]||urlString==nil)return nil;
++ (void)GET:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    if (![urlString isKindOfClass:NSString.class]) {
-        urlString = nil;
-    }
-    ZBNetworkManager *manager = [[ZBNetworkManager alloc] init];
-    manager.request.urlString=urlString;
-    manager.request.parameters=parameters;
-    manager.request.apiType=type;
-    manager.success=success;
-    manager.failed=failed;
-    manager.progres=progress;
+    NSString *key = [self stringUTF8Encoding:[self urlString:request.urlString appendingParameters:request.parameters]];
     
-    NSString *key = [manager.request stringUTF8Encoding:[manager.request urlString:urlString appendingParameters:parameters]];
-    
-    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline&&type!=ZBRequestTypeRefreshMore){
+    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
         
         [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(id responseObj,NSString *filePath) {
-            [manager.request.responseObj appendData:responseObj];
-            success ? success(manager.request.responseObj ,type) : nil;
+            success ? success(responseObj ,request.apiType) : nil;
         }];
         
     }else{
-        //传urlString 不传key
-        [manager GETRequest:urlString parameters:parameters progress:progress success:success failed:failed];
+        [self dataTaskWithGetRequest:request progress:progress success:success failed:failed];
     }
-    return manager;
 }
 
-- (void)GETRequest:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
++ (NSURLSessionDataTask *)dataTaskWithGetRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    [self.AFmanager GET:[self.request stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+    [self serializer:request];
+    
+    return  [self dataTaskWithGetURL:request.urlString parameters:request.parameters apiType:request.apiType  progress:progress success:success failed:failed];
+}
+
++ (NSURLSessionDataTask *)dataTaskWithGetURL:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
+    
+    if([urlString isEqualToString:@""]||urlString==nil)return nil;
+    
+    NSURLSessionDataTask *dataTask = nil;
+    return dataTask= [[ZBNetworkEngine defaultEngine]GET:[self stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
         progress ? progress(downloadProgress) : nil;
         
-    }success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject) {
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSString * key= [self.request stringUTF8Encoding:[self.request urlString:urlString appendingParameters:parameters]];
-
-       [[ZBCacheManager sharedInstance] storeContent:responseObject forKey:key];
+        NSString * key= [self stringUTF8Encoding:[self urlString:urlString appendingParameters:parameters]];
         
-        success ? success(responseObject,self.request.apiType) : nil;
+        [[ZBCacheManager sharedInstance] storeContent:responseObject forKey:key isSuccess:nil];
         
-    }failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull   error) {
+        success ? success(responseObject,type) : nil;
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failed ? failed(error) : nil;
-    }];    
+    }];
 }
+
 #pragma mark - POST 请求
-- (void)POST:(NSString *)urlString parameters:(id)parameters success:(requestSuccess)success failed:(requestFailed)failed{
-    [ZBNetworkManager POST:urlString parameters:parameters success:success failed:failed];
+
++ (void)POST:(ZBURLRequest *)request  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
+      [self dataTaskWithPostRequest:request progress:progress success:success failed:failed];
 }
 
-- (void)POST:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-    [ZBNetworkManager POST:urlString parameters:parameters progress:progress success:success failed:failed];
-}
-
-+ (ZBNetworkManager *)POST:(NSString *)urlString parameters:(NSDictionary*)parameters success:(requestSuccess)success failed:(requestFailed)failed{
++ (NSURLSessionDataTask *)dataTaskWithPostRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    return  [ZBNetworkManager POST:urlString parameters:parameters progress:nil success:success failed:failed];
-}
-
-+ (ZBNetworkManager *)POST:(NSString *)urlString parameters:(NSDictionary*)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
+    [self serializer:request];
     
-    ZBNetworkManager *manager  = [[ZBNetworkManager alloc] init];
-    manager.request.urlString = urlString;
-    manager.request.parameters=parameters;
-    manager.success=success;
-    manager.failed=failed;
-     manager.progres=progress;
-    [manager POSTRequest:urlString parameters:parameters progress:progress success:success failed:failed];
-    return  manager;
+    return [self dataTaskWithPostURL:request.urlString parameters:request.parameters progress:progress success:success failed:failed];
 }
 
-- (void)POSTRequest:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-    if(!urlString)return;
-    [self.AFmanager POST:[self.request stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
++ (NSURLSessionDataTask *)dataTaskWithPostURL:(NSString *)urlString parameters:(id)parameters progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
+    
+    if([urlString isEqualToString:@""]||urlString==nil)return nil;
+    
+    NSURLSessionDataTask *dataTask = nil;
+    return dataTask=[[ZBNetworkEngine defaultEngine] POST:[self stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
         progress ? progress(uploadProgress) : nil;
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        success ? success(responseObject,self.request.apiType) : nil;
+        success ? success(responseObject,0) : nil;
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failed ? failed(error) : nil;
     }];
     
 }
-
 #pragma mark - 其他配置
-+ (void)requestToCancel:(BOOL)cancelPendingTasks{
-    [[ZBNetworkManager sharedInstance].AFmanager invalidateSessionCancelingTasks:cancelPendingTasks];
-}
-
-+ (NSInteger)startNetWorkMonitoring{
-    [ZBNetworkManager sharedInstance].netStatus=[AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
-   
-    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-         [ZBNetworkManager sharedInstance].netStatus=status;
-        switch ( [ZBNetworkManager sharedInstance].netStatus)
-        {
-            case AFNetworkReachabilityStatusUnknown: // 未知网络
-                
-                break;
-            case AFNetworkReachabilityStatusNotReachable: // 没有网络(断网)
-                
-                break;
-            case AFNetworkReachabilityStatusReachableViaWWAN: // 手机自带网络
-                
-                break;
-            case AFNetworkReachabilityStatusReachableViaWiFi: // WIFI
-                
-                break;
-        }
-    }];
-    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-    return  [ZBNetworkManager sharedInstance].netStatus;
-}
-
-- (AFHTTPSessionManager*)AFmanager{
-    if (!_AFmanager) {
-        _AFmanager=[AFHTTPSessionManager manager];
-        //和urlsession类 公用一个chche容器 返回类型全部是二进制
-        _AFmanager.requestSerializer  = [AFHTTPRequestSerializer serializer];// 设置请求格式
-        _AFmanager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 设置返回格式
-        
-        [[self.request mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-            [_AFmanager.requestSerializer setValue:value forHTTPHeaderField:field];
++ (void)serializer:(ZBURLRequest *)request{
+  
+    [ZBNetworkEngine defaultEngine].requestSerializer =request.requestSerializer==ZBSerializerHTTP ? [AFHTTPRequestSerializer serializer] : [AFJSONRequestSerializer serializer];
+    
+    [ZBNetworkEngine defaultEngine].requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:15;
+    
+    if ([[request mutableHTTPRequestHeaders] allKeys].count>0) {
+        [[request mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+            [[ZBNetworkEngine defaultEngine].requestSerializer setValue:value forHTTPHeaderField:field];
         }];
-        [_AFmanager.requestSerializer setTimeoutInterval:self.request.timeoutInterval];
-        _AFmanager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",nil];
-        //如果你用的是自签名的证书
-        AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
-        securityPolicy.allowInvalidCertificates = YES;
-        securityPolicy.validatesDomainName = NO;
-        _AFmanager.securityPolicy = securityPolicy;
+    }
+}
+
++ (void)cancelRequest:(NSString *)urlString completion:(cancelCompletedBlock)completion{
+
+    if([urlString isEqualToString:@""]||urlString==nil)return;
+    
+    if ([ZBNetworkEngine defaultEngine].dataTasks.count <= 0) {
+        return;
     }
     
-    return _AFmanager;
+    [[ZBNetworkEngine defaultEngine].tasks enumerateObjectsUsingBlock:^(NSURLSessionTask *task, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        if ([[[task.currentRequest URL] absoluteString] isEqualToString:[self stringUTF8Encoding:urlString]]) {
+            [task cancel];
+            
+            if (completion) {
+                completion([[task.currentRequest URL] absoluteString]);
+            }
+        }
+        
+    }];
 }
 
-- (ZBURLRequest*)request{
-    if (!_request) {
-        _request=[[ZBURLRequest alloc]init];
++ (NSString *)stringUTF8Encoding:(NSString *)urlString{
+    return [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+}
+
++ (NSString *)urlString:(NSString *)urlString appendingParameters:(id)parameters{
+    if (parameters==nil) {
+        return urlString;
+    }else{
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        for (NSString *key in parameters) {
+            id obj = [parameters objectForKey:key];
+            NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
+            [array addObject:str];
+        }
+        
+        NSString *parametersString = [array componentsJoinedByString:@"&"];
+        return  [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@",parametersString]];
     }
-    return _request;
 }
-
 @end

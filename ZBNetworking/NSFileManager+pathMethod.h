@@ -1,6 +1,6 @@
 //
 //  NSFileManager+pathMethod.h
-//  ZBURLSessionManager
+//  ZBNetworking
 //
 //  Created by NQ UEC on 16/5/13.
 //  Copyright © 2016年 Suzhibin. All rights reserved.

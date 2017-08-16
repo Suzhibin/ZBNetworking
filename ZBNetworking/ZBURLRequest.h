@@ -1,6 +1,6 @@
 //
 //  ZBURLRequest.h
-//  ZBNetworkingDemo
+//  ZBNetworking
 //
 //  Created by NQ UEC on 16/12/20.
 //  Copyright © 2016年 Suzhibin. All rights reserved.
@@ -17,32 +17,54 @@
 # define ZBLog(...);
 #endif
 
-//用于标识不同类型的请求
+/**
+ 用于标识不同类型的请求
+ */
 typedef NS_ENUM(NSInteger,apiType) {
-    
-    ZBRequestTypeDefault,       //默认类型  （读取缓存，不请求）
-    ZBRequestTypeRefresh,       //重新请求  （不读取缓存，重新请求）
-    ZBRequestTypeRefreshMore,   //加载更多  （不读取缓存，重新请求）
-    ZBRequestTypeLoadMore,      //加载更多  （读取缓存，不请求）
-    ZBRequestTypeDetail,        //详情     （读取缓存，不请求）
-    ZBRequestTypeOffline,       //离线     （不读取缓存，重新请求）
-    ZBRequestTypeCustom         //自定义   （读取缓存，不请求）
-    
-} ;
-
+    /** 默认类型 ,读取缓存 不请求*/
+    ZBRequestTypeDefault,
+    /** 重新请求 ,不读取缓存，重新请求*/
+    ZBRequestTypeRefresh,
+    /** 加载更多 ,不读取缓存，重新请求*/
+    ZBRequestTypeRefreshMore,
+    /** 加载更多 ,读取缓存，不请求*/
+    ZBRequestTypeLoadMore,
+    /** 详情    ,读取缓存，不请求*/
+    ZBRequestTypeDetail,
+    /** 离线    ,不读取缓存，重新请求*/
+    ZBRequestTypeOffline,
+    /** 自定义  ,读取缓存，不请求*/
+    ZBRequestTypeCustom
+};
+/**
+ HTTP 请求类型.
+ */
 typedef NS_ENUM(NSInteger,MethodType) {
-    
+    /**GET请求*/
     GET,
+    /**POST请求*/
     POST
-} ;
+};
+/**
+  请求参数的格式.
+ */
+typedef NS_ENUM(NSUInteger, requestSerializer) {
+    /** 设置请求参数为JSON格式*/
+    ZBSerializerJSON,
+    /** 设置请求参数为二进制格式*/
+    ZBSerializerHTTP,
+};
 
+/** 请求配置的Block */
 typedef void (^requestConfig)(ZBURLRequest *request);
-
+/** 请求成功的Block */
 typedef void (^requestSuccess)(id responseObj,apiType type);
-
+/** 请求失败的Block */
 typedef void (^requestFailed)(NSError *error);
-
+/** 请求进度的Block */
 typedef void (^progressBlock)(NSProgress * progress);
+/** 请求取消的Block */
+typedef void (^cancelCompletedBlock)(NSString *urlString);
 
 @interface ZBURLRequest : NSObject
 
@@ -50,10 +72,17 @@ typedef void (^progressBlock)(NSProgress * progress);
  *  用于标识不同类型的request状态
  */
 @property (nonatomic,assign) apiType apiType;
+
 /**
  *  用于标识不同类型的request
  */
 @property (nonatomic,assign) MethodType methodType;
+
+/**
+ *  请求参数的类型
+ */
+@property (nonatomic,assign) requestSerializer requestSerializer;
+
 /**
  *  接口(请求地址)
  */
@@ -81,26 +110,9 @@ typedef void (^progressBlock)(NSProgress * progress);
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 /**
- *  请求错误
- */
-@property (nonatomic,strong)NSError *error;
-
-/**
- *  用于维护多个request对象
- */
-@property ( nonatomic, strong) NSMutableDictionary *requestDic;
-
-/**
  *  用于维护 请求头的request对象
  */
 @property ( nonatomic, strong) NSMutableDictionary *mutableHTTPRequestHeaders;
-
-/**
- *  用于判断是否有请求头
- */
-@property (nonatomic,copy) NSString *value;
-
-+ (ZBURLRequest *)sharedInstance;
 
 /**
  *  添加请求头
@@ -194,36 +206,7 @@ typedef void (^progressBlock)(NSProgress * progress);
  */
 - (void)removeObjectWithForkey:(NSString *)key isUrl:(BOOL)isUrl;
 
-/**
- *  添加请求对象
- *  @param obj request 对象
- *  @param key key
- */
-- (void)setRequestObject:(id)obj forkey:(NSString *)key;
-
-/**
- 删除请求对象的key
- 
- @param key key
- */
-- (void)removeRequestForkey:(NSString *)key;
 
 
-/**
- UTF8 编码
-
- @param urlString 请求协议
- @return 编码后的字符串
- */
-- (NSString *)stringUTF8Encoding:(NSString *)urlString;
-
-/**
- 附加参数 拼接
-
- @param urlString 请求主协议
- @param parameters 附加参数
- @return 完整的请求协议
- */
-- (NSString *)urlString:(NSString *)urlString appendingParameters:(id)parameters;
 
 @end

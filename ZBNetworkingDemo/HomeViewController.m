@@ -7,10 +7,14 @@
 //
 
 #import "HomeViewController.h"
-#import "SecondViewController.h"
 #import "ZBNetworking.h"
-@interface HomeViewController ()
-
+#import "RootModel.h"
+#import "DetailViewController.h"
+#import "SettingViewController.h"
+@interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
+@property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic,strong)NSMutableArray *dataArray;
+@property (nonatomic,strong)UIRefreshControl *refreshControl;
 @end
 
 @implementation HomeViewController
@@ -18,37 +22,166 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    NSArray *titleArr=[NSArray arrayWithObjects:@"AFNetworking",@"NSURLSessionBlock",@"NSURLSessionDelegate", nil];
-    for (int i=0; i<titleArr.count; i++) {
-        UIButton *btn=[UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame=CGRectMake(30,150+i*80,SCREEN_WIDTH-60, 40);
-        btn.backgroundColor=[UIColor blackColor];
-        [btn setTitle:[titleArr objectAtIndex:i] forState:UIControlStateNormal];
-        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        btn.tag=i+100;
-        [btn addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:btn];
-    }
-  
+    /**
+     *  默认的方法 都是有缓存使用缓存 无缓存就重新请求
+     *  默认缓存路径/Library/Caches/ZBKit/AppCache
+     *
+     *  ZBAFNetworkManager缓存策略是ZBCacheManager来管理的 
+     */
+    
+    [self getDataWithApiType:ZBRequestTypeDefault];
+    
+    
+    [self.tableView addSubview:self.refreshControl];
+    [self.view addSubview:self.tableView];
+    
+    [self addItemWithTitle:@"设置缓存" selector:@selector(btnClick) location:NO];
+    
 }
-- (void)btnClicked:(UIButton *)sender{
-    SecondViewController *secondVC=[[SecondViewController alloc]init];
-    switch (sender.tag) {
-        case 100:
-            secondVC.functionType=AFNetworking;
-            [self.navigationController pushViewController:secondVC animated:YES];
-            break;
-        case 101:
-            secondVC.functionType=sessionblock;
-            [self.navigationController pushViewController:secondVC animated:YES];
-            break;
-        case 102:
-            secondVC.functionType=sessiondelegate;
-            [self.navigationController pushViewController:secondVC animated:YES];
-            break;
-        default:
-            break;
+#pragma mark - AFNetworking
+//apiType 是请求类型 在ZBURLRequest 里
+- (void)getDataWithApiType:(apiType)requestType{
+    
+    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
+        request.urlString=list_URL;
+        request.methodType=GET;//默认为GET
+        request.apiType=requestType;//默认为default
+        request.timeoutInterval=10;
+        // request.parameters=@{@"1": @"one", @"2": @"two"};
+        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
+    }  success:^(id responseObj,apiType type){
+  
+        //如果是刷新的数据
+        if (type==ZBRequestTypeRefresh) {
+            [self.dataArray removeAllObjects];
+            [self.refreshControl endRefreshing];    //结束刷新
+        }
+        //上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
+        if (type==ZBRequestTypeLoadMore) {
+            //上拉加载
+        }
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        NSArray *array=[dict objectForKey:@"authors"];
+        
+        for (NSDictionary *dic in array) {
+            RootModel *model=[[RootModel alloc]init];
+            model.name=[dic objectForKey:@"name"];
+            model.wid=[dic objectForKey:@"id"];
+            model.detail=[dic objectForKey:@"detail"];
+            [self.dataArray addObject:model];
+        }
+        [self.tableView reloadData];
+        
+    } failed:^(NSError *error){
+        if (error.code==NSURLErrorCancelled)return;
+        if (error.code==NSURLErrorTimedOut){
+            [self alertTitle:@"请求超时" andMessage:@""];
+        }else{
+            [self alertTitle:@"请求失败" andMessage:@""];
+        }
+        [self.refreshControl endRefreshing];  //结束刷新
+    }];
+}
+
+#pragma mark - 刷新
+- (UIRefreshControl *)refreshControl{
+    if (!_refreshControl) {
+        
+        //下拉刷新
+        _refreshControl = [[UIRefreshControl alloc] init];
+        //标题
+        _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
+        //事件
+        [_refreshControl addTarget:self action:@selector(refreshDown) forControlEvents:UIControlEventValueChanged];
     }
+    return _refreshControl;
+}
+
+- (void)refreshDown{
+    //开始刷新
+    [self.refreshControl beginRefreshing];
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"加载中"];
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timer) userInfo:nil repeats:NO];
+}
+
+- (void)timer{
+    /**
+     *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
+     *  请求下来的缓存会覆盖原有的缓存文件
+     */
+    
+    [self getDataWithApiType:ZBRequestTypeRefresh];
+    
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
+    
+    /**
+     * 上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
+     */
+}
+
+#pragma mark tableView
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
+    return self.dataArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    static NSString *iden=@"iden";
+    
+    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:iden];
+    if (cell==nil) {
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text=model.name;
+    cell.detailTextLabel.text=[NSString stringWithFormat:@"更新时间:%@",model.detail];
+    return cell;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    DetailViewController *detailsVC=[[DetailViewController alloc]init];
+    
+    NSString *url=[NSString stringWithFormat:details_URL,model.wid];
+    detailsVC.urlString=url;
+    [self.navigationController pushViewController:detailsVC animated:YES];
+    
+}
+
+//懒加载
+- (UITableView *)tableView{
+    
+    if (!_tableView) {
+        _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        _tableView.delegate=self;
+        _tableView.dataSource=self;
+        _tableView.tableFooterView=[[UIView alloc]init];
+    }
+    
+    return _tableView;
+}
+
+- (NSMutableArray *)dataArray {
+    if (!_dataArray) {
+        _dataArray = [[NSMutableArray alloc] init];
+    }
+    return _dataArray;
+}
+
+- (void)btnClick{
+    
+    SettingViewController *settingVC=[[SettingViewController alloc]init];
+    [self.navigationController pushViewController:settingVC animated:YES];
+}
+
+- (void)viewDidLayoutSubviews{
+    [self.refreshControl.superview sendSubviewToBack:self.refreshControl];
 }
 
 - (void)didReceiveMemoryWarning {
