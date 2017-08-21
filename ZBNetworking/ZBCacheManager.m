@@ -51,10 +51,7 @@ static const NSInteger timeOut = 60*60;
          _operationQueue = dispatch_queue_create("com.dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
         
         [self initCachesfileWithName:defaultCachePath];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(clearAllMemory)
-                                                     name:UIApplicationDidReceiveMemoryWarningNotification
-                                                   object:nil];
+  
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(automaticCleanCache)
                                                      name:UIApplicationWillTerminateNotification
@@ -486,10 +483,6 @@ static const NSInteger timeOut = 60*60;
              });
          }
      });
-}
-
-- (void)clearAllMemory{
-    [[NSURLCache sharedURLCache]removeAllCachedResponses];
 }
 
 @end
