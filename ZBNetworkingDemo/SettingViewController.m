@@ -188,7 +188,7 @@ static const NSInteger cacheTime = 30;
     }
     if (indexPath.row==2) {
         //清除json缓存
-        //[[ZBCacheManager sharedManager]clearCache];
+        //[[ZBCacheManager sharedInstance]clearCache];
         [[ZBCacheManager sharedInstance]clearCacheOnCompletion:^{
              [self.tableView reloadData];
         }];
@@ -206,7 +206,7 @@ static const NSInteger cacheTime = 30;
     if (indexPath.row==6) {
 
         //用ZBCacheManager 方法代替sdwebimage方法
-        // [[ZBCacheManager sharedManager]clearDiskWithpath:self.imagePath];
+        // [[ZBCacheManager sharedInstance]clearDiskWithpath:self.imagePath];
         [[ZBCacheManager sharedInstance]clearDiskWithpath:self.imagePath completion:^{
             
             [self.tableView reloadData];
@@ -216,7 +216,7 @@ static const NSInteger cacheTime = 30;
     if (indexPath.row==8) {
         
         //清除单个缓存文件
-        // [[ZBCacheManager sharedManager]clearCacheForkey:list_URL];
+        // [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
         [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL completion:^{
             
          [self.tableView reloadData];

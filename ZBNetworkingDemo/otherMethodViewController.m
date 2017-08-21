@@ -33,7 +33,7 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=@"";
         request.methodType=ZBMethodTypePOST;//默认为GET
-        request.apiType=ZBRequestTypeRefresh;//默认为Refresh
+        //request.apiType=ZBRequestTypeRefresh;//默认为Refresh
         request.timeoutInterval=10;
         request.parameters=@{@"1": @"one", @"2": @"two"};
         [request setValue:@"1234567890" forHeaderField:@"apitype"];
@@ -82,10 +82,29 @@
         
     } success:^(id  responseObject, apiType type) {
         NSLog(@"此时会返回存储路径: %@", responseObject);
+        
+        [self downLoadPathSize];//返回下载路径的大小
+        
+        sleep(2);
+        //删除下载的文件
+        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
+            NSLog(@"删除下载的文件");
+            [self downLoadPathSize];
+        }];
+    
+        
     } failed:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
     }];
+    
+
 }
+- (void)downLoadPathSize{
+    CGFloat downLoadPathSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:[[ZBCacheManager sharedInstance] tmpPath]];
+    downLoadPathSize=downLoadPathSize/1000.0/1000.0;
+    NSLog(@"downLoadPathSize: %.2fM", downLoadPathSize);
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
