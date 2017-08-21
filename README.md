@@ -109,4 +109,9 @@
  [[ZBCacheManager sharedInstance]getCacheSize];
  //删除缓存
 [[ZBCacheManager sharedInstance]clearCache];
+//取消当前请求
+ [ZBRequestManager cancelRequest:_urlString completion:^(NSString *urlString){
+      //NSLog(@"取消对应url:%@ ",urlString);
+  }];
+
  ```
