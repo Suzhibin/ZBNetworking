@@ -12,12 +12,20 @@
 5.多种请求类型的判断。也可不遵循，自由随你定。
 
 ```objective-c
-    ZBRequestTypeDefault,   //默认类型
-    ZBRequestTypeRefresh,   //重新请求 （有缓存，不读取，重新请求）
-    ZBRequestTypeLoadMore,  //加载更多
-    ZBRequestTypeDetail,    //详情
-    ZBRequestTypeOffline,   //离线    （有缓存，不读取，重新请求）
-    ZBRequestTypeCustom     //自定义
+   /** 重新请求 ,不读取缓存，重新请求*/
+    ZBRequestTypeRefresh,
+    /** 有缓存,读取缓存 无缓存，重新请求*/
+    ZBRequestTypeCache,
+    /** 加载更多 ,不读取缓存，重新请求*/
+    ZBRequestTypeRefreshMore,
+    /** 加载更多 ,有缓存,读取缓存 无缓存，重新请求*/
+    ZBRequestTypeCacheMore,
+    /** 详情    ,有缓存,读取缓存 无缓存，重新请求*/
+    ZBRequestTypeDetailCache,
+    /** 离线    ,不读取缓存，重新请求*/
+    ZBRequestTypeOffline,
+    /** 自定义  ,有缓存,读取缓存 无缓存，重新请求*/
+    ZBRequestTypeCustomCache
 ```
 6.可见的缓存文件
 
