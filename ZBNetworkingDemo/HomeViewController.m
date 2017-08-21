@@ -40,7 +40,7 @@
     
 }
 #pragma mark - AFNetworking
-//apiType 是请求类型 在ZBURLRequest 里
+//apiType 是请求类型 在ZBRequestConst 里
 - (void)getDataWithApiType:(apiType)requestType{
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
