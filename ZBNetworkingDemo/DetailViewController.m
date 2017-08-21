@@ -23,8 +23,9 @@
     /**
         防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消对应的请求。
      */
-    [ZBNetworkManager cancelRequest:_urlString completion:^(NSString *urlString){
-        NSLog(@"取消对应url:%@ ",urlString);
+    [ZBRequestManager cancelRequest:_urlString completion:^(NSString *urlString){
+        //如果请求成功 或 读缓存 会返回null 无法取消。请求未完成的会取消并返回对应url
+        //NSLog(@"取消对应url:%@ ",urlString);
     }];
  
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
@@ -38,9 +39,9 @@
      *  如果页面不想使用缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      */
     
-   [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
+   [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=_urlString;
-        request.apiType=ZBRequestTypeDetail;
+        request.apiType=ZBRequestTypeDetailCache;
     }  success:^(id responseObj,apiType type){
        // NSLog(@"type:%zd",type);
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];

@@ -284,7 +284,7 @@ static const NSInteger cacheTime = 30;
     //[ZBNetworkManager offlineDownload:offlineArray success:^(id responseObj, apiType type) {} failed:^(NSError *error) {}];
     
     __weak typeof(self) weakSelf = self;
-    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlArray=offlineArray;
         request.apiType=ZBRequestTypeOffline;   //离线请求
     }  success:^(id responseObj,apiType type){

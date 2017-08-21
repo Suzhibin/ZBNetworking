@@ -134,6 +134,26 @@
     }
 }
 
+- (void)addFormDataWithName:(NSString *)name fileData:(NSData *)fileData {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileData:fileData];
+    [self.uploadDatas addObject:formData];
+}
+
+- (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileData:(NSData *)fileData {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileName:fileName mimeType:mimeType fileData:fileData];
+    [self.uploadDatas addObject:formData];
+}
+
+- (void)addFormDataWithName:(NSString *)name fileURL:(NSURL *)fileURL {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileURL:fileURL];
+    [self.uploadDatas addObject:formData];
+}
+
+- (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileURL:(NSURL *)fileURL {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileName:fileName mimeType:mimeType fileURL:fileURL];
+    [self.uploadDatas addObject:formData];
+}
+
 - (NSMutableArray *)channelUrlArray{
     
     if (!_channelUrlArray) {
@@ -158,11 +178,57 @@
     return _mutableHTTPRequestHeaders;
 }
 
-- (NSMutableData *)responseObj {
-    if (!_responseObj) {
-        _responseObj=[[NSMutableData alloc]init];
+- (NSMutableArray<ZBUploadData *> *)uploadDatas {
+    if (!_uploadDatas) {
+        _uploadDatas = [NSMutableArray array];
     }
-    return _responseObj;
+    return _uploadDatas;
 }
+
+- (NSMutableData *)responseObject {
+    if (!_responseObject) {
+        _responseObject=[[NSMutableData alloc]init];
+    }
+    return _responseObject;
+}
+
+@end
+
+#pragma mark - ZBUploadData
+
+@implementation ZBUploadData
+
++ (instancetype)formDataWithName:(NSString *)name fileData:(NSData *)fileData {
+    ZBUploadData *formData = [[ZBUploadData alloc] init];
+    formData.name = name;
+    formData.fileData = fileData;
+    return formData;
+}
+
++ (instancetype)formDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileData:(NSData *)fileData {
+    ZBUploadData *formData = [[ZBUploadData alloc] init];
+    formData.name = name;
+    formData.fileName = fileName;
+    formData.mimeType = mimeType;
+    formData.fileData = fileData;
+    return formData;
+}
+
++ (instancetype)formDataWithName:(NSString *)name fileURL:(NSURL *)fileURL {
+    ZBUploadData *formData = [[ZBUploadData alloc] init];
+    formData.name = name;
+    formData.fileURL = fileURL;
+    return formData;
+}
+
++ (instancetype)formDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileURL:(NSURL *)fileURL {
+    ZBUploadData *formData = [[ZBUploadData alloc] init];
+    formData.name = name;
+    formData.fileName = fileName;
+    formData.mimeType = mimeType;
+    formData.fileURL = fileURL;
+    return formData;
+}
+
 
 @end

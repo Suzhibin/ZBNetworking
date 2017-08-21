@@ -36,7 +36,7 @@
     self.request=[[ZBURLRequest alloc]init];
     
     //请求最新频道列表
-    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request) {
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
         request.urlString=list_URL;
         request.apiType=ZBRequestTypeRefresh;
     } success:^(id responseObj, apiType type) {

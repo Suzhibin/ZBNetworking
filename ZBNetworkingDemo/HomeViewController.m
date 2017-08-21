@@ -11,6 +11,7 @@
 #import "RootModel.h"
 #import "DetailViewController.h"
 #import "SettingViewController.h"
+#import "otherMethodViewController.h"
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
@@ -22,14 +23,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title=@"GET请求";
     /**
-     *  默认的方法 都是有缓存使用缓存 无缓存就重新请求
+     *  ZBRequestTypeCache 为 有缓存使用缓存 无缓存就重新请求
      *  默认缓存路径/Library/Caches/ZBKit/AppCache
-     *
-     *  ZBAFNetworkManager缓存策略是ZBCacheManager来管理的 
      */
-    
-    [self getDataWithApiType:ZBRequestTypeDefault];
+    [self getDataWithApiType:ZBRequestTypeCache];
     
     
     [self.tableView addSubview:self.refreshControl];
@@ -37,30 +36,30 @@
     
     [self addItemWithTitle:@"设置缓存" selector:@selector(btnClick) location:NO];
     
+    [self addItemWithTitle:@"其他方法" selector:@selector(otherbtnClick) location:YES];
+    
 }
 #pragma mark - AFNetworking
 //apiType 是请求类型 在ZBURLRequest 里
 - (void)getDataWithApiType:(apiType)requestType{
     
-    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
-        request.methodType=GET;//默认为GET
-        request.apiType=requestType;//默认为default
+        request.methodType=ZBMethodTypeGET;//默认为GET
+        request.apiType=requestType;//默认为ZBRequestTypeRefresh
         request.timeoutInterval=10;
-        // request.parameters=@{@"1": @"one", @"2": @"two"};
-        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
-    }  success:^(id responseObj,apiType type){
+    }  success:^(id responseObject,apiType type){
   
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];
             [self.refreshControl endRefreshing];    //结束刷新
         }
-        //上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
-        if (type==ZBRequestTypeLoadMore) {
+        //上拉加载 要添加 apiType 类型 ZBRequestTypeCacheMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
+        if (type==ZBRequestTypeRefreshMore) {
             //上拉加载
         }
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         NSArray *array=[dict objectForKey:@"authors"];
         
         for (NSDictionary *dic in array) {
@@ -172,6 +171,10 @@
         _dataArray = [[NSMutableArray alloc] init];
     }
     return _dataArray;
+}
+- (void)otherbtnClick{
+    otherMethodViewController *settingVC=[[otherMethodViewController alloc]init];
+    [self.navigationController pushViewController:settingVC animated:YES];
 }
 
 - (void)btnClick{

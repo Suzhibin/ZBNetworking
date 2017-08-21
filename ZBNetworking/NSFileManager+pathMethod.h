@@ -35,3 +35,11 @@
 +(BOOL)isTimeOutWithPath:(NSString *)path timeOut:(NSTimeInterval)time;
 
 @end
+
+@interface NSString (UTF8Encoding)
+
+- (NSString *)stringUTF8Encoding:(NSString *)urlString;
+
+- (NSString *)urlString:(NSString *)urlString appendingParameters:(id)parameters;
+
+@end
