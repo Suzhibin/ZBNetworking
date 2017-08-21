@@ -81,7 +81,7 @@
 
 
 ```objective-c
- [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request)
+ [ZBRequestManager requestWithConfig:^(ZBURLRequest *request)
         request.urlArray=offlineArray;
         request.apiType=ZBRequestTypeOffline;   //离线请求 apiType:ZBRequestTypeOffline
     }  success:^(id responseObj,apiType type){
