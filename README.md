@@ -23,10 +23,10 @@
 
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
-## 使用 AFNetworking 
+## 使用 
 ```objective-c
 //get请求方法 会默认创建缓存路径    
-  [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
+  [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeDefault;//默认为default
