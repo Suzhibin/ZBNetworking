@@ -1,8 +1,8 @@
 # ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
 
-注意：
+注意：使用本框架开发者注意 有如下设置须知道
 
-1.使用本框架开发者注意，此库会忽略系统缓存
+1.此库会忽略系统缓存
 ```objective-c
   //忽略系统缓存
         NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
