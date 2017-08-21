@@ -29,8 +29,8 @@
   [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
-        request.apiType=ZBRequestTypeDefault;//默认为default
-        request.timeoutInterval=10;
+        request.apiType=ZBRequestTypeRefresh;//默认为刷新  //ZBRequestTypeCache为使用缓存
+        request.timeoutInterval=10;
        // request.parameters=@{@"1": @"one", @"2": @"two"};
        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,apiType type){
