@@ -281,12 +281,13 @@ static const NSInteger cacheTime = 30;
 - (void)requestOffline:(NSMutableArray *)offlineArray{
     
     //离线下载方法 与下面方法效果一样
-    //[ZBNetworkManager offlineDownload:offlineArray success:^(id responseObj, apiType type) {} failed:^(NSError *error) {}];
+    //[ZBRequestManager offlineDownload:offlineArray success:^(id responseObj, apiType type) {} failed:^(NSError *error) {}];
     
     __weak typeof(self) weakSelf = self;
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlArray=offlineArray;
-        request.apiType=ZBRequestTypeOffline;   //离线请求
+        //离线请求 目前只支持get请求 才能使用离线下载 功能
+        request.apiType=ZBRequestTypeOffline;
     }  success:^(id responseObj,apiType type){
         //如果是离线请求的数据
         if (type==ZBRequestTypeOffline) {
