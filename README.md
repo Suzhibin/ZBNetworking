@@ -1,4 +1,18 @@
 # ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
+
+注意：
+1.使用本框架开发者注意，此库会忽略系统缓存
+
+```objective-c
+  //忽略系统缓存
+        NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
+        [NSURLCache setSharedURLCache:sharedCache];
+```
+2.
+```objective-c
+/*因为与缓存互通 服务器返回的数据 必须是二进制*/
+        sharedInstance.responseSerializer = [AFHTTPResponseSerializer serializer];
+ ```
 优点:
 
 1 低耦合，易扩展。
