@@ -12,11 +12,6 @@
 @interface ZBRequestManager : NSObject
 
 /**
- *  传参对象
- */
-@property (nonatomic,strong) ZBURLRequest *request;
-
-/**
  *  类请求方法 get/post
  *
  *  @param config           请求配置  Block
