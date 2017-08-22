@@ -37,8 +37,6 @@
     ZBRequestTypeCacheMore,
     /** 详情    ,有缓存,读取缓存 无缓存，重新请求*/
     ZBRequestTypeDetailCache,
-    /** 离线    ,不读取缓存，重新请求*/
-    ZBRequestTypeOffline,
     /** 自定义  ,有缓存,读取缓存 无缓存，重新请求*/
     ZBRequestTypeCustomCache
 ```
