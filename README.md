@@ -80,8 +80,11 @@
 
 ```objective-c
  [ZBRequestManager requestWithConfig:^(ZBURLRequest *request)
-        request.urlArray=offlineArray;
-        request.apiType=ZBRequestTypeOffline;   //离线请求 apiType:ZBRequestTypeOffline
+            for (NSString *urlString in offlineArray) {
+            ZBURLRequest *request=[[ZBURLRequest alloc]init];
+            request.urlString=urlString;
+            [batchRequest.urlArray addObject:request];
+        }
     }  success:^(id responseObj,apiType type){
         //如果是离线请求的数据
         if (type==ZBRequestTypeOffline) {
