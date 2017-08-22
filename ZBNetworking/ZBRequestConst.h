@@ -24,17 +24,17 @@
 typedef NS_ENUM(NSInteger,apiType) {
     /** 重新请求 ,不读取缓存，重新请求*/
     ZBRequestTypeRefresh,
-    /** 有缓存,读取缓存 无缓存，重新请求*/
+    /** 有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCache,
-    /** 加载更多 ,不读取缓存，重新请求*/
+    /** 加载更多 ,不读缓存，重新请求*/
     ZBRequestTypeRefreshMore,
-    /** 加载更多 ,有缓存,读取缓存 无缓存，重新请求*/
+    /** 加载更多 ,有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCacheMore,
-    /** 详情    ,有缓存,读取缓存 无缓存，重新请求*/
+    /** 详情    ,有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeDetailCache,
-    /** 离线    ,不读取缓存，重新请求*/
-    ZBRequestTypeOffline,
-    /** 自定义  ,有缓存,读取缓存 无缓存，重新请求*/
+    /** 批量请求 ,不读缓存，重新请求*/
+    ZBRequestTypeBatch,
+    /** 自定义  ,有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCustomCache
 };
 /**

@@ -18,7 +18,6 @@ static const NSInteger cacheTime = 30;
 @property (nonatomic,copy)NSString *imagePath;
 @property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
-
 @end
 
 @implementation SettingViewController
@@ -280,17 +279,14 @@ static const NSInteger cacheTime = 30;
 
 - (void)requestOffline:(NSMutableArray *)offlineArray{
     
-    //离线下载方法 与下面方法效果一样
-    //[ZBRequestManager offlineDownload:offlineArray success:^(id responseObj, apiType type) {} failed:^(NSError *error) {}];
-    
     __weak typeof(self) weakSelf = self;
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlArray=offlineArray;
-        //离线请求 目前只支持get请求 才能使用离线下载 功能
-        request.apiType=ZBRequestTypeOffline;
+        //批量请求 目前只支持get请求 才能使用批量请求功能
+        request.apiType=ZBRequestTypeBatch;
     }  success:^(id responseObj,apiType type){
         //如果是离线请求的数据
-        if (type==ZBRequestTypeOffline) {
+        if (type==ZBRequestTypeBatch) {
             NSLog(@"添加了几个url请求  就会走几遍");
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
             NSArray *array=[dict objectForKey:@"videos"];
@@ -346,6 +342,7 @@ static const NSInteger cacheTime = 30;
 }
 
 - (void)cancelClick{
+ 
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.imageArray removeAllObjects];
     NSLog(@"取消下载");

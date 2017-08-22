@@ -15,7 +15,7 @@
 #pragma mark - GET/POST 配置请求
 
 + (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
-    return [self requestWithConfig:config progress:nil success:success failed:failed];
+    [self requestWithConfig:config progress:nil success:success failed:failed];
 }
 
 + (void)requestWithConfig:(requestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
@@ -33,9 +33,9 @@
         
         [self downloadWithRequest:request progress:progress success:success failed:failed];
     }else{
-        if (request.apiType==ZBRequestTypeOffline) {
+        if (request.apiType==ZBRequestTypeBatch) {
             
-            [self offlineDownload:request.urlArray apiType:request.apiType success:success failed:failed];
+            [self batchRequest:request.urlArray apiType:request.apiType success:success failed:failed];
         }else{
             
             [self GET:request progress:progress success:success failed:failed];
@@ -43,11 +43,7 @@
     }
 }
 
-+ (void)offlineDownload:(NSMutableArray *)downloadArray success:(requestSuccess)success failed:(requestFailed)failed{
-    [self offlineDownload:downloadArray apiType:ZBRequestTypeOffline success:success failed:failed];
-}
-
-+ (void)offlineDownload:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{
++ (void)batchRequest:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{
     if (downloadArray.count==0)return;
     [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
         [self dataTaskWithGetURL:urlString parameters:nil apiType:type progress:nil success:success failed:failed];

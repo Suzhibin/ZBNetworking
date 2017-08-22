@@ -159,6 +159,8 @@
  */
 - (void)removeObjectWithForkey:(NSString *_Nonnull)key isUrl:(BOOL)isUrl;
 
+
+//============================================================
 - (void)addFormDataWithName:(NSString *_Nonnull)name fileData:(NSData *_Nonnull)fileData;
 - (void)addFormDataWithName:(NSString *_Nonnull)name fileName:(NSString *_Nonnull)fileName mimeType:(NSString *_Nonnull)mimeType fileData:(NSData *_Nonnull)fileData;
 - (void)addFormDataWithName:(NSString *_Nonnull)name fileURL:(NSURL *_Nonnull)fileURL;

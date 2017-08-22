@@ -27,7 +27,7 @@
 - (void)dealloc{
     ZBLog(@"%s",__func__);
 }
-
+#pragma mark - 请求头
 - (void)setValue:(NSString *)value forHeaderField:(NSString *)field{
     if (value) {
         [self.mutableHTTPRequestHeaders setValue:value forKey:field];
@@ -45,7 +45,7 @@
     if(!key)return;
     [self.mutableHTTPRequestHeaders removeObjectForKey:key];
 }
-
+#pragma mark - 添加多次请求
 - (NSMutableArray *)offlineUrlArray{
     return self.channelUrlArray;
 }
@@ -134,6 +134,7 @@
     }
 }
 
+#pragma mark - 上传请求参数
 - (void)addFormDataWithName:(NSString *)name fileData:(NSData *)fileData {
     ZBUploadData *formData = [ZBUploadData formDataWithName:name fileData:fileData];
     [self.uploadDatas addObject:formData];
@@ -154,6 +155,7 @@
     [self.uploadDatas addObject:formData];
 }
 
+#pragma mark - 懒加载
 - (NSMutableArray *)channelUrlArray{
     
     if (!_channelUrlArray) {

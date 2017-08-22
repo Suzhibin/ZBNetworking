@@ -26,7 +26,7 @@
 + (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
- *  类请求方法 get/post/DownLoad
+ *  类请求方法 get/post/Upload/DownLoad
  *
  *  @param config           请求配置  Block
  *  @param progress         请求进度  Block
@@ -34,15 +34,6 @@
  *  @param failed           请求失败的 Block
  */
 + (void)requestWithConfig:(requestConfig)config  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed;
-
-/**
- *  离线下载 请求方法
- *
- *  @param downloadArray    请求列队
- *  @param success          请求成功的 Block
- *  @param failed           请求失败的 Block
- */
-+ (void)offlineDownload:(NSMutableArray *)downloadArray success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
  取消请求任务
