@@ -36,7 +36,6 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
         [button addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:button];
     }
-
 }
 - (void)btnClicked:(UIButton *)sender{
     switch (sender.tag) {

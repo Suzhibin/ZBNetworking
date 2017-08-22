@@ -12,7 +12,7 @@
 #import "ZBURLRequest.h"
 @implementation ZBRequestManager
 
-#pragma mark - GET/POST 配置请求
+#pragma mark - 配置请求
 + (ZBBatchRequest *)batchRequest:(batchRequestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
     return [self batchRequest:config progress:nil success:success failed:failed];
 }
@@ -55,14 +55,7 @@
     }
 }
 
-+ (void)batchRequest:(NSMutableArray *)downloadArray apiType:(apiType)type success:(requestSuccess)success failed:(requestFailed)failed{
-    if (downloadArray.count==0)return;
-    [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
-        [self dataTaskWithGetURL:urlString parameters:nil apiType:type progress:nil success:success failed:failed];
-    }];
-}
-
-#pragma mark - GET 请求
+#pragma mark - GET
 + (void)GET:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
     NSString *key = [self stringUTF8Encoding:[self urlString:request.urlString appendingParameters:request.parameters]];
@@ -107,7 +100,7 @@
     }];
 }
 
-#pragma mark - POST 请求
+#pragma mark - POST
 + (void)POST:(ZBURLRequest *)request  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     NSString *key = [self stringUTF8Encoding:[self urlString:request.urlString appendingParameters:request.parameters]];
     
