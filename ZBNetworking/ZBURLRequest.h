@@ -32,11 +32,6 @@
 @property (nonatomic,copy) NSString * _Nonnull urlString;
 
 /**
- 请求url列队容器
- */
-@property (nonatomic,strong) NSMutableArray * _Nonnull urlArray;
-
-/**
  *  提供给外部配置参数使用
  */
 @property (nonatomic,strong) id _Nonnull parameters;
@@ -89,6 +84,22 @@
  *  @param key key
  */
 - (void)removeHeaderForkey:(NSString *_Nonnull)key;
+
+//============================================================
+- (void)addFormDataWithName:(NSString *_Nonnull)name fileData:(NSData *_Nonnull)fileData;
+- (void)addFormDataWithName:(NSString *_Nonnull)name fileName:(NSString *_Nonnull)fileName mimeType:(NSString *_Nonnull)mimeType fileData:(NSData *_Nonnull)fileData;
+- (void)addFormDataWithName:(NSString *_Nonnull)name fileURL:(NSURL *_Nonnull)fileURL;
+- (void)addFormDataWithName:(NSString *_Nonnull)name fileName:(NSString *_Nonnull)fileName mimeType:(NSString *_Nonnull)mimeType fileURL:(NSURL *_Nonnull)fileURL;
+@end
+
+#pragma mark - ZBBatchRequest
+
+@interface ZBBatchRequest : NSObject
+
+/**
+ 请求url列队容器
+ */
+@property (nonatomic,strong) NSMutableArray * _Nonnull urlArray;
 
 /**
  *  @return urlArray 返回url数组
@@ -159,14 +170,14 @@
  */
 - (void)removeObjectWithForkey:(NSString *_Nonnull)key isUrl:(BOOL)isUrl;
 
+/**
+ 批量取消请求
 
-//============================================================
-- (void)addFormDataWithName:(NSString *_Nonnull)name fileData:(NSData *_Nonnull)fileData;
-- (void)addFormDataWithName:(NSString *_Nonnull)name fileName:(NSString *_Nonnull)fileName mimeType:(NSString *_Nonnull)mimeType fileData:(NSData *_Nonnull)fileData;
-- (void)addFormDataWithName:(NSString *_Nonnull)name fileURL:(NSURL *_Nonnull)fileURL;
-- (void)addFormDataWithName:(NSString *_Nonnull)name fileName:(NSString *_Nonnull)fileName mimeType:(NSString *_Nonnull)mimeType fileURL:(NSURL *_Nonnull)fileURL;
+ @param cancelBlock block 后续操作
+ */
+- (void)cancelbatchRequest:(nullable void (^)())cancelBlock;
+
 @end
-
 
 #pragma mark - ZBUploadData
 /**

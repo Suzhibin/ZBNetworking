@@ -13,6 +13,20 @@
 @implementation ZBRequestManager
 
 #pragma mark - GET/POST 配置请求
++ (ZBBatchRequest *)batchRequest:(batchRequestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
+    return [self batchRequest:config progress:nil success:success failed:failed];
+}
+
++ (ZBBatchRequest *)batchRequest:(batchRequestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
+    ZBBatchRequest *batchRequest=[[ZBBatchRequest alloc]init];
+    config ? config(batchRequest) : nil;
+    
+    if (batchRequest.urlArray.count==0)return nil;
+    [batchRequest.urlArray enumerateObjectsUsingBlock:^(ZBURLRequest *request , NSUInteger idx, BOOL *stop) {
+        [self sendRequest:request progress:progress success:success failed:failed];
+    }];
+    return batchRequest;
+}
 
 + (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
     [self requestWithConfig:config progress:nil success:success failed:failed];
@@ -23,6 +37,9 @@
     ZBURLRequest *request=[[ZBURLRequest alloc]init];
     config ? config(request) : nil;
     
+    [self sendRequest:request progress:progress success:success failed:failed];
+}
++ (void)sendRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     if (request.methodType==ZBMethodTypePOST) {
         
         [self POST:request progress:progress success:success failed:failed];
@@ -33,13 +50,8 @@
         
         [self downloadWithRequest:request progress:progress success:success failed:failed];
     }else{
-        if (request.apiType==ZBRequestTypeBatch) {
-            
-            [self batchRequest:request.urlArray apiType:request.apiType success:success failed:failed];
-        }else{
-            
-            [self GET:request progress:progress success:success failed:failed];
-        }
+        
+        [self GET:request progress:progress success:success failed:failed];
     }
 }
 
@@ -51,7 +63,6 @@
 }
 
 #pragma mark - GET 请求
-
 + (void)GET:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
     NSString *key = [self stringUTF8Encoding:[self urlString:request.urlString appendingParameters:request.parameters]];
@@ -97,7 +108,6 @@
 }
 
 #pragma mark - POST 请求
-
 + (void)POST:(ZBURLRequest *)request  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     NSString *key = [self stringUTF8Encoding:[self urlString:request.urlString appendingParameters:request.parameters]];
     
@@ -140,6 +150,7 @@
         failed ? failed(error) : nil;
     }];
 }
+
 #pragma mark - upload
 + (NSURLSessionTask *)uploadWithRequest:(ZBURLRequest *)request
                            progress:(progressBlock)progress
@@ -178,11 +189,10 @@
     }];
 }
 
-
 #pragma mark - DownLoad
 + (NSURLSessionTask *)downloadWithRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:request.urlString]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[self stringUTF8Encoding:request.urlString]]];
     
     [self headersAndTime:request];
     
@@ -260,4 +270,5 @@
         return  [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@",parametersString]];
     }
 }
+
 @end

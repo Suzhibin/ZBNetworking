@@ -42,9 +42,9 @@
    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=_urlString;
         request.apiType=ZBRequestTypeDetailCache;
-    }  success:^(id responseObj,apiType type){
+    }  success:^(id responseObject,apiType type){
        // NSLog(@"type:%zd",type);
-        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         NSArray *array=[dataDict objectForKey:@"videos"];
         for (NSDictionary *dict in array) {
             DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];

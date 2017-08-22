@@ -45,7 +45,7 @@
 
 - (NSString *)cancelRequest:(NSString *)urlString{
     
-    if (self.dataTasks.count <= 0) {
+    if (self.tasks.count <= 0) {
         return nil;
     }
     __block NSString *currentUrlString=nil;

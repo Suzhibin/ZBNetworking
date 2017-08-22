@@ -18,6 +18,7 @@ static const NSInteger cacheTime = 30;
 @property (nonatomic,copy)NSString *imagePath;
 @property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic,strong)ZBBatchRequest *batchRequest;
 @end
 
 @implementation SettingViewController
@@ -279,14 +280,17 @@ static const NSInteger cacheTime = 30;
 
 - (void)requestOffline:(NSMutableArray *)offlineArray{
     
+    //批量请求
     __weak typeof(self) weakSelf = self;
-    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.urlArray=offlineArray;
-        //批量请求 目前只支持get请求 才能使用批量请求功能
-        request.apiType=ZBRequestTypeBatch;
+    
+    self.batchRequest =[ZBRequestManager batchRequest:^(ZBBatchRequest *batchRequest){
+        for (NSString *urlString in offlineArray) {
+            ZBURLRequest *request=[[ZBURLRequest alloc]init];
+            request.urlString=urlString;
+            [batchRequest.urlArray addObject:request];
+        }
     }  success:^(id responseObj,apiType type){
-        //如果是离线请求的数据
-        if (type==ZBRequestTypeBatch) {
+     
             NSLog(@"添加了几个url请求  就会走几遍");
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
             NSArray *array=[dict objectForKey:@"videos"];
@@ -328,8 +332,7 @@ static const NSInteger cacheTime = 30;
                 }
               
             }
-            
-        }
+
         
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
@@ -339,10 +342,13 @@ static const NSInteger cacheTime = 30;
             NSLog(@"请求失败");
         }
     }];
+  
 }
 
 - (void)cancelClick{
- 
+    [self.batchRequest cancelbatchRequest:^{
+        NSLog(@"取消全部请求(已经取消成功不会取消)");
+    }];
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.imageArray removeAllObjects];
     NSLog(@"取消下载");

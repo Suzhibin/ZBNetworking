@@ -8,7 +8,7 @@
 
 #ifndef ZBRequestConst_h
 #define ZBRequestConst_h
-@class ZBURLRequest;
+@class ZBURLRequest,ZBBatchRequest;
 
 #define ZBBUG_LOG 0
 
@@ -32,8 +32,6 @@ typedef NS_ENUM(NSInteger,apiType) {
     ZBRequestTypeCacheMore,
     /** 详情    ,有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeDetailCache,
-    /** 批量请求 ,不读缓存，重新请求*/
-    ZBRequestTypeBatch,
     /** 自定义  ,有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCustomCache
 };
@@ -60,10 +58,12 @@ typedef NS_ENUM(NSUInteger, requestSerializer) {
     ZBSerializerHTTP,
 };
 
+/** 批量请求配置的Block */
+typedef void (^batchRequestConfig)(ZBBatchRequest * _Nullable batchRequest);
 /** 请求配置的Block */
 typedef void (^requestConfig)(ZBURLRequest * _Nullable request);
 /** 请求成功的Block */
-typedef void (^requestSuccess)(id _Nullable responseObj,apiType type);
+typedef void (^requestSuccess)(id _Nullable responseObject,apiType type);
 /** 请求失败的Block */
 typedef void (^requestFailed)(NSError * _Nullable error);
 /** 请求进度的Block */

@@ -8,8 +8,10 @@
 
 #import "otherMethodViewController.h"
 #import "ZBNetworking.h"
-@interface otherMethodViewController ()
+NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_wpd.mp4";
 
+@interface otherMethodViewController ()
+@property (nonatomic,strong)ZBBatchRequest *batchRequest;
 @end
 
 @implementation otherMethodViewController
@@ -19,11 +21,46 @@
     // Do any additional setup after loading the view.
     self.title=@"post/Upload/DownLoad";
     
-   //[self postRequest];
-   //[self UploadRequest];
-    [self DownLoadRequest];
-   
+    NSArray *titleArray=[NSArray arrayWithObjects:@"postRequest",@"UploadRequest",@"downLoadRequest",@"downLoadBatchRequest",@"取消请求", nil];
+    
+    for (int i=0; i<titleArray.count; i++) {
+        
+        UIButton *button =  [UIButton buttonWithType:UIButtonTypeCustom];
+        //  [btn setTitle:array[i]  forState:UIControlStateNormal];
+        [button setTitle:[titleArray objectAtIndex:i] forState:UIControlStateNormal];
+        button.tag = 1000+i;
+        button.frame=CGRectMake(50, 100+i*60, 200, 30);
+        button.backgroundColor=[UIColor blackColor];
+        button.titleLabel.textAlignment=NSTextAlignmentCenter;
+        button.titleLabel.adjustsFontSizeToFitWidth = YES;
+        [button addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:button];
+    }
+
 }
+- (void)btnClicked:(UIButton *)sender{
+    switch (sender.tag) {
+        case 1000:
+            [self postRequest];
+            break;
+        case 1001:
+            [self UploadRequest];
+            break;
+        case 1002:
+            [self downLoadRequest];
+            break;
+        case 1003:
+            [self downLoadBatchRequest];
+            break;
+        case 1004:
+            [self cancelRequest];
+            break;
+            
+        default:
+            break;
+    }
+}
+
 - (void)postRequest{
     /*
      //POST请求 是改变服务器状态 一般是没有缓存的。也有个列 所有数据都是post的，所以request.apiType也可以用，如：request.apiType=ZBRequestTypeCache
@@ -56,9 +93,9 @@
         request.urlString=@"";
         request.methodType=ZBMethodTypeUpload;
     
-        [request addFormDataWithName:@"" fileData:fileData];
+        [request addFormDataWithName:@"image[]" fileData:fileData];
         
-        [request addFormDataWithName:@"" fileURL:fileURL];
+        [request addFormDataWithName:@"image[]" fileURL:fileURL];
         
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
@@ -71,10 +108,10 @@
 
 }
 
-- (void)DownLoadRequest{
+- (void)downLoadRequest{
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
-        request.urlString=@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_wpd.mp4";
+        request.urlString=url;
         request.methodType=ZBMethodTypeDownLoad;
         request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
     } progress:^(NSProgress * _Nullable progress) {
@@ -83,24 +120,85 @@
     } success:^(id  responseObject, apiType type) {
         NSLog(@"此时会返回存储路径: %@", responseObject);
         
-        [self downLoadPathSize];//返回下载路径的大小
+        [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
         
         sleep(2);
         //删除下载的文件
         [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
             NSLog(@"删除下载的文件");
-            [self downLoadPathSize];
+            [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];
         }];
     
         
     } failed:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
     }];
-    
+ 
 
 }
-- (void)downLoadPathSize{
-    CGFloat downLoadPathSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:[[ZBCacheManager sharedInstance] tmpPath]];
+
+- (void)downLoadBatchRequest{
+ 
+
+    self.batchRequest=[ZBRequestManager batchRequest:^(ZBBatchRequest * _Nullable batchRequest) {
+    
+        /*
+         for (int i=0; i<=10; i++) {
+         ZBURLRequest *request=[[ZBURLRequest alloc]init];
+         request.urlString=url;
+         request.methodType=ZBMethodTypeDownLoad;
+         request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
+         [batchRequest.urlArray addObject:request];
+         }
+         */
+        ZBURLRequest *request1=[[ZBURLRequest alloc]init];
+        request1.urlString=url;
+        request1.methodType=ZBMethodTypeDownLoad;
+        request1.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
+        [batchRequest.urlArray addObject:request1];
+        
+        ZBURLRequest *request2=[[ZBURLRequest alloc]init];
+        request2.urlString=url;
+        request2.methodType=ZBMethodTypeDownLoad;
+        request2.downloadSavePath = [[ZBCacheManager sharedInstance] documentPath];
+        [batchRequest.urlArray addObject:request2];
+    } progress:^(NSProgress * _Nullable progress) {
+         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
+    } success:^(id  _Nullable responseObject, apiType type) {
+        NSLog(@"此时会返回存储路径: %@", responseObject);
+        
+        [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
+        [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];//返回下载路径的大小
+        sleep(2);
+        
+        //删除下载的文件
+        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
+            NSLog(@"删除下载的文件");
+            [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];
+        }];
+        //删除下载的文件
+        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] documentPath]completion:^{
+            NSLog(@"删除下载的文件");
+            [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];
+        }];
+    } failed:^(NSError * _Nullable error) {
+        
+    }];
+
+}
+
+- (void)cancelRequest{
+    
+    [ZBRequestManager cancelRequest:url completion:^(NSString * _Nullable urlString) {
+        NSLog(@"取消下载请求%@",urlString);
+    }];
+    [self.batchRequest cancelbatchRequest:^{
+        NSLog(@"取消全部请求(已经请求成功不会取消)");
+    }];
+}
+
+- (void)downLoadPathSize:(NSString *)path{
+    CGFloat downLoadPathSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:path];
     downLoadPathSize=downLoadPathSize/1000.0/1000.0;
     NSLog(@"downLoadPathSize: %.2fM", downLoadPathSize);
 }

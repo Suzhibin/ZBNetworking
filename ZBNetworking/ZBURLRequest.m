@@ -7,20 +7,7 @@
 //
 
 #import "ZBURLRequest.h"
-
-@interface ZBURLRequest()
-/**
- *  离线下载栏目url容器
- */
-@property (nonatomic,strong) NSMutableArray *channelUrlArray;
-
-/**
- *  离线下载栏目名字容器
- */
-@property (nonatomic,strong) NSMutableArray *channelKeyArray;
-
-@end
-
+#import "ZBRequestManager.h"
 
 @implementation ZBURLRequest
 
@@ -45,7 +32,70 @@
     if(!key)return;
     [self.mutableHTTPRequestHeaders removeObjectForKey:key];
 }
-#pragma mark - 添加多次请求
+
+#pragma mark - 上传请求参数
+- (void)addFormDataWithName:(NSString *)name fileData:(NSData *)fileData {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileData:fileData];
+    [self.uploadDatas addObject:formData];
+}
+
+- (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileData:(NSData *)fileData {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileName:fileName mimeType:mimeType fileData:fileData];
+    [self.uploadDatas addObject:formData];
+}
+
+- (void)addFormDataWithName:(NSString *)name fileURL:(NSURL *)fileURL {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileURL:fileURL];
+    [self.uploadDatas addObject:formData];
+}
+
+- (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileURL:(NSURL *)fileURL {
+    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileName:fileName mimeType:mimeType fileURL:fileURL];
+    [self.uploadDatas addObject:formData];
+}
+
+#pragma mark - 懒加载
+
+- (NSMutableDictionary *)mutableHTTPRequestHeaders{
+    
+    if (!_mutableHTTPRequestHeaders) {
+        _mutableHTTPRequestHeaders  = [[NSMutableDictionary alloc]init];
+    }
+    return _mutableHTTPRequestHeaders;
+}
+
+- (NSMutableArray<ZBUploadData *> *)uploadDatas {
+    if (!_uploadDatas) {
+        _uploadDatas = [[NSMutableArray alloc]init];
+    }
+    return _uploadDatas;
+}
+
+- (NSMutableData *)responseObject {
+    if (!_responseObject) {
+        _responseObject=[[NSMutableData alloc]init];
+    }
+    return _responseObject;
+}
+
+@end
+
+#pragma mark - ZBBatchRequest
+
+@interface ZBBatchRequest()
+/**
+ *  离线下载栏目url容器
+ */
+@property (nonatomic,strong) NSMutableArray *channelUrlArray;
+
+/**
+ *  离线下载栏目名字容器
+ */
+@property (nonatomic,strong) NSMutableArray *channelKeyArray;
+
+@end
+@implementation ZBBatchRequest
+
 - (NSMutableArray *)offlineUrlArray{
     return self.channelUrlArray;
 }
@@ -71,7 +121,7 @@
 }
 
 - (void)removeOfflineArray{
-
+    
     [self.offlineUrlArray removeAllObjects];
     [self.offlineKeyArray removeAllObjects];
 }
@@ -134,28 +184,20 @@
     }
 }
 
-#pragma mark - 上传请求参数
-- (void)addFormDataWithName:(NSString *)name fileData:(NSData *)fileData {
-    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileData:fileData];
-    [self.uploadDatas addObject:formData];
+- (void)cancelbatchRequest:(nullable void (^)())cancelBlock{
+    if (_urlArray.count > 0) {
+        [_urlArray enumerateObjectsUsingBlock:^(ZBURLRequest *request, NSUInteger idx, __unused BOOL *stop) {
+            [ZBRequestManager cancelRequest:request.urlString completion:nil];
+        }];
+    }
 }
 
-- (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileData:(NSData *)fileData {
-    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileName:fileName mimeType:mimeType fileData:fileData];
-    [self.uploadDatas addObject:formData];
+- (NSMutableArray *)urlArray {
+    if (!_urlArray) {
+        _urlArray = [[NSMutableArray alloc]init];;
+    }
+    return _urlArray;
 }
-
-- (void)addFormDataWithName:(NSString *)name fileURL:(NSURL *)fileURL {
-    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileURL:fileURL];
-    [self.uploadDatas addObject:formData];
-}
-
-- (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileURL:(NSURL *)fileURL {
-    ZBUploadData *formData = [ZBUploadData formDataWithName:name fileName:fileName mimeType:mimeType fileURL:fileURL];
-    [self.uploadDatas addObject:formData];
-}
-
-#pragma mark - 懒加载
 - (NSMutableArray *)channelUrlArray{
     
     if (!_channelUrlArray) {
@@ -170,28 +212,6 @@
         _channelKeyArray=[[NSMutableArray alloc]init];
     }
     return _channelKeyArray;
-}
-
-- (NSMutableDictionary *)mutableHTTPRequestHeaders{
-    
-    if (!_mutableHTTPRequestHeaders) {
-        _mutableHTTPRequestHeaders  = [[NSMutableDictionary alloc]init];
-    }
-    return _mutableHTTPRequestHeaders;
-}
-
-- (NSMutableArray<ZBUploadData *> *)uploadDatas {
-    if (!_uploadDatas) {
-        _uploadDatas = [NSMutableArray array];
-    }
-    return _uploadDatas;
-}
-
-- (NSMutableData *)responseObject {
-    if (!_responseObject) {
-        _responseObject=[[NSMutableData alloc]init];
-    }
-    return _responseObject;
 }
 
 @end
@@ -231,6 +251,5 @@
     formData.fileURL = fileURL;
     return formData;
 }
-
 
 @end
