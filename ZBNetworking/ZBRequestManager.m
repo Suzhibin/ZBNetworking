@@ -13,6 +13,18 @@
 @implementation ZBRequestManager
 
 #pragma mark - 配置请求
++ (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
+    [self requestWithConfig:config progress:nil success:success failed:failed];
+}
+
++ (void)requestWithConfig:(requestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
+    
+    ZBURLRequest *request=[[ZBURLRequest alloc]init];
+    config ? config(request) : nil;
+    
+    [self sendRequest:request progress:progress success:success failed:failed];
+}
+
 + (ZBBatchRequest *)batchRequest:(batchRequestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
     return [self batchRequest:config progress:nil success:success failed:failed];
 }
@@ -28,17 +40,6 @@
     return batchRequest;
 }
 
-+ (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
-    [self requestWithConfig:config progress:nil success:success failed:failed];
-}
-
-+ (void)requestWithConfig:(requestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-    
-    ZBURLRequest *request=[[ZBURLRequest alloc]init];
-    config ? config(request) : nil;
-    
-    [self sendRequest:request progress:progress success:success failed:failed];
-}
 + (void)sendRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     if (request.methodType==ZBMethodTypePOST) {
         
