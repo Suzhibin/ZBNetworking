@@ -75,7 +75,7 @@
 ```
 
 ## 使用 其他功能
-1.离线下载
+1.离线下载 批量下载
 
 
 ```objective-c
@@ -86,10 +86,7 @@
             [batchRequest.urlArray addObject:request];
         }
     }  success:^(id responseObj,apiType type){
-        //如果是离线请求的数据
-        if (type==ZBRequestTypeOffline) {
-        
-        } 
+      
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
