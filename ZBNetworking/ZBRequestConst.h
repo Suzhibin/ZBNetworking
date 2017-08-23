@@ -59,17 +59,17 @@ typedef NS_ENUM(NSUInteger, requestSerializer) {
 };
 
 /** 批量请求配置的Block */
-typedef void (^batchRequestConfig)(ZBBatchRequest * _Nullable batchRequest);
+typedef void (^batchRequestConfig)(ZBBatchRequest * batchRequest);
 /** 请求配置的Block */
-typedef void (^requestConfig)(ZBURLRequest * _Nullable request);
+typedef void (^requestConfig)(ZBURLRequest * request);
 /** 请求成功的Block */
-typedef void (^requestSuccess)(id _Nullable responseObject,apiType type);
+typedef void (^requestSuccess)(id responseObject,apiType type);
 /** 请求失败的Block */
-typedef void (^requestFailed)(NSError * _Nullable error);
+typedef void (^requestFailed)(NSError * error);
 /** 请求进度的Block */
-typedef void (^progressBlock)(NSProgress * _Nullable progress);
+typedef void (^progressBlock)(NSProgress * progress);
 /** 请求取消的Block */
-typedef void (^cancelCompletedBlock)(NSString * _Nullable urlString);
+typedef void (^cancelCompletedBlock)(NSString * urlString);
 
 
 #endif /* ZBRequestConst_h */

@@ -109,7 +109,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
 
 - (void)downLoadRequest{
     
-    [ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
         request.urlString=url;
         request.methodType=ZBMethodTypeDownLoad;
         request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
@@ -139,7 +139,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
 - (void)downLoadBatchRequest{
  
 
-    self.batchRequest=[ZBRequestManager batchRequest:^(ZBBatchRequest * _Nullable batchRequest) {
+    self.batchRequest=[ZBRequestManager batchRequest:^(ZBBatchRequest * batchRequest) {
     
         /*
          for (int i=0; i<=10; i++) {
