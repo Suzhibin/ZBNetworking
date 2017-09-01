@@ -2,13 +2,7 @@
 
 注意：使用本框架开发者注意 有如下设置须知道
 
-1.此库会忽略系统缓存
-```objective-c
-  //忽略系统缓存
-        NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
-        [NSURLCache setSharedURLCache:sharedCache];
-```
-2.因为与缓存互通 服务器返回的数据 必须是二进制
+因为与缓存互通 服务器返回的数据 必须是二进制
 
 ```objective-c
 /*返回二进制*/
