@@ -14,7 +14,6 @@
     1.服务器返回的数据 必须是二进制
     2.证书设置
     3.开启菊花
-    4.忽略系统缓存
  */
 @interface ZBRequestEngine : AFHTTPSessionManager
 

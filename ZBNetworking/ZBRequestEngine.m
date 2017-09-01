@@ -35,10 +35,6 @@
         self.operationQueue.maxConcurrentOperationCount = 5;
         self.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",nil];
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-        //忽略系统缓存
-        NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
-        [NSURLCache setSharedURLCache:sharedCache];
-        
     }
     return self;
 }
