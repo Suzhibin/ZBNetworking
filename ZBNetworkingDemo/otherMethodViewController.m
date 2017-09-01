@@ -88,7 +88,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
     NSString *path = [NSHomeDirectory() stringByAppendingString:@"/Documents/testImage.png"];
     NSURL *fileURL = [NSURL fileURLWithPath:path isDirectory:NO];
     
-    [ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
         request.urlString=@"";
         request.methodType=ZBMethodTypeUpload;
     
@@ -143,11 +143,11 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
     
         /*
          for (int i=0; i<=10; i++) {
-         ZBURLRequest *request=[[ZBURLRequest alloc]init];
-         request.urlString=url;
-         request.methodType=ZBMethodTypeDownLoad;
-         request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
-         [batchRequest.urlArray addObject:request];
+            ZBURLRequest *request=[[ZBURLRequest alloc]init];
+            request.urlString=url;
+            request.methodType=ZBMethodTypeDownLoad;
+            request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
+            [batchRequest.urlArray addObject:request];
          }
          */
         ZBURLRequest *request1=[[ZBURLRequest alloc]init];
@@ -188,7 +188,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
 
 - (void)cancelRequest{
     
-    [ZBRequestManager cancelRequest:url completion:^(NSString * _Nullable urlString) {
+    [ZBRequestManager cancelRequest:url completion:^(NSString * urlString) {
         NSLog(@"取消下载请求%@",urlString);
     }];
     [self.batchRequest cancelbatchRequest:^{
