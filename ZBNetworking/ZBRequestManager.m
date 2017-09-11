@@ -10,6 +10,7 @@
 #import "ZBCacheManager.h"
 #import "ZBRequestEngine.h"
 #import "ZBURLRequest.h"
+#import "NSFileManager+ZBPathMethod.h"
 @implementation ZBRequestManager
 
 #pragma mark - 配置请求
@@ -59,7 +60,7 @@
 #pragma mark - GET
 + (void)GET:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    NSString *key = [self stringUTF8Encoding:[self urlString:request.urlString appendingParameters:request.parameters]];
+    NSString *key = [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.urlString appendingParameters:request.parameters]];
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
         
@@ -85,13 +86,13 @@
     if([urlString isEqualToString:@""]||urlString==nil)return nil;
     
     NSURLSessionDataTask *dataTask = nil;
-    return dataTask= [[ZBRequestEngine defaultEngine]GET:[self stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+    return dataTask= [[ZBRequestEngine defaultEngine]GET:[NSString zb_stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
         progress ? progress(downloadProgress) : nil;
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSString * key= [self stringUTF8Encoding:[self urlString:urlString appendingParameters:parameters]];
+        NSString * key= [NSString zb_stringUTF8Encoding:[NSString zb_urlString:urlString appendingParameters:parameters]];
         
         [[ZBCacheManager sharedInstance] storeContent:responseObject forKey:key isSuccess:nil];
         
@@ -103,7 +104,7 @@
 
 #pragma mark - POST
 + (void)POST:(ZBURLRequest *)request  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
-    NSString *key = [self stringUTF8Encoding:[self urlString:request.urlString appendingParameters:request.parameters]];
+    NSString *key = [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.urlString appendingParameters:request.parameters]];
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
     
@@ -129,13 +130,13 @@
     if([urlString isEqualToString:@""]||urlString==nil)return nil;
     
     NSURLSessionDataTask *dataTask = nil;
-    return dataTask=[[ZBRequestEngine defaultEngine] POST:[self stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+    return dataTask=[[ZBRequestEngine defaultEngine] POST:[NSString zb_stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
         progress ? progress(uploadProgress) : nil;
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSString * key= [self stringUTF8Encoding:[self urlString:urlString appendingParameters:parameters]];
+        NSString * key= [NSString zb_stringUTF8Encoding:[NSString zb_urlString:urlString appendingParameters:parameters]];
         
         [[ZBCacheManager sharedInstance] storeContent:responseObject forKey:key isSuccess:nil];
           success ? success(responseObject,type) : nil;
@@ -151,7 +152,7 @@
                             success:(requestSuccess)success
                             failed:(requestFailed)failed{
     
-    return [[ZBRequestEngine defaultEngine] POST:[self stringUTF8Encoding:request.urlString] parameters:request.parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    return [[ZBRequestEngine defaultEngine] POST:[NSString zb_stringUTF8Encoding:request.urlString] parameters:request.parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
         [request.uploadDatas enumerateObjectsUsingBlock:^(ZBUploadData *obj, NSUInteger idx, BOOL *stop) {
             if (obj.fileData) {
@@ -186,7 +187,7 @@
 #pragma mark - DownLoad
 + (NSURLSessionTask *)downloadWithRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[self stringUTF8Encoding:request.urlString]]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.urlString]]];
     
     [self headersAndTime:request];
     
@@ -239,29 +240,9 @@
     
     if([urlString isEqualToString:@""]||urlString==nil)return;
     
-    NSString *cancelUrlString=[[ZBRequestEngine defaultEngine]cancelRequest:[self stringUTF8Encoding:urlString]];
+    NSString *cancelUrlString=[[ZBRequestEngine defaultEngine]cancelRequest:[NSString zb_stringUTF8Encoding:urlString]];
     if (completion) {
         completion(cancelUrlString);
-    }
-}
-
-+ (NSString *)stringUTF8Encoding:(NSString *)urlString{
-    return [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-}
-
-+ (NSString *)urlString:(NSString *)urlString appendingParameters:(id)parameters{
-    if (parameters==nil) {
-        return urlString;
-    }else{
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (NSString *key in parameters) {
-            id obj = [parameters objectForKey:key];
-            NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
-            [array addObject:str];
-        }
-        
-        NSString *parametersString = [array componentsJoinedByString:@"&"];
-        return  [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@",parametersString]];
     }
 }
 
