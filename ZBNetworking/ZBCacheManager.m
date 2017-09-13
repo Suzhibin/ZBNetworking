@@ -125,7 +125,10 @@ static const NSInteger timeOut = 60*60;
 - (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path{
     
     NSString *codingPath=[[self cachePathForKey:key path:path] stringByDeletingPathExtension];
-    BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO;
+    BOOL exists=NO;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO) {
+        return exists=YES;
+    }
     return exists;
 }
 
