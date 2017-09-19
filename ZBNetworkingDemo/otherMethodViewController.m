@@ -117,7 +117,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
         
     } success:^(id  responseObject, apiType type) {
-        NSLog(@"此时会返回存储路径: %@", responseObject);
+        NSLog(@"此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
         
@@ -164,7 +164,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
     } progress:^(NSProgress * _Nullable progress) {
          NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
     } success:^(id  _Nullable responseObject, apiType type) {
-        NSLog(@"此时会返回存储路径: %@", responseObject);
+        NSLog(@"此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];//返回下载路径的大小

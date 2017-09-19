@@ -24,7 +24,7 @@
 /** 缓存是否存储成功的Block */
 typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
 /** 得到缓存的Block */
-typedef void(^ZBCacheValueBlock)(id responseObj,NSString *filePath);
+typedef void(^ZBCacheValueBlock)(NSData *data,NSString *filePath);
 /** 缓存完成的后续操作Block */
 typedef void(^ZBCacheCompletedBlock)();
 

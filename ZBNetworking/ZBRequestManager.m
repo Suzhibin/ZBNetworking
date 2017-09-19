@@ -64,8 +64,8 @@
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
         
-        [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(id responseObj,NSString *filePath) {
-            success ? success(responseObj ,request.apiType) : nil;
+        [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(NSData *data,NSString *filePath) {
+            success ? success(data ,request.apiType) : nil;
         }];
         
     }else{
@@ -108,8 +108,8 @@
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
     
-        [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(id responseObj,NSString *filePath) {
-            success ? success(responseObj ,request.apiType) : nil;
+        [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(NSData *data,NSString *filePath) {
+            success ? success(data ,request.apiType) : nil;
         }];
         
     }else{
