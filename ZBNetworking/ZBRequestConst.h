@@ -13,7 +13,7 @@
 #define ZBBUG_LOG 0
 
 #if(ZBBUG_LOG == 1)
-# define ZBLog(fmt, ...) NSLog((@"[函数名:%s]" " [第 %d 行]\n" fmt),  __FUNCTION__, __LINE__, ##__VA_ARGS__);
+# define ZBLog(format, ...) printf("\n[%s] %s [第%d行] %s\n", __TIME__, __FUNCTION__, __LINE__, [[NSString stringWithFormat:format, ## __VA_ARGS__] UTF8String]);
 #else
 # define ZBLog(...);
 #endif
@@ -22,17 +22,17 @@
  用于标识不同类型的请求
  */
 typedef NS_ENUM(NSInteger,apiType) {
-    /** 重新请求 ,不读取缓存，重新请求*/
+    /** 重新请求,   不读取缓存，重新请求*/
     ZBRequestTypeRefresh,
-    /** 有缓存,读取缓存--无缓存，重新请求*/
+    /** 读取缓存,   读取缓存--无缓存，重新请求*/
     ZBRequestTypeCache,
-    /** 加载更多 ,不读缓存，重新请求*/
+    /** 加载更多,   不读取缓存，重新请求*/
     ZBRequestTypeRefreshMore,
-    /** 加载更多 ,有缓存,读取缓存--无缓存，重新请求*/
+    /** 加载更多,   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCacheMore,
-    /** 详情    ,有缓存,读取缓存--无缓存，重新请求*/
+    /** 详情缓存,   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeDetailCache,
-    /** 自定义  ,有缓存,读取缓存--无缓存，重新请求*/
+    /** 自定义项,   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCustomCache
 };
 /**

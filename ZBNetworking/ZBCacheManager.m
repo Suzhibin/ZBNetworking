@@ -200,7 +200,6 @@ static const NSInteger timeOut = 60*60;
                 });
             }
         }
-
     });
 }
 
@@ -210,11 +209,11 @@ static const NSInteger timeOut = 60*60;
     dispatch_sync(self.operationQueue, ^{
         
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
-        for (NSString *fileName in fileEnumerator)
-        {
-            NSString *filePath = [path stringByAppendingPathComponent:fileName];
-            
-            [array addObject:filePath];
+        for (NSString *fileName in fileEnumerator){
+            if (fileName.length==32) {
+                NSString *filePath = [path stringByAppendingPathComponent:fileName];
+                [array addObject:filePath];
+            }
         }
     });
     return array;

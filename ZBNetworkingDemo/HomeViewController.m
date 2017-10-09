@@ -54,11 +54,13 @@
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];
             [self.refreshControl endRefreshing];    //结束刷新
+    
         }
         //上拉加载 要添加 apiType 类型 ZBRequestTypeCacheMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)， 也可以不遵守此枚举
         if (type==ZBRequestTypeRefreshMore) {
-            //上拉加载
+            //上拉加载 //结束刷新
         }
+ 
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         NSArray *array=[dict objectForKey:@"authors"];
         

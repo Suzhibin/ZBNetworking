@@ -71,13 +71,6 @@
     return _uploadDatas;
 }
 
-- (NSMutableData *)responseObject {
-    if (!_responseObject) {
-        _responseObject=[[NSMutableData alloc]init];
-    }
-    return _responseObject;
-}
-
 @end
 
 #pragma mark - ZBBatchRequest

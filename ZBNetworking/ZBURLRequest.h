@@ -37,11 +37,6 @@
 @property (nonatomic,strong) id _Nonnull parameters;
 
 /**
- *  数据,提供给外部使用
- */
-@property (nonatomic,strong) NSMutableData * _Nonnull responseObject;
-
-/**
  *  设置超时时间  默认15秒
  *   The timeout interval, in seconds, for created requests. The default timeout interval is 15 seconds.
  */

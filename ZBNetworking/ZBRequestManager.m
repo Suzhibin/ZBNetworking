@@ -44,7 +44,7 @@
 + (void)sendRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     if (request.methodType==ZBMethodTypePOST) {
         
-        [self POST:request progress:progress success:success failed:failed];
+        [self postRequest:request progress:progress success:success failed:failed];
     }else if (request.methodType==ZBMethodTypeUpload){
         
         [self uploadWithRequest:request progress:progress success:success failed:failed];
@@ -53,12 +53,12 @@
         [self downloadWithRequest:request progress:progress success:success failed:failed];
     }else{
         
-        [self GET:request progress:progress success:success failed:failed];
+        [self getRequest:request progress:progress success:success failed:failed];
     }
 }
 
 #pragma mark - GET
-+ (void)GET:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
++ (void)getRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
     NSString *key = [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.urlString appendingParameters:request.parameters]];
     
@@ -78,10 +78,15 @@
     [self serializer:request];
     [self headersAndTime:request];
     
-    return  [self dataTaskWithGetURL:request.urlString parameters:request.parameters apiType:request.apiType  progress:progress success:success failed:failed];
+    return  [self dataTaskWithGetURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
+        
+        [self storeObject:responseObject urlString:request.urlString parameters:request.parameters];
+        
+        success ? success(responseObject,request.apiType) : nil;
+    } failed:failed];
 }
 
-+ (NSURLSessionDataTask *)dataTaskWithGetURL:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
++ (NSURLSessionDataTask *)dataTaskWithGetURL:(NSString *)urlString parameters:(id)parameters  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
     if([urlString isEqualToString:@""]||urlString==nil)return nil;
     
@@ -92,18 +97,14 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSString * key= [NSString zb_stringUTF8Encoding:[NSString zb_urlString:urlString appendingParameters:parameters]];
-        
-        [[ZBCacheManager sharedInstance] storeContent:responseObject forKey:key isSuccess:nil];
-        
-        success ? success(responseObject,type) : nil;
+        success ? success(responseObject,0) : nil;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failed ? failed(error) : nil;
     }];
 }
 
 #pragma mark - POST
-+ (void)POST:(ZBURLRequest *)request  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
++ (void)postRequest:(ZBURLRequest *)request  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     NSString *key = [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.urlString appendingParameters:request.parameters]];
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
@@ -113,7 +114,6 @@
         }];
         
     }else{
-        
         [self dataTaskWithPostRequest:request apiType:request.apiType progress:progress success:success failed:failed];
     }
 }
@@ -122,10 +122,16 @@
     
     [self serializer:request];
     [self headersAndTime:request];
-    return [self dataTaskWithPostURL:request.urlString parameters:request.parameters apiType:type progress:progress success:success failed:failed];
+    
+    return  [self dataTaskWithPostURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
+        
+        [self storeObject:responseObject urlString:request.urlString parameters:request.parameters];
+        
+        success ? success(responseObject,request.apiType) : nil;
+    } failed:failed];
 }
 
-+ (NSURLSessionDataTask *)dataTaskWithPostURL:(NSString *)urlString parameters:(id)parameters apiType:(apiType)type progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
++ (NSURLSessionDataTask *)dataTaskWithPostURL:(NSString *)urlString parameters:(id)parameters  progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
     if([urlString isEqualToString:@""]||urlString==nil)return nil;
     
@@ -135,11 +141,8 @@
         progress ? progress(uploadProgress) : nil;
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        NSString * key= [NSString zb_stringUTF8Encoding:[NSString zb_urlString:urlString appendingParameters:parameters]];
-        
-        [[ZBCacheManager sharedInstance] storeContent:responseObject forKey:key isSuccess:nil];
-          success ? success(responseObject,type) : nil;
+  
+        success ? success(responseObject,0) : nil;
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failed ? failed(error) : nil;
@@ -220,6 +223,11 @@
 }
 
 #pragma mark - 其他配置
++ (void)storeObject:(NSObject *)object urlString:(NSString *)urlString parameters:(id)parameters{
+    NSString * key= [NSString zb_stringUTF8Encoding:[NSString zb_urlString:urlString appendingParameters:parameters]];
+    [[ZBCacheManager sharedInstance] storeContent:object forKey:key isSuccess:nil];
+}
+
 + (void)serializer:(ZBURLRequest *)request{
     
     [ZBRequestEngine defaultEngine].requestSerializer =request.requestSerializer==ZBSerializerHTTP ? [AFHTTPRequestSerializer serializer] : [AFJSONRequestSerializer serializer];
