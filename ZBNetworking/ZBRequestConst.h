@@ -24,13 +24,13 @@
 typedef NS_ENUM(NSInteger,apiType) {
     /** 重新请求,   不读取缓存，重新请求*/
     ZBRequestTypeRefresh,
-    /** 读取缓存,   读取缓存--无缓存，重新请求*/
+    /** 读取缓存,   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCache,
     /** 加载更多,   不读取缓存，重新请求*/
     ZBRequestTypeRefreshMore,
     /** 加载更多,   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCacheMore,
-    /** 详情缓存,   有缓存,读取缓存--无缓存，重新请求*/
+    /** 详情页面,   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeDetailCache,
     /** 自定义项,   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCustomCache

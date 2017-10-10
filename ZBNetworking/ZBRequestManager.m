@@ -80,7 +80,7 @@
     
     return  [self dataTaskWithGetURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
         
-        [self storeObject:responseObject urlString:request.urlString parameters:request.parameters];
+        [self storeObject:responseObject request:request];
         
         success ? success(responseObject,request.apiType) : nil;
     } failed:failed];
@@ -125,7 +125,7 @@
     
     return  [self dataTaskWithPostURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
         
-        [self storeObject:responseObject urlString:request.urlString parameters:request.parameters];
+        [self storeObject:responseObject request:request];
         
         success ? success(responseObject,request.apiType) : nil;
     } failed:failed];
@@ -223,8 +223,8 @@
 }
 
 #pragma mark - 其他配置
-+ (void)storeObject:(NSObject *)object urlString:(NSString *)urlString parameters:(id)parameters{
-    NSString * key= [NSString zb_stringUTF8Encoding:[NSString zb_urlString:urlString appendingParameters:parameters]];
++ (void)storeObject:(NSObject *)object request:(ZBURLRequest *)request{
+    NSString * key= [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.urlString appendingParameters:request.parameters]];
     [[ZBCacheManager sharedInstance] storeContent:object forKey:key isSuccess:nil];
 }
 
