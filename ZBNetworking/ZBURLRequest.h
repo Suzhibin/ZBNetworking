@@ -99,12 +99,12 @@
 /**
  *  @return urlArray 返回url数组
  */
-- (NSMutableArray *_Nonnull)offlineUrlArray;
+- (NSMutableArray *_Nonnull)batchUrlArray;
 
 /**
  *  @return urlArray 返回其他参数数组
  */
-- (NSMutableArray *_Nonnull)offlineKeyArray;
+- (NSMutableArray *_Nonnull)batchKeyArray;
 
 /**
  离线下载 将url 添加到请求列队
@@ -137,7 +137,7 @@
 /**
  离线下载 删除全部请求列队
  */
-- (void)removeOfflineArray;
+- (void)removeBatchArray;
 
 /**
  离线下载 判断栏目url 或 其他参数 是否已添加到请求容器

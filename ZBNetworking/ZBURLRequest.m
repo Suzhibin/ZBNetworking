@@ -89,11 +89,11 @@
 @end
 @implementation ZBBatchRequest
 
-- (NSMutableArray *)offlineUrlArray{
+- (NSMutableArray *)batchUrlArray{
     return self.channelUrlArray;
 }
 
-- (NSMutableArray *)offlineKeyArray{
+- (NSMutableArray *)batchKeyArray{
     return self.channelKeyArray;
 }
 
@@ -113,10 +113,9 @@
     [self removeObjectWithForkey:key isUrl:NO];
 }
 
-- (void)removeOfflineArray{
-    
-    [self.offlineUrlArray removeAllObjects];
-    [self.offlineKeyArray removeAllObjects];
+- (void)removeBatchArray{
+    [self.batchUrlArray removeAllObjects];
+    [self.batchKeyArray removeAllObjects];
 }
 
 

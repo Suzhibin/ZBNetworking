@@ -23,7 +23,7 @@
     [super viewDidDisappear:animated];
    
     NSLog(@"离开页面时 清空容器");
-    [self.batchRequest removeOfflineArray];
+    [self.batchRequest removeBatchArray];
     
     [self.delegate reloadJsonNumber];
 }
@@ -97,30 +97,30 @@
         //添加请求列队
         [self.batchRequest addObjectWithUrl:url];
         [self.batchRequest addObjectWithKey:model.name];
-         NSLog(@"离线请求的url:%@",self.batchRequest.offlineUrlArray);
+         NSLog(@"离线请求的url:%@",self.batchRequest.batchUrlArray);
     }else{
         //删除请求列队
         [self.batchRequest removeObjectWithUrl:url];
         [self.batchRequest removeObjectWithKey:model.name];
-         NSLog(@"离线请求的url:%@",self.batchRequest.offlineUrlArray);
+         NSLog(@"离线请求的url:%@",self.batchRequest.batchUrlArray);
     }
 }
 
 - (void)offlineBtnClick{
     
-    if (self.batchRequest.offlineUrlArray.count==0) {
+    if (self.batchRequest.batchUrlArray.count==0) {
         
         [self alertTitle:@"请添加栏目" andMessage:@""];
         
     }else{
        
-        NSLog(@"离线请求的栏目/url个数:%lu",self.batchRequest.offlineUrlArray.count);
+        NSLog(@"离线请求的栏目/url个数:%lu",self.batchRequest.batchUrlArray.count);
     
-        for (NSString *name in self.batchRequest.offlineKeyArray) {
+        for (NSString *name in self.batchRequest.batchKeyArray) {
             NSLog(@"离线请求的name:%@",name);
         }
        
-        [self.delegate downloadWithArray:self.batchRequest.offlineUrlArray];
+        [self.delegate downloadWithArray:self.batchRequest.batchUrlArray];
         
         [self.navigationController popViewControllerAnimated:YES];
     }
