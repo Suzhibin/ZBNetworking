@@ -8,8 +8,7 @@
 
 #import "ZBRequestEngine.h"
 #import "AFNetworkActivityIndicatorManager.h"
-#import "ZBCacheManager.h"
-#import "ZBURLRequest.h"
+
 @implementation ZBRequestEngine
 
 + (instancetype)defaultEngine{

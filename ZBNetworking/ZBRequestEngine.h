@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import "ZBRequestConst.h"
 
 /*
     硬性设置：
