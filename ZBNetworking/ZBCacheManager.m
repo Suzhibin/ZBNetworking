@@ -19,7 +19,6 @@
 
 
 #import "ZBCacheManager.h"
-#import "NSFileManager+ZBPathMethod.h"
 #import <CommonCrypto/CommonDigest.h>
 NSString *const PathSpace =@"ZBKit";
 NSString *const defaultCachePath =@"AppCache";

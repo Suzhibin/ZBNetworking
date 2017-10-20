@@ -7,7 +7,8 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-
+#import "ZBURLRequest.h"
+#import "ZBRequestConst.h"
 /*
     硬性设置：
     1.服务器返回的数据 必须是二进制
@@ -19,6 +20,15 @@
 
 + (instancetype)defaultEngine;
 
+/**
+ 发起请求
+ 
+ @param request     ZBURLRequest 对象
+ @param progress    下载进度
+ @param success     请求成功
+ @param failed      请求失败
+ */
+- (void)sendRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed;
 /**
  取消请求任务
  
