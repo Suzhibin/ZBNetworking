@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, requestSerializer) {
     /** 设置请求参数为JSON格式*/
     ZBSerializerJSON,
     /** 设置请求参数为二进制格式*/
-    ZBSerializerHTTP,
+    ZBSerializerHTTP
 };
 
 /** 批量请求配置的Block */
