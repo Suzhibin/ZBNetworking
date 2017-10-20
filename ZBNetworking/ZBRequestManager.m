@@ -26,11 +26,11 @@
     [self sendRequest:request progress:progress success:success failed:failed];
 }
 
-+ (ZBBatchRequest *)batchRequest:(batchRequestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
-    return [self batchRequest:config progress:nil success:success failed:failed];
++ (ZBBatchRequest *)sendBatchRequest:(batchRequestConfig)config success:(requestSuccess)success failed:(requestFailed)failed{
+    return [self sendBatchRequest:config progress:nil success:success failed:failed];
 }
 
-+ (ZBBatchRequest *)batchRequest:(batchRequestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
++ (ZBBatchRequest *)sendBatchRequest:(batchRequestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     ZBBatchRequest *batchRequest=[[ZBBatchRequest alloc]init];
     config ? config(batchRequest) : nil;
     

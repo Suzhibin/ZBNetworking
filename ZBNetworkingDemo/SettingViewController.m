@@ -283,7 +283,7 @@ static const NSInteger cacheTime = 30;
     //批量请求
     __weak typeof(self) weakSelf = self;
     
-    self.batchRequest =[ZBRequestManager batchRequest:^(ZBBatchRequest *batchRequest){
+    self.batchRequest =[ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
         for (NSString *urlString in offlineArray) {
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
             request.urlString=urlString;

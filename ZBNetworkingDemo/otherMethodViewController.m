@@ -139,7 +139,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
 - (void)downLoadBatchRequest{
  
 
-    self.batchRequest=[ZBRequestManager batchRequest:^(ZBBatchRequest * batchRequest) {
+    self.batchRequest=[ZBRequestManager sendBatchRequest:^(ZBBatchRequest * batchRequest) {
     
         /*
          for (int i=0; i<=10; i++) {

@@ -37,7 +37,7 @@
  *  @param success          请求成功的 Block
  *  @param failed           请求失败的 Block
  */
-+ (ZBBatchRequest *)batchRequest:(batchRequestConfig)config success:(requestSuccess)success failed:(requestFailed)failed;
++ (ZBBatchRequest *)sendBatchRequest:(batchRequestConfig)config success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
  *  批量请求方法 get/post/Upload/DownLoad
@@ -47,7 +47,7 @@
  *  @param success          请求成功的 Block
  *  @param failed           请求失败的 Block
  */
-+ (ZBBatchRequest *)batchRequest:(batchRequestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed;
++ (ZBBatchRequest *)sendBatchRequest:(batchRequestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed;
 
 /**
  取消请求任务
