@@ -34,18 +34,6 @@ typedef void(^ZBCacheCompletedBlock)();
  */
 @interface ZBCacheManager : NSObject
 
-/**
- * The maximum "total cost" of the in-memory image cache. The cost function is the number of pixels held in memory.
- * 设置缓存占用的内存大小，并不是一个严格的限制，当总数超过了totalCostLimit设定的值，系统会清除一部分缓存，直至总消耗低于totalCostLimit的值。
- */
-@property (assign, nonatomic) NSUInteger memoryTotalCost;
-
-/**
- * The maximum number of objects the cache should hold.
- * 设置内存对象的大小，这也不是一个严格的限制。
- */
-@property (assign, nonatomic) NSUInteger memoryCountLimit;
-
 //返回单例对象
 + (ZBCacheManager *)sharedInstance;
 
