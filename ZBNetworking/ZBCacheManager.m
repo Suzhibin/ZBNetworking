@@ -57,8 +57,6 @@ static const NSInteger timeOut = 60*60;
                                                    object:nil];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
-        
-        
     }
     return self;
 }

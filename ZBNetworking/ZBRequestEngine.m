@@ -74,8 +74,8 @@
 
 - (NSURLSessionDataTask *)dataTaskWithGetRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    [self serializer:request];
-    [self headersAndTime:request];
+    [self requestSerializerConfig:request];
+    [self headersAndTimeConfig:request];
     
     return  [self dataTaskWithGetURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
         
@@ -118,8 +118,8 @@
 
 - (NSURLSessionDataTask *)dataTaskWithPostRequest:(ZBURLRequest *)request apiType:(apiType)type progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     
-    [self serializer:request];
-    [self headersAndTime:request];
+    [self requestSerializerConfig:request];
+    [self headersAndTimeConfig:request];
     
     return  [self dataTaskWithPostURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
         
@@ -188,7 +188,7 @@
 - (NSURLSessionTask *)downloadWithRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed{
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.urlString]]];
     
-    [self headersAndTime:request];
+    [self headersAndTimeConfig:request];
     
     NSURL *downloadFileSavePath;
     BOOL isDirectory;
@@ -228,11 +228,11 @@
     [[ZBCacheManager sharedInstance] storeContent:object forKey:key isSuccess:nil];
 }
 
-- (void)serializer:(ZBURLRequest *)request{
-    self.requestSerializer =request.requestSerializer==ZBSerializerHTTP ? [AFHTTPRequestSerializer serializer] : [AFJSONRequestSerializer serializer];
+- (void)requestSerializerConfig:(ZBURLRequest *)request{
+    self.requestSerializer =request.requestSerializerType==ZBHTTPRequestSerializer ? [AFHTTPRequestSerializer serializer] : [AFJSONRequestSerializer serializer];
 }
 
-- (void)headersAndTime:(ZBURLRequest *)request{
+- (void)headersAndTimeConfig:(ZBURLRequest *)request{
     self.requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:15;
     
     if ([[request mutableHTTPRequestHeaders] allKeys].count>0) {
