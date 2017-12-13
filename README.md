@@ -73,7 +73,7 @@
 
 
 ```objective-c
- [ZBRequestManager sendBatchRequest:^(ZBURLRequest *request)
+ [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest)
             for (NSString *urlString in offlineArray) {
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
             request.urlString=urlString;
