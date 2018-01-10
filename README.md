@@ -1,3 +1,4 @@
+![](https://badge.fury.io/gh/Suzhibin%2FZBNetworking.png)
 # ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
 
 注意：使用本框架开发者注意 有如下设置须知道
