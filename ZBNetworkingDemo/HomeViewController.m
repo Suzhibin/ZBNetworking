@@ -52,7 +52,7 @@
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];
-            [self.refreshControl endRefreshing];    //结束刷新
+           
         }
         //上拉加载 要添加 apiType 类型 ZBRequestTypeCacheMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)， 也可以不遵守此枚举
         if (type==ZBRequestTypeRefreshMore) {
@@ -70,6 +70,7 @@
             [self.dataArray addObject:model];
         }
         [self.tableView reloadData];
+        [self.refreshControl endRefreshing];    //结束刷新
         
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;

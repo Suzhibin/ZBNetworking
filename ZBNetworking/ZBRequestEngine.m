@@ -77,7 +77,7 @@
     [self requestSerializerConfig:request];
     [self headersAndTimeConfig:request];
     
-    return  [self dataTaskWithGetURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
+    return [self dataTaskWithGetURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
         
         [self storeObject:responseObject request:request];
         
@@ -89,13 +89,12 @@
     
     if([urlString isEqualToString:@""]||urlString==nil)return nil;
     
-    NSURLSessionDataTask *dataTask = nil;
-    return dataTask= [self GET:[NSString zb_stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+    return [self GET:[NSString zb_stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
         progress ? progress(downloadProgress) : nil;
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
+
         success ? success(responseObject,0) : nil;
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failed ? failed(error) : nil;
@@ -121,7 +120,7 @@
     [self requestSerializerConfig:request];
     [self headersAndTimeConfig:request];
     
-    return  [self dataTaskWithPostURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
+    return [self dataTaskWithPostURL:request.urlString parameters:request.parameters  progress:progress success:^(id responseObject, apiType type) {
         
         [self storeObject:responseObject request:request];
         
@@ -133,8 +132,7 @@
     
     if([urlString isEqualToString:@""]||urlString==nil)return nil;
     
-    NSURLSessionDataTask *dataTask = nil;
-    return dataTask=[self POST:[NSString zb_stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+    return [self POST:[NSString zb_stringUTF8Encoding:urlString] parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
         progress ? progress(uploadProgress) : nil;
         
