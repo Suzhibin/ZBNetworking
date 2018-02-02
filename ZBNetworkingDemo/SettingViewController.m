@@ -281,8 +281,6 @@ static const NSInteger cacheTime = 30;
 - (void)requestOffline:(NSMutableArray *)offlineArray{
     
     //批量请求
-    __weak typeof(self) weakSelf = self;
-    
     self.batchRequest =[ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
         for (NSString *urlString in offlineArray) {
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
@@ -297,7 +295,7 @@ static const NSInteger cacheTime = 30;
             for (NSDictionary *dic in array) {
                 DetailsModel *model=[[DetailsModel alloc]init];
                 model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
-                [weakSelf.imageArray addObject:model];
+                [self.imageArray addObject:model];
                 
                 //使用SDWebImage 下载图片
                 BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
@@ -308,13 +306,13 @@ static const NSInteger cacheTime = 30;
                     
                     [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
                         
-                        NSLog(@"%@",[weakSelf progressStrWithSize:(CGFloat)receivedSize/expectedSize]);
+                        NSLog(@"%@",[self progressStrWithSize:(CGFloat)receivedSize/expectedSize]);
                         
                     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
                         
                         NSLog(@"单个图片完成");
                         
-                        [weakSelf.tableView reloadData];//耗性能  正式开发建议刷新单行
+                        [self.tableView reloadData];//耗性能  正式开发建议刷新单行
                  
                         //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                         NSString *imageURLStr = [imageURL absoluteString];
