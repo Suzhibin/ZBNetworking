@@ -6,7 +6,7 @@
 
 ```objective-c
 /*返回二进制*/
-    sharedInstance.responseSerializer = [AFHTTPResponseSerializer serializer];
+    self.responseSerializer = [AFHTTPResponseSerializer serializer];
  ```
 优点:
 
