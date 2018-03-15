@@ -39,11 +39,7 @@
 
 + (void)cancelRequest:(NSString *)urlString completion:(cancelCompletedBlock)completion{
     if([urlString isEqualToString:@""]||urlString==nil)return;
-    
-    NSString *cancelUrlString=[[ZBRequestEngine defaultEngine]cancelRequest:urlString];
-    if (completion) {
-        completion(cancelUrlString);
-    }
+    [[ZBRequestEngine defaultEngine]cancelRequest:urlString completion:completion];
 }
 
 @end

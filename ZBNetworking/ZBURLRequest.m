@@ -175,11 +175,10 @@
         }
     }
 }
-
-- (void)cancelbatchRequest:(nullable void (^)())cancelBlock{
+- (void)cancelbatchRequestWithCompletion:(cancelCompletedBlock)completion{
     if (_urlArray.count > 0) {
         [_urlArray enumerateObjectsUsingBlock:^(ZBURLRequest *request, NSUInteger idx, __unused BOOL *stop) {
-            [ZBRequestManager cancelRequest:request.urlString completion:nil];
+            [ZBRequestManager cancelRequest:request.urlString completion:completion];
         }];
     }
 }

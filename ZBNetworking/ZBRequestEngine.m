@@ -240,11 +240,12 @@
     }
 }
 
-- (NSString *)cancelRequest:(NSString *)urlString{
+- (void)cancelRequest:(NSString *)urlString completion:(cancelCompletedBlock)completion{
     if (self.tasks.count <= 0) {
-        return nil;
+        return;
     }
     __block NSString *currentUrlString=nil;
+     BOOL results;
     @synchronized (self.tasks) {
         [self.tasks enumerateObjectsUsingBlock:^(NSURLSessionTask *task, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([[[task.currentRequest URL] absoluteString] isEqualToString:[NSString zb_stringUTF8Encoding:urlString]]) {
@@ -254,7 +255,12 @@
             }
         }];
     }
-    return currentUrlString;
+    if (currentUrlString==nil) {
+        results=NO;
+    }else{
+        results=YES;
+    }
+    completion ? completion(results,currentUrlString) : nil;
 }
 
 @end

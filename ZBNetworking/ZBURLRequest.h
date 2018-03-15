@@ -168,10 +168,9 @@
 /**
  批量取消请求
 
- @param cancelBlock block 后续操作
+ @param completion block 后续操作
  */
-- (void)cancelbatchRequest:(nullable void (^)())cancelBlock;
-
+- (void)cancelbatchRequestWithCompletion:(cancelCompletedBlock _Nullable )completion;
 @end
 
 #pragma mark - ZBUploadData

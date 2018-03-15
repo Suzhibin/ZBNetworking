@@ -32,9 +32,10 @@
 /**
  取消请求任务
  
- @param urlString           协议接口
+ @param urlString    协议接口
+ @param completion   后续操作
  */
-- (NSString *)cancelRequest:(NSString *)urlString;
+- (void)cancelRequest:(NSString *)urlString completion:(cancelCompletedBlock)completion;
 
 
 @end

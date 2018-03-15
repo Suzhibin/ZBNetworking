@@ -69,7 +69,7 @@ typedef void (^requestFailed)(NSError * error);
 /** 请求进度的Block */
 typedef void (^progressBlock)(NSProgress * progress);
 /** 请求取消的Block */
-typedef void (^cancelCompletedBlock)(NSString * urlString);
+typedef void (^cancelCompletedBlock)(BOOL results,NSString * urlString);
 
 
 #endif /* ZBRequestConst_h */

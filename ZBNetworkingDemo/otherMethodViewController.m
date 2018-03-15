@@ -188,11 +188,19 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
 
 - (void)cancelRequest{
     
-    [ZBRequestManager cancelRequest:url completion:^(NSString * urlString) {
-        NSLog(@"取消下载请求%@",urlString);
+    [ZBRequestManager cancelRequest:url completion:^(BOOL results, NSString *urlString) {
+        if (results==YES) {
+            NSLog(@"取消下载请求:%d URL:%@",results,urlString);
+        }else{
+            NSLog(@"已经请求完毕无法取消");
+        }
     }];
-    [self.batchRequest cancelbatchRequest:^{
-        NSLog(@"取消全部请求(已经请求成功不会取消)");
+    [self.batchRequest cancelbatchRequestWithCompletion:^(BOOL results, NSString *urlString) {
+        if (results==YES) {
+            NSLog(@"按顺序批量取消下载请求:%d URL:%@",results,urlString);
+        }else{
+            NSLog(@"已经请求完毕无法取消");
+        }
     }];
 }
 
