@@ -231,7 +231,7 @@
 }
 
 - (void)headersAndTimeConfig:(ZBURLRequest *)request{
-    self.requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:15;
+    self.requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:30;
     
     if ([[request mutableHTTPRequestHeaders] allKeys].count>0) {
         [[request mutableHTTPRequestHeaders] enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
