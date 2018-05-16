@@ -45,7 +45,7 @@
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//默认为刷新  //ZBRequestTypeCache为使用缓存
-        request.timeoutInterval=10;
+        request.timeoutInterval=10;//默认为30
        // request.parameters=@{@"1": @"one", @"2": @"two"};
        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,apiType type){
@@ -55,7 +55,9 @@
         if (type==ZBRequestTypeLoadMore) {
             //结束上拉加载
         }
-        //请求成功
+        //请求成功
+         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"得到数据:%@",dict);
         
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
