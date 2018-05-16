@@ -43,32 +43,44 @@
     }];
     return batchRequest;
 }
-
+#pragma mark - 发起请求
 + (void)sendRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure finished:(requestFinished)finished{
     
     if([request.URLString isEqualToString:@""]||request.URLString==nil)return;
     
     if (request.methodType==ZBMethodTypeUpload) {
-        [[ZBRequestEngine defaultEngine] uploadWithRequest:request zb_progress:progress success:^(NSURLSessionDataTask *task, id responseObject) {
-            success ? success(responseObject,0) : nil;
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            failure ? failure(error) : nil;
-        }];
+        [self sendUploadRequest:request progress:progress success:success failure:failure];
     }else if (request.methodType==ZBMethodTypeDownLoad){
-        [[ZBRequestEngine defaultEngine] downloadWithRequest:request progress:progress completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-            failure ? failure(error) : nil;
-            success ? success([filePath path],request.apiType) : nil;
+        [self sendDownLoadRequest:request progress:progress success:success failure:failure];
+    }else{
+        [self sendHTTPRequest:request progress:progress success:success failure:failure finished:finished];
+    }
+}
+
++ (void)sendUploadRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure{
+    [[ZBRequestEngine defaultEngine] uploadWithRequest:request zb_progress:progress success:^(NSURLSessionDataTask *task, id responseObject) {
+        success ? success(responseObject,0) : nil;
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure ? failure(error) : nil;
+    }];
+}
+
++ (void)sendDownLoadRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure{
+    [[ZBRequestEngine defaultEngine] downloadWithRequest:request progress:progress completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        failure ? failure(error) : nil;
+        success ? success([filePath path],request.apiType) : nil;
+    }];
+}
+
++ (void)sendHTTPRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure finished:(requestFinished)finished{
+    NSString *key = [self keyWithParameters:request];
+    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
+        [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(NSData *data,NSString *filePath) {
+            success ? success(data ,request.apiType) : nil;
+            finished ? finished(data,request.apiType,nil,YES) : nil;
         }];
     }else{
-        NSString *key = [self keyWithParameters:request];
-        if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
-            [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(NSData *data,NSString *filePath) {
-                success ? success(data ,request.apiType) : nil;
-                finished ? finished(data,request.apiType,nil,YES) : nil;
-            }];
-        }else{
-            [self dataTaskWithHTTPRequest:request progress:progress success:success failure:failure finished:finished];
-        }
+        [self dataTaskWithHTTPRequest:request progress:progress success:success failure:failure finished:finished];
     }
 }
 
@@ -87,6 +99,7 @@
     }];
 }
 
+#pragma mark - 其他配置
 + (NSString *)keyWithParameters:(ZBURLRequest *)request{
     if (request.parametersfiltrationCacheKey.count>0) {
         NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:request.parameters];
