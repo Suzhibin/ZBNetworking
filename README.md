@@ -103,8 +103,10 @@
 
 2.缓存相关
 ```objective-c
-//显示缓存大小
+//显示缓存大小 可以自定义路径
  [[ZBCacheManager sharedInstance]getCacheSize];
+ //显示缓存个数  可以自定义路径
+ [[ZBCacheManager sharedInstance]getCacheCount];
  //清除缓存
 [[ZBCacheManager sharedInstance]clearCache];
 //清除单个缓存文件
