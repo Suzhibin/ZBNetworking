@@ -122,7 +122,7 @@
 
 ## 缓存key过滤
  ```
- NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
     NSTimeInterval a=[dat timeIntervalSince1970];
     NSString *timeString = [NSString stringWithFormat:@"&time=%f", a];
 
