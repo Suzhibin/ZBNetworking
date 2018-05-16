@@ -8,7 +8,7 @@
 
 #import "otherMethodViewController.h"
 #import "ZBNetworking.h"
-NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_wpd.mp4";
+NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_wpd.mp4";
 
 @interface otherMethodViewController ()
 @property (nonatomic,strong)ZBBatchRequest *batchRequest;
@@ -19,9 +19,9 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title=@"post/Upload/DownLoad";
+    self.title=@"使用例子";
     
-    NSArray *titleArray=[NSArray arrayWithObjects:@"postRequest",@"UploadRequest",@"downLoadRequest",@"downLoadBatchRequest",@"取消请求", nil];
+    NSArray *titleArray=[NSArray arrayWithObjects:@"POST/PUT/PATCH/DELETE/Request",@"UploadRequest",@"downLoadRequest",@"downLoadBatchRequest",@"取消请求",@"url过滤动态参数",@"parameters过滤动态参数", nil];
     
     for (int i=0; i<titleArray.count; i++) {
         
@@ -40,7 +40,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
 - (void)btnClicked:(UIButton *)sender{
     switch (sender.tag) {
         case 1000:
-            [self postRequest];
+            [self request];
             break;
         case 1001:
             [self UploadRequest];
@@ -54,30 +54,43 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
         case 1004:
             [self cancelRequest];
             break;
-            
+        case 1005:
+            [self URLStringTheTimeStamp];
+            break;
+        case 1006:
+            [self parametersTheTimeStamp];
+            break;
         default:
             break;
     }
 }
 
-- (void)postRequest{
+- (void)request{
     /*
-     //POST请求 是改变服务器状态 一般是没有缓存的。也有个列 所有数据都是post的，所以request.apiType也可以用，如：request.apiType=ZBRequestTypeCache
+     //
+     GET/POST/PUT/PATCH/DELETE 请求 都有缓存功能
+     POST请求 是给服务器传参的 一般是没有缓存的。也有特例 所有列表数据请求都是post的，所以request.apiType也可以用，如：request.apiType=ZBRequestTypeCache
         默认缓存路径/Library/Caches/ZBKit/AppCache
      */
-
+    
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.urlString=@"";
-        request.methodType=ZBMethodTypePOST;//默认为GET
-        //request.apiType=ZBRequestTypeRefresh;//默认为Refresh
-        request.timeoutInterval=10;
+        request.URLString=@"";
+        request.methodType=ZBMethodTypePOST;//ZBMethodTypePUT//ZBMethodTypePATCH//ZBMethodTypeDELETE// 默认为GET
+        request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
+        request.timeoutInterval=10;//默认30
         request.parameters=@{@"1": @"one", @"2": @"two"};
-        [request setValue:@"1234567890" forHeaderField:@"apitype"];
+     //   [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObject,apiType type){
-        NSLog(@"返回内容: %@", responseObject);
-        
-    } failed:^(NSError *error){
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"服务器下发语言数据:%@",dict);
+    } failure:^(NSError *error){
         NSLog(@"error: %@", error);
+    } finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
+        if (isCache) {
+            NSLog(@"使用了缓存");
+        }else{
+            NSLog(@"重新请求");
+        }
     }];
 }
 - (void)UploadRequest{
@@ -89,7 +102,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
     NSURL *fileURL = [NSURL fileURLWithPath:path isDirectory:NO];
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.urlString=@"";
+        request.URLString=@"";
         request.methodType=ZBMethodTypeUpload;
     
         [request addFormDataWithName:@"image[]" fileData:fileData];
@@ -101,16 +114,15 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
         
     } success:^(id  responseObject, apiType type) {
         NSLog(@"responseObject: %@", responseObject);
-    } failed:^(NSError * _Nullable error) {
+    } failure:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
     }];
-
 }
 
 - (void)downLoadRequest{
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.urlString=url;
+        request.URLString=mp4url;
         request.methodType=ZBMethodTypeDownLoad;
         request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
     } progress:^(NSProgress * _Nullable progress) {
@@ -121,7 +133,7 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
         
-        sleep(2);
+        sleep(3);
         //删除下载的文件
         [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
             NSLog(@"删除下载的文件");
@@ -129,16 +141,13 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
         }];
     
         
-    } failed:^(NSError * _Nullable error) {
+    } failure:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
     }];
- 
-
 }
 
 - (void)downLoadBatchRequest{
  
-
     self.batchRequest=[ZBRequestManager sendBatchRequest:^(ZBBatchRequest * batchRequest) {
     
         /*
@@ -151,13 +160,13 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
          }
          */
         ZBURLRequest *request1=[[ZBURLRequest alloc]init];
-        request1.urlString=url;
+        request1.URLString=mp4url;
         request1.methodType=ZBMethodTypeDownLoad;
         request1.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
         [batchRequest.urlArray addObject:request1];
         
         ZBURLRequest *request2=[[ZBURLRequest alloc]init];
-        request2.urlString=url;
+        request2.URLString=mp4url;
         request2.methodType=ZBMethodTypeDownLoad;
         request2.downloadSavePath = [[ZBCacheManager sharedInstance] documentPath];
         [batchRequest.urlArray addObject:request2];
@@ -165,11 +174,10 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
          NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
     } success:^(id  _Nullable responseObject, apiType type) {
         NSLog(@"此时会返回存储路径文件: %@", responseObject);
-        
+
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];//返回下载路径的大小
-        sleep(2);
-        
+        sleep(5);
         //删除下载的文件
         [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
             NSLog(@"删除下载的文件");
@@ -180,15 +188,15 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
             NSLog(@"删除下载的文件");
             [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];
         }];
-    } failed:^(NSError * _Nullable error) {
-        
+    } failure:^(NSError * _Nullable error) {
+        NSLog(@"error: %@", error);
     }];
 
 }
 
 - (void)cancelRequest{
     
-    [ZBRequestManager cancelRequest:url completion:^(BOOL results, NSString *urlString) {
+    [ZBRequestManager cancelRequest:mp4url completion:^(BOOL results, NSString *urlString) {
         if (results==YES) {
             NSLog(@"取消下载请求:%d URL:%@",results,urlString);
         }else{
@@ -202,6 +210,41 @@ NSString *const url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9bfe_
             NSLog(@"已经请求完毕无法取消");
         }
     }];
+}
+
+- (void)URLStringTheTimeStamp{
+    
+    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSTimeInterval a=[dat timeIntervalSince1970];
+    NSString *timeString = [NSString stringWithFormat:@"&time=%f", a];
+
+    //作者遇到到请求 是在get请求后加一个时间戳的参数，因为URLString 是默认为缓存key的 加上时间戳，key 一直变动 无法拿到缓存。所以定义了一个customCacheKey
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+        request.URLString=[list_URL stringByAppendingString:timeString];
+        request.customCacheKey=list_URL;//去掉timeString
+        request.methodType=ZBMethodTypeGET;
+        request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
+    }  success:nil failure:nil finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
+        if (isCache) {
+            NSLog(@"使用了缓存");
+        }else{
+            NSLog(@"重新请求");
+        }
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"得到数据:%@",dict);
+    }];
+
+}
+- (void)parametersTheTimeStamp{
+    //POST等 使用了parameters 的请求 缓存key会是URLString+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个parametersfiltrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+        request.URLString=@"http://URL";
+        request.methodType=ZBMethodTypePOST;//默认为GET
+        request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
+        request.parameters=@{@"1": @"one", @"2": @"two", @"time": @"12345667"};
+        request.parametersfiltrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里
+    }success:nil failure:nil];
+    
 }
 
 - (void)downLoadPathSize:(NSString *)path{

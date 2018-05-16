@@ -43,7 +43,7 @@
      */
     
    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.urlString=_urlString;
+        request.URLString=_urlString;
         request.apiType=ZBRequestTypeDetailCache;
     }  success:^(id responseObject,apiType type){
        // NSLog(@"type:%zd",type);
@@ -56,7 +56,7 @@
         [self.view addSubview:self.tableView];
         [self.tableView reloadData];
         
-    } failed:^(NSError *error){
+    } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
             [self alertTitle:@"请求超时" andMessage:@""];

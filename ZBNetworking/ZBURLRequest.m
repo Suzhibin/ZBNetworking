@@ -8,7 +8,7 @@
 
 #import "ZBURLRequest.h"
 #import "ZBRequestManager.h"
-
+#pragma mark - ZBURLRequest
 @implementation ZBURLRequest
 
 - (void)dealloc{
@@ -118,7 +118,6 @@
     [self.batchKeyArray removeAllObjects];
 }
 
-
 - (BOOL)isAddForKey:(NSString *)key isUrl:(BOOL)isUrl{
     
     if (isUrl==YES) {
@@ -175,10 +174,11 @@
         }
     }
 }
+
 - (void)cancelbatchRequestWithCompletion:(cancelCompletedBlock)completion{
     if (_urlArray.count > 0) {
         [_urlArray enumerateObjectsUsingBlock:^(ZBURLRequest *request, NSUInteger idx, __unused BOOL *stop) {
-            [ZBRequestManager cancelRequest:request.urlString completion:completion];
+            [ZBRequestManager cancelRequest:request.URLString completion:completion];
         }];
     }
 }

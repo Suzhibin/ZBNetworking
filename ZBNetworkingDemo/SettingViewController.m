@@ -284,7 +284,7 @@ static const NSInteger cacheTime = 30;
     self.batchRequest =[ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
         for (NSString *urlString in offlineArray) {
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-            request.urlString=urlString;
+            request.URLString=urlString;
             [batchRequest.urlArray addObject:request];
         }
     }  success:^(id responseObj,apiType type){
@@ -332,7 +332,7 @@ static const NSInteger cacheTime = 30;
             }
 
         
-    } failed:^(NSError *error){
+    } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
             NSLog(@"请求超时");

@@ -22,17 +22,17 @@
  用于标识不同类型的请求
  */
 typedef NS_ENUM(NSInteger,apiType) {
-    /** 重新请求,   不读取缓存，重新请求*/
+    /** 重新请求:   不读取缓存，重新请求*/
     ZBRequestTypeRefresh,
-    /** 读取缓存,   有缓存,读取缓存--无缓存，重新请求*/
+    /** 读取缓存:   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCache,
-    /** 加载更多,   不读取缓存，重新请求*/
+    /** 加载更多:   不读取缓存，重新请求*/
     ZBRequestTypeRefreshMore,
-    /** 加载更多,   有缓存,读取缓存--无缓存，重新请求*/
+    /** 加载更多:   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCacheMore,
-    /** 详情页面,   有缓存,读取缓存--无缓存，重新请求*/
+    /** 详情页面:   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeDetailCache,
-    /** 自定义项,   有缓存,读取缓存--无缓存，重新请求*/
+    /** 自定义项:   有缓存,读取缓存--无缓存，重新请求*/
     ZBRequestTypeCustomCache
 };
 /**
@@ -46,7 +46,13 @@ typedef NS_ENUM(NSInteger,MethodType) {
     /**Upload请求*/
     ZBMethodTypeUpload,
     /**DownLoad请求*/
-    ZBMethodTypeDownLoad
+    ZBMethodTypeDownLoad,
+    /**PUT请求*/
+    ZBMethodTypePUT,
+    /**PATCH请求*/
+    ZBMethodTypePATCH,
+    /**DELETE请求*/
+    ZBMethodTypeDELETE
 };
 /**
  请求参数的格式.
@@ -65,11 +71,12 @@ typedef void (^requestConfig)(ZBURLRequest * request);
 /** 请求成功的Block */
 typedef void (^requestSuccess)(id responseObject,apiType type);
 /** 请求失败的Block */
-typedef void (^requestFailed)(NSError * error);
+typedef void (^requestFailure)(NSError * error);
+/** 请求完成的Block */
+typedef void (^requestFinished)(id responseObject,apiType type,NSError * error,BOOL isCache);
 /** 请求进度的Block */
 typedef void (^progressBlock)(NSProgress * progress);
 /** 请求取消的Block */
 typedef void (^cancelCompletedBlock)(BOOL results,NSString * urlString);
-
 
 #endif /* ZBRequestConst_h */

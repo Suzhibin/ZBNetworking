@@ -186,6 +186,14 @@ typedef void(^ZBCacheCompletedBlock)();
 - (NSString *)cachePathForKey:(NSString *)key path:(NSString *)path;
 
 /**
+ MD5 编码
+ 
+ @param key 需要编码的字符串
+ @return 返回编码后的结果
+ */
+- (NSString *)MD5StringForKey:(NSString *)key;
+
+/**
  * 显示data文件缓存大小 默认缓存路径/Library/Caches/ZBKit/AppCache
  * Get the size used by the disk cache
  */

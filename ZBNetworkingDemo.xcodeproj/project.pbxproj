@@ -186,14 +186,14 @@
 		7DF8262F1D5815BE000D1109 /* ZBNetworkingDemo */ = {
 			isa = PBXGroup;
 			children = (
-				7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */,
-				7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */,
 				7DF826791D58170C000D1109 /* DetailsModel.h */,
 				7DF8267A1D58170C000D1109 /* DetailsModel.m */,
 				7DF8267B1D58170C000D1109 /* RootModel.h */,
 				7DF8267C1D58170C000D1109 /* RootModel.m */,
 				7D7EC8B31E248FC500663313 /* SettingViewController.h */,
 				7D7EC8B41E248FC500663313 /* SettingViewController.m */,
+				7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */,
+				7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */,
 				7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */,
 				7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */,
 				7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */,

@@ -20,6 +20,7 @@
 
 #import "ZBCacheManager.h"
 #import <CommonCrypto/CommonDigest.h>
+
 NSString *const PathSpace =@"ZBKit";
 NSString *const defaultCachePath =@"AppCache";
 static const NSInteger defaultCacheMaxCacheAge  = 60*60*24*7;

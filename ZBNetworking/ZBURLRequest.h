@@ -29,13 +29,16 @@
 /**
  *  接口(请求地址)
  */
-@property (nonatomic,copy) NSString * _Nonnull urlString;
+@property (nonatomic,copy) NSString * _Nonnull URLString;
 
 /**
  *  提供给外部配置参数使用
  */
-@property (nonatomic,strong) id _Nonnull parameters;
+@property (nonatomic,strong) id __nullable parameters;
 
+@property (nonatomic,copy) NSString * customCacheKey;
+
+@property (nonatomic,strong) NSArray *parametersfiltrationCacheKey;
 /**
  *  设置超时时间  默认15秒
  *   The timeout interval, in seconds, for created requests. The default timeout interval is 15 seconds.
@@ -43,7 +46,7 @@
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 /**
- *  存储路径 只有下载方法有用
+ *  存储路径 只有下载文件方法有用
  */
 @property (nonatomic,copy,nullable) NSString *downloadSavePath;
 
@@ -94,7 +97,7 @@
 /**
  请求url列队容器
  */
-@property (nonatomic,strong) NSMutableArray * _Nonnull urlArray;
+@property (nonatomic,strong) NSMutableArray * _Nullable urlArray;
 
 /**
  *  @return urlArray 返回url数组
@@ -171,6 +174,7 @@
  @param completion block 后续操作
  */
 - (void)cancelbatchRequestWithCompletion:(cancelCompletedBlock _Nullable )completion;
+
 @end
 
 #pragma mark - ZBUploadData
@@ -213,3 +217,4 @@
 
 
 @end
+

@@ -35,9 +35,13 @@
     
     self.batchRequest=[[ZBBatchRequest alloc]init];
     
+    [self.view addSubview:self.tableView];
+  
+    [self addItemWithTitle:@"离线下载" selector:@selector(offlineBtnClick) location:NO];
+    
     //请求最新频道列表
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
-        request.urlString=list_URL;
+        request.URLString=list_URL;
         request.apiType=ZBRequestTypeRefresh;
     } success:^(id responseObj, apiType type) {
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
@@ -51,8 +55,8 @@
             [self.dataArray addObject:model];
             
         }
-        [_tableView reloadData];
-    } failed:^(NSError *error) {
+        [self.tableView reloadData];
+    } failure:^(NSError *error) {
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut) {
             [self alertTitle:@"请求超时" andMessage:@""];
@@ -60,11 +64,6 @@
             [self alertTitle:@"请求失败" andMessage:@""];
         }
     }];
-    
-    [self.view addSubview:self.tableView];
-  
-    [self addItemWithTitle:@"离线下载" selector:@selector(offlineBtnClick) location:NO];
- 
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

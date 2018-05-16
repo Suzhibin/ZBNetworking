@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import "ZBURLRequest.h"
 #import "ZBRequestConst.h"
 /*
     硬性设置：
@@ -17,25 +16,54 @@
  */
 @interface ZBRequestEngine : AFHTTPSessionManager
 
-
 + (instancetype)defaultEngine;
 
 /**
- 发起请求
- 
- @param request     ZBURLRequest 对象
- @param progress    下载进度
- @param success     请求成功
- @param failed      请求失败
+ 发起网络请求
+
+ @param request ZBURLRequest
+ @param zb_progress 进度
+ @param success 成功回调
+ @param failure 失败回调
+ @return task
  */
-- (void)sendRequest:(ZBURLRequest *)request progress:(progressBlock)progress success:(requestSuccess)success failed:(requestFailed)failed;
+- (NSURLSessionDataTask *)dataTaskWithMethod:(ZBURLRequest *)request
+                             zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
+                              success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                              failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
+/**
+ 上传文件
+
+ @param request ZBURLRequest
+ @param zb_progress 进度
+ @param success 成功回调
+ @param failure 失败回调
+ @return task
+ */
+- (NSURLSessionDataTask *)uploadWithRequest:(ZBURLRequest *)request
+                                zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
+                                    success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                                    failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
+/**
+ 下载文件
+
+ @param request ZBURLRequest
+ @param downloadProgressBlock 进度
+ @param completionHandler 回调
+ @return task
+ */
+- (NSURLSessionDownloadTask *)downloadWithRequest:(ZBURLRequest *)request
+                                         progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+                                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+
 /**
  取消请求任务
  
- @param urlString    协议接口
- @param completion   后续操作
+ @param urlString           协议接口
  */
-- (void)cancelRequest:(NSString *)urlString completion:(cancelCompletedBlock)completion;
+- (void)cancelRequest:(NSString *)urlString  completion:(cancelCompletedBlock)completion;
 
 
 @end

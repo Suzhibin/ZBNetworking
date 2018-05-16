@@ -44,10 +44,10 @@
 - (void)getDataWithApiType:(apiType)requestType{
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.urlString=list_URL;
+        request.URLString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=requestType;//默认为ZBRequestTypeRefresh
-        request.timeoutInterval=10;
+       // request.timeoutInterval=10;//默认30
     }  success:^(id responseObject,apiType type){
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
@@ -72,7 +72,7 @@
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];    //结束刷新
         
-    } failed:^(NSError *error){
+    } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
             [self alertTitle:@"请求超时" andMessage:@""];
