@@ -108,9 +108,9 @@
   //显示缓存个数  可以自定义路径
  [[ZBCacheManager sharedInstance]getCacheCount];
   //清除缓存
-[[ZBCacheManager sharedInstance]clearCache];
+ [[ZBCacheManager sharedInstance]clearCache];
   //清除单个缓存文件
-[[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
+ [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
   //按路径清除缓存
  [[ZBCacheManager sharedInstance]clearDiskWithpath:@"路径" completion:nil];
   //取消当前请求
