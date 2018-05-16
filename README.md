@@ -10,15 +10,19 @@
  ```
 优点:
 
-1.低耦合，易扩展。
+1.请求类型丰富 /**GET请求*//**POST请求*//**PUT请求*//**PATCH请求*//**DELETE请求*//**Upload请求*//**DownLoad请求*/
 
-2.有缓存文件过期机制 默认一周
+2.低耦合，易扩展。
 
-3.显示缓存大小/个数，全部清除缓存/单个文件清除缓存/按时间清除缓存  方法多样  并且都可以自定义路径   可扩展性强
+3.有缓存文件过期机制 默认一周
 
-4.离线下载功能 
+4.显示缓存大小/个数，全部清除缓存/单个文件清除缓存/按时间清除缓存/按路径清除缓存  方法多样  并且都可以自定义路径   可扩展性强
 
-5.多种请求类型的判断。也可不遵循，自由随你定。
+5.有缓存key过滤功能
+
+6.离线下载功能 
+
+7.多种请求类型的判断。也可不遵循，自由随你定。
 
 ```objective-c
    /** 重新请求 ,不读取缓存，重新请求*/
@@ -34,7 +38,7 @@
     /** 自定义  ,有缓存,读取缓存 无缓存，重新请求*/
     ZBRequestTypeCustomCache
 ```
-6.可见的缓存文件
+8.可见的缓存文件
 
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
@@ -101,11 +105,16 @@
 ```objective-c
 //显示缓存大小
  [[ZBCacheManager sharedInstance]getCacheSize];
- //删除缓存
+ //清除缓存
 [[ZBCacheManager sharedInstance]clearCache];
+//清除单个缓存文件
+[[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
+//按路径清除缓存
+ [[ZBCacheManager sharedInstance]clearDiskWithpath:@"路径" completion:nil];
 //取消当前请求
  [ZBRequestManager cancelRequest:_urlString completion:^(NSString *urlString){
       //NSLog(@"取消对应url:%@ ",urlString);
   }];
-
+  
+![](https://upload-images.jianshu.io/upload_images/1830250-3636c0621ebb6fa1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/621)
  ```
