@@ -63,6 +63,12 @@
         }else{
             [self alertTitle:@"请求失败" andMessage:@""];
         }
+    }finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
+        if (isCache) {
+            NSLog(@"使用了缓存");
+        }else{
+            NSLog(@"重新请求");
+        }
     }];
 }
 
