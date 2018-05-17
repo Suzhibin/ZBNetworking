@@ -153,9 +153,7 @@
 
 #pragma mark - 取消请求
 - (void)cancelRequest:(NSString *)URLString completion:(cancelCompletedBlock)completion{
-    if (self.tasks.count <= 0) {
-        return;
-    }
+
     __block NSString *currentUrlString=nil;
     BOOL results;
     @synchronized (self.tasks) {

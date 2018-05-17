@@ -25,9 +25,14 @@
     /**
      防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消对应的请求。
      */
+
     [ZBRequestManager cancelRequest:_urlString completion:^(BOOL results, NSString *urlString) {
         //如果请求成功 或 读缓存 会返回null 无法取消。请求未完成的会取消并返回对应url results 为yes
-        //NSLog(@"取消对应url:%@ ",urlString);
+        if (results==YES) {
+             NSLog(@"取消对应url:%@ ",urlString);
+        }else{
+             NSLog(@"请求完毕 无法取消");
+        }
     }];
     
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
