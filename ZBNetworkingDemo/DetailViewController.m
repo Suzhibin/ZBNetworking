@@ -18,7 +18,7 @@
 
 @implementation DetailViewController
 - (void)dealloc{
-   NSLog(@"释放%s",__func__);
+ // NSLog(@"释放%s",__func__);
 }
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
@@ -31,7 +31,7 @@
         if (results==YES) {
              NSLog(@"取消对应url:%@ ",urlString);
         }else{
-             NSLog(@"请求完毕 无法取消");
+          //   NSLog(@"请求完毕 无法取消");
         }
     }];
     
