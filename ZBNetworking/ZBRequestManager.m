@@ -106,13 +106,7 @@
         [mutableParameters removeObjectsForKeys:request.parametersfiltrationCacheKey];
         request.parameters =  [mutableParameters copy];
     }
-    NSString *URLStringCacheKey;
-    if (request.customCacheKey.length>0) {
-        URLStringCacheKey=request.customCacheKey;
-    }else{
-        URLStringCacheKey=request.URLString;
-    }
-    return [NSString zb_stringUTF8Encoding:[NSString zb_urlString:URLStringCacheKey appendingParameters:request.parameters]];
+    return [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.URLString appendingParameters:request.parameters]];
 }
 
 + (void)storeObject:(NSObject *)object request:(ZBURLRequest *)request{

@@ -21,7 +21,7 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
     // Do any additional setup after loading the view.
     self.title=@"使用例子";
     
-    NSArray *titleArray=[NSArray arrayWithObjects:@"POST/PUT/PATCH/DELETE/Request",@"UploadRequest",@"downLoadRequest",@"downLoadBatchRequest",@"取消请求",@"url过滤动态参数",@"parameters过滤动态参数", nil];
+    NSArray *titleArray=[NSArray arrayWithObjects:@"POST/PUT/PATCH/DELETE/Request",@"UploadRequest",@"downLoadRequest",@"downLoadBatchRequest",@"取消请求",@"parameters过滤动态参数", nil];
     
     for (int i=0; i<titleArray.count; i++) {
         
@@ -55,9 +55,6 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
             [self cancelRequest];
             break;
         case 1005:
-            [self URLStringTheTimeStamp];
-            break;
-        case 1006:
             [self parametersTheTimeStamp];
             break;
         default:
@@ -212,29 +209,6 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
     }];
 }
 
-- (void)URLStringTheTimeStamp{
-    
-    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSTimeInterval a=[dat timeIntervalSince1970];
-    NSString *timeString = [NSString stringWithFormat:@"&time=%f", a];
-
-    //作者遇到到请求 是在get请求后加一个时间戳的参数，因为URLString 是默认为缓存key的 加上时间戳，key 一直变动 无法拿到缓存。所以定义了一个customCacheKey
-    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=[list_URL stringByAppendingString:timeString];
-        request.customCacheKey=list_URL;//去掉timeString
-        request.methodType=ZBMethodTypeGET;
-        request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
-    }  success:nil failure:nil finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
-        if (isCache) {
-            NSLog(@"使用了缓存");
-        }else{
-            NSLog(@"重新请求");
-        }
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"得到数据:%@",dict);
-    }];
-
-}
 - (void)parametersTheTimeStamp{
     //POST等 使用了parameters 的请求 缓存key会是URLString+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个parametersfiltrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){

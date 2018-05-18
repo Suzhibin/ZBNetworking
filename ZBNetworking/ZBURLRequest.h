@@ -37,11 +37,6 @@
 @property (nonatomic,strong) id __nullable parameters;
 
 /**
- 自定义缓存key 在URLString 无法作为key 的时候使用
- */
-@property (nonatomic,copy) NSString * customCacheKey;
-
-/**
  过滤parameters 里的随机参数
  */
 @property (nonatomic,strong) NSArray *parametersfiltrationCacheKey;
