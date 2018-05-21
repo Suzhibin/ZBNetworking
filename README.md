@@ -1,5 +1,4 @@
 # ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
- AFNetworking封装  GET/POST /PUT/PATCH /DELETE / Upload /DownLoad 网络请求 添加了请求缓存,离线下载,显示缓存大小,删除缓存,取消当前请求等功能
  
 注意：使用本框架开发者注意 有如下设置须知道
 
