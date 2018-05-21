@@ -10,10 +10,10 @@
 		5858D131DA3F67455D1FBE08 /* libPods-ZBNetworkingDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC7D594D1C3900452288F761 /* libPods-ZBNetworkingDemo.a */; };
 		7D10B45D1F4553A400E87520 /* ZBRequestEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D10B45C1F4553A400E87520 /* ZBRequestEngine.m */; };
 		7D10B4601F45543E00E87520 /* ZBRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D10B45F1F45543E00E87520 /* ZBRequestManager.m */; };
-		7D19F09F1F66258C005067CE /* NSFileManager+ZBPathMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D19F09E1F66258C005067CE /* NSFileManager+ZBPathMethod.m */; };
 		7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */; };
 		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
 		7D7EC8B51E248FC500663313 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7EC8B41E248FC500663313 /* SettingViewController.m */; };
+		7D81AFC820B27333006F390A /* NSString+ZBUTF8Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D81AFC720B27333006F390A /* NSString+ZBUTF8Encoding.m */; };
 		7D9289991F46EA950077DC50 /* otherMethodViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9289981F46EA950077DC50 /* otherMethodViewController.m */; };
 		7DD0B4381E65629500E5634E /* ZBCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD0B42F1E65629500E5634E /* ZBCacheManager.m */; };
 		7DD0B43A1E65629500E5634E /* ZBURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD0B4341E65629500E5634E /* ZBURLRequest.m */; };
@@ -55,14 +55,14 @@
 		7D10B45E1F45543E00E87520 /* ZBRequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBRequestManager.h; sourceTree = "<group>"; };
 		7D10B45F1F45543E00E87520 /* ZBRequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBRequestManager.m; sourceTree = "<group>"; };
 		7D10B4611F45553B00E87520 /* ZBRequestConst.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZBRequestConst.h; sourceTree = "<group>"; };
-		7D19F09D1F66258C005067CE /* NSFileManager+ZBPathMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+ZBPathMethod.h"; sourceTree = "<group>"; };
-		7D19F09E1F66258C005067CE /* NSFileManager+ZBPathMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+ZBPathMethod.m"; sourceTree = "<group>"; };
 		7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		7D7EC8B31E248FC500663313 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		7D7EC8B41E248FC500663313 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
+		7D81AFC620B27333006F390A /* NSString+ZBUTF8Encoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+ZBUTF8Encoding.h"; sourceTree = "<group>"; };
+		7D81AFC720B27333006F390A /* NSString+ZBUTF8Encoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+ZBUTF8Encoding.m"; sourceTree = "<group>"; };
 		7D9289971F46EA950077DC50 /* otherMethodViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = otherMethodViewController.h; sourceTree = "<group>"; };
 		7D9289981F46EA950077DC50 /* otherMethodViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = otherMethodViewController.m; sourceTree = "<group>"; };
 		7DD0B42E1E65629500E5634E /* ZBCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBCacheManager.h; sourceTree = "<group>"; };
@@ -136,8 +136,8 @@
 		7DD0B42B1E65629500E5634E /* ZBNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				7D19F09D1F66258C005067CE /* NSFileManager+ZBPathMethod.h */,
-				7D19F09E1F66258C005067CE /* NSFileManager+ZBPathMethod.m */,
+				7D81AFC620B27333006F390A /* NSString+ZBUTF8Encoding.h */,
+				7D81AFC720B27333006F390A /* NSString+ZBUTF8Encoding.m */,
 				7DD0B42E1E65629500E5634E /* ZBCacheManager.h */,
 				7DD0B42F1E65629500E5634E /* ZBCacheManager.m */,
 				7DD0B4301E65629500E5634E /* ZBNetworking.h */,
@@ -425,7 +425,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7DD0B43A1E65629500E5634E /* ZBURLRequest.m in Sources */,
-				7D19F09F1F66258C005067CE /* NSFileManager+ZBPathMethod.m in Sources */,
+				7D81AFC820B27333006F390A /* NSString+ZBUTF8Encoding.m in Sources */,
 				7DF826381D5815BE000D1109 /* ViewController.m in Sources */,
 				7D7EC8B51E248FC500663313 /* SettingViewController.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,

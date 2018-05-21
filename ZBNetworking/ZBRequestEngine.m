@@ -8,9 +8,8 @@
 
 #import "ZBRequestEngine.h"
 #import "AFNetworkActivityIndicatorManager.h"
-#import "NSFileManager+ZBPathMethod.h"
 #import "ZBURLRequest.h"
-
+#import "NSString+ZBUTF8Encoding.h"
 @implementation ZBRequestEngine
 
 + (instancetype)defaultEngine{
@@ -54,7 +53,7 @@
     [self headersAndTimeConfig:request];
     
     NSString *URLString=[NSString zb_stringUTF8Encoding:request.URLString];
-    
+
     if (request.methodType==ZBMethodTypePOST) {
         return [self POST:URLString parameters:request.parameters progress:zb_progress success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePUT){

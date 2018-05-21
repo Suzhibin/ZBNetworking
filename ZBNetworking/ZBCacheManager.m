@@ -26,7 +26,6 @@ NSString *const defaultCachePath =@"AppCache";
 static const NSInteger defaultCacheMaxCacheAge  = 60*60*24*7;
 //static const NSInteger defaultCacheMixCacheAge = 60;
 static const CGFloat unit = 1000.0;
-static const NSInteger timeOut = 60*60;
 @interface ZBCacheManager ()
 @property (nonatomic ,copy)NSString *diskCachePath;
 @property (nonatomic ,strong) dispatch_queue_t operationQueue;
@@ -121,11 +120,8 @@ static const NSInteger timeOut = 60*60;
 - (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path{
     
     NSString *codingPath=[[self cachePathForKey:key path:path] stringByDeletingPathExtension];
-    BOOL exists=NO;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO) {
-        return exists=YES;
-    }
-    return exists;
+
+    return [[NSFileManager defaultManager] fileExistsAtPath:codingPath];
 }
 
 #pragma  mark - 存储

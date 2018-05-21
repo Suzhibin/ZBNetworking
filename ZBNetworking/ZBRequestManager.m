@@ -9,6 +9,7 @@
 #import "ZBRequestManager.h"
 #import "ZBCacheManager.h"
 #import "ZBURLRequest.h"
+#import "NSString+ZBUTF8Encoding.h"
 @implementation ZBRequestManager
 #pragma mark - 配置请求
 + (void)requestWithConfig:(requestConfig)config success:(requestSuccess)success failure:(requestFailure)failure{
@@ -106,7 +107,13 @@
         [mutableParameters removeObjectsForKeys:request.parametersfiltrationCacheKey];
         request.parameters =  [mutableParameters copy];
     }
-    return [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.URLString appendingParameters:request.parameters]];
+    NSString *URLStringCacheKey;
+    if (request.customCacheKey) {
+        URLStringCacheKey=request.customCacheKey;
+    }else{
+        URLStringCacheKey=request.URLString;
+    }
+    return [NSString zb_stringUTF8Encoding:[NSString zb_urlString:URLStringCacheKey appendingParameters:request.parameters]];
 }
 
 + (void)storeObject:(NSObject *)object request:(ZBURLRequest *)request{
