@@ -43,9 +43,11 @@
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets=NO;
     
+    [self.view addSubview:self.tableView];
     /**
      *  如果页面不想使用缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      */
+
     
    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=_urlString;
@@ -58,7 +60,7 @@
             DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
             [self.dataArray addObject:model];
         }
-        [self.view addSubview:self.tableView];
+  
         [self.tableView reloadData];
         
     } failure:^(NSError *error){
@@ -70,9 +72,9 @@
         }
     }finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
         if (isCache==YES) {
-            NSLog(@"使用了缓存");
+            NSLog(@"使用了缓存");self.title=@"使用了缓存";
         }else{
-            NSLog(@"重新请求");
+            NSLog(@"重新请求");self.title=@"重新请求";
         }
     }];
 }

@@ -26,7 +26,7 @@ typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
 /** 得到缓存的Block */
 typedef void(^ZBCacheValueBlock)(NSData *data,NSString *filePath);
 /** 缓存完成的后续操作Block */
-typedef void(^ZBCacheCompletedBlock)();
+typedef void(^ZBCacheCompletedBlock)(void);
 
 /**
  *  文件管理类:管理文件的路径,创建,存储,编码,显示,删除等功能.
