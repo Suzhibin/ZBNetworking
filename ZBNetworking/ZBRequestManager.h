@@ -20,16 +20,6 @@
 + (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failure:(requestFailure)failure;
 
 /**
- *  请求方法 GET/POST/PUT/PATCH/DELETE
- *
- *  @param config           请求配置  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- *  @param finished         请求完成的 Block
- */
-+ (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failure:(requestFailure)failure finished:(requestFinished)finished;
-
-/**
  *  请求方法 GET/POST/PUT/PATCH/DELETE/Upload/DownLoad
  *
  *  @param config           请求配置  Block
@@ -38,17 +28,6 @@
  *  @param failure          请求失败的 Block
  */
 + (void)requestWithConfig:(requestConfig)config  progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure;
-
-/**
- *  请求方法 GET/POST/PUT/PATCH/DELETE/Upload/DownLoad
- *
- *  @param config           请求配置  Block
- *  @param progress         请求进度  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- *  @param finished         请求完成的 Block
- */
-+ (void)requestWithConfig:(requestConfig)config  progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure finished:(requestFinished)finished;
 
 /**
  *  批量请求方法 GET/POST/PUT/PATCH/DELETE

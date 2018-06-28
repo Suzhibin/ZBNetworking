@@ -80,17 +80,16 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
         request.timeoutInterval=10;//默认30
         request.parameters=@{@"1": @"one", @"2": @"two"};
      //   [request setValue:@"1234567890" forHeaderField:@"apitype"];
-    }  success:^(id responseObject,apiType type){
+    }  success:^(id responseObject,apiType type,BOOL isCache){
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         NSLog(@"服务器下发语言数据:%@",dict);
-    } failure:^(NSError *error){
-        NSLog(@"error: %@", error);
-    } finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
         if (isCache) {
             NSLog(@"使用了缓存");
         }else{
             NSLog(@"重新请求");
         }
+    } failure:^(NSError *error){
+        NSLog(@"error: %@", error);
     }];
 }
 - (void)UploadRequest{
@@ -112,7 +111,7 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
         
-    } success:^(id  responseObject, apiType type) {
+    } success:^(id  responseObject, apiType type,BOOL isCache) {
         NSLog(@"responseObject: %@", responseObject);
     } failure:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
@@ -128,7 +127,7 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
         
-    } success:^(id  responseObject, apiType type) {
+    } success:^(id  responseObject, apiType type,BOOL isCache) {
         NSLog(@"此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
@@ -172,7 +171,7 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
         [batchRequest.urlArray addObject:request2];
     } progress:^(NSProgress * _Nullable progress) {
          NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
-    } success:^(id  _Nullable responseObject, apiType type) {
+    } success:^(id  _Nullable responseObject, apiType type,BOOL isCache) {
         NSLog(@"此时会返回存储路径文件: %@", responseObject);
 
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
@@ -222,15 +221,16 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
         request.customCacheKey=list_URL;//去掉timeString
         request.methodType=ZBMethodTypeGET;
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
-    }  success:nil failure:nil finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
+    }  success:^(id responseObject, apiType type, BOOL isCache) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"得到数据:%@",dict);
         if (isCache) {
             NSLog(@"使用了缓存");
         }else{
             NSLog(@"重新请求");
         }
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"得到数据:%@",dict);
-    }];
+    
+    }  failure:nil];
     
 }
 - (void)parametersTheTimeStamp{

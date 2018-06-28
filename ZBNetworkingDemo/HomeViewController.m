@@ -48,7 +48,7 @@
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=requestType;//默认为ZBRequestTypeRefresh
        // request.timeoutInterval=10;//默认30
-    }  success:^(id responseObject,apiType type){
+    }  success:^(id responseObject,apiType type,BOOL isCache){
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];
@@ -71,6 +71,11 @@
         }
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];    //结束刷新
+        if (isCache==YES) {
+            NSLog(@"使用了缓存");
+        }else{
+            NSLog(@"重新请求");
+        }
         
     } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;

@@ -287,7 +287,7 @@ static const NSInteger cacheTime = 30;
             request.URLString=urlString;
             [batchRequest.urlArray addObject:request];
         }
-    }  success:^(id responseObj,apiType type){
+    }  success:^(id responseObj,apiType type,BOOL isCache){
      
             NSLog(@"添加了几个url请求  就会走几遍");
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];

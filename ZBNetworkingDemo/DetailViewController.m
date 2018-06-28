@@ -52,8 +52,13 @@
    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=_urlString;
         request.apiType=ZBRequestTypeDetailCache;
-    }  success:^(id responseObject,apiType type){
+    }  success:^(id responseObject,apiType type,BOOL isCache){
        // NSLog(@"type:%zd",type);
+        if (isCache==YES) {
+            NSLog(@"使用了缓存");self.title=@"使用了缓存";
+        }else{
+            NSLog(@"重新请求");self.title=@"重新请求";
+        }
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         NSArray *array=[dataDict objectForKey:@"videos"];
         for (NSDictionary *dict in array) {
@@ -69,12 +74,6 @@
             [self alertTitle:@"请求超时" andMessage:@""];
         }else{
             [self alertTitle:@"请求失败" andMessage:@""];
-        }
-    }finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
-        if (isCache==YES) {
-            NSLog(@"使用了缓存");self.title=@"使用了缓存";
-        }else{
-            NSLog(@"重新请求");self.title=@"重新请求";
         }
     }];
 }

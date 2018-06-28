@@ -43,7 +43,7 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
         request.URLString=list_URL;
         request.apiType=ZBRequestTypeRefresh;
-    } success:^(id responseObj, apiType type) {
+    } success:^(id responseObj, apiType type,BOOL isCache) {
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
         
         NSArray *array=[dict objectForKey:@"authors"];
