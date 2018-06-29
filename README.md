@@ -8,6 +8,8 @@
 /*返回二进制*/
     self.responseSerializer = [AFHTTPResponseSerializer serializer];
  ```
+ 本框架 post 请求 等可以传参的请求 都可以使用缓存，但是post 传参一般是改变服务器状态，建议不要使用缓存
+ 
 优点:
 
 1.请求类型丰富 /**GET请求*//**POST请求*//**PUT请求*//**PATCH请求*//**DELETE请求*//**Upload请求*//**DownLoad请求*/
