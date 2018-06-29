@@ -50,6 +50,7 @@
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//默认为刷新  //ZBRequestTypeCache为使用缓存
         request.timeoutInterval=10;//默认为30
+       // request.requestSerializerType == ZBJSONRequestSerializer 根据自己服务器的要求调整上传参数的格式
        // request.parameters=@{@"1": @"one", @"2": @"two"};
        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,apiType type){
