@@ -157,7 +157,7 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=@"http://URL";
         request.methodType=ZBMethodTypePOST;//默认为GET
-        request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
+        request.apiType=ZBRequestTypeRefresh;//默认为ZBRequestTypeRefresh
         request.parameters=@{@"1": @"one", @"2": @"two", @"time": @"12345667"};
         request.parametersfiltrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里
     }success:nil failure:nil];
