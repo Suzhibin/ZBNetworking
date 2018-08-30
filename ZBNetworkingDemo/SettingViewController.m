@@ -236,7 +236,7 @@ static const NSInteger cacheTime = 30;
     
     if (indexPath.row==10) {
  
-        //[[ZBCacheManager sharedInstance]clearCacheForkey:menu_URL time:-cacheTime]
+        //[[ZBCacheManager sharedInstance]clearCacheForkey:menu_URL time:cacheTime]
         [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL time:cacheTime completion:^{
             [self.tableView reloadData];
         }];

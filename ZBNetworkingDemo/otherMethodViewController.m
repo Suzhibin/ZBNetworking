@@ -221,16 +221,7 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
         request.customCacheKey=list_URL;//去掉timeString
         request.methodType=ZBMethodTypeGET;
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
-    }  success:^(id responseObject, apiType type, BOOL isCache) {
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"得到数据:%@",dict);
-        if (isCache) {
-            NSLog(@"使用了缓存");
-        }else{
-            NSLog(@"重新请求");
-        }
-    
-    }  failure:nil];
+    }  success:nil  failure:nil];
     
 }
 - (void)parametersTheTimeStamp{
@@ -244,7 +235,7 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
         request.methodType=ZBMethodTypePOST;//默认为GET
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
         request.parameters=@{@"1": @"one", @"2": @"two", @"time":timeString};
-        request.parametersfiltrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里
+        request.parametersfiltrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里变动参数比如 时间戳
     }success:nil failure:nil];
 }
 

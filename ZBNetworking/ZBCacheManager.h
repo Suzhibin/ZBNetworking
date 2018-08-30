@@ -292,7 +292,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  设置过期时间 清除某一个缓存文件  默认路径/Library/Caches/ZBKit/AppCache
  *  @param key          请求的协议地址
- *  @param time         时间 注:时间前要加 “-” 减号
+ *  @param time         时间 注:时间前已经加了 “-” 减号  不用重复添加
  *  @param completion   block 后续操作
  */
 - (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion;
@@ -301,7 +301,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
  *  设置过期时间 清除某一个缓存文件  自定义路径
  *  Remove all expired cached file from disk
  *  @param key          请求的协议地址
- *  @param time         时间 注:时间前要加 “-” 减号
+ *  @param time         时间 时间前已经加了 “-” 减号  不用重复添加
  *  @param path         路径
  *  @param completion   block 后续操作
  */
