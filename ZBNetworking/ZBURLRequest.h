@@ -46,7 +46,7 @@
 @property (nonatomic,strong) NSArray *parametersfiltrationCacheKey;
 
 /**
- *  设置超时时间  默认15秒
+ *  设置超时时间  默认30秒
  *   The timeout interval, in seconds, for created requests. The default timeout interval is 15 seconds.
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
