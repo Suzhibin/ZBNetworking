@@ -20,10 +20,10 @@ Pod::Spec.new do |s|
  
   s.ios.deployment_target = "7.0"
  
-  s.source       = { :git => "https://github.com/Suzhibin/ZBNetworking", :tag => "s.version.to_s" }
+  s.source       = { :git => "https://github.com/Suzhibin/ZBNetworking", :tag => "s.version" }
 
   s.source_files  = "ZBNetworking/**/*.{h,m}"
-  s.exclude_files = "ZBNetworking/ZBNetworking"  
+  s.exclude_files = "ZBNetworking/ZBNetworking.h"  
   s.requires_arc = true
 
   s.dependency "AFNetworking", "~> 3.1.0"
