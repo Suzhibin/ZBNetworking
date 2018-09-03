@@ -162,3 +162,8 @@
         request.parametersfiltrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里
     }success:nil failure:nil];
   ```
+
+
+## License
+
+ZBNetworking is released under the MIT license. See LICENSE for details.
