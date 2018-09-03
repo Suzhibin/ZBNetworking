@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 
-  s.name         = "ZBNetWorking"
+  s.name         = "ZBNetworking"
   s.version      = "1.0.1"
   s.summary      = "The network request library adds caching policies."
 
