@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
  
   s.ios.deployment_target = "7.0"
  
-  s.source       = { :git => "https://github.com/Suzhibin/ZBNetworking.git", :tag => "s.version" }
+  s.source       = { :git => "https://github.com/Suzhibin/ZBNetworking.git", :tag => "1.0.1" }
 
   s.source_files  = "ZBNetworking/**/*.{h,m}"
   s.exclude_files = "ZBNetworking/ZBNetworking.h"  
