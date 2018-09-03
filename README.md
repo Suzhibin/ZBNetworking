@@ -1,5 +1,7 @@
 # ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
  
+ 本来想发布到cocoaPods的 发现名字已经被占用了，也不想改名了。大家就手动下载用把
+ 
 注意：使用本框架开发者注意 有如下设置须知道
 
 因为与缓存互通 服务器返回的数据 必须是二进制 之后可以用NSJSONSerialization 方法转成json 使用
