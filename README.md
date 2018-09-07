@@ -137,7 +137,6 @@
       NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
     NSString *timeString = [NSString stringWithFormat:@"&time=%f", timeInterval];
 
-    //作者遇到到请求 是在get请求后加一个时间戳的参数，因为URLString 是默认为缓存key的 加上时间戳，key 一直变动 无法拿到缓存。所以定义了一个customCacheKey
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=[list_URL stringByAppendingString:timeString];
         request.customCacheKey=list_URL;//去掉timeString
