@@ -4,12 +4,7 @@
  
 注意：使用本框架开发者注意 有如下设置须知道
 
-因为与缓存互通 服务器返回的数据 必须是二进制 之后可以用NSJSONSerialization 方法转成json 使用
 
-```objective-c
-/*返回二进制*/
-    self.responseSerializer = [AFHTTPResponseSerializer serializer];
- ```
  本框架 post 请求 等可以传参的请求 都支持使用缓存，但是post 传参一般是改变服务器状态，建议不要使用缓存
  
 优点:
