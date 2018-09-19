@@ -67,9 +67,8 @@
             //结束上拉加载
         }
         //请求成功
-         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"得到数据:%@",dict);
-        
+          NSLog(@"得到数据:%@",responseObject);
+      
     } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
@@ -145,8 +144,6 @@
         request.methodType=ZBMethodTypeGET;
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
     }  success:^(id responseObject, apiType type, BOOL isCache) {
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"得到数据:%@",dict);
         if (isCache) {
             NSLog(@"使用了缓存");
         }else{
