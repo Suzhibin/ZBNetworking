@@ -50,7 +50,7 @@
 
 ## 使用 
 ```objective-c
-//get请求方法 会默认创建缓存路径    
+//请求方法 会默认创建缓存路径    
   [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
