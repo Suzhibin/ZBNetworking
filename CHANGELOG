@@ -1,1 +1,8 @@
 
+发布于2018年9月19日，周三
+
+更新
+增加响应数据 格式的枚举 responseSerializer  默认为ZBJSONResponseSerializer   json格式
+请求参数枚举 使用时 由 requestSerializerType 改为requestSerializer
+ZBRequestManager.m 内新增 私有方法 responsetSerializerConfig：responseObject：用于格式化数据使用
+Demo 在解析时去掉 手动格式化NSJSONSerialization，增加返回json时 是数组或字典的判断
