@@ -24,7 +24,12 @@
 /**
  *  请求参数的类型
  */
-@property (nonatomic,assign) requestSerializerType requestSerializerType;
+@property (nonatomic,assign) requestSerializerType requestSerializer;
+
+/**
+ *  响应数据的类型
+ */
+@property (nonatomic,assign) responseSerializerType responseSerializer;
 
 /**
  *  接口(请求地址)

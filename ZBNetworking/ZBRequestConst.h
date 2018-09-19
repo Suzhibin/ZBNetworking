@@ -55,13 +55,22 @@ typedef NS_ENUM(NSInteger,MethodType) {
     ZBMethodTypeDELETE
 };
 /**
- 请求参数的格式.
+ 请求参数的格式.默认是HTTP
  */
 typedef NS_ENUM(NSUInteger, requestSerializerType) {
     /** 设置请求参数为二进制格式*/
     ZBHTTPRequestSerializer,
     /** 设置请求参数为JSON格式*/
     ZBJSONRequestSerializer
+};
+/**
+ 返回响应数据的格式.默认是JSON
+ */
+typedef NS_ENUM(NSUInteger, responseSerializerType) {
+    /** 设置响应数据为JSON格式*/
+    ZBJSONResponseSerializer,
+    /** 设置响应数据为二进制格式*/
+    ZBHTTPResponseSerializer
 };
 
 /** 批量请求配置的Block */

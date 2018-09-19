@@ -47,6 +47,8 @@
         request.URLString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=requestType;//默认为ZBRequestTypeRefresh
+       // request.requestSerializer=ZBHTTPRequestSerializer;//默认ZBHTTPRequestSerializer 上传参数默认为二进制 格式
+       // request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
        // request.timeoutInterval=10;//默认30
     }  success:^(id responseObject,apiType type,BOOL isCache){
         //如果是刷新的数据
@@ -58,23 +60,21 @@
         if (type==ZBRequestTypeRefreshMore) {
             //上拉加载 
         }
- 
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSArray *array=[dict objectForKey:@"authors"];
-        
-        for (NSDictionary *dic in array) {
-            RootModel *model=[[RootModel alloc]init];
-            model.name=[dic objectForKey:@"name"];
-            model.wid=[dic objectForKey:@"id"];
-            model.detail=[dic objectForKey:@"detail"];
-            [self.dataArray addObject:model];
-        }
-        [self.tableView reloadData];
-        [self.refreshControl endRefreshing];    //结束刷新
-        if (isCache==YES) {
-            NSLog(@"使用了缓存");
-        }else{
-            NSLog(@"重新请求");
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dict = (NSDictionary *)responseObject;
+            NSArray *array=[dict objectForKey:@"authors"];
+            
+            for (NSDictionary *dic in array) {
+                RootModel *model=[[RootModel alloc]initWithDict:dic];
+                [self.dataArray addObject:model];
+            }
+            [self.tableView reloadData];
+            [self.refreshControl endRefreshing];    //结束刷新
+            if (isCache==YES) {
+                NSLog(@"使用了缓存");
+            }else{
+                NSLog(@"重新请求");
+            }
         }
         
     } failure:^(NSError *error){

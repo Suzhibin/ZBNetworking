@@ -76,13 +76,14 @@ NSString *const mp4url =@"http://wvideo.spriteapp.cn/video/2016/0328/56f8ec01d9b
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=@"";
         request.methodType=ZBMethodTypePOST;//ZBMethodTypePUT//ZBMethodTypePATCH//ZBMethodTypeDELETE// 默认为GET
+        request.requestSerializer=ZBHTTPRequestSerializer;//默认ZBHTTPRequestSerializer 上传参数默认为二进制 格式
+        request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
         request.timeoutInterval=10;//默认30
         request.parameters=@{@"1": @"one", @"2": @"two"};
      //   [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObject,apiType type,BOOL isCache){
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSLog(@"服务器下发语言数据:%@",dict);
+
         if (isCache) {
             NSLog(@"使用了缓存");
         }else{

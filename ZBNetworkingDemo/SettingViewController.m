@@ -287,10 +287,12 @@ static const NSInteger cacheTime = 30;
             request.URLString=urlString;
             [batchRequest.urlArray addObject:request];
         }
-    }  success:^(id responseObj,apiType type,BOOL isCache){
+    }  success:^(id responseObject,apiType type,BOOL isCache){
      
             NSLog(@"添加了几个url请求  就会走几遍");
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dict = (NSDictionary *)responseObject;
+            
             NSArray *array=[dict objectForKey:@"videos"];
             for (NSDictionary *dic in array) {
                 DetailsModel *model=[[DetailsModel alloc]init];
@@ -300,7 +302,7 @@ static const NSInteger cacheTime = 30;
                 //使用SDWebImage 下载图片
                 BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
                 if (isKey) {
-    
+                    
                     NSLog(@"已经下载了");
                 } else{
                     
@@ -313,7 +315,7 @@ static const NSInteger cacheTime = 30;
                         NSLog(@"单个图片完成");
                         
                         [self.tableView reloadData];//耗性能  正式开发建议刷新单行
-                 
+                        
                         //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                         NSString *imageURLStr = [imageURL absoluteString];
                         NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
@@ -328,9 +330,10 @@ static const NSInteger cacheTime = 30;
                         
                     }];
                 }
-              
+                
             }
-
+            
+        }
         
     } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;

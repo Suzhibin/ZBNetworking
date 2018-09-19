@@ -137,7 +137,7 @@
 
 #pragma mark - 其他配置
 - (void)requestSerializerConfig:(ZBURLRequest *)request{
-    self.requestSerializer =request.requestSerializerType==ZBJSONRequestSerializer ? [AFJSONRequestSerializer serializer]:[AFHTTPRequestSerializer serializer];
+    self.requestSerializer =request.requestSerializer==ZBJSONRequestSerializer ? [AFJSONRequestSerializer serializer]:[AFHTTPRequestSerializer serializer];
 }
 
 - (void)headersAndTimeConfig:(ZBURLRequest *)request{

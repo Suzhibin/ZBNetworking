@@ -48,10 +48,12 @@
      *  如果页面不想使用缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
      */
 
-    
+   // NSLog(@"_urlString:%@",_urlString);
    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=_urlString;
         request.apiType=ZBRequestTypeDetailCache;
+       // request.requestSerializer=ZBHTTPRequestSerializer;//默认ZBHTTPRequestSerializer 上传参数默认为二进制 格式
+       // request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
     }  success:^(id responseObject,apiType type,BOOL isCache){
        // NSLog(@"type:%zd",type);
         if (isCache==YES) {
@@ -59,15 +61,17 @@
         }else{
             NSLog(@"重新请求");self.title=@"重新请求";
         }
-        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        NSArray *array=[dataDict objectForKey:@"videos"];
-        for (NSDictionary *dict in array) {
-            DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
-            [self.dataArray addObject:model];
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dataDict = (NSDictionary *)responseObject;
+            NSArray *array=[dataDict objectForKey:@"videos"];
+            for (NSDictionary *dict in array) {
+                DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
+                [self.dataArray addObject:model];
+            }
+            
+            [self.tableView reloadData];
         }
-  
-        [self.tableView reloadData];
-        
+    
     } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){

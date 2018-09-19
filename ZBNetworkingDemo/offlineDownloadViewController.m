@@ -43,19 +43,21 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
         request.URLString=list_URL;
         request.apiType=ZBRequestTypeRefresh;
-    } success:^(id responseObj, apiType type,BOOL isCache) {
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-        
-        NSArray *array=[dict objectForKey:@"authors"];
-        
-        for (NSDictionary *dic in array) {
-            RootModel *model=[[RootModel alloc]init];
-            model.name=[dic objectForKey:@"name"];
-            model.wid=[dic objectForKey:@"id"];
-            [self.dataArray addObject:model];
+    } success:^(id responseObject, apiType type,BOOL isCache) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dict = (NSDictionary *)responseObject;
+            NSArray *array=[dict objectForKey:@"authors"];
             
+            for (NSDictionary *dic in array) {
+                RootModel *model=[[RootModel alloc]init];
+                model.name=[dic objectForKey:@"name"];
+                model.wid=[dic objectForKey:@"id"];
+                [self.dataArray addObject:model];
+                
+            }
+            [self.tableView reloadData];
         }
-        [self.tableView reloadData];
+    
     } failure:^(NSError *error) {
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut) {

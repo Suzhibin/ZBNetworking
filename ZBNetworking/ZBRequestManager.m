@@ -69,7 +69,8 @@
     NSString *key = [self keyWithParameters:request];
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType!=ZBRequestTypeRefresh&&request.apiType!=ZBRequestTypeRefreshMore){
         [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(NSData *data,NSString *filePath) {
-            success ? success(data ,request.apiType,YES) : nil;
+            id result=[self responsetSerializerConfig:request responseObject:data];
+            success ? success(result ,request.apiType,YES) : nil;
         }];
     }else{
         [self dataTaskWithHTTPRequest:request progress:progress success:success failure:failure];
@@ -83,7 +84,8 @@
     } success:^(NSURLSessionDataTask *task, id responseObject) {
         
         [self storeObject:responseObject request:request];
-        success ? success(responseObject,request.apiType,NO) : nil;
+        id result=[self responsetSerializerConfig:request responseObject:responseObject];
+        success ? success(result,request.apiType,NO) : nil;
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure ? failure(error) : nil;
     }];
@@ -114,6 +116,24 @@
             ZBLog(@"store failure");
         }
     }];
+}
+
++ (id)responsetSerializerConfig:(ZBURLRequest *)request responseObject:(id)responseObject{
+    if (request.responseSerializer==ZBHTTPResponseSerializer) {
+        return responseObject;
+    }else{
+        NSError *serializationError = nil;
+        NSData *data = (NSData *)responseObject;
+        // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
+        // See https://github.com/rails/rails/issues/1742
+        BOOL isSpace = [data isEqualToData:[NSData dataWithBytes:" " length:1]];
+        if (data.length > 0 && !isSpace) {
+           id result=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&serializationError];
+            return result;
+        } else {
+            return nil;
+        }
+    }
 }
 
 + (void)cancelRequest:(NSString *)URLString completion:(cancelCompletedBlock)completion{
