@@ -46,7 +46,7 @@
 ```objective-c
 //请求方法 会默认创建缓存路径    
   [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.urlString=list_URL;
+        request.URLString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//默认为刷新  //ZBRequestTypeCache为使用缓存
         request.timeoutInterval=10;//默认为30
@@ -83,7 +83,7 @@
  [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest)
             for (NSString *urlString in offlineArray) {
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-            request.urlString=urlString;
+            request.URLString=urlString;
             [batchRequest.urlArray addObject:request];
         }
     }  success:^(id responseObj,apiType type){
