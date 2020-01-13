@@ -83,6 +83,10 @@
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//默认为刷新  //ZBRequestTypeCache为使用缓存
         request.timeoutInterval=10;//默认为30
+        /**
+         保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone
+         */
+        request.keepType=ZBResponseKeepNone;
        // request.requestSerializer = ZBJSONRequestSerializer;根据自己服务器的要求调整上传参数的格式
        // request.responseSerializer= ZBJSONResponseSerializer;得到的返回数据 格式  默认为json  
        // request.parameters=@{@"1": @"one", @"2": @"two"};
