@@ -77,6 +77,11 @@
         request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
         request.parameters=parameters;//与baseParameters 兼容
         request.headers= headers;//与baseHeaders 兼容
+        /**
+         保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone 什么都不做
+         使用场景是在 重复点击造成的 多次请求，如发帖，评论，搜索等业务
+         */
+        request.keepType=ZBResponseKeepNone;
         request.filtrationCacheKey=@[@""];//与basefiltrationCacheKey 兼容
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
