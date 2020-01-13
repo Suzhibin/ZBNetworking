@@ -8,13 +8,12 @@
 
 #import "offlineDownloadViewController.h"
 #import "ZBNetworking.h"
-#import "RootModel.h"
+#import "HomeModel.h"
 
 @interface offlineDownloadViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
-
-@property (nonatomic,strong)ZBBatchRequest *batchRequest;
+@property (nonatomic,strong)NSMutableArray *offlineArray;
 @end
 
 @implementation offlineDownloadViewController
@@ -22,10 +21,6 @@
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
    
-    NSLog(@"离开页面时 清空容器");
-    [self.batchRequest removeBatchArray];
-    
-    [self.delegate reloadJsonNumber];
 }
 
 - (void)viewDidLoad {
@@ -33,23 +28,24 @@
     // Do any additional setup after loading the view.
     self.dataArray=[[NSMutableArray alloc]init];
     
-    self.batchRequest=[[ZBBatchRequest alloc]init];
-    
     [self.view addSubview:self.tableView];
   
     [self addItemWithTitle:@"离线下载" selector:@selector(offlineBtnClick) location:NO];
-    
-    //请求最新频道列表
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"path"] = @"offlineDownloadViewController";
+
+    //请求最新频道列表 ZBApiType 默认ZBRequestTypeRefresh 重新请求 也不会存储缓存
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
+         //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,list_URL] ;
         request.URLString=list_URL;
-        request.apiType=ZBRequestTypeRefresh;
-    } success:^(id responseObject, apiType type,BOOL isCache) {
+        request.parameters=parameters;
+    } success:^(id responseObject,ZBURLRequest *request) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];
             
             for (NSDictionary *dic in array) {
-                RootModel *model=[[RootModel alloc]init];
+                HomeModel *model=[[HomeModel alloc]init];
                 model.name=[dic objectForKey:@"name"];
                 model.wid=[dic objectForKey:@"id"];
                 [self.dataArray addObject:model];
@@ -85,43 +81,43 @@
     [sw addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
     cell.accessoryView = sw;
     
-    RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    HomeModel *model=[self.dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text=model.name;
     
     return cell;
 }
 - (void)switchValueChanged:(UISwitch *)sw{
-    RootModel *model=[self.dataArray objectAtIndex:sw.tag];
-    NSString *url=[NSString stringWithFormat:details_URL,model.wid];
-    
+    HomeModel *model=[self.dataArray objectAtIndex:sw.tag];
+   
     if (sw.isOn == YES) {
         //添加请求列队
-        [self.batchRequest addObjectWithUrl:url];
-        [self.batchRequest addObjectWithKey:model.name];
-         NSLog(@"离线请求的url:%@",self.batchRequest.batchUrlArray);
+        if ([self.offlineArray containsObject:model]==NO) {
+             [self.offlineArray addObject:model];
+        }
     }else{
         //删除请求列队
-        [self.batchRequest removeObjectWithUrl:url];
-        [self.batchRequest removeObjectWithKey:model.name];
-         NSLog(@"离线请求的url:%@",self.batchRequest.batchUrlArray);
+        if ([self.offlineArray containsObject:model]==YES) {
+             [self.offlineArray removeObject:model];
+        }
     }
 }
 
 - (void)offlineBtnClick{
     
-    if (self.batchRequest.batchUrlArray.count==0) {
+    if (self.offlineArray.count==0) {
         
         [self alertTitle:@"请添加栏目" andMessage:@""];
         
     }else{
        
-        NSLog(@"离线请求的栏目/url个数:%lu",self.batchRequest.batchUrlArray.count);
+        NSLog(@"离线请求的栏目/url个数:%lu",self.offlineArray.count);
     
-        for (NSString *name in self.batchRequest.batchKeyArray) {
-            NSLog(@"离线请求的name:%@",name);
+        for (HomeModel *model in self.offlineArray) {
+            NSLog(@"离线请求的name:%@",model.name);
         }
-       
-        [self.delegate downloadWithArray:self.batchRequest.batchUrlArray];
+        if ([self.delegate respondsToSelector:@selector(downloadWithArray:)]){
+               [self.delegate downloadWithArray:self.offlineArray];
+        }
         
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -140,7 +136,12 @@
     
     return _tableView;
 }
-
+- (NSMutableArray *)offlineArray{
+    if (!_offlineArray) {
+        _offlineArray=[[NSMutableArray alloc]init];
+    }
+    return _offlineArray;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

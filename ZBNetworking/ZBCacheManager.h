@@ -37,6 +37,10 @@ typedef void(^ZBCacheCompletedBlock)(void);
 + (ZBCacheManager *)sharedInstance;
 
 /**
+ * 内存缓存应该保存的对象的最大数目.
+ */
+@property (assign, nonatomic) NSUInteger maxMemoryCountLimit;
+/**
  获取沙盒Home的文件目录
 
  @return Home           路径
@@ -288,7 +292,11 @@ typedef void(^ZBCacheCompletedBlock)(void);
  *  @param completion   block 后续操作
  */
 - (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion;
-
+/**
+ *  清除内存缓存
+ *  Clear all memory cached data
+*/
+- (void)clearMemory;
 /**
  *  清除磁盘缓存 /Library/Caches/ZBKit/AppCache
  *  Clear AppCache disk cached

@@ -13,31 +13,23 @@
 @interface DetailViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic, strong) NSURLSessionTask *currentTask;
 
 @end
 
 @implementation DetailViewController
 - (void)dealloc{
- // NSLog(@"释放%s",__func__);
+  NSLog(@"%s",__func__);
 }
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     /**
-     防止网络不好 请求未完成用户就退出页面 ,而请求还在继续 浪费用户流量 ,所以页面退出 要取消对应的请求。
+       如果请求未完成，就退出，可以取消本次请求，节省用户流量，节约开销。已请求成功和读缓存，不会取消。
      */
-
-    [ZBRequestManager cancelRequest:_urlString completion:^(BOOL results, NSString *urlString) {
-        //如果请求成功 或 读缓存 会返回null 无法取消。请求未完成的会取消并返回对应url results 为yes
-        if (results==YES) {
-             NSLog(@"取消对应url:%@ ",urlString);
-        }else{
-          //   NSLog(@"请求完毕 无法取消");
-        }
-    }];
+    [self.currentTask cancel];//取消本次请求
     
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
 }
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -45,22 +37,23 @@
     
     [self.view addSubview:self.tableView];
     /**
-     *  如果页面不想使用缓存 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
+     *  如果页面不想使用缓存 要添加 apiType 类型
+     *   ZBRequestTypeRefresh  每次就会重新请求url 不存储缓存
+     *   ZBRequestTypeRefreshAndCache 每次就会重新请求url 存储，更新缓存
      */
-
-   // NSLog(@"_urlString:%@",_urlString);
-   [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=_urlString;
-        request.apiType=ZBRequestTypeDetailCache;
-       // request.requestSerializer=ZBHTTPRequestSerializer;//默认ZBHTTPRequestSerializer 上传参数默认为二进制 格式
-       // request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
-    }  success:^(id responseObject,apiType type,BOOL isCache){
-       // NSLog(@"type:%zd",type);
-        if (isCache==YES) {
-            NSLog(@"使用了缓存");self.title=@"使用了缓存";
-        }else{
-            NSLog(@"重新请求");self.title=@"重新请求";
-        }
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"author"] =self.wid;
+    parameters[@"iap"] = @"0";
+    parameters[@"limit"] =@"50";
+    parameters[@"offset"] = @"0";
+    parameters[@"path"] = @"DetailViewController";
+   self.currentTask=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+         //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
+       request.URLString=details_URL;
+       request.parameters=parameters;
+       request.apiType=ZBRequestTypeCache;
+       request.filtrationCacheKey=@[@"path"];
+    }  success:^(id responseObject,ZBURLRequest *request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dataDict = (NSDictionary *)responseObject;
             NSArray *array=[dataDict objectForKey:@"videos"];
@@ -68,13 +61,18 @@
                 DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
                 [self.dataArray addObject:model];
             }
-            
             [self.tableView reloadData];
+            if (request.isCache==YES) {
+                self.title=@"使用了缓存";
+            }else{
+                self.title=@"重新请求";
+            }
         }
     
     } failure:^(NSError *error){
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut){
+        if (error.code==NSURLErrorCancelled){
+             NSLog(@"请求取消❌------------------");
+        }else if (error.code==NSURLErrorTimedOut){
             [self alertTitle:@"请求超时" andMessage:@""];
         }else{
             [self alertTitle:@"请求失败" andMessage:@""];

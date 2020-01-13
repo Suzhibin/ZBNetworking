@@ -8,10 +8,9 @@
 
 #import "HomeViewController.h"
 #import "ZBNetworking.h"
-#import "RootModel.h"
+#import "HomeModel.h"
 #import "DetailViewController.h"
 #import "SettingViewController.h"
-#import "otherMethodViewController.h"
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
@@ -19,61 +18,93 @@
 @end
 
 @implementation HomeViewController
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title=@"GET请求";
     /**
-     *  ZBRequestTypeCache 为 有缓存使用缓存 无缓存就重新请求
-     *  默认缓存路径/Library/Caches/ZBKit/AppCache
+     基础配置
+     需要在请求之前配置，设置后所有请求都会带上 此基础配置
      */
-    [self getDataWithApiType:ZBRequestTypeCache];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
+    parameters[@"jianshu"] = @"https://www.jianshu.com/p/55cda3341d11";
+    NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
+    NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
+    parameters[@"timeString"] =timeString;//时间戳
+
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+    headers[@"Token"] = @"Token";
     
+    [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
+        config.baseURL=server_URL;//如果同一个环境，有多个域名 不建议设置baseURL
+        config.baseParameters=parameters;//公告参数
+        // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
+        config.baseFiltrationCacheKey=@[@"timeString"];
+        config.baseHeaders=headers;//请求头
+        config.baseRequestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
+        config.baseResponseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
+        config.baseTimeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
+        config.consoleLog=YES;//开log
+    }];
+
     
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
-
+    /**
+     *  ZBRequestTypeRefresh          每次会重新请求 不存储缓存
+     *  ZBRequestTypeRefreshAndCache  每次会重新请求 存储，更新缓存
+     *  ZBRequestTypeCache            有缓存使用缓存 无缓存就重新请求 存储，更新缓存
+     *  ZBRequestTypeRefreshMore      每次会重新请求 不存储缓存 （业务类型，可不使用，只是为了区分上拉加载业务）
+     *  支持内存缓存 和 沙盒缓存
+     *  沙盒默认缓存路径/Library/Caches/ZBKit/AppCache
+     */
+    [self getDataWithApiType:ZBRequestTypeCache];
+    
     [self addItemWithTitle:@"设置缓存" selector:@selector(btnClick) location:NO];
-    
-    [self addItemWithTitle:@"其他方法" selector:@selector(otherbtnClick) location:YES];
-    
+
 }
 #pragma mark - AFNetworking
 //apiType 是请求类型 在ZBRequestConst 里
-- (void)getDataWithApiType:(apiType)requestType{
-    
+- (void)getDataWithApiType:(ZBApiType)apiType{
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"path"] = @"HomeViewController";
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+    headers[@"headers"] = @"herader";
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+        //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,list_URL] ;
         request.URLString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
-        request.apiType=requestType;//默认为ZBRequestTypeRefresh
-       // request.requestSerializer=ZBHTTPRequestSerializer;//默认ZBHTTPRequestSerializer 上传参数默认为二进制 格式
-       // request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
-       // request.timeoutInterval=10;//默认30
-    }  success:^(id responseObject,apiType type,BOOL isCache){
-        //如果是刷新的数据
-        if (type==ZBRequestTypeRefresh) {
-            [self.dataArray removeAllObjects];
-           
-        }
-        //上拉加载 要添加 apiType 类型 ZBRequestTypeCacheMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)， 也可以不遵守此枚举
-        if (type==ZBRequestTypeRefreshMore) {
-            //上拉加载 
-        }
+        request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
+        request.parameters=parameters;//与baseParameters 兼容
+        request.headers= headers;//与baseHeaders 兼容
+        request.filtrationCacheKey=@[@""];//与basefiltrationCacheKey 兼容
+        request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
+        request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
+        request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
+    }  success:^(id responseObject,ZBURLRequest *request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];
+            //如果是刷新的数据
+            if (request.apiType==ZBRequestTypeRefresh) {
+                [self.dataArray removeAllObjects];
+               
+            }
+            //上拉加载 业务 apiType 类型 ZBRequestTypeRefreshMore(重新请求)， 也可以不遵守此类型
+            if (request.apiType==ZBRequestTypeRefreshMore) {
+                //上拉加载
+            }
             
             for (NSDictionary *dic in array) {
-                RootModel *model=[[RootModel alloc]initWithDict:dic];
+                HomeModel *model=[[HomeModel alloc]initWithDict:dic];
                 [self.dataArray addObject:model];
             }
             [self.tableView reloadData];
             [self.refreshControl endRefreshing];    //结束刷新
-            if (isCache==YES) {
-                NSLog(@"使用了缓存");
+            if (request.isCache==YES) {
+                self.title=@"使用了缓存";
             }else{
-                NSLog(@"重新请求");
+                self.title=@"重新请求";
             }
         }
         
@@ -111,16 +142,15 @@
 
 - (void)timer{
     /**
-     *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefresh  每次就会重新请求url
+     *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefreshAndCache  每次就会重新请求url
      *  请求下来的缓存会覆盖原有的缓存文件
      */
-    
-    [self getDataWithApiType:ZBRequestTypeRefresh];
+    [self getDataWithApiType:ZBRequestTypeRefreshAndCache];
     
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
     
     /**
-     * 上拉加载 要添加 apiType 类型 ZBRequestTypeLoadMore(读缓存)或ZBRequestTypeRefreshMore(重新请求)
+     * 上拉加载 要添加 apiType 类型 ZBRequestTypeRefreshMore(重新请求)
      */
 }
 
@@ -141,7 +171,7 @@
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     
-    RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    HomeModel *model=[self.dataArray objectAtIndex:indexPath.row];
     
     cell.textLabel.text=model.name;
     cell.detailTextLabel.text=[NSString stringWithFormat:@"更新时间:%@",model.detail];
@@ -150,11 +180,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    RootModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    HomeModel *model=[self.dataArray objectAtIndex:indexPath.row];
     DetailViewController *detailsVC=[[DetailViewController alloc]init];
-    
-    NSString *url=[NSString stringWithFormat:details_URL,model.wid];
-    detailsVC.urlString=url;
+    detailsVC.wid=model.wid;
     [self.navigationController pushViewController:detailsVC animated:YES];
     
 }
@@ -177,10 +205,6 @@
         _dataArray = [[NSMutableArray alloc] init];
     }
     return _dataArray;
-}
-- (void)otherbtnClick{
-    otherMethodViewController *settingVC=[[otherMethodViewController alloc]init];
-    [self.navigationController pushViewController:settingVC animated:YES];
 }
 
 - (void)btnClick{

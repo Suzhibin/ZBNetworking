@@ -14,7 +14,6 @@
 		7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */; };
 		7D7EC8B51E248FC500663313 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7EC8B41E248FC500663313 /* SettingViewController.m */; };
 		7D81AFC820B27333006F390A /* NSString+ZBUTF8Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D81AFC720B27333006F390A /* NSString+ZBUTF8Encoding.m */; };
-		7D9289991F46EA950077DC50 /* otherMethodViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9289981F46EA950077DC50 /* otherMethodViewController.m */; };
 		7DD0B4381E65629500E5634E /* ZBCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD0B42F1E65629500E5634E /* ZBCacheManager.m */; };
 		7DD0B43A1E65629500E5634E /* ZBURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD0B4341E65629500E5634E /* ZBURLRequest.m */; };
 		7DD2C0E11D92379000AE0413 /* offlineDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */; };
@@ -27,8 +26,10 @@
 		7DF8264B1D5815BE000D1109 /* ZBNetworkingDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8264A1D5815BE000D1109 /* ZBNetworkingDemoTests.m */; };
 		7DF826561D5815BE000D1109 /* ZBNetworkingDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826551D5815BE000D1109 /* ZBNetworkingDemoUITests.m */; };
 		7DF826821D58170C000D1109 /* DetailsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8267A1D58170C000D1109 /* DetailsModel.m */; };
-		7DF826831D58170C000D1109 /* RootModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8267C1D58170C000D1109 /* RootModel.m */; };
 		7DF826851D58170C000D1109 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF826801D58170C000D1109 /* RootViewController.m */; };
+		9F244A502170D53700482E41 /* MethodViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A4F2170D53700482E41 /* MethodViewController.m */; };
+		9F244A532170D59900482E41 /* CustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A522170D59900482E41 /* CustomTabBarController.m */; };
+		9F244A582170D92500482E41 /* HomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A572170D92500482E41 /* HomeModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,8 +64,6 @@
 		7D7EC8B41E248FC500663313 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		7D81AFC620B27333006F390A /* NSString+ZBUTF8Encoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+ZBUTF8Encoding.h"; sourceTree = "<group>"; };
 		7D81AFC720B27333006F390A /* NSString+ZBUTF8Encoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+ZBUTF8Encoding.m"; sourceTree = "<group>"; };
-		7D9289971F46EA950077DC50 /* otherMethodViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = otherMethodViewController.h; sourceTree = "<group>"; };
-		7D9289981F46EA950077DC50 /* otherMethodViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = otherMethodViewController.m; sourceTree = "<group>"; };
 		7DD0B42E1E65629500E5634E /* ZBCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBCacheManager.h; sourceTree = "<group>"; };
 		7DD0B42F1E65629500E5634E /* ZBCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBCacheManager.m; sourceTree = "<group>"; };
 		7DD0B4301E65629500E5634E /* ZBNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBNetworking.h; sourceTree = "<group>"; };
@@ -90,10 +89,14 @@
 		7DF826571D5815BE000D1109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7DF826791D58170C000D1109 /* DetailsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsModel.h; sourceTree = "<group>"; };
 		7DF8267A1D58170C000D1109 /* DetailsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsModel.m; sourceTree = "<group>"; };
-		7DF8267B1D58170C000D1109 /* RootModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootModel.h; sourceTree = "<group>"; };
-		7DF8267C1D58170C000D1109 /* RootModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootModel.m; sourceTree = "<group>"; };
 		7DF8267F1D58170C000D1109 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		7DF826801D58170C000D1109 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		9F244A4E2170D53700482E41 /* MethodViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MethodViewController.h; sourceTree = "<group>"; };
+		9F244A4F2170D53700482E41 /* MethodViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MethodViewController.m; sourceTree = "<group>"; };
+		9F244A512170D59900482E41 /* CustomTabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTabBarController.h; sourceTree = "<group>"; };
+		9F244A522170D59900482E41 /* CustomTabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTabBarController.m; sourceTree = "<group>"; };
+		9F244A562170D92500482E41 /* HomeModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeModel.h; sourceTree = "<group>"; };
+		9F244A572170D92500482E41 /* HomeModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeModel.m; sourceTree = "<group>"; };
 		C572061DEBB8B1709A68AEA1 /* Pods-ZBNetworkingDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNetworkingDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNetworkingDemo/Pods-ZBNetworkingDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		FC7D594D1C3900452288F761 /* libPods-ZBNetworkingDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ZBNetworkingDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -186,20 +189,11 @@
 		7DF8262F1D5815BE000D1109 /* ZBNetworkingDemo */ = {
 			isa = PBXGroup;
 			children = (
-				7DF826791D58170C000D1109 /* DetailsModel.h */,
-				7DF8267A1D58170C000D1109 /* DetailsModel.m */,
-				7DF8267B1D58170C000D1109 /* RootModel.h */,
-				7DF8267C1D58170C000D1109 /* RootModel.m */,
-				7D7EC8B31E248FC500663313 /* SettingViewController.h */,
-				7D7EC8B41E248FC500663313 /* SettingViewController.m */,
-				7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */,
-				7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */,
-				7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */,
-				7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */,
-				7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */,
-				7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */,
-				7D9289971F46EA950077DC50 /* otherMethodViewController.h */,
-				7D9289981F46EA950077DC50 /* otherMethodViewController.m */,
+				9F244A5A2170D99700482E41 /* MethodViewController */,
+				9F244A592170D97D00482E41 /* HomeViewController */,
+				9F244A552170D8D200482E41 /* DetailViewController */,
+				9F244A542170D8C300482E41 /* SettingViewController */,
+				9F244A462170D3B000482E41 /* TabBarController */,
 				7DF8267F1D58170C000D1109 /* RootViewController.h */,
 				7DF826801D58170C000D1109 /* RootViewController.m */,
 				7DF826331D5815BE000D1109 /* AppDelegate.h */,
@@ -239,6 +233,57 @@
 				7DF826571D5815BE000D1109 /* Info.plist */,
 			);
 			path = ZBNetworkingDemoUITests;
+			sourceTree = "<group>";
+		};
+		9F244A462170D3B000482E41 /* TabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				9F244A512170D59900482E41 /* CustomTabBarController.h */,
+				9F244A522170D59900482E41 /* CustomTabBarController.m */,
+			);
+			name = TabBarController;
+			sourceTree = "<group>";
+		};
+		9F244A542170D8C300482E41 /* SettingViewController */ = {
+			isa = PBXGroup;
+			children = (
+				7D7EC8B31E248FC500663313 /* SettingViewController.h */,
+				7D7EC8B41E248FC500663313 /* SettingViewController.m */,
+				7DD2C0DF1D92379000AE0413 /* offlineDownloadViewController.h */,
+				7DD2C0E01D92379000AE0413 /* offlineDownloadViewController.m */,
+			);
+			name = SettingViewController;
+			sourceTree = "<group>";
+		};
+		9F244A552170D8D200482E41 /* DetailViewController */ = {
+			isa = PBXGroup;
+			children = (
+				7DF826791D58170C000D1109 /* DetailsModel.h */,
+				7DF8267A1D58170C000D1109 /* DetailsModel.m */,
+				7D4C69CE1D6D8BA4006CCE4C /* DetailViewController.h */,
+				7D4C69CF1D6D8BA4006CCE4C /* DetailViewController.m */,
+			);
+			name = DetailViewController;
+			sourceTree = "<group>";
+		};
+		9F244A592170D97D00482E41 /* HomeViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9F244A562170D92500482E41 /* HomeModel.h */,
+				9F244A572170D92500482E41 /* HomeModel.m */,
+				7D4C69CB1D6D888C006CCE4C /* HomeViewController.h */,
+				7D4C69CC1D6D888C006CCE4C /* HomeViewController.m */,
+			);
+			name = HomeViewController;
+			sourceTree = "<group>";
+		};
+		9F244A5A2170D99700482E41 /* MethodViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9F244A4E2170D53700482E41 /* MethodViewController.h */,
+				9F244A4F2170D53700482E41 /* MethodViewController.m */,
+			);
+			name = MethodViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,6 +372,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -398,14 +444,15 @@
 				7DD0B43A1E65629500E5634E /* ZBURLRequest.m in Sources */,
 				7D81AFC820B27333006F390A /* NSString+ZBUTF8Encoding.m in Sources */,
 				7DF826381D5815BE000D1109 /* ViewController.m in Sources */,
+				9F244A532170D59900482E41 /* CustomTabBarController.m in Sources */,
 				7D7EC8B51E248FC500663313 /* SettingViewController.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
 				7D10B45D1F4553A400E87520 /* ZBRequestEngine.m in Sources */,
+				9F244A582170D92500482E41 /* HomeModel.m in Sources */,
 				7DF826821D58170C000D1109 /* DetailsModel.m in Sources */,
 				7DD2C0E11D92379000AE0413 /* offlineDownloadViewController.m in Sources */,
-				7D9289991F46EA950077DC50 /* otherMethodViewController.m in Sources */,
-				7DF826831D58170C000D1109 /* RootModel.m in Sources */,
+				9F244A502170D53700482E41 /* MethodViewController.m in Sources */,
 				7DD0B4381E65629500E5634E /* ZBCacheManager.m in Sources */,
 				7DF826321D5815BE000D1109 /* main.m in Sources */,
 				7D10B4601F45543E00E87520 /* ZBRequestManager.m in Sources */,
@@ -557,6 +604,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -570,6 +618,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

@@ -9,5 +9,5 @@
 #import "RootViewController.h"
 
 @interface DetailViewController : RootViewController
-@property (nonatomic,copy)NSString *urlString;
+@property (nonatomic,copy)NSString *wid;
 @end

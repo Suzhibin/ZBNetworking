@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "HomeViewController.h"
+#import "CustomTabBarController.h"
 #import "ZBNetworking.h"
 @interface AppDelegate ()
 
@@ -24,10 +24,9 @@
     NSLog(@"cachePath = %@",cachePath);
 
    
-    HomeViewController *home = [[HomeViewController alloc]init];
-    UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:home];
+    CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
     
-    self.window.rootViewController = nc;
+    self.window.rootViewController = tabbar;
     
     [self.window makeKeyAndVisible];
 

@@ -12,17 +12,24 @@
 #import <SDImageCache.h>
 #import <SDWebImageManager.h>
 #import "DetailsModel.h"
-static const NSInteger cacheTime = 30;
+#import "HomeModel.h"
+static const NSInteger cacheTime = 15;//过期时间
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
 
 @property (nonatomic,copy)NSString *imagePath;
 @property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
-@property (nonatomic,strong)ZBBatchRequest *batchRequest;
+//@property (nonatomic,strong)ZBBatchRequest *batchRequest;
 @end
 
 @implementation SettingViewController
-
+- (void)dealloc{
+    NSLog(@"释放%s",__func__);
+}
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [self cancelClick];//如果退出页面可以取消下载，看产品需求
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -61,7 +68,7 @@ static const NSInteger cacheTime = 30;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",AppCacheSize];
-        
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     if (indexPath.row==1) {
         cell.textLabel.text=@"全部缓存数量";
@@ -80,8 +87,9 @@ static const NSInteger cacheTime = 30;
         CGFloat cacheSize=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
     
         cacheSize=cacheSize/1000.0/1000.0;
-        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",cacheSize];
-
+        CGFloat size=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
+        cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM(%@)",cacheSize,[[ZBCacheManager sharedInstance] fileUnitWithSize:size]];
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     
     if (indexPath.row==3) {
@@ -101,6 +109,7 @@ static const NSInteger cacheTime = 30;
          imageSize=imageSize/1000.0/1000.0;
         
          cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM",imageSize];
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     
     if (indexPath.row==5) {
@@ -123,7 +132,7 @@ static const NSInteger cacheTime = 30;
 
         //fileUnitWithSize 转换单位方法
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM(%@)",cacheSize,[[ZBCacheManager sharedInstance] fileUnitWithSize:size]];
- 
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
     
     if (indexPath.row==7) {
@@ -136,29 +145,37 @@ static const NSInteger cacheTime = 30;
         
     }
     if (indexPath.row==8) {
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.text=@"清除单个json缓存文件(例:删除首页)";
         
     }
     if (indexPath.row==9) {
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.text=@"清除单个图片缓存文件(手动添加url)";
     }
     
     if (indexPath.row==10) {
-        cell.textLabel.text=@"按时间清除“单个”json缓存(例:menu,超30秒)";
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell.textLabel.text=@"按过期时间清除“单个”json缓存(例:menu,超15秒)";
         cell.textLabel.font=[UIFont systemFontOfSize:14];
     }
     
     if (indexPath.row==11) {
-        cell.textLabel.text=@"按时间清除“单个”图片缓存(手动添加url,超30秒)";
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell.textLabel.text=@"按过期时间清除“单个”图片缓存(手动添加url,超15秒)";
         cell.textLabel.font=[UIFont systemFontOfSize:14];
     }
 
     if (indexPath.row==12) {
-        cell.textLabel.text=@"按时间清除全部过期json缓存(例:超过30秒)";
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell.textLabel.text=@"按过期时间清除全部过期json缓存(例:超过15秒)";
+        cell.textLabel.font=[UIFont systemFontOfSize:14];
     }
     
     if (indexPath.row==13) {
-        cell.textLabel.text=@"按时间清除全部过期图片缓存(例:超过30秒)";
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell.textLabel.text=@"按过期时间清除全部过期图片缓存(例:超过15秒)";
+        cell.textLabel.font=[UIFont systemFontOfSize:14];
     }
     
     if (indexPath.row==14) {
@@ -178,6 +195,7 @@ static const NSInteger cacheTime = 30;
         
         //清除json缓存后的操作
         [[ZBCacheManager sharedInstance]clearCacheOnCompletion:^{
+            [[ZBCacheManager sharedInstance]clearMemory];
             //清除图片缓存
             [[SDImageCache sharedImageCache] clearDisk];
             [[SDImageCache sharedImageCache] clearMemory];
@@ -190,6 +208,7 @@ static const NSInteger cacheTime = 30;
         //清除json缓存
         //[[ZBCacheManager sharedInstance]clearCache];
         [[ZBCacheManager sharedInstance]clearCacheOnCompletion:^{
+            [[ZBCacheManager sharedInstance]clearMemory];
              [self.tableView reloadData];
         }];
     }
@@ -208,7 +227,6 @@ static const NSInteger cacheTime = 30;
         //用ZBCacheManager 方法代替sdwebimage方法
         // [[ZBCacheManager sharedInstance]clearDiskWithpath:self.imagePath];
         [[ZBCacheManager sharedInstance]clearDiskWithpath:self.imagePath completion:^{
-            
             [self.tableView reloadData];
             
         }];
@@ -216,8 +234,9 @@ static const NSInteger cacheTime = 30;
     if (indexPath.row==8) {
         
         //清除单个缓存文件
-        // [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
-        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL completion:^{
+        // [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key];
+       
+        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key completion:^{
             
          [self.tableView reloadData];
             
@@ -236,8 +255,8 @@ static const NSInteger cacheTime = 30;
     
     if (indexPath.row==10) {
  
-        //[[ZBCacheManager sharedInstance]clearCacheForkey:menu_URL time:cacheTime]
-        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL time:cacheTime completion:^{
+        //[[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key time:cacheTime]
+        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key time:cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }
@@ -270,26 +289,27 @@ static const NSInteger cacheTime = 30;
 }
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
-    [self requestOffline:offlineArray];
-}
 
-- (void)reloadJsonNumber{
-    //离线页面的频道列表也会缓存的 如果之前清除了缓存，就刷新显示出来+1个缓存数量
-    [self.tableView reloadData];
-}
-
-- (void)requestOffline:(NSMutableArray *)offlineArray{
-    
     //批量请求
-    self.batchRequest =[ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
-        for (NSString *urlString in offlineArray) {
+   [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
+        for (HomeModel *model in offlineArray) {
+            NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+            parameters[@"path"] = @"SettingViewController";
+            parameters[@"author"] =model.wid;
+            parameters[@"iap"] = @"0";
+            parameters[@"limit"] =@"50";
+            parameters[@"offset"] = @"0";
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-            request.URLString=urlString;
-            [batchRequest.urlArray addObject:request];
+            //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
+            request.URLString=details_URL;
+            request.apiType=ZBRequestTypeRefreshAndCache;//重新请求 并覆盖原来缓存文件
+            request.parameters=parameters;
+            request.filtrationCacheKey=@[@"path"];
+            [batchRequest.requestArray addObject:request];
         }
-    }  success:^(id responseObject,apiType type,BOOL isCache){
+    }  success:^(id responseObject,ZBURLRequest *request){
      
-            NSLog(@"添加了几个url请求  就会走几遍");
+            NSLog(@"添加了几个请求  就会走几遍");
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             
@@ -299,7 +319,7 @@ static const NSInteger cacheTime = 30;
                 model.thumb=[dic objectForKey:@"thumb"]; //找到图片的key
                 [self.imageArray addObject:model];
                 
-                //使用SDWebImage 下载图片
+                //使用SDWebImage 下载图片， YYWebImang等逻辑一样
                 BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
                 if (isKey) {
                     
@@ -343,20 +363,12 @@ static const NSInteger cacheTime = 30;
             NSLog(@"请求失败");
         }
     }];
-  
 }
 
 - (void)cancelClick{
-    [self.batchRequest cancelbatchRequestWithCompletion:^(BOOL results, NSString *urlString) {
-        if (results==YES) {
-            NSLog(@"取消下载请求:%d URL:%@",results,urlString);
-        }else{
-            NSLog(@"已经请求完毕无法取消");
-        }
-    }];
+    [ZBRequestManager cancelAllRequest];
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.imageArray removeAllObjects];
-    NSLog(@"取消下载");
 }
 
 //懒加载

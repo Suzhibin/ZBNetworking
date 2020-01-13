@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#define list_URL @"http://api.dotaly.com/lol/api/v1/authors?iap=0"
+#define server_URL @"http://api.dotaly.com/lol/api/v1/"
+#define list_URL @"authors?iap=0"
 
-#define details_URL @"http://api.dotaly.com/lol/api/v1/shipin/latest?author=%@&iap=0jb=0&limit=50&offset=0"
-
+#define details_URL @"shipin/latest"
+#define list_URL_key @"http://api.dotaly.com/lol/api/v1/authors?iap=0?path=HomeViewController&github=https://github.com/Suzhibin/ZBNetworking&jianshu=https://www.jianshu.com/p/55cda3341d11"
 //屏幕宽
 #define SCREEN_WIDTH                ([UIScreen mainScreen].bounds.size.width)
 //屏幕高

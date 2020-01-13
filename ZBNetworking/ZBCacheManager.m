@@ -22,11 +22,12 @@
 #import <CommonCrypto/CommonDigest.h>
 
 NSString *const PathSpace =@"ZBKit";
-NSString *const defaultCachePath =@"AppCache";
+NSString *const defaultCachePathName =@"AppCache";
 static const NSInteger defaultCacheMaxCacheAge  = 60*60*24*7;
 //static const NSInteger defaultCacheMixCacheAge = 60;
 static const CGFloat unit = 1000.0;
 @interface ZBCacheManager ()
+@property (nonatomic ,strong) NSCache *memoryCache;
 @property (nonatomic ,copy)NSString *diskCachePath;
 @property (nonatomic ,strong) dispatch_queue_t operationQueue;
 
@@ -46,22 +47,27 @@ static const CGFloat unit = 1000.0;
 - (id)init{
     self = [super init];
     if (self) {
+          NSString *memoryNameSpace = [@"memory.ZBCacheManager" stringByAppendingString:defaultCachePathName];
         
-         _operationQueue = dispatch_queue_create("com.dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
+         _operationQueue = dispatch_queue_create("dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
         
-        [self initCachesfileWithName:defaultCachePath];
+        _memoryCache = [[NSCache alloc] init];
+        _memoryCache.name = memoryNameSpace;
+        
+        [self initCachesfileWithName:defaultCachePathName];
   
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(automaticCleanCache)
-                                                     name:UIApplicationWillTerminateNotification
-                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearMemory) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationWillTerminateNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundCleanCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -130,6 +136,9 @@ static const CGFloat unit = 1000.0;
 }
 
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
+
+    [self.memoryCache setObject:content forKey:key ];
+    
     dispatch_async(self.operationQueue,^{
         NSString *codingPath =[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
         BOOL result=[self setContent:content writeToFile:codingPath];
@@ -145,28 +154,10 @@ static const CGFloat unit = 1000.0;
     if (!content||!path){
         return NO;
     }
-    if ([content isKindOfClass:[NSMutableArray class]]) {
-        return  [(NSMutableArray *)content writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSArray class]]) {
-        return [(NSArray *)content writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSMutableData class]]) {
-        return [(NSMutableData *)content writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSData class]]) {
+    if ([content isKindOfClass:[NSData class]]) {
         return  [(NSData *)content writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSMutableDictionary class]]) {
-        [(NSMutableDictionary *)content writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSDictionary class]]) {
-        return  [(NSDictionary *)content writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSJSONSerialization class]]) {
-        return [(NSDictionary *)content writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSMutableString class]]) {
-        return  [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
-    }else if ([content isKindOfClass:[NSString class]]) {
-        return [[((NSString *)content) dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:YES];
     }else if ([content isKindOfClass:[UIImage class]]) {
         return [UIImageJPEGRepresentation((UIImage *)content,(CGFloat)0.9) writeToFile:path atomically:YES];
-    }else if ([content conformsToProtocol:@protocol(NSCoding)]) {
-        return [NSKeyedArchiver archiveRootObject:content toFile:path];
     }else {
         [NSException raise:@"非法的文件内容" format:@"文件类型%@异常。", NSStringFromClass([content class])];
         return NO;
@@ -182,17 +173,28 @@ static const CGFloat unit = 1000.0;
 
 - (void)getCacheDataForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value{
     if (!key)return;
-    dispatch_async(self.operationQueue,^{
-        @autoreleasepool {
-            NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
-            NSData *diskdata= [NSData dataWithContentsOfFile:filePath];
-            if (value) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    value(diskdata,filePath);
-                });
-            }
+    NSData *obj = [self.memoryCache objectForKey:key];
+    if (obj) {
+        if (value) {
+            value(obj,@"memoryCache");
         }
-    });
+    }else{
+        dispatch_async(self.operationQueue,^{
+            @autoreleasepool {
+                NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
+                NSData *diskdata= [NSData dataWithContentsOfFile:filePath];
+                if (diskdata) {
+                    if (value) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            value(diskdata,filePath);
+                        });
+                    }
+                    [self.memoryCache setObject:diskdata forKey:key];
+                }
+                
+            }
+        });
+    }
 }
 
 - (NSArray *)getDiskCacheFileWithPath:(NSString *)path{
@@ -243,7 +245,14 @@ static const CGFloat unit = 1000.0;
                           r[11], r[12], r[13], r[14], r[15], [[key pathExtension] isEqualToString:@""] ? @"" : [NSString stringWithFormat:@".%@", [key pathExtension]]];
     return filename;
 }
+# pragma mark - Mem Cache settings
+- (NSUInteger)maxMemoryCountLimit {
+    return self.memoryCache.countLimit;
+}
 
+- (void)setMaxMemoryCountLimit:(NSUInteger)maxCountLimit {
+    self.memoryCache.countLimit = maxCountLimit;
+}
 #pragma  mark - 计算大小与个数
 - (NSUInteger)getCacheSize {
     return [self getFileSizeWithpath:self.diskCachePath];
@@ -392,7 +401,8 @@ static const CGFloat unit = 1000.0;
 }
 
 - (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
-    if (!key||!path)return;
+    if (!key)return;
+    [self.memoryCache removeObjectForKey:key];
     dispatch_async(self.operationQueue,^{
         
         NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
@@ -427,6 +437,7 @@ static const CGFloat unit = 1000.0;
         NSDate *current = [info objectForKey:NSFileModificationDate];
         
         if ([[current laterDate:expirationDate] isEqualToDate:expirationDate]){
+            [self.memoryCache removeObjectForKey:key];
             [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
         }
         
@@ -437,7 +448,10 @@ static const CGFloat unit = 1000.0;
         }
     });
 }
-#pragma  mark - 清除默认路径缓存
+#pragma  mark - 清除所有缓存
+- (void)clearMemory {
+    [self.memoryCache removeAllObjects];
+}
 - (void)clearCache{
      [self clearCacheOnCompletion:nil];
 }

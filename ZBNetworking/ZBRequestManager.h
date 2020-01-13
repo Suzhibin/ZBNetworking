@@ -8,52 +8,75 @@
 
 #import <Foundation/Foundation.h>
 #import "ZBRequestEngine.h"
+
+@class ZBConfig;
+
 @interface ZBRequestManager : NSObject
 
++ (void)setupBaseConfig:(void(^_Nullable)(ZBConfig * _Nullable config))block;
 /**
- *  请求方法 GET/POST/PUT/PATCH/DELETE
+ *  请求方法
  *
  *  @param config           请求配置  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
  */
-+ (void)requestWithConfig:(requestConfig)config  success:(requestSuccess)success failure:(requestFailure)failure;
++ (NSURLSessionTask *_Nullable)requestWithConfig:(requestConfig _Nonnull )config  success:(requestSuccess _Nullable )success failure:(requestFailure _Nullable )failure;
 
 /**
- *  请求方法 GET/POST/PUT/PATCH/DELETE/Upload/DownLoad
- *
- *  @param config           请求配置  Block
- *  @param progress         请求进度  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- */
-+ (void)requestWithConfig:(requestConfig)config  progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure;
-
-/**
- *  批量请求方法 GET/POST/PUT/PATCH/DELETE
- *
- *  @param config           请求配置  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- */
-+ (ZBBatchRequest *)sendBatchRequest:(batchRequestConfig)config success:(requestSuccess)success failure:(requestFailure)failure;
-
-/**
- *  批量请求方法 GET/POST/PUT/PATCH/DELETE/Upload/DownLoad
+ *  请求方法 进度
  *
  *  @param config           请求配置  Block
  *  @param progress         请求进度  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
  */
-+ (ZBBatchRequest *)sendBatchRequest:(batchRequestConfig)config progress:(progressBlock)progress success:(requestSuccess)success failure:(requestFailure)failure;
++ (NSURLSessionTask *_Nullable)requestWithConfig:(requestConfig _Nonnull )config  progress:(progressBlock _Nullable )progress success:(requestSuccess _Nullable )success failure:(requestFailure _Nullable )failure;
 
 /**
- 取消请求任务
- 
- @param URLString           协议接口
- @param completion          后续操作
+ *  批量请求方法
+ *
+ *  @param config           请求配置  Block
+ *  @param success          请求成功的 Block
+ *  @param failure          请求失败的 Block
  */
-+ (void)cancelRequest:(NSString *)URLString completion:(cancelCompletedBlock)completion;
++ (void)sendBatchRequest:(batchRequestConfig _Nonnull )config success:(requestSuccess _Nullable )success failure:(requestFailure _Nullable )failure;
+
+/**
+ *  批量请求方法
+ *
+ *  @param config           请求配置  Block
+ *  @param success          请求成功的 Block
+ *  @param failure          请求失败的 Block
+ *  @param finished         批量请求完成的 Block
+*/
++ (void)sendBatchRequest:(batchRequestConfig _Nonnull )config success:(requestSuccess _Nullable )success failure:(requestFailure _Nullable )failure finished:(batchRequestFinished _Nullable )finished;
+
+/**
+ *  批量请求方法 进度
+ *
+ *  @param config           请求配置  Block
+ *  @param progress         请求进度  Block
+ *  @param success          请求成功的 Block
+ *  @param failure          请求失败的 Block
+ */
++ (void)sendBatchRequest:(batchRequestConfig _Nonnull )config progress:(progressBlock _Nullable )progress success:(requestSuccess _Nullable )success failure:(requestFailure _Nullable )failure;
+
+/**
+ *  批量请求方法 进度
+ *
+ *  @param config           请求配置  Block
+ *  @param progress         请求进度  Block
+ *  @param success          请求成功的 Block
+ *  @param failure          请求失败的 Block
+ *  @param finished         批量请求完成的 Block
+*/
++ (void)sendBatchRequest:(batchRequestConfig _Nonnull )config progress:(progressBlock _Nullable )progress success:(requestSuccess _Nullable )success failure:(requestFailure _Nullable )failure finished:(batchRequestFinished _Nullable )finished;
+
+/**
+ 取消所有请求任务
+*/
++ (void)cancelAllRequest;
 
 @end
+

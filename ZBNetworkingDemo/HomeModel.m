@@ -1,14 +1,14 @@
 //
-//  RootModel.m
-//  ZBNetworking
+//  HomeModel.m
+//  ZBNetworkingDemo
 //
-//  Created by NQ UEC on 16/6/21.
-//  Copyright © 2016年 Suzhibin. All rights reserved.
+//  Created by Suzhibin on 2018/10/12.
+//  Copyright © 2018年 Suzhibin. All rights reserved.
 //
 
-#import "RootModel.h"
+#import "HomeModel.h"
 
-@implementation RootModel
+@implementation HomeModel
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
     //  NSLog(@"undefinedKey:%@",key);
     if ([key isEqualToString:@"id"]) {
@@ -21,5 +21,4 @@
     }
     return self;
 }
-
 @end

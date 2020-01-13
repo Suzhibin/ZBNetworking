@@ -8,15 +8,21 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import "ZBRequestConst.h"
-/*
-    硬性设置：
-    1.服务器返回的数据 必须是二进制
-    2.证书设置
-    3.开启菊花
- */
-@interface ZBRequestEngine : AFHTTPSessionManager
+@class ZBConfig;
 
+@interface ZBRequestEngine : AFHTTPSessionManager
+NS_ASSUME_NONNULL_BEGIN
 + (instancetype)defaultEngine;
+
+/**
+ 公共基础配置
+ */
+- (void)setupBaseConfig:(void(^)(ZBConfig *config))block;
+
+/**
+ 公共基础配置与单个请求配置的兼容
+ */
+- (void)configBaseWithRequest:(ZBURLRequest *)request;
 
 /**
  发起网络请求
@@ -27,10 +33,10 @@
  @param failure 失败回调
  @return task
  */
-- (NSURLSessionDataTask *)dataTaskWithMethod:(ZBURLRequest *)request
-                             zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
-                              success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                              failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (NSURLSessionDataTask *_Nullable)dataTaskWithMethod:(ZBURLRequest *_Nullable)request
+                                          zb_progress:(void (^_Nullable)(NSProgress * _Nullable))zb_progress
+                                              success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
+                                              failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 
 /**
  上传文件
@@ -41,10 +47,10 @@
  @param failure 失败回调
  @return task
  */
-- (NSURLSessionDataTask *)uploadWithRequest:(ZBURLRequest *)request
-                                zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
-                                    success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                                    failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (NSURLSessionUploadTask *_Nullable)uploadWithRequest:(ZBURLRequest *_Nullable)request
+                                zb_progress:(void (^_Nullable)(NSProgress * _Nullable))zb_progress
+                                    success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
+                                    failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 
 /**
  下载文件
@@ -54,16 +60,22 @@
  @param completionHandler 回调
  @return task
  */
-- (NSURLSessionDownloadTask *)downloadWithRequest:(ZBURLRequest *)request
-                                         progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
-                                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+- (NSURLSessionDownloadTask *_Nullable)downloadWithRequest:(ZBURLRequest *_Nullable)request
+                                                  progress:(void (^_Nullable)(NSProgress * _Nullable downloadProgress)) downloadProgressBlock
+                                         completionHandler:(void (^_Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 /**
- 取消请求任务
- 
- @param urlString           协议接口
+ 管理请求对象的生命周期
  */
-- (void)cancelRequest:(NSString *)urlString  completion:(cancelCompletedBlock)completion;
+- (void)setRequestObject:(id)obj forkey:(NSString *)key;
+- (void)removeRequestForkey:(NSString *)key;
+- (id _Nullable)objectRequestForkey:(NSString *)key;
 
+/**
+ 取消所有请求任务
+ */
+- (void)cancelAllRequest;
+
+NS_ASSUME_NONNULL_END
 
 @end

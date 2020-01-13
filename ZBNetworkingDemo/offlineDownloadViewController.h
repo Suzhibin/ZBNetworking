@@ -8,8 +8,6 @@
 
 #import "RootViewController.h"
 @protocol offlineDelegate <NSObject>
-
-- (void)reloadJsonNumber;
 - (void)downloadWithArray:(NSMutableArray *)offlineArray;
 @end
 

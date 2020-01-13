@@ -10,35 +10,38 @@
 #define ZBRequestConst_h
 @class ZBURLRequest,ZBBatchRequest;
 
-#define ZBBUG_LOG 0
-
-#if(ZBBUG_LOG == 1)
-# define ZBLog(format, ...) printf("\n[%s] %s [第%d行] %s\n", __TIME__, __FUNCTION__, __LINE__, [[NSString stringWithFormat:format, ## __VA_ARGS__] UTF8String]);
-#else
-# define ZBLog(...);
-#endif
-
 /**
  用于标识不同类型的请求
+ 默认为重新请求.  default:ZBRequestTypeRefresh
  */
-typedef NS_ENUM(NSInteger,apiType) {
-    /** 重新请求:   不读取缓存，重新请求*/
+typedef NS_ENUM(NSInteger,ZBApiType) {
+    /**
+     重新请求:   不读取缓存，不存储缓存
+     没有缓存需求的，单独使用
+     */
     ZBRequestTypeRefresh,
-    /** 读取缓存:   有缓存,读取缓存--无缓存，重新请求*/
+    
+    /**
+     重新请求:   不读取缓存，但存储缓存
+     可以与 ZBRequestTypeCache 配合使用
+     */
+    ZBRequestTypeRefreshAndCache,
+    /**
+     读取缓存:   有缓存,读取缓存--无缓存，重新请求并存储缓存
+     可以与ZBRequestTypeRefreshAndCache 配合使用
+     */
     ZBRequestTypeCache,
-    /** 加载更多:   不读取缓存，重新请求*/
+    /**
+     重新请求：  上拉加载更多业务，不读取缓存，不存储缓存
+     用于区分业务 可以不用
+     */
     ZBRequestTypeRefreshMore,
-    /** 加载更多:   有缓存,读取缓存--无缓存，重新请求*/
-    ZBRequestTypeCacheMore,
-    /** 详情页面:   有缓存,读取缓存--无缓存，重新请求*/
-    ZBRequestTypeDetailCache,
-    /** 自定义项:   有缓存,读取缓存--无缓存，重新请求*/
-    ZBRequestTypeCustomCache
 };
 /**
  HTTP 请求类型.
+ 默认为GET请求.   default:ZBMethodTypeGET
  */
-typedef NS_ENUM(NSInteger,MethodType) {
+typedef NS_ENUM(NSInteger,ZBMethodType) {
     /**GET请求*/
     ZBMethodTypeGET,
     /**POST请求*/
@@ -55,35 +58,51 @@ typedef NS_ENUM(NSInteger,MethodType) {
     ZBMethodTypeDELETE
 };
 /**
- 请求参数的格式.默认是HTTP
+ 请求参数的格式.
+ 默认为HTTP.   default:ZBJSONRequestSerializer
  */
-typedef NS_ENUM(NSUInteger, requestSerializerType) {
+typedef NS_ENUM(NSUInteger, ZBRequestSerializerType) {
+    /** 设置请求参数为JSON格式*/
+    ZBJSONRequestSerializer,
     /** 设置请求参数为二进制格式*/
     ZBHTTPRequestSerializer,
-    /** 设置请求参数为JSON格式*/
-    ZBJSONRequestSerializer
 };
 /**
- 返回响应数据的格式.默认是JSON
+ 返回响应数据的格式.
+ 默认为JSON.  default:ZBJSONResponseSerializer
  */
-typedef NS_ENUM(NSUInteger, responseSerializerType) {
+typedef NS_ENUM(NSUInteger, ZBResponseSerializerType) {
     /** 设置响应数据为JSON格式*/
     ZBJSONResponseSerializer,
     /** 设置响应数据为二进制格式*/
     ZBHTTPResponseSerializer
 };
+/**
+ 相同的URL 多次网络请求,请求结果没有响应的时候。可以指定使用第一次或最后一次请求结果。
+ 如果请求结果响应了，会终止此过程。
+ 默认不做任何操作.  default:ZBResponseKeepNone
+ */
+typedef NS_ENUM(NSUInteger, ZBResponseKeepType) {
+    /** 不进行任何操作*/
+    ZBResponseKeepNone,
+    /** 使用第一次请求结果*/
+    ZBResponseKeepFirst,
+    /** 使用最后一次请求结果*/
+    ZBResponseKeepLast
 
+};
 /** 批量请求配置的Block */
-typedef void (^batchRequestConfig)(ZBBatchRequest * batchRequest);
+typedef void (^batchRequestConfig)(ZBBatchRequest * _Nonnull batchRequest);
 /** 请求配置的Block */
-typedef void (^requestConfig)(ZBURLRequest * request);
+typedef void (^requestConfig)(ZBURLRequest * _Nonnull request);
 /** 请求成功的Block */
-typedef void (^requestSuccess)(id responseObject,apiType type,BOOL isCache);
+typedef void (^requestSuccess)(id _Nullable responseObject,ZBURLRequest * _Nullable request);
 /** 请求失败的Block */
-typedef void (^requestFailure)(NSError * error);
+typedef void (^requestFailure)(NSError * _Nullable error);
 /** 请求进度的Block */
-typedef void (^progressBlock)(NSProgress * progress);
+typedef void (^progressBlock)(NSProgress * _Nullable progress);
 /** 请求取消的Block */
-typedef void (^cancelCompletedBlock)(BOOL results,NSString * urlString);
-
+typedef void (^requestFinished)(id _Nullable responseObject,NSError * _Nullable error);
+/** 批量请求完成的Block */
+typedef void (^batchRequestFinished)(NSArray<id> * _Nullable responseObjects);
 #endif /* ZBRequestConst_h */
