@@ -18,23 +18,32 @@
 
 6.有缓存key过滤功能
 
-7.离线下载功能 
+7.离线下载功能 批量请求功能
 
 8.多种请求缓存类型的判断。也可不遵循，自由随你定。
 
 ```objective-c
-   /** 重新请求 ,不读取缓存，重新请求*/
+  /**
+     重新请求:   不读取缓存，不存储缓存
+     没有缓存需求的，单独使用
+     */
     ZBRequestTypeRefresh,
-    /** 有缓存,读取缓存 无缓存，重新请求*/
+    
+    /**
+     重新请求:   不读取缓存，但存储缓存
+     可以与 ZBRequestTypeCache 配合使用
+     */
+    ZBRequestTypeRefreshAndCache,
+    /**
+     读取缓存:   有缓存,读取缓存--无缓存，重新请求并存储缓存
+     可以与ZBRequestTypeRefreshAndCache 配合使用
+     */
     ZBRequestTypeCache,
-    /** 加载更多 ,不读取缓存，重新请求*/
+    /**
+     重新请求：  上拉加载更多业务，不读取缓存，不存储缓存
+     用于区分业务 可以不用
+     */
     ZBRequestTypeRefreshMore,
-    /** 加载更多 ,有缓存,读取缓存 无缓存，重新请求*/
-    ZBRequestTypeCacheMore,
-    /** 详情    ,有缓存,读取缓存 无缓存，重新请求*/
-    ZBRequestTypeDetailCache,
-    /** 自定义  ,有缓存,读取缓存 无缓存，重新请求*/
-    ZBRequestTypeCustomCache
 ```
 9.可见的缓存文件
 
@@ -106,17 +115,18 @@
  [[ZBCacheManager sharedInstance]getCacheSize];
   //显示缓存个数  可以自定义路径
  [[ZBCacheManager sharedInstance]getCacheCount];
-  //清除缓存
+ //清除沙盒缓存
  [[ZBCacheManager sharedInstance]clearCache];
+ //清除内存缓存
+ [[ZBCacheManager sharedInstance]clearMemory];
   //清除单个缓存文件
  [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
   //按路径清除缓存
  [[ZBCacheManager sharedInstance]clearDiskWithpath:@"路径" completion:nil];
   //取消当前请求
- [ZBRequestManager cancelRequest:_urlString completion:^(NSString *urlString){
-      //NSLog(@"取消对应url:%@ ",urlString);
-  }];
-  
+ [self.currentTask cancel];//取消本次请求
+  //取消所有请求
+  [ZBRequestManager cancelAllRequest];
  ```
 
 ![](https://upload-images.jianshu.io/upload_images/1830250-3636c0621ebb6fa1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/621)
@@ -126,33 +136,14 @@
     NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
     NSTimeInterval a=[dat timeIntervalSince1970];
     NSString *timeString = [NSString stringWithFormat:@"&time=%f", a];
-
-    //作者遇到到请求 是在get请求后加一个时间戳的参数，因为URLString 是默认为缓存key的 加上时间戳，key 一直变动 无法拿到缓存。所以定义了一个customCacheKey
-      NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
-    NSString *timeString = [NSString stringWithFormat:@"&time=%f", timeInterval];
-
-    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=[list_URL stringByAppendingString:timeString];
-        request.customCacheKey=list_URL;//去掉timeString
-        request.methodType=ZBMethodTypeGET;
-        request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
-    }  success:^(id responseObject, apiType type, BOOL isCache) {
-        if (isCache) {
-            NSLog(@"使用了缓存");
-        }else{
-            NSLog(@"重新请求");
-        }
     
-    }  failure:nil];
-    
-    
-     //POST等 使用了parameters 的请求 缓存key会是URLString+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个parametersfiltrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
+     // 使用了parameters 的请求 缓存key会是URLString+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个 filtrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=@"http://URL";
         request.methodType=ZBMethodTypePOST;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//默认为ZBRequestTypeRefresh
         request.parameters=@{@"1": @"one", @"2": @"two", @"time": @"12345667"};
-        request.parametersfiltrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里
+        request.filtrationCacheKey=@[@"time"];//过滤掉time
     }success:nil failure:nil];
   ```
 
