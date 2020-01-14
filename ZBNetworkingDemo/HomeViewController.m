@@ -215,6 +215,7 @@
 - (void)btnClick{
     
     SettingViewController *settingVC=[[SettingViewController alloc]init];
+    settingVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:settingVC animated:YES];
 }
 

@@ -33,7 +33,7 @@ static const NSInteger cacheTime = 15;//过期时间
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+
     //得到沙盒cache文件夹下的系统缓存文件路径
     NSString *cachePath= [[ZBCacheManager sharedInstance]cachesPath];
     
