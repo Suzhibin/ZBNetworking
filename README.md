@@ -78,19 +78,26 @@
     }];
     
 //请求方法 会默认创建缓存路径    
-  [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"path"] = @"HomeViewController";
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+    headers[@"headers"] = @"herader";
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
-        request.apiType=ZBRequestTypeRefresh;//默认为刷新  //ZBRequestTypeCache为使用缓存
-        request.timeoutInterval=10;//默认为30
+        request.apiType=ZBRequestTypeRefresh;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
+        request.parameters=parameters;
+        request.headers=headers;
         /**
-         保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone
+         保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone 什么都不做
+         使用场景是在 重复点击造成的 多次请求，如发帖，评论，搜索等业务
          */
         request.keepType=ZBResponseKeepNone;
-       // request.requestSerializer = ZBJSONRequestSerializer;根据自己服务器的要求调整上传参数的格式
-       // request.responseSerializer= ZBJSONResponseSerializer;得到的返回数据 格式  默认为json  
-       // request.parameters=@{@"1": @"one", @"2": @"two"};
-       // [request setValue:@"1234567890" forHeaderField:@"apitype"];
+        request.filtrationCacheKey=@[@""];//与basefiltrationCacheKey 兼容
+        request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
+        request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
+        request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
+      
     }  success:^(id responseObj,ZBURLRequest *request){
         if (request.apiType==ZBRequestTypeRefresh) 
              //结束刷新
