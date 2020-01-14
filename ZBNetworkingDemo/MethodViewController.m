@@ -47,7 +47,7 @@
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
         request.timeoutInterval=10;//默认30
         request.parameters=@{@"1": @"one", @"2": @"two"};
-        //   [request setValue:@"1234567890" forHeaderField:@"apitype"];
+        request.headers=@{@"headers": @"headers"};
     }  success:^(id responseObject,ZBURLRequest *request){
         
         if (request.isCache) {
@@ -60,7 +60,7 @@
     }];
     
     
-    sleep(5);
+    sleep(3);
           
     [task cancel];//取消请求  （已请求完和读缓存 无法取消）
 }
@@ -148,18 +148,18 @@
         NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
-        [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];//返回下载路径的大小
+        //[self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];//返回下载路径的大小
         sleep(5);
         //删除下载的文件
         [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
             NSLog(@"删除下载的文件");
             [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];
         }];
-        //删除下载的文件
-        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] documentPath]completion:^{
-            NSLog(@"删除下载的文件");
-            [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];
-        }];
+//        //删除下载的文件
+//        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] documentPath]completion:^{
+//            NSLog(@"删除下载的文件");
+//            [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];
+//        }];
     } failure:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
     }finished:^(NSArray<id> * _Nullable responseObjects) {

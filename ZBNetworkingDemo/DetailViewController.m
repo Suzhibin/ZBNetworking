@@ -27,7 +27,7 @@
        如果请求未完成，就退出，可以取消本次请求，节省用户流量，节约开销。已请求成功和读缓存，不会取消。
      */
     [self.currentTask cancel];//取消本次请求
-    
+    //[ZBRequestManager cancelAllRequest];// 取消全部请求 如果有多个请求直接用这个方法
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
 }
 - (void)viewDidLoad {
