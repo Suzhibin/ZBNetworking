@@ -91,7 +91,7 @@
        // request.responseSerializer= ZBJSONResponseSerializer;得到的返回数据 格式  默认为json  
        // request.parameters=@{@"1": @"one", @"2": @"two"};
        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
-    }  success:^(id responseObj,apiType type){
+    }  success:^(id responseObj,ZBURLRequest *request){
         if (type==ZBRequestTypeRefresh) 
              //结束刷新
         }
@@ -123,7 +123,7 @@
             request.URLString=urlString;
             [batchRequest.urlArray addObject:request];
         }
-    }  success:^(id responseObj,apiType type){
+    }  success:^(id responseObj,ZBURLRequest *request){
       
     } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
