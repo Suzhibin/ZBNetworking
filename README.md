@@ -92,10 +92,10 @@
        // request.parameters=@{@"1": @"one", @"2": @"two"};
        // [request setValue:@"1234567890" forHeaderField:@"apitype"];
     }  success:^(id responseObj,ZBURLRequest *request){
-        if (type==ZBRequestTypeRefresh) 
+        if (request.apiType==ZBRequestTypeRefresh) 
              //结束刷新
         }
-        if (type==ZBRequestTypeLoadMore) {
+        if (request.apiType==ZBRequestTypeLoadMore) {
             //结束上拉加载
         }
         //请求成功
