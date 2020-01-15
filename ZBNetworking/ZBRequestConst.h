@@ -92,17 +92,20 @@ typedef NS_ENUM(NSUInteger, ZBResponseKeepType) {
 
 };
 /** 批量请求配置的Block */
-typedef void (^batchRequestConfig)(ZBBatchRequest * _Nonnull batchRequest);
+typedef void (^BatchRequestConfig)(ZBBatchRequest * _Nonnull batchRequest);
 /** 请求配置的Block */
-typedef void (^requestConfig)(ZBURLRequest * _Nonnull request);
+typedef void (^RequestConfig)(ZBURLRequest * _Nonnull request);
 /** 请求成功的Block */
-typedef void (^requestSuccess)(id _Nullable responseObject,ZBURLRequest * _Nullable request);
+typedef void (^RequestSuccess)(id _Nullable responseObject,ZBURLRequest * _Nullable request);
 /** 请求失败的Block */
-typedef void (^requestFailure)(NSError * _Nullable error);
+typedef void (^RequestFailure)(NSError * _Nullable error);
 /** 请求进度的Block */
-typedef void (^progressBlock)(NSProgress * _Nullable progress);
+typedef void (^ProgressBlock)(NSProgress * _Nullable progress);
 /** 请求取消的Block */
-typedef void (^requestFinished)(id _Nullable responseObject,NSError * _Nullable error);
+typedef void (^RequestFinished)(id _Nullable responseObject,NSError * _Nullable error);
 /** 批量请求完成的Block */
-typedef void (^batchRequestFinished)(NSArray<id> * _Nullable responseObjects);
+typedef void (^BatchRequestFinished)(NSArray<id> * _Nullable responseObjects);
+
+typedef void (^ResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable error);
+
 #endif /* ZBRequestConst_h */

@@ -16,6 +16,7 @@
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSString *> *baseHeaders;
 @property (nonatomic, strong, nullable) NSMutableArray *baseFiltrationCacheKey;
 @property (nonatomic, assign) NSTimeInterval baseTimeoutInterval;
+@property (nonatomic, assign) NSUInteger retryCount;
 @property (nonatomic,assign) ZBRequestSerializerType baseRequestSerializer;
 @property (nonatomic,assign) ZBResponseSerializerType baseResponseSerializer;
 @property (nonatomic, assign)BOOL consoleLog;
@@ -54,6 +55,10 @@
          _requestDic =[[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
++ (void)load {
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
 }
 
 - (void)dealloc {
@@ -158,7 +163,9 @@
     [dataTask resume];
     return dataTask;
 }
-
+- (NSInteger)networkReachability {
+    return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
+}
 #pragma mark - 其他配置
 - (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
     ZBConfig *config=[[ZBConfig alloc]init];
@@ -184,6 +191,9 @@
     }
     if (config.isResponseSerializer==YES) {
         self.baseResponseSerializer=config.baseResponseSerializer;
+    }
+    if (config.retryCount) {
+        self.retryCount=config.retryCount;
     }
     self.consoleLog=config.consoleLog;
 }
@@ -238,6 +248,15 @@
     //=====================================================
     if (request.isResponseSerializer==NO) {
         request.responseSerializer=self.baseResponseSerializer;
+    }
+    //=====================================================
+    if (self.retryCount) {
+        NSUInteger retryCount;
+        retryCount=self.retryCount;
+        if (request.retryCount) {
+            retryCount=request.retryCount;
+        }
+        request.retryCount=retryCount;
     }
     //=====================================================
     request.consoleLog = self.consoleLog;

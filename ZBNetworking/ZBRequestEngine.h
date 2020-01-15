@@ -15,6 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)defaultEngine;
 
 /**
+ *  网络请求 自定义响应 处理逻辑的方法 Block
+ */
+@property (nonatomic, copy) ResponseProcessBlock responseProcessHandler;
+
+/**
  公共基础配置
  */
 - (void)setupBaseConfig:(void(^)(ZBConfig *config))block;
@@ -65,16 +70,21 @@ NS_ASSUME_NONNULL_BEGIN
                                          completionHandler:(void (^_Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 /**
- 管理请求对象的生命周期
+   当前网络的状态值，-1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
+ */
+- (NSInteger)networkReachability;
+
+/**
+ * 取消所有请求任务
+ */
+- (void)cancelAllRequest;
+
+/**
+ * 管理请求对象的生命周期
  */
 - (void)setRequestObject:(id)obj forkey:(NSString *)key;
 - (void)removeRequestForkey:(NSString *)key;
 - (id _Nullable)objectRequestForkey:(NSString *)key;
-
-/**
- 取消所有请求任务
- */
-- (void)cancelAllRequest;
 
 NS_ASSUME_NONNULL_END
 

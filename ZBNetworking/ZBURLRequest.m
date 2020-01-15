@@ -19,6 +19,7 @@
     _responseSerializer=ZBJSONResponseSerializer;
     _methodType=ZBMethodTypeGET;
     _apiType=ZBRequestTypeRefresh;
+    _retryCount=0;
     return self;
 }
 - (void)setRequestSerializer:(ZBRequestSerializerType)requestSerializer{
@@ -71,7 +72,7 @@
 
 #pragma mark - ZBBatchRequest
 @interface ZBBatchRequest () {
-    NSUInteger _requestCount;
+    NSUInteger _batchRequestCount;
 }
 @end
 
@@ -81,19 +82,19 @@
     if (!self) {
         return nil;
     }
-    _requestCount = 0;
+    _batchRequestCount = 0;
     _requestArray = [NSMutableArray array];
     _responseArray = [NSMutableArray array];
     return self;
 }
-- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(batchRequestFinished _Nullable )finished{
+- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(BatchRequestFinished _Nullable )finished{
     if (error) {
         [_responseArray addObject:error];
     }else{
         [_responseArray addObject:responseObject];
     }
-    _requestCount++;
-    if (_requestCount == _requestArray.count) {
+    _batchRequestCount++;
+    if (_batchRequestCount == _requestArray.count) {
         if (finished) {
             finished(_responseArray);
         }

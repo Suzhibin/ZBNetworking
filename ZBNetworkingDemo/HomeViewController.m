@@ -21,6 +21,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+     NSLog(@"当前是否有网：%d",[ZBRequestManager isNetworkReachable]);
     /**
      基础配置
      需要在请求之前配置，设置后所有请求都会带上 此基础配置
@@ -34,7 +35,7 @@
 
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"Token"] = @"Token";
-    
+
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
         config.baseURL=server_URL;//如果同一个环境，有多个域名 不建议设置baseURL
         config.baseParameters=parameters;//公告参数
@@ -44,9 +45,40 @@
         config.baseRequestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.baseResponseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
         config.baseTimeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
+        config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
+    } responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable error) {
+        NSLog(@"数据返回之前");
+        /**
+         网络请求 自定义响应结果的处理逻辑（缓存暂时没有自定义处理逻辑）
+         比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
+        */
+        
+       // 举个例子 假设服务器成功回调内返回了code码
+        NSInteger errorCode = 400;
+        if (errorCode == 400) {//假设400 登录过期
+            [self alertTitle:@"登录过期" andMessage:@""];
+        }
+        if (errorCode == 401) {//假设401 代表Token失效
+            request.apiType=ZBRequestTypeRefresh;//当前请求因为返回的是错误信息，缓存存储的是错误信息，会造成缓存数据混乱。 切换为不存储缓存的ZBRequestTypeRefresh，
+            NSLog(@"假设errorCode == 401我们进行 请求Token的操作");
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                NSLog(@"请求Token成功之后在进行业务请求");
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
+                });
+            });
+       
+        }
     }];
 
+    /**
+     可以单独实现
+     网络请求 自定义响应 处理逻辑的方法
+     需要在请求之前配置
+     */
+//    [ZBRequestManager responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable error) {
+//    }];
     
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
@@ -81,7 +113,8 @@
          保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone 什么都不做
          使用场景是在 重复点击造成的 多次请求，如发帖，评论，搜索等业务
          */
-        request.keepType=ZBResponseKeepNone;
+        //request.keepType=ZBResponseKeepNone;
+        //request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
         request.filtrationCacheKey=@[@""];//与basefiltrationCacheKey 兼容
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置

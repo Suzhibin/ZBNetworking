@@ -63,6 +63,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 /**
+  请求失败,设置自动重试 请求次数 默认是0.
+ */
+@property (nonatomic, assign) NSUInteger retryCount;
+
+/**
  *  存储路径 只有下载文件方法有用
  */
 @property (nonatomic,copy,nullable) NSString *downloadSavePath;
@@ -101,7 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong , readonly) NSMutableArray<id> *responseArray;
 
-- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(batchRequestFinished _Nullable )finished;
+- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(BatchRequestFinished _Nullable )finished;
 @end
 
 #pragma mark - ZBUploadData
@@ -146,14 +151,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ZBConfig : NSObject
 
-
+/**
+ *   基础URL 域名
+*/
 @property (nonatomic, copy, nullable) NSString *baseURL;
 /**
-*   参数
+ *   参数
 */
 @property (nonatomic, strong, nullable) NSDictionary *baseParameters;
 /**
-*   请求头
+ *   请求头
 */
 @property (nonatomic, strong, nullable) NSDictionary *baseHeaders;
 /**
@@ -178,6 +185,11 @@ NS_ASSUME_NONNULL_BEGIN
  *  响应数据的类型
  */
 @property (nonatomic,assign) ZBResponseSerializerType baseResponseSerializer;
+
+/**
+  请求失败,设置自动重试 请求次数 默认是0.
+ */
+@property (nonatomic, assign) NSUInteger retryCount;
 
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
