@@ -45,19 +45,19 @@
         config.baseRequestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.baseResponseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
         config.baseTimeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
-        config.retryCount=2;//请求失败 所有请求重新连接次数
+        //config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
-    } responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable error) {
+    } responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject,  NSError * _Nullable __autoreleasing *error) {
         NSLog(@"数据返回之前");
         /**
          网络请求 自定义响应结果的处理逻辑（缓存暂时没有自定义处理逻辑）
          比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
         */
-        
+       
        // 举个例子 假设服务器成功回调内返回了code码
-        NSInteger errorCode = 400;
+        NSInteger errorCode = 403;
         if (errorCode == 400) {//假设400 登录过期
-            [self alertTitle:@"登录过期" andMessage:@""];
+            NSLog(@"登录过期");
         }
         if (errorCode == 401) {//假设401 代表Token失效
             request.apiType=ZBRequestTypeRefresh;//当前请求因为返回的是错误信息，缓存存储的是错误信息，会造成缓存数据混乱。 切换为不存储缓存的ZBRequestTypeRefresh，
@@ -70,6 +70,8 @@
             });
        
         }
+        NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+        *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
     }];
 
     /**

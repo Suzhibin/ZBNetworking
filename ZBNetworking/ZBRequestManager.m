@@ -115,7 +115,7 @@
     NSURLSessionDataTask *dataTask= [[ZBRequestEngine defaultEngine]dataTaskWithMethod:request zb_progress:^(NSProgress * _Nonnull zb_progress) {
         progress ? progress(zb_progress) : nil;
     } success:^(NSURLSessionDataTask *task, id responseObject) {
-        [self successWithResponseObject:responseObject request:request success:success finished:finished];
+        [self successWithResponseObject:responseObject request:request progress:progress success:success failure:failure finished:finished];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         [self failureWithError:error request:request progress:progress success:success failure:failure finished:finished];
     }];
@@ -166,10 +166,14 @@
         }
     }
 }
-+ (void)successWithResponseObject:(id)responseObject request:(ZBURLRequest *)request success:(RequestSuccess)success finished:(RequestFinished)finished{
++ (void)successWithResponseObject:(id)responseObject request:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
     NSError *processError = nil;
     if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
-        [ZBRequestEngine defaultEngine].responseProcessHandler(request, responseObject, processError);
+        [ZBRequestEngine defaultEngine].responseProcessHandler(request, responseObject,&processError);
+        if (processError) {
+            [self failureWithError:processError request:request progress:progress success:success failure:failure finished:finished];
+            return;
+        }
     }
     if (request.apiType == ZBRequestTypeRefreshAndCache||request.apiType == ZBRequestTypeCache) {
         [self storeObject:responseObject request:request];
@@ -187,11 +191,11 @@
     if (request.retryCount > 0) {
           request.retryCount --;
           // retry current request after 2 seconds.
-          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-              [self dataTaskWithHTTPRequest:request progress:progress success:success failure:failure finished:finished];
-          });
-          return;
-      }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self dataTaskWithHTTPRequest:request progress:progress success:success failure:failure finished:finished];
+        });
+        return;
+    }
     failure ? failure(error) : nil;
     finished ? finished (nil,error) : nil;
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];

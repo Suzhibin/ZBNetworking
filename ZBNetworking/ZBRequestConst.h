@@ -106,6 +106,6 @@ typedef void (^RequestFinished)(id _Nullable responseObject,NSError * _Nullable 
 /** 批量请求完成的Block */
 typedef void (^BatchRequestFinished)(NSArray<id> * _Nullable responseObjects);
 
-typedef void (^ResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable error);
+typedef void (^ResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error);
 
 #endif /* ZBRequestConst_h */
