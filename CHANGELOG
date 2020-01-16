@@ -5,8 +5,10 @@
  3.取消请求方法变更，请求成功回调参数变更
  3.批量请求增加 所有请求完成的回调
  4.处理Upload请求 配置请求头无法请求成功的bug
- 5.apiType枚举发生改变，ZBRequestTypeRefresh不在存储缓存，  改为ZBRequestTypeRefreshAndCache，
- 6.缓存增加 内存缓存。
+ 5.增加网络请求 自定义响应结果处理逻辑的方法
+ 6.apiType枚举发生改变，ZBRequestTypeRefresh不在存储缓存，  改为ZBRequestTypeRefreshAndCache，
+ 7.缓存增加 内存缓存。
+ 8.请求失败 可控制设置 重新连接
 
 发布于2018年9月19日，周三
 
