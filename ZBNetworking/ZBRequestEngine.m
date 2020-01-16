@@ -198,6 +198,7 @@
     self.consoleLog=config.consoleLog;
 }
 - (void)configBaseWithRequest:(ZBURLRequest *)request{
+     //=====================================================
     NSURL *baseURL = [NSURL URLWithString:self.baseURLString];
             
     if ([[baseURL path] length] > 0 && ![[baseURL absoluteString] hasSuffix:@"/"]) {

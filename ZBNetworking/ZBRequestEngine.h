@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  网络请求 自定义响应 处理逻辑的方法 Block
  */
-@property (nonatomic, copy) ResponseProcessBlock responseProcessHandler;
+@property (nonatomic, copy) ZBResponseProcessBlock responseProcessHandler;
 
 /**
  公共基础配置

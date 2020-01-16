@@ -58,6 +58,9 @@
         NSInteger errorCode = 403;
         if (errorCode == 400) {//假设400 登录过期
             NSLog(@"登录过期");
+            NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+            //给*error指针 参数 错误信息，网络请求就会走 失败回调
+            *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
         }
         if (errorCode == 401) {//假设401 代表Token失效
             NSLog(@"假设errorCode == 401我们进行 请求Token的操作");
@@ -67,13 +70,10 @@
                     NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
                 });
             });
-       
+            NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"Token失效"};
+            //给*error指针 参数 错误信息，网络请求就会走 失败回调
+            *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
         }
-    
-        
-        NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-        //给*error指针 参数 错误信息，网络请求就会走 失败回调
-        *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
 
     }];
 
@@ -119,7 +119,7 @@
          使用场景是在 重复点击造成的 多次请求，如发帖，评论，搜索等业务
          */
         //request.keepType=ZBResponseKeepNone;
-        //request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
+        request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
         request.filtrationCacheKey=@[@""];//与basefiltrationCacheKey 兼容
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置

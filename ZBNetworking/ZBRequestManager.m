@@ -17,34 +17,34 @@
 + (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
     [self setupBaseConfig:block responseProcessHandler:nil];
 }
-+ (void)setupBaseConfig:(void(^)(ZBConfig *config))block responseProcessHandler:(ResponseProcessBlock)Handler{
++ (void)setupBaseConfig:(void(^)(ZBConfig *config))block responseProcessHandler:(ZBResponseProcessBlock)Handler{
     [[ZBRequestEngine defaultEngine] setupBaseConfig:block];
     [ZBRequestEngine defaultEngine].responseProcessHandler = Handler;
 }
 
-+ (NSURLSessionTask *)requestWithConfig:(RequestConfig)config success:(RequestSuccess)success failure:(RequestFailure)failure{
++ (NSURLSessionTask *)requestWithConfig:(ZBRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure{
     return [self requestWithConfig:config progress:nil success:success failure:failure];
 }
 
-+ (NSURLSessionTask *)requestWithConfig:(RequestConfig)config progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure {
++ (NSURLSessionTask *)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure {
     ZBURLRequest *request=[[ZBURLRequest alloc]init];
     config ? config(request) : nil;
     return [self sendRequest:request progress:progress success:success failure:failure finished:nil];
 }
 
-+ (void)sendBatchRequest:(BatchRequestConfig)config success:(RequestSuccess)success failure:(RequestFailure)failure{
++ (void)sendBatchRequest:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure{
      [self sendBatchRequest:config progress:nil success:success failure:failure];
 }
 
-+ (void)sendBatchRequest:(BatchRequestConfig)config success:(RequestSuccess)success failure:(RequestFailure)failure finished:(BatchRequestFinished)finished{
++ (void)sendBatchRequest:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
     [self sendBatchRequest:config progress:nil success:success failure:failure finished:finished];
 }
 
-+ (void)sendBatchRequest:(BatchRequestConfig)config progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure{
++ (void)sendBatchRequest:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure{
     [self sendBatchRequest:config progress:progress success:success failure:failure finished:nil];
 }
 
-+ (void)sendBatchRequest:(BatchRequestConfig)config progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(BatchRequestFinished)finished{
++ (void)sendBatchRequest:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
     ZBBatchRequest *batchRequest=[[ZBBatchRequest alloc]init];
     config ? config(batchRequest) : nil;
     if (batchRequest.requestArray.count==0)return;
@@ -56,7 +56,7 @@
 }
 
 #pragma mark - 发起请求
-+ (NSURLSessionTask *)sendRequest:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
++ (NSURLSessionTask *)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     
     if([request.URLString isEqualToString:@""]||request.URLString==nil)return nil;
     
@@ -71,7 +71,7 @@
     }
 }
 
-+ (NSURLSessionTask *)sendUploadRequest:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
++ (NSURLSessionTask *)sendUploadRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     return [[ZBRequestEngine defaultEngine] uploadWithRequest:request zb_progress:progress success:^(NSURLSessionDataTask *task, id responseObject) {
         [request resultIsUseCache:NO];
         success ? success(responseObject,request) : nil;
@@ -82,7 +82,7 @@
     }];
 }
 
-+ (NSURLSessionTask *)sendDownLoadRequest:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
++ (NSURLSessionTask *)sendDownLoadRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     return [[ZBRequestEngine defaultEngine] downloadWithRequest:request progress:progress completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         [request resultIsUseCache:NO];
         failure ? failure(error) : nil;
@@ -91,7 +91,7 @@
     }];
 }
 
-+ (NSURLSessionTask *)sendHTTPRequest:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
++ (NSURLSessionTask *)sendHTTPRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     __block NSURLSessionTask *task = nil;
     NSString *key = [self keyWithParameters:request];
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType==ZBRequestTypeCache){
@@ -111,7 +111,7 @@
     }
 }
 
-+ (NSURLSessionTask *)dataTaskWithHTTPRequest:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
++ (NSURLSessionTask *)dataTaskWithHTTPRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     NSURLSessionDataTask *dataTask= [[ZBRequestEngine defaultEngine]dataTaskWithMethod:request zb_progress:^(NSProgress * _Nonnull zb_progress) {
         progress ? progress(zb_progress) : nil;
     } success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -166,7 +166,7 @@
         }
     }
 }
-+ (void)successWithResponseObject:(id)responseObject request:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
++ (void)successWithResponseObject:(id)responseObject request:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     NSError *processError = nil;
     if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
         [ZBRequestEngine defaultEngine].responseProcessHandler(request, responseObject,&processError);
@@ -184,7 +184,7 @@
     finished ? finished (result,nil) : nil;
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
 }
-+ (void)failureWithError:(NSError *)error request:(ZBURLRequest *)request progress:(ProgressBlock)progress success:(RequestSuccess)success failure:(RequestFailure)failure finished:(RequestFinished)finished{
++ (void)failureWithError:(NSError *)error request:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     if (request.consoleLog==YES) {
            [self printfailureInfoWithError:error request:request];
     }
@@ -201,7 +201,7 @@
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
    
 }
-+ (void)getCacheDataForKey:(NSString *)key request:(ZBURLRequest *)request success:(RequestSuccess)success finished:(RequestFinished)finished{
++ (void)getCacheDataForKey:(NSString *)key request:(ZBURLRequest *)request success:(ZBRequestSuccessBlock)success finished:(ZBRequestFinishedBlock)finished{
     [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(NSData *data,NSString *filePath) {
         id result=[self responsetSerializerConfig:request responseObject:data];
         [request resultIsUseCache:YES];
@@ -214,7 +214,7 @@
 
 }
 
-+ (void)responseProcessHandler:(ResponseProcessBlock)Handler{
++ (void)responseProcessHandler:(ZBResponseProcessBlock)Handler{
     [ZBRequestEngine defaultEngine].responseProcessHandler = Handler;
 }
 

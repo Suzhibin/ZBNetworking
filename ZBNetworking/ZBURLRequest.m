@@ -87,7 +87,7 @@
     _responseArray = [NSMutableArray array];
     return self;
 }
-- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(BatchRequestFinished _Nullable )finished{
+- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished{
     if (error) {
         [_responseArray addObject:error];
     }else{

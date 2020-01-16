@@ -106,7 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong , readonly) NSMutableArray<id> *responseArray;
 
-- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(BatchRequestFinished _Nullable )finished;
+- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
 @end
 
 #pragma mark - ZBUploadData
