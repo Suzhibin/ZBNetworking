@@ -224,6 +224,7 @@
 - (void)cancelAllRequest{
     [ZBRequestManager cancelAllRequest];
 }
+
 - (void)downLoadPathSize:(NSString *)path{
     CGFloat downLoadPathSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:path];
     downLoadPathSize=downLoadPathSize/1000.0/1000.0;
