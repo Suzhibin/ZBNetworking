@@ -60,7 +60,6 @@
             NSLog(@"登录过期");
         }
         if (errorCode == 401) {//假设401 代表Token失效
-            request.apiType=ZBRequestTypeRefresh;//当前请求因为返回的是错误信息，缓存存储的是错误信息，会造成缓存数据混乱。 切换为不存储缓存的ZBRequestTypeRefresh，
             NSLog(@"假设errorCode == 401我们进行 请求Token的操作");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 NSLog(@"请求Token成功之后在进行业务请求");
@@ -70,8 +69,12 @@
             });
        
         }
+    
+        
         NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+        //给*error指针 参数 错误信息，网络请求就会走 失败回调
         *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
+
     }];
 
     /**
