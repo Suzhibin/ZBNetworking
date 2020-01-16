@@ -183,24 +183,7 @@
         request.filtrationCacheKey=@[@"time"];//过滤掉time
     }success:nil failure:nil];
   ```
-版本 1.1.0 发布于2020年1月13日，周一
- 1.增加了 公共配置参数功能
- 2.请求增加了Keep 功能，多次请求可以只响应第一次请求或最后一次请求
- 3.取消请求方法变更，请求成功回调参数变更
- 3.批量请求增加 所有请求完成的回调
- 4.处理Upload请求 配置请求头无法请求成功的bug
- 5.增加网络请求 自定义响应结果处理逻辑的方法
- 6.apiType枚举发生改变，ZBRequestTypeRefresh不在存储缓存，  改为ZBRequestTypeRefreshAndCache，
- 7.缓存增加 内存缓存。
- 8.请求失败 可控制设置 重新连接
 
-发布于2018年9月19日，周三
-
-更新
-增加响应数据 格式的枚举 responseSerializer  默认为ZBJSONResponseSerializer   json格式
-请求参数枚举 使用时 由 requestSerializerType 改为requestSerializer
-ZBRequestManager.m 内新增 私有方法 responsetSerializerConfig：responseObject：用于格式化数据使用
-Demo 在解析时去掉 手动格式化NSJSONSerialization，增加返回json时 是数组或字典的判断
 
 ## License
 
