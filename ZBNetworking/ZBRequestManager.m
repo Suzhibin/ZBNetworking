@@ -221,6 +221,7 @@
         id result=[self responsetSerializerConfig:request responseObject:data];
         request.successBlock?request.successBlock(result, request.apiType,YES):nil;
         request.finishedBlock?request.finishedBlock(result, nil):nil;
+        [request cleanAllBlocks];
     }];
 }
 

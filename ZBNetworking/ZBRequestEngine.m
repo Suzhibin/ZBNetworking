@@ -151,11 +151,7 @@
         downloadFileSavePath = [NSURL fileURLWithPath:request.downloadSavePath isDirectory:NO];
     }
     NSURLSessionDownloadTask *dataTask = [self downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
-        });
-        
+        downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
     } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
         return downloadFileSavePath;
     } completionHandler:completionHandler];
