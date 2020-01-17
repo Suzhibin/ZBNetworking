@@ -168,6 +168,20 @@ NSString *const _progressBlock =@"_progressBlock";
 - (NSInteger)networkReachability {
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
+//请求参数的格式
+- (void)requestSerializerConfig:(ZBURLRequest *)request{
+    self.requestSerializer =request.requestSerializer==ZBHTTPRequestSerializer ?[AFHTTPRequestSerializer serializer]:[AFJSONRequestSerializer serializer];
+}
+
+//请求头设置
+- (void)headersAndTimeConfig:(ZBURLRequest *)request{
+    if ([request.headers allKeys].count>0) {
+        [request.headers enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
+            [self.requestSerializer setValue:value forHTTPHeaderField:field];
+        }];
+    }
+    self.requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:30;
+}
 
 #pragma mark - 其他配置
 - (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
@@ -276,21 +290,6 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     //=====================================================
     request.consoleLog = self.consoleLog;
-}
-
-//请求参数的格式
-- (void)requestSerializerConfig:(ZBURLRequest *)request{
-    self.requestSerializer =request.requestSerializer==ZBHTTPRequestSerializer ?[AFHTTPRequestSerializer serializer]:[AFJSONRequestSerializer serializer];
-}
-
-//请求头设置
-- (void)headersAndTimeConfig:(ZBURLRequest *)request{
-    if ([request.headers allKeys].count>0) {
-        [request.headers enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-            [self.requestSerializer setValue:value forHTTPHeaderField:field];
-        }];
-    }
-    self.requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:30;
 }
 
 - (void)cancelAllRequest{
