@@ -94,7 +94,7 @@
 
 #pragma mark - upload
 - (NSURLSessionDataTask *)uploadWithRequest:(ZBURLRequest *)request
-                                zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
+                                progress:(void (^)(NSProgress * _Nonnull))zb_progress
                                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
     [self requestSerializerConfig:request];
