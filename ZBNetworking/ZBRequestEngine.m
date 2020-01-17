@@ -165,9 +165,11 @@ NSString *const _progressBlock =@"_progressBlock";
     [dataTask resume];
     return dataTask;
 }
+
 - (NSInteger)networkReachability {
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
+
 #pragma mark - 其他配置
 - (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
     ZBConfig *config=[[ZBConfig alloc]init];

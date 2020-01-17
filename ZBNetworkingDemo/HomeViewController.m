@@ -126,7 +126,7 @@
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];
             //如果是刷新的数据
-            if (apiType==ZBRequestTypeRefresh) {
+            if (apiType==ZBRequestTypeRefreshAndCache) {
                 [self.dataArray removeAllObjects];
                
             }
