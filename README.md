@@ -98,7 +98,7 @@
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
         request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
       
-    }  success:^(id responseObj,ZBURLRequest *request){
+    }  success:^(id responseObj,ZBApiType apiType,BOOL isCache){
         if (request.apiType==ZBRequestTypeRefresh) 
              //结束刷新
         }
@@ -130,7 +130,7 @@
             request.URLString=urlString;
             [batchRequest.urlArray addObject:request];
         }
-    }  success:^(id responseObj,ZBURLRequest *request){
+    }  success:^(id responseObj,ZBApiType apiType,BOOL isCache){
       
     } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
