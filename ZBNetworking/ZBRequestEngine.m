@@ -67,7 +67,7 @@
 
 #pragma mark - GET/POST/PUT/PATCH/DELETE
 - (NSURLSessionDataTask *)dataTaskWithMethod:(ZBURLRequest *)request
-                             progress:(void (^)(NSProgress * _Nonnull))zb_progress
+                             progress:(void (^)(NSProgress * _Nonnull))progress
                               success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                               failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
 
@@ -78,9 +78,9 @@
     NSString *URLString=[NSString zb_stringUTF8Encoding:request.URLString];
 
     if (request.methodType==ZBMethodTypeGET) {
-        return [self GET:URLString parameters:request.parameters progress:zb_progress success:success failure:failure];
+        return [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePOST) {
-        return [self POST:URLString parameters:request.parameters progress:zb_progress success:success failure:failure];
+        return [self POST:URLString parameters:request.parameters progress:progress success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePUT){
         return [self PUT:URLString parameters:request.parameters success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePATCH){
@@ -88,13 +88,13 @@
     }else if (request.methodType==ZBMethodTypeDELETE){
         return [self DELETE:URLString parameters:request.parameters success:success failure:failure];
     }else{
-        return [self GET:URLString parameters:request.parameters progress:zb_progress success:success failure:failure];
+        return [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
     }
 }
 
 #pragma mark - upload
 - (NSURLSessionDataTask *)uploadWithRequest:(ZBURLRequest *)request
-                                progress:(void (^)(NSProgress * _Nonnull))zb_progress
+                                progress:(void (^)(NSProgress * _Nonnull))uploadProgressBlock
                                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
     [self requestSerializerConfig:request];
@@ -125,7 +125,7 @@
         }];
         
     } progress:^(NSProgress * _Nonnull uploadProgress) {
-        zb_progress ? zb_progress(uploadProgress) : nil;
+        uploadProgressBlock ? uploadProgressBlock(uploadProgress) : nil;
     } success:success failure:failure];
     return uploadTask;
 }

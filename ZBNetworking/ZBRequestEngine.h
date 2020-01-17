@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
  @return task
  */
 - (NSURLSessionDataTask *_Nullable)dataTaskWithMethod:(ZBURLRequest *_Nullable)request
-                                          progress:(void (^_Nullable)(NSProgress * _Nullable))zb_progress
+                                          progress:(void (^_Nullable)(NSProgress * _Nullable))progress
                                               success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
                                               failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 
@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
  @return task
  */
 - (NSURLSessionUploadTask *_Nullable)uploadWithRequest:(ZBURLRequest *_Nullable)request
-                                progress:(void (^)(NSProgress * _Nonnull))zb_progress
+                                progress:(void (^)(NSProgress * _Nonnull))uploadProgressBlock
                                     success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
                                     failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 
