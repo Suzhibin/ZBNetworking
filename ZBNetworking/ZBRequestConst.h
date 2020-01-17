@@ -96,7 +96,7 @@ typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest
 /** 请求配置的Block */
 typedef void (^ZBRequestConfigBlock)(ZBURLRequest * _Nonnull request);
 /** 请求成功的Block */
-typedef void (^ZBRequestSuccessBlock)(id _Nullable responseObject,ZBURLRequest * _Nullable request);
+typedef void (^ZBRequestSuccessBlock)(id _Nullable responseObject,ZBApiType apiType,BOOL isCache);
 /** 请求失败的Block */
 typedef void (^ZBRequestFailureBlock)(NSError * _Nullable error);
 /** 请求进度的Block */

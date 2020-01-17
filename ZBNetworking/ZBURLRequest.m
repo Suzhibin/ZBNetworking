@@ -31,9 +31,14 @@
     _responseSerializer=responseSerializer;
     _isResponseSerializer=YES;
 }
-- (void)resultIsUseCache:(BOOL)isCache{
-    _isCache=isCache;
+
+- (void)cleanAllBlocks {
+    _successBlock = nil;
+    _failureBlock = nil;
+    _finishedBlock = nil;
+    _progressBlock = nil;
 }
+
 - (void)dealloc{
     //NSLog(@"%s",__func__);
 }

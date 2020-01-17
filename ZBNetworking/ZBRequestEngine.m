@@ -67,7 +67,7 @@
 
 #pragma mark - GET/POST/PUT/PATCH/DELETE
 - (NSURLSessionDataTask *)dataTaskWithMethod:(ZBURLRequest *)request
-                             zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
+                             progress:(void (^)(NSProgress * _Nonnull))zb_progress
                               success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                               failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
 
@@ -197,7 +197,19 @@
     }
     self.consoleLog=config.consoleLog;
 }
-- (void)configBaseWithRequest:(ZBURLRequest *)request{
+- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock{
+      if (successBlock) {
+          [request setValue:successBlock forKey:@"_successBlock"];
+      }
+      if (failureBlock) {
+          [request setValue:failureBlock forKey:@"_failureBlock"];
+      }
+      if (finishedBlock) {
+          [request setValue:finishedBlock forKey:@"_finishedBlock"];
+      }
+      if (progressBlock) {
+          [request setValue:progressBlock forKey:@"_progressBlock"];
+      }
      //=====================================================
     NSURL *baseURL = [NSURL URLWithString:self.baseURLString];
             

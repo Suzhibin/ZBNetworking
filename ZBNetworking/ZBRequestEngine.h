@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  公共基础配置与单个请求配置的兼容
  */
-- (void)configBaseWithRequest:(ZBURLRequest *)request;
+- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock;
 
 /**
  发起网络请求
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
  @return task
  */
 - (NSURLSessionDataTask *_Nullable)dataTaskWithMethod:(ZBURLRequest *_Nullable)request
-                                          zb_progress:(void (^_Nullable)(NSProgress * _Nullable))zb_progress
+                                          progress:(void (^_Nullable)(NSProgress * _Nullable))zb_progress
                                               success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
                                               failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 
@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
  @return task
  */
 - (NSURLSessionUploadTask *_Nullable)uploadWithRequest:(ZBURLRequest *_Nullable)request
-                                zb_progress:(void (^_Nullable)(NSProgress * _Nullable))zb_progress
+                                progress:(void (^)(NSProgress * _Nonnull))zb_progress
                                     success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
                                     failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 

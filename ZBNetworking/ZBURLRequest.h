@@ -76,17 +76,20 @@ NS_ASSUME_NONNULL_BEGIN
  *  为上传请求提供数据
  */
 @property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
-/**
-  是否使用了 缓存
-  只读属性
- */
-@property (nonatomic,assign,readonly)BOOL isCache;
 
 @property (nonatomic,assign)BOOL consoleLog;
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
 
-- (void)resultIsUseCache:(BOOL)isCache;
+@property (nonatomic, copy, readonly, nullable) ZBRequestSuccessBlock successBlock;
+
+@property (nonatomic, copy, readonly, nullable) ZBRequestFailureBlock failureBlock;
+
+@property (nonatomic, copy, readonly, nullable) ZBRequestFinishedBlock finishedBlock;
+
+@property (nonatomic, copy, readonly, nullable) ZBRequestProgressBlock progressBlock;
+
+- (void)cleanAllBlocks;
 
 //============================================================
 - (void)addFormDataWithName:(NSString *)name fileData:(NSData *)fileData;

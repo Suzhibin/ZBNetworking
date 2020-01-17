@@ -53,7 +53,7 @@
        request.parameters=parameters;
        request.apiType=ZBRequestTypeCache;
        request.filtrationCacheKey=@[@"path"];
-    }  success:^(id responseObject,ZBURLRequest *request){
+    }  success:^(id responseObject,ZBApiType apiType,BOOL isCache){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dataDict = (NSDictionary *)responseObject;
             NSArray *array=[dataDict objectForKey:@"videos"];
@@ -62,7 +62,7 @@
                 [self.dataArray addObject:model];
             }
             [self.tableView reloadData];
-            if (request.isCache==YES) {
+            if (isCache==YES) {
                 self.title=@"使用了缓存";
             }else{
                 self.title=@"重新请求";

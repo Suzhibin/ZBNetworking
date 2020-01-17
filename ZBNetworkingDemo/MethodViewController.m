@@ -48,9 +48,9 @@
         request.timeoutInterval=10;//默认30
         request.parameters=@{@"1": @"one", @"2": @"two"};
         request.headers=@{@"headers": @"headers"};
-    }  success:^(id responseObject,ZBURLRequest *request){
+    }  success:^(id responseObject,ZBApiType apiType,BOOL isCache){
         
-        if (request.isCache) {
+        if (isCache) {
             NSLog(@"使用了缓存");
         }else{
             NSLog(@"重新请求");
@@ -85,7 +85,7 @@
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
         
-    } success:^(id  responseObject,ZBURLRequest *request) {
+    } success:^(id  responseObject,ZBApiType apiType,BOOL isCache) {
         NSLog(@"responseObject: %@", responseObject);
     } failure:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
@@ -95,13 +95,13 @@
 - (void)downLoadRequest{
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.URLString=@"https://URL";
+        request.URLString=@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip";
         request.methodType=ZBMethodTypeDownLoad;
         request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
         
-    } success:^(id  responseObject,ZBURLRequest *request) {
+    } success:^(id  responseObject,ZBApiType apiType,BOOL isCache) {
         NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
@@ -144,7 +144,7 @@
           */
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
-    } success:^(id  _Nullable responseObject, ZBURLRequest *request) {
+    } success:^(id  _Nullable responseObject, ZBApiType apiType,BOOL isCache) {
         NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
@@ -187,7 +187,7 @@
             request.methodType=ZBMethodTypeGET;//默认get
             request.apiType=ZBRequestTypeRefresh;
             request.keepType=keepType; //
-        } success:^(id responseObject,ZBURLRequest *request) {
+        } success:^(id responseObject,ZBApiType apiType,BOOL isCache) {
             
             NSLog(@"第 %d 次请求成功☑️------------------", i);
             
