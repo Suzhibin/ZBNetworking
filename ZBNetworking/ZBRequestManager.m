@@ -11,6 +11,7 @@
 #import "ZBURLRequest.h"
 #import "NSString+ZBUTF8Encoding.h"
 
+NSString *const _isCache =@"_isCache";
 @implementation ZBRequestManager
 
 #pragma mark - 配置请求
@@ -190,7 +191,8 @@
         [self storeObject:responseObject request:request];
     }
     id result=[self responsetSerializerConfig:request responseObject:responseObject];
-    request.successBlock?request.successBlock(result, request.apiType,NO):nil;
+    [request setValue:@(NO) forKey:_isCache];
+    request.successBlock?request.successBlock(result, request):nil;
     request.finishedBlock?request.finishedBlock(result, nil):nil;
     [request cleanAllBlocks];
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
@@ -219,7 +221,8 @@
             [self printCacheInfoWithkey:key filePath:filePath request:request];
         }
         id result=[self responsetSerializerConfig:request responseObject:data];
-        request.successBlock?request.successBlock(result, request.apiType,YES):nil;
+        [request setValue:@(YES) forKey:_isCache];
+        request.successBlock?request.successBlock(result, request):nil;
         request.finishedBlock?request.finishedBlock(result, nil):nil;
         [request cleanAllBlocks];
     }];

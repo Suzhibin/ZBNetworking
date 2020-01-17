@@ -77,7 +77,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
 
-@property (nonatomic,assign)BOOL consoleLog;
+/**
+ *  是否使用了缓存
+ */
+@property (nonatomic,assign,readonly) BOOL isCache;
+
+@property (nonatomic,assign) BOOL consoleLog;
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
 

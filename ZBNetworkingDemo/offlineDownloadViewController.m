@@ -39,7 +39,7 @@
          //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,list_URL] ;
         request.URLString=list_URL;
         request.parameters=parameters;
-    } success:^(id responseObject,ZBApiType apiType,BOOL isCache) {
+    } success:^(id responseObject,ZBURLRequest *request) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];

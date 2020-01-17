@@ -307,7 +307,7 @@ static const NSInteger cacheTime = 15;//过期时间
             request.filtrationCacheKey=@[@"path"];
             [batchRequest.requestArray addObject:request];
         }
-    }  success:^(id responseObject,ZBApiType apiType,BOOL isCache){
+    }  success:^(id responseObject,ZBURLRequest *request){
             NSLog(@"添加了几个请求  就会走几遍");
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;

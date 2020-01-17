@@ -121,17 +121,17 @@
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
         request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
-    }  success:^(id responseObject,ZBApiType apiType,BOOL isCache){
+    }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];
             //如果是刷新的数据
-            if (apiType==ZBRequestTypeRefreshAndCache) {
+            if (request.apiType==ZBRequestTypeRefreshAndCache) {
                 [self.dataArray removeAllObjects];
                
             }
             //上拉加载 业务 apiType 类型 ZBRequestTypeRefreshMore(重新请求)， 也可以不遵守此类型
-            if (apiType==ZBRequestTypeRefreshMore) {
+            if (request.apiType==ZBRequestTypeRefreshMore) {
                 //上拉加载
             }
             
@@ -141,7 +141,7 @@
             }
             [self.tableView reloadData];
             [self.refreshControl endRefreshing];    //结束刷新
-            if (isCache==YES) {
+            if (request.isCache==YES) {
                 self.title=@"使用了缓存";
             }else{
                 self.title=@"重新请求";
