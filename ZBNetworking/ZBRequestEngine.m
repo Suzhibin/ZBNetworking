@@ -10,6 +10,12 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "ZBURLRequest.h"
 #import "NSString+ZBUTF8Encoding.h"
+
+NSString *const _successBlock =@"_successBlock";
+NSString *const _failureBlock =@"_failureBlock";
+NSString *const _finishedBlock =@"_finishedBlock";
+NSString *const _progressBlock =@"_progressBlock";
+
 @interface ZBRequestEngine ()
 @property (nonatomic, copy, nullable) NSString *baseURLString;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, id> *baseParameters;
@@ -195,16 +201,16 @@
 }
 - (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock{
       if (successBlock) {
-          [request setValue:successBlock forKey:@"_successBlock"];
+          [request setValue:successBlock forKey:_successBlock];
       }
       if (failureBlock) {
-          [request setValue:failureBlock forKey:@"_failureBlock"];
+          [request setValue:failureBlock forKey:_failureBlock];
       }
       if (finishedBlock) {
-          [request setValue:finishedBlock forKey:@"_finishedBlock"];
+          [request setValue:finishedBlock forKey:_finishedBlock];
       }
       if (progressBlock) {
-          [request setValue:progressBlock forKey:@"_progressBlock"];
+          [request setValue:progressBlock forKey:_progressBlock];
       }
      //=====================================================
     NSURL *baseURL = [NSURL URLWithString:self.baseURLString];

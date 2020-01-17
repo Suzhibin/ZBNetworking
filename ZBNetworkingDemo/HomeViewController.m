@@ -47,43 +47,40 @@
         config.baseTimeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
         //config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
-    } responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject,  NSError * _Nullable __autoreleasing *error) {
-        NSLog(@"数据返回之前");
-        /**
-         网络请求 自定义响应结果的处理逻辑（缓存暂时没有自定义处理逻辑）
-         比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
-        */
-       
-       // 举个例子 假设服务器成功回调内返回了code码
-        NSInteger errorCode = 403;
-        if (errorCode == 400) {//假设400 登录过期
-            NSLog(@"登录过期");
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-            //给*error指针 参数 错误信息，网络请求就会走 失败回调
-            *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
-        }
-        if (errorCode == 401) {//假设401 代表Token失效
-            NSLog(@"假设errorCode == 401我们进行 请求Token的操作");
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                NSLog(@"请求Token成功之后在进行业务请求");
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
-                });
-            });
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"Token失效"};
-            //给*error指针 参数 错误信息，网络请求就会走 失败回调
-            *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
-        }
-
     }];
 
     /**
-     可以单独实现
      网络请求 自定义响应 处理逻辑的方法
      需要在请求之前配置
      */
-//    [ZBRequestManager responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable error) {
-//    }];
+    [ZBRequestManager responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing *error) {
+         NSLog(@"数据返回之前");
+        /**
+          网络请求 自定义响应结果的处理逻辑（缓存暂时没有自定义处理逻辑）
+          比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
+         */
+        
+        // 举个例子 假设服务器成功回调内返回了code码
+         NSInteger errorCode = 403;
+         if (errorCode == 400) {//假设400 登录过期
+             NSLog(@"登录过期");
+             NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+             //给*error指针 参数 错误信息，网络请求就会走 失败回调
+             *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
+         }
+         if (errorCode == 401) {//假设401 代表Token失效
+             NSLog(@"假设errorCode == 401我们进行 请求Token的操作");
+             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                 NSLog(@"请求Token成功之后在进行业务请求");
+                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                     NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
+                 });
+             });
+             NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"Token失效"};
+             //给*error指针 参数 错误信息，网络请求就会走 失败回调
+             *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
+         }
+    }];
     
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
@@ -119,7 +116,7 @@
          使用场景是在 重复点击造成的 多次请求，如发帖，评论，搜索等业务
          */
         //request.keepType=ZBResponseKeepNone;
-        request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
+       // request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
         request.filtrationCacheKey=@[@""];//与basefiltrationCacheKey 兼容
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
