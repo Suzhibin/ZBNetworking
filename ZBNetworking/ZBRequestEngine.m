@@ -21,7 +21,7 @@ NSString *const _progressBlock =@"_progressBlock";
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSString *> *baseHeaders;
 @property (nonatomic, strong, nullable) NSMutableArray *baseFiltrationCacheKey;
 @property (nonatomic, assign) NSTimeInterval baseTimeoutInterval;
-@property (nonatomic, assign) NSUInteger retryCount;
+@property (nonatomic, assign) NSUInteger baseRetryCount;
 @property (nonatomic,assign) ZBRequestSerializerType baseRequestSerializer;
 @property (nonatomic,assign) ZBResponseSerializerType baseResponseSerializer;
 @property (nonatomic, assign)BOOL consoleLog;
@@ -209,8 +209,8 @@ NSString *const _progressBlock =@"_progressBlock";
     if (config.isResponseSerializer==YES) {
         self.baseResponseSerializer=config.baseResponseSerializer;
     }
-    if (config.retryCount) {
-        self.retryCount=config.retryCount;
+    if (config.baseRetryCount) {
+        self.baseRetryCount=config.baseRetryCount;
     }
     self.consoleLog=config.consoleLog;
 }
@@ -280,9 +280,9 @@ NSString *const _progressBlock =@"_progressBlock";
         request.responseSerializer=self.baseResponseSerializer;
     }
     //=====================================================
-    if (self.retryCount) {
+    if (self.baseRetryCount) {
         NSUInteger retryCount;
-        retryCount=self.retryCount;
+        retryCount=self.baseRetryCount;
         if (request.retryCount) {
             retryCount=request.retryCount;
         }

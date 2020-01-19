@@ -196,7 +196,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
   请求失败,设置自动重试 请求次数 默认是0.
  */
-@property (nonatomic, assign) NSUInteger retryCount;
+@property (nonatomic, assign) NSUInteger baseRetryCount;
 
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
