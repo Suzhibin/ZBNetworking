@@ -100,7 +100,8 @@
                     *setObject=nil;
                 }
            // }
-        }else if ([request.userInfo[@"tag"]isEqualToString:@"9999"]){
+        }
+        if ([request.userInfo[@"tag"]isEqualToString:@"8888"]){
             /**
              如果服务器有多个域名 可以在此配置，并不可以使用config.baseURL。
              也可以在每个请求的URLString赋值时拼接
@@ -116,7 +117,9 @@
                 URL=[NSString stringWithFormat:@"https://CCCURL.com/%@",request.URLString] ;
             }
             request.URLString=URL;
-        }else{
+        }
+        if ([request.userInfo[@"tag"]isEqualToString:@"9999"]) {
+        
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
@@ -161,9 +164,11 @@
                       *error = nil;
                   }
           }
-        }else if ([request.userInfo[@"tag"]isEqualToString:@"9999"]){
+        }
+        if ([request.userInfo[@"tag"]isEqualToString:@"8888"]){
             
-        }else{
+        }
+        if([request.userInfo[@"tag"]isEqualToString:@"9999"]){
               //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
