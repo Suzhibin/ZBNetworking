@@ -48,6 +48,7 @@
         request.timeoutInterval=10;//默认30
         request.parameters=@{@"1": @"one", @"2": @"two"};
         request.headers=@{@"headers": @"headers"};
+        request.userInfo=@{@"tag":@"111"};//用于标示 请求信息
     }  success:^(id responseObject,ZBURLRequest *request){
         
         if (request.isCache) {

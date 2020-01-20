@@ -16,7 +16,6 @@
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UIRefreshControl *refreshControl;
-@property (nonatomic,strong)NSMutableDictionary *cacheDict;
 @end
 
 @implementation HomeViewController
@@ -39,7 +38,7 @@
     headers[@"Token"] = @"Token";
 
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
-        config.baseURL=server_URL;//如果同一个环境，有多个域名 不建议设置baseURL
+        config.baseURL=server_URL;//如果同一个环境，有多个域名 不要设置baseURL
         config.baseParameters=parameters;//公告参数
         // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
         config.baseFiltrationCacheKey=@[@"timeString"];
@@ -73,9 +72,10 @@
     sender.selected = !sender.selected;
     /**
     自定义 所有 请求,响应 处理逻辑的方法
-    比如 自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
-        自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
-        ......
+    比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
+        2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
+        3.一个应用有多个服务器地址，在此进行配置
+        4. ......
     */
     [ZBRequestManager requestProcessHandler:^(ZBURLRequest * _Nullable request,id _Nullable __autoreleasing * _Nullable setObject) {
         NSLog(@"请求之前");
@@ -100,6 +100,22 @@
                     *setObject=nil;
                 }
            // }
+        }else if ([request.userInfo[@"tag"]isEqualToString:@"9999"]){
+            /**
+             如果服务器有多个域名 可以在此配置，并不可以使用config.baseURL。
+             也可以在每个请求的URLString赋值时拼接
+             */
+            NSString *URL;
+            if ([request.userInfo[@"tag"]isEqualToString:@"111"]){
+                URL=[NSString stringWithFormat:@"https://AAAURL.com/%@",request.URLString] ;
+            }
+            if ([request.userInfo[@"tag"]isEqualToString:@"222"]){
+                URL=[NSString stringWithFormat:@"https://BBBURL.com/%@",request.URLString] ;
+            }
+            if ([request.userInfo[@"tag"]isEqualToString:@"333"]){
+                URL=[NSString stringWithFormat:@"https://CCCURL.com/%@",request.URLString] ;
+            }
+            request.URLString=URL;
         }else{
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             //排除上传和下载请求
@@ -145,6 +161,8 @@
                       *error = nil;
                   }
           }
+        }else if ([request.userInfo[@"tag"]isEqualToString:@"9999"]){
+            
         }else{
               //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             //排除上传和下载请求
