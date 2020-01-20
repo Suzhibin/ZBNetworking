@@ -19,6 +19,7 @@ NSString *const _progressBlock =@"_progressBlock";
 @property (nonatomic, copy, nullable) NSString *baseURLString;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, id> *baseParameters;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSString *> *baseHeaders;
+@property (nonatomic, strong, nullable) NSDictionary *baseUserInfo;
 @property (nonatomic, strong, nullable) NSMutableArray *baseFiltrationCacheKey;
 @property (nonatomic, assign) NSTimeInterval baseTimeoutInterval;
 @property (nonatomic, assign) NSUInteger baseRetryCount;
@@ -212,6 +213,9 @@ NSString *const _progressBlock =@"_progressBlock";
     if (config.baseRetryCount) {
         self.baseRetryCount=config.baseRetryCount;
     }
+    if (config.baseUserInfo) {
+        self.baseUserInfo=config.baseUserInfo;
+    }
     self.consoleLog=config.consoleLog;
 }
 - (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock{
@@ -246,22 +250,22 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     //=====================================================
     if (self.baseParameters.count > 0) {
-          NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-          [parameters addEntriesFromDictionary:self.baseParameters];
-          if (request.parameters.count > 0) {
-              [parameters addEntriesFromDictionary:request.parameters];
-          }
-          request.parameters = parameters;
-      }
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+        [parameters addEntriesFromDictionary:self.baseParameters];
+        if (request.parameters.count > 0) {
+            [parameters addEntriesFromDictionary:request.parameters];
+        }
+        request.parameters = parameters;
+    }
     //=====================================================
     if (self.baseHeaders.count > 0) {
-          NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-          [headers addEntriesFromDictionary:self.baseHeaders];
-          if (request.headers) {
-              [headers addEntriesFromDictionary:request.headers];
-          }
-          request.headers = headers;
-      }
+        NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+        [headers addEntriesFromDictionary:self.baseHeaders];
+        if (request.headers) {
+            [headers addEntriesFromDictionary:request.headers];
+        }
+        request.headers = headers;
+    }
     //=====================================================
     if (self.baseFiltrationCacheKey.count>0) {
         NSMutableArray *filtrationCacheKey=[NSMutableArray array];
@@ -273,7 +277,7 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     //=====================================================
     if (request.isRequestSerializer==NO) {
-         request.requestSerializer=self.baseRequestSerializer;
+        request.requestSerializer=self.baseRequestSerializer;
     }
     //=====================================================
     if (request.isResponseSerializer==NO) {
@@ -287,6 +291,10 @@ NSString *const _progressBlock =@"_progressBlock";
             retryCount=request.retryCount;
         }
         request.retryCount=retryCount;
+    }
+    //=====================================================
+    if (!request.userInfo && self.baseUserInfo) {
+        request.userInfo = self.baseUserInfo;
     }
     //=====================================================
     request.consoleLog = self.consoleLog;
@@ -303,7 +311,7 @@ NSString *const _progressBlock =@"_progressBlock";
         NSString *address=[NSString zb_urlString:request.URLString appendingParameters:request.parameters];
         NSString *requestStr=request.requestSerializer==ZBHTTPRequestSerializer ?@"HTTP":@"JOSN";
         NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
-        NSLog(@"\n\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",address,request.parameters, self.requestSerializer.HTTPRequestHeaders,self.requestSerializer.timeoutInterval,requestStr,responseStr);
+        NSLog(@"\n\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",address,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);
    }
 }
 

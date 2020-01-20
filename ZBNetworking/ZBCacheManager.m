@@ -159,7 +159,7 @@ static const CGFloat unit = 1000.0;
     }else if ([content isKindOfClass:[UIImage class]]) {
         return [UIImageJPEGRepresentation((UIImage *)content,(CGFloat)0.9) writeToFile:path atomically:YES];
     }else {
-        [NSException raise:@"非法的文件内容" format:@"文件类型%@异常。", NSStringFromClass([content class])];
+       // [NSException raise:@"非法的文件内容" format:@"文件类型%@异常。", NSStringFromClass([content class])];
         return NO;
     }
     return NO;

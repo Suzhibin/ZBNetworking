@@ -15,7 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)defaultEngine;
 
 /**
- *  网络请求 自定义响应 处理逻辑的方法 Block
+ *  自定义请求 处理逻辑的方法 Block
+ */
+@property (nonatomic, copy) ZBRequestProcessBlock requestProcessHandler;
+/**
+ *  自定义响应 处理逻辑的方法 Block
  */
 @property (nonatomic, copy) ZBResponseProcessBlock responseProcessHandler;
 

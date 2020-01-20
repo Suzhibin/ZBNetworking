@@ -21,19 +21,11 @@
 + (void)setupBaseConfig:(void(^_Nullable)(ZBConfig * _Nullable config))block;
 
 /**
- *  公共配置方法
- *
- *  @param config           请求配置  Block
- *  @param Handler          处理响应结果的逻辑 Block
-*/
-+ (void)setupBaseConfig:(void(^_Nullable)(ZBConfig * _Nullable config))block responseProcessHandler:(ZBResponseProcessBlock _Nullable )Handler;
-
-/**
- *  网络请求 自定义响应 处理逻辑的方法
+ *  自定义 请求、响应 处理逻辑的方法
  *  custom processing the response data.
  *  @param Handler          处理响应结果的逻辑 Block
  */
-+ (void)responseProcessHandler:(ZBResponseProcessBlock _Nullable )Handler;
++ (void)requestProcessHandler:(ZBRequestProcessBlock _Nullable )requestHandler responseProcessHandler:(ZBResponseProcessBlock _Nullable )responseHandler;
 
 /**
  *  请求方法

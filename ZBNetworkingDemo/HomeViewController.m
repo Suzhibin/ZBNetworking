@@ -11,10 +11,12 @@
 #import "HomeModel.h"
 #import "DetailViewController.h"
 #import "SettingViewController.h"
+#import "DataManager.h"
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UIRefreshControl *refreshControl;
+@property (nonatomic,strong)NSMutableDictionary *cacheDict;
 @end
 
 @implementation HomeViewController
@@ -47,41 +49,11 @@
         config.baseTimeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
         //config.baseRetryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
+        config.baseUserInfo=@{@"info":@"ZBNetworking"};//请求的信息，可以用来注释和判断使用
     }];
 
-    /**
-     网络请求 自定义响应 处理逻辑的方法
-     需要在请求之前配置
-     */
-    [ZBRequestManager responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing *error) {
-         NSLog(@"数据返回之前");
-        /**
-          网络请求 自定义响应结果的处理逻辑（缓存暂时没有自定义处理逻辑）
-          比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
-         */
-        
-        // 举个例子 假设服务器成功回调内返回了code码
-         NSInteger errorCode = 403;
-         if (errorCode == 400) {//假设400 登录过期
-             NSLog(@"登录过期");
-             NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-             //给*error指针 参数 错误信息，网络请求就会走 失败回调
-             *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
-         }
-         if (errorCode == 401) {//假设401 代表Token失效
-             NSLog(@"假设errorCode == 401我们进行 请求Token的操作");
-             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                 NSLog(@"请求Token成功之后在进行业务请求");
-                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                     NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
-                 });
-             });
-             NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"Token失效"};
-             //给*error指针 参数 错误信息，网络请求就会走 失败回调
-             *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:userInfo];
-         }
-    }];
-    
+   
+   
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
     /**
@@ -95,9 +67,94 @@
     [self getDataWithApiType:ZBRequestTypeCache];
     
     [self addItemWithTitle:@"设置缓存" selector:@selector(btnClick) location:NO];
-
+    [self customItemWithTitle:@"拦截请求" selectedTitle:@"取消拦截" selector:@selector(leftBtnClick:) location:YES];
 }
-#pragma mark - AFNetworking
+- (void)leftBtnClick:(UIButton *)sender{
+    sender.selected = !sender.selected;
+    /**
+    自定义 所有 请求,响应 处理逻辑的方法
+    比如 自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
+        自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
+        ......
+    */
+    [ZBRequestManager requestProcessHandler:^(ZBURLRequest * _Nullable request,id _Nullable __autoreleasing * _Nullable setObject) {
+        NSLog(@"请求之前");
+        /**
+         请求前的 逻辑处理
+        */
+        if ([request.userInfo[@"tag"]isEqualToString:@"1000"]) {
+            //比如 我们可以根据参数寻找一个业务的请求 ，给改该请求做一个替换响应数据的操作
+//            NSString *path= request.parameters[@"path"];
+//            if ([path isEqualToString:@"HomeViewController"]||[path isEqualToString:@"DetailViewController"]) {
+                if (sender.selected==YES) {
+                    /**
+                    //⚠️setObject 赋值 就会走成功回调
+                    如判断内的请求包含keep请求，keep功能将不会受此影响
+                    request.keepType=ZBResponseKeepFirst
+                    request.keepType=ZBResponseKeepLast
+                    */
+                    *setObject=@{ @"authors":@[@{@"errorCode":@"400"}],
+                                                        @"videos":@[@{@"errorCode":@"400"}]
+                                                       };
+                }else{
+                    *setObject=nil;
+                }
+           // }
+        }else{
+            //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
+            //排除上传和下载请求
+            if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
+                NSDictionary *dict= [[DataManager sharedInstance] dataInfoWithKey:request.URLString];
+                if (dict) {
+                    if (sender.selected==YES) {
+                        //⚠️setObject 赋值 就会走成功回调
+                        *setObject=dict;
+                    }else{
+                        *setObject=nil;
+                    }
+                }
+            }
+        }
+       
+    } responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing *error) {
+        NSLog(@"成功回调 数据返回之前");
+        if ([request.userInfo[@"tag"]isEqualToString:@"1000"]) {
+          /**
+            网络请求 自定义响应结果的处理逻辑
+            比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
+           */
+          // 举个例子 假设服务器成功回调内返回了code码
+          NSArray * authors;
+            NSString *path= request.parameters[@"path"];
+          if ([path isEqualToString:@"HomeViewController"]) {
+              authors=responseObject[@"authors"];
+          }
+          if ([path isEqualToString:@"DetailViewController"]) {
+              authors=responseObject[@"videos"];
+          }
+          
+          NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
+          if ([errorCode isEqualToString:@"400"]) {//假设400 登录过期
+              NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+               NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
+            
+                  if (sender.selected==YES) {
+                                   //⚠️给*error指针 错误信息，网络请求就会走 失败回调
+                      *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
+                  }else{
+                      *error = nil;
+                  }
+          }
+        }else{
+              //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
+            //排除上传和下载请求
+            if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
+                [[DataManager sharedInstance] saveDataInfo:responseObject key:request.URLString];
+            }
+        }
+    }];
+}
+#pragma mark - request
 //apiType 是请求类型 在ZBRequestConst 里
 - (void)getDataWithApiType:(ZBApiType)apiType{
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
@@ -121,6 +178,7 @@
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
         request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
+        request.userInfo=@{@"tag":requestTag};//与baseUserInfo 不兼容 优先级大于 全局设置
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
@@ -153,13 +211,13 @@
         if (error.code==NSURLErrorTimedOut){
             [self alertTitle:@"请求超时" andMessage:@""];
         }else{
-            [self alertTitle:@"请求失败" andMessage:@""];
+            [self alertTitle:@"请求失败" andMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];
         }
         [self.refreshControl endRefreshing];  //结束刷新
     }];
 }
 
-#pragma mark - 刷新
+#pragma mark - refresh
 - (UIRefreshControl *)refreshControl{
     if (!_refreshControl) {
         

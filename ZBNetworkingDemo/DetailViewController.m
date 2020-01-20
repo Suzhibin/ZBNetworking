@@ -53,6 +53,7 @@
        request.parameters=parameters;
        request.apiType=ZBRequestTypeCache;
        request.filtrationCacheKey=@[@"path"];
+       request.userInfo=@{@"tag":requestTag};
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dataDict = (NSDictionary *)responseObject;
@@ -75,7 +76,7 @@
         }else if (error.code==NSURLErrorTimedOut){
             [self alertTitle:@"请求超时" andMessage:@""];
         }else{
-            [self alertTitle:@"请求失败" andMessage:@""];
+            [self alertTitle:@"请求失败" andMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];
         }
     }];
 }

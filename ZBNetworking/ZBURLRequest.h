@@ -67,6 +67,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSUInteger retryCount;
 
 /**
+  当前请求的信息，可以用来区分具有相同上下文的请求
+*/
+@property (nonatomic, strong, nullable) NSDictionary *userInfo;
+
+/**
  *  存储路径 只有下载文件方法有用
  */
 @property (nonatomic,copy,nullable) NSString *downloadSavePath;
@@ -170,6 +175,11 @@ NS_ASSUME_NONNULL_BEGIN
  *   请求头
 */
 @property (nonatomic, strong, nullable) NSDictionary *baseHeaders;
+
+/**
+ *   请求的信息，可以用来注释和判断使用
+*/
+@property (nonatomic, strong, nullable) NSDictionary *baseUserInfo;
 /**
  *  过滤parameters 里的随机参数
  */

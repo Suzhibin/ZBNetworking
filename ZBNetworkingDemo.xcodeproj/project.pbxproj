@@ -30,6 +30,7 @@
 		9F244A502170D53700482E41 /* MethodViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A4F2170D53700482E41 /* MethodViewController.m */; };
 		9F244A532170D59900482E41 /* CustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A522170D59900482E41 /* CustomTabBarController.m */; };
 		9F244A582170D92500482E41 /* HomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A572170D92500482E41 /* HomeModel.m */; };
+		9FB4BB3823D4658E0013EA17 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FB4BB3723D4658E0013EA17 /* DataManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,8 @@
 		9F244A522170D59900482E41 /* CustomTabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTabBarController.m; sourceTree = "<group>"; };
 		9F244A562170D92500482E41 /* HomeModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeModel.h; sourceTree = "<group>"; };
 		9F244A572170D92500482E41 /* HomeModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeModel.m; sourceTree = "<group>"; };
+		9FB4BB3623D4658E0013EA17 /* DataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		9FB4BB3723D4658E0013EA17 /* DataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		C572061DEBB8B1709A68AEA1 /* Pods-ZBNetworkingDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNetworkingDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNetworkingDemo/Pods-ZBNetworkingDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		FC7D594D1C3900452288F761 /* libPods-ZBNetworkingDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ZBNetworkingDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -200,6 +203,8 @@
 				7DF826341D5815BE000D1109 /* AppDelegate.m */,
 				7DF826361D5815BE000D1109 /* ViewController.h */,
 				7DF826371D5815BE000D1109 /* ViewController.m */,
+				9FB4BB3623D4658E0013EA17 /* DataManager.h */,
+				9FB4BB3723D4658E0013EA17 /* DataManager.m */,
 				7DF826391D5815BE000D1109 /* Main.storyboard */,
 				7DF8263C1D5815BE000D1109 /* Assets.xcassets */,
 				7DF8263E1D5815BE000D1109 /* LaunchScreen.storyboard */,
@@ -448,6 +453,7 @@
 				7D7EC8B51E248FC500663313 /* SettingViewController.m in Sources */,
 				7DF826851D58170C000D1109 /* RootViewController.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
+				9FB4BB3823D4658E0013EA17 /* DataManager.m in Sources */,
 				7D10B45D1F4553A400E87520 /* ZBRequestEngine.m in Sources */,
 				9F244A582170D92500482E41 /* HomeModel.m in Sources */,
 				7DF826821D58170C000D1109 /* DetailsModel.m in Sources */,

@@ -16,11 +16,12 @@ NSString *const _isCache =@"_isCache";
 
 #pragma mark - 配置请求
 + (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
-    [self setupBaseConfig:block responseProcessHandler:nil];
-}
-+ (void)setupBaseConfig:(void(^)(ZBConfig *config))block responseProcessHandler:(ZBResponseProcessBlock)Handler{
     [[ZBRequestEngine defaultEngine] setupBaseConfig:block];
-    [ZBRequestEngine defaultEngine].responseProcessHandler = Handler;
+}
+
++ (void)requestProcessHandler:(ZBRequestProcessBlock)requestHandler responseProcessHandler:(ZBResponseProcessBlock)responseHandler{
+    [ZBRequestEngine defaultEngine].requestProcessHandler=requestHandler;
+    [ZBRequestEngine defaultEngine].responseProcessHandler = responseHandler;
 }
 
 + (NSURLSessionTask *)requestWithConfig:(ZBRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure{
@@ -60,7 +61,17 @@ NSString *const _isCache =@"_isCache";
 + (NSURLSessionTask *)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     
     if([request.URLString isEqualToString:@""]||request.URLString==nil)return nil;
-
+    
+    [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished];
+    
+    id obj=nil;
+    if ([ZBRequestEngine defaultEngine].requestProcessHandler&&request.keepType==ZBResponseKeepNone) {
+        [ZBRequestEngine defaultEngine].requestProcessHandler(request,&obj);
+        if (obj) {
+            [self successWithResponseObject:obj request:request];
+            return nil;
+        }
+    }
     __block NSURLSessionTask *task = nil;
     NSURLSessionTask  *originaltask= [[ZBRequestEngine defaultEngine]objectRequestForkey:request.URLString];
     if (request.keepType==ZBResponseKeepFirst&&originaltask) {
@@ -69,13 +80,12 @@ NSString *const _isCache =@"_isCache";
     if (request.keepType==ZBResponseKeepLast&&originaltask) {
         [originaltask cancel];
     }
-    task=[self startSendRequest:request progress:progress success:success failure:failure finished:finished];
+   
+    task=[self startSendRequest:request];
     [[ZBRequestEngine defaultEngine]setRequestObject:task forkey:request.URLString];
     return task;
 }
-+ (NSURLSessionTask *)startSendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
-   
-    [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished];
++ (NSURLSessionTask *)startSendRequest:(ZBURLRequest *)request{
     
     if (request.methodType==ZBMethodTypeUpload) {
        return [self sendUploadRequest:request];
@@ -161,7 +171,7 @@ NSString *const _isCache =@"_isCache";
 }
 
 + (id)responsetSerializerConfig:(ZBURLRequest *)request responseObject:(id)responseObject{
-    if (request.responseSerializer==ZBHTTPResponseSerializer||request.methodType==ZBMethodTypeDownLoad) {
+    if (request.responseSerializer==ZBHTTPResponseSerializer||request.methodType==ZBMethodTypeDownLoad||![responseObject isKindOfClass:[NSData class]]) {
         return responseObject;
     }else{
         NSError *serializationError = nil;
@@ -179,9 +189,10 @@ NSString *const _isCache =@"_isCache";
 }
 
 + (void)successWithResponseObject:(id)responseObject request:(ZBURLRequest *)request {
+    id result=[self responsetSerializerConfig:request responseObject:responseObject];
     NSError *processError = nil;
     if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
-        [ZBRequestEngine defaultEngine].responseProcessHandler(request, responseObject,&processError);
+        [ZBRequestEngine defaultEngine].responseProcessHandler(request, result,&processError);
         if (processError) {
             [self failureWithError:processError request:request];
             return;
@@ -190,7 +201,6 @@ NSString *const _isCache =@"_isCache";
     if (request.apiType == ZBRequestTypeRefreshAndCache||request.apiType == ZBRequestTypeCache) {
         [self storeObject:responseObject request:request];
     }
-    id result=[self responsetSerializerConfig:request responseObject:responseObject];
     [request setValue:@(NO) forKey:_isCache];
     request.successBlock?request.successBlock(result, request):nil;
     request.finishedBlock?request.finishedBlock(result, nil):nil;
@@ -226,10 +236,6 @@ NSString *const _isCache =@"_isCache";
         request.finishedBlock?request.finishedBlock(result, nil):nil;
         [request cleanAllBlocks];
     }];
-}
-
-+ (void)responseProcessHandler:(ZBResponseProcessBlock)Handler{
-    [ZBRequestEngine defaultEngine].responseProcessHandler = Handler;
 }
 
 + (BOOL)isNetworkReachable {

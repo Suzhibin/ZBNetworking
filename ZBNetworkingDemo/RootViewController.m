@@ -35,6 +35,23 @@
     }
     
 }
+- (void)customItemWithTitle:(NSString *)title selectedTitle:(NSString *)selectedTitle selector:(SEL)selector location:(BOOL)isLeft{
+     UIButton *itemBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [itemBtn setFrame:CGRectMake(0, 0, 100, 44)];
+    [itemBtn setTitle:title forState:UIControlStateNormal];
+    [itemBtn setTitle:selectedTitle forState:UIControlStateSelected];
+    [itemBtn setTitleColor:[UIColor colorWithRed:0.09f green:0.52f blue:1.00f alpha:1.00f] forState:UIControlStateNormal];
+    [itemBtn addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
+
+        UIBarButtonItem * rightBtnItem =[[UIBarButtonItem alloc] initWithCustomView: itemBtn];
+         if (isLeft == YES) {
+              //左
+              self.navigationItem.leftBarButtonItem = rightBtnItem;
+          }else{
+              //右边
+              self.navigationItem.rightBarButtonItem = rightBtnItem;
+          }
+}
 - (void)alertTitle:(NSString *)title andMessage:(NSString *)message{
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     //
