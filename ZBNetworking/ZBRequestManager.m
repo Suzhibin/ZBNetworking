@@ -210,7 +210,7 @@ NSString *const _isCache =@"_isCache";
 
 + (void)failureWithError:(NSError *)error request:(ZBURLRequest *)request{
     if (request.consoleLog==YES) {
-           [self printfailureInfoWithError:error request:request];
+        [self printfailureInfoWithError:error request:request];
     }
     if (request.retryCount > 0) {
         request.retryCount --;

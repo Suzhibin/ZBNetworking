@@ -121,9 +121,10 @@
         if ([request.userInfo[@"tag"]isEqualToString:@"9999"]) {
         
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
+            request.apiType=ZBRequestTypeRefresh;
             //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
-                NSDictionary *dict= [[DataManager sharedInstance] dataInfoWithKey:request.URLString];
+                NSDictionary *dict= [[DataManager sharedInstance] dataInfoWithKey:[NSString stringWithFormat:@"%@%@",request.URLString,request.parameters[@"author"]]];
                 if (dict) {
                     if (sender.selected==YES) {
                         //⚠️setObject 赋值 就会走成功回调
@@ -138,32 +139,32 @@
     } responseProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing *error) {
         NSLog(@"成功回调 数据返回之前");
         if ([request.userInfo[@"tag"]isEqualToString:@"1000"]) {
-          /**
+            /**
             网络请求 自定义响应结果的处理逻辑
             比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
-           */
-          // 举个例子 假设服务器成功回调内返回了code码
-          NSArray * authors;
+             */
+            // 举个例子 假设服务器成功回调内返回了code码
+            NSArray * authors;
             NSString *path= request.parameters[@"path"];
-          if ([path isEqualToString:@"HomeViewController"]) {
+            if ([path isEqualToString:@"HomeViewController"]) {
               authors=responseObject[@"authors"];
-          }
-          if ([path isEqualToString:@"DetailViewController"]) {
-              authors=responseObject[@"videos"];
-          }
+            }
+            if ([path isEqualToString:@"DetailViewController"]) {
+                authors=responseObject[@"videos"];
+            }
           
-          NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
-          if ([errorCode isEqualToString:@"400"]) {//假设400 登录过期
-              NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-               NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
+            NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
+            if ([errorCode isEqualToString:@"400"]) {//假设400 登录过期
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+                NSLog(@"重新开始业务请求：%@ 参数：%@",request.URLString,request.parameters[@"path"]);
             
-                  if (sender.selected==YES) {
-                                   //⚠️给*error指针 错误信息，网络请求就会走 失败回调
+                if (sender.selected==YES) {
+                      //⚠️给*error指针 错误信息，网络请求就会走 失败回调
                       *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
-                  }else{
+                }else{
                       *error = nil;
-                  }
-          }
+                }
+            }
         }
         if ([request.userInfo[@"tag"]isEqualToString:@"8888"]){
             
@@ -172,7 +173,7 @@
               //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
-                [[DataManager sharedInstance] saveDataInfo:responseObject key:request.URLString];
+                [[DataManager sharedInstance] saveDataInfo:responseObject key:[NSString stringWithFormat:@"%@%@",request.URLString,request.parameters[@"author"]]];
             }
         }
     }];
