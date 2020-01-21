@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
  发起网络请求
 
  @param request ZBURLRequest
- @param zb_progress 进度
+ @param progress 进度
  @param success 成功回调
  @param failure 失败回调
  @return task
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
  上传文件
 
  @param request ZBURLRequest
- @param zb_progress 进度
+ @param uploadProgressBlock 进度
  @param success 成功回调
  @param failure 失败回调
  @return task
