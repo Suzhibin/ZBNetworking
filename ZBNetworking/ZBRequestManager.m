@@ -12,6 +12,7 @@
 #import "NSString+ZBUTF8Encoding.h"
 
 NSString *const _isCache =@"_isCache";
+NSString *const _cacheKey =@"_cacheKey";
 @implementation ZBRequestManager
 
 #pragma mark - 配置请求
@@ -85,8 +86,8 @@ NSString *const _isCache =@"_isCache";
     [[ZBRequestEngine defaultEngine]setRequestObject:task forkey:request.URLString];
     return task;
 }
+
 + (NSURLSessionTask *)startSendRequest:(ZBURLRequest *)request{
-    
     if (request.methodType==ZBMethodTypeUpload) {
        return [self sendUploadRequest:request];
     }else if (request.methodType==ZBMethodTypeDownLoad){
@@ -231,6 +232,7 @@ NSString *const _isCache =@"_isCache";
             [self printCacheInfoWithkey:key filePath:filePath request:request];
         }
         id result=[self responsetSerializerConfig:request responseObject:data];
+        [request setValue:key forKey:_cacheKey];
         [request setValue:@(YES) forKey:_isCache];
         request.successBlock?request.successBlock(result, request):nil;
         request.finishedBlock?request.finishedBlock(result, nil):nil;

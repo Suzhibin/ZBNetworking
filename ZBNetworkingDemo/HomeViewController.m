@@ -30,6 +30,7 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
     parameters[@"jianshu"] = @"https://www.jianshu.com/p/55cda3341d11";
+    parameters[@"iap"]=@"0";
     NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
     NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
     parameters[@"timeString"] =timeString;//时间戳
@@ -94,7 +95,7 @@
                     request.keepType=ZBResponseKeepLast
                     */
                     *setObject=@{ @"authors":@[@{@"errorCode":@"400"}],
-                                                        @"videos":@[@{@"errorCode":@"400"}]
+                                @"videos":@[@{@"errorCode":@"400"}]
                                                        };
                 }else{
                     *setObject=nil;
@@ -225,6 +226,7 @@
             [self.refreshControl endRefreshing];    //结束刷新
             if (request.isCache==YES) {
                 self.title=@"使用了缓存";
+                [DataManager sharedInstance].cacheKey=request.cacheKey;
             }else{
                 self.title=@"重新请求";
             }

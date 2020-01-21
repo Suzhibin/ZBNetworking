@@ -13,6 +13,7 @@
 #import <SDWebImageManager.h>
 #import "DetailsModel.h"
 #import "HomeModel.h"
+#import "DataManager.h"
 static const NSInteger cacheTime = 15;//过期时间
 @interface SettingViewController ()<UITableViewDelegate,UITableViewDataSource,offlineDelegate>
 
@@ -234,9 +235,9 @@ static const NSInteger cacheTime = 15;//过期时间
     if (indexPath.row==8) {
         
         //清除单个缓存文件
-        // [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key];
+        // [[ZBCacheManager sharedInstance]clearCacheForkey:[DataManager sharedInstance].cacheKey];
        
-        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheForkey:[DataManager sharedInstance].cacheKey completion:^{
             
          [self.tableView reloadData];
             
@@ -255,8 +256,8 @@ static const NSInteger cacheTime = 15;//过期时间
     
     if (indexPath.row==10) {
  
-        //[[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key time:cacheTime]
-        [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL_key time:cacheTime completion:^{
+        //[[ZBCacheManager sharedInstance]clearCacheForkey:[DataManager sharedInstance].cacheKey time:cacheTime]
+        [[ZBCacheManager sharedInstance]clearCacheForkey:[DataManager sharedInstance].cacheKey time:cacheTime completion:^{
             [self.tableView reloadData];
         }];
     }

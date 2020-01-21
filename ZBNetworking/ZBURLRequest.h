@@ -82,6 +82,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
 
 /**
+ *  缓存key 
+ */
+@property (nonatomic,copy,readonly) NSString * cacheKey;
+
+/**
  *  是否使用了缓存
  */
 @property (nonatomic,assign,readonly) BOOL isCache;

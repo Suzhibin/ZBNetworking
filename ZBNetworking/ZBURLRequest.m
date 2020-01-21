@@ -22,6 +22,7 @@
     _retryCount=0;
     return self;
 }
+
 - (void)setRequestSerializer:(ZBRequestSerializerType)requestSerializer{
     _requestSerializer=requestSerializer;
     _isRequestSerializer=YES;
@@ -37,6 +38,10 @@
     _failureBlock = nil;
     _finishedBlock = nil;
     _progressBlock = nil;
+}
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    //  NSLog(@"undefinedKey:%@",key);
 }
 
 - (void)dealloc{
@@ -152,8 +157,10 @@
     _baseRequestSerializer=baseRequestSerializer;
     _isRequestSerializer=YES;
 }
+
 - (void)setBaseResponseSerializer:(ZBResponseSerializerType)baseResponseSerializer{
     _baseResponseSerializer=baseResponseSerializer;
     _isResponseSerializer=YES;
 }
+
 @end

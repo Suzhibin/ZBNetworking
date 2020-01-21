@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #define server_URL @"http://api.dotaly.com/lol/api/v1/"
-#define list_URL @"authors?iap=0"
+#define list_URL @"authors"
 
 #define details_URL @"shipin/latest"
-#define list_URL_key @"http://api.dotaly.com/lol/api/v1/authors?iap=0?path=HomeViewController&github=https://github.com/Suzhibin/ZBNetworking&jianshu=https://www.jianshu.com/p/55cda3341d11"
 
 #define requestTag @"1000"
 //屏幕宽

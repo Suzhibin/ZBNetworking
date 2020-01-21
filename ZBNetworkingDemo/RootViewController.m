@@ -40,7 +40,8 @@
     [itemBtn setFrame:CGRectMake(0, 0, 100, 44)];
     [itemBtn setTitle:title forState:UIControlStateNormal];
     [itemBtn setTitle:selectedTitle forState:UIControlStateSelected];
-    [itemBtn setTitleColor:[UIColor colorWithRed:0.09f green:0.52f blue:1.00f alpha:1.00f] forState:UIControlStateNormal];
+    [itemBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [itemBtn setTitleColor:[UIColor colorWithRed:0.09f green:0.52f blue:1.00f alpha:1.00f] forState:UIControlStateSelected];
     [itemBtn addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
 
         UIBarButtonItem * rightBtnItem =[[UIBarButtonItem alloc] initWithCustomView: itemBtn];
