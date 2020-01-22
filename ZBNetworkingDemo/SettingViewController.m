@@ -20,7 +20,7 @@ static const NSInteger cacheTime = 15;//过期时间
 @property (nonatomic,copy)NSString *imagePath;
 @property (nonatomic,strong)NSMutableArray *imageArray;
 @property (nonatomic,strong)UITableView *tableView;
-//@property (nonatomic,strong)ZBBatchRequest *batchRequest;
+@property (nonatomic,strong)ZBBatchRequest *batchRequest;
 @end
 
 @implementation SettingViewController
@@ -29,7 +29,7 @@ static const NSInteger cacheTime = 15;//过期时间
 }
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-    [self cancelClick];//如果退出页面可以取消下载，看产品需求
+    //[self cancelClick];//如果退出页面可以取消下载，看产品需求
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -292,7 +292,7 @@ static const NSInteger cacheTime = 15;//过期时间
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
 
     //批量请求
-   [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
+   self.batchRequest = [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
         for (HomeModel *model in offlineArray) {
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
             parameters[@"path"] = @"SettingViewController";
@@ -362,11 +362,11 @@ static const NSInteger cacheTime = 15;//过期时间
         }else{
             NSLog(@"请求失败");
         }
-    }];
+    }finished:nil];
 }
 
 - (void)cancelClick{
-    [ZBRequestManager cancelAllRequest];
+    [ZBRequestManager cancelBatchRequest:self.batchRequest];
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.imageArray removeAllObjects];
 }

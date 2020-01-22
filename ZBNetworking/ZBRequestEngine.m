@@ -72,7 +72,7 @@ NSString *const _progressBlock =@"_progressBlock";
 }
 
 #pragma mark - GET/POST/PUT/PATCH/DELETE
-- (NSURLSessionDataTask *)dataTaskWithMethod:(ZBURLRequest *)request
+- (NSUInteger)dataTaskWithMethod:(ZBURLRequest *)request
                              progress:(void (^)(NSProgress * _Nonnull))progress
                               success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                               failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
@@ -82,24 +82,26 @@ NSString *const _progressBlock =@"_progressBlock";
     [self printParameterWithRequest:request];
     
     NSString *URLString=[NSString zb_stringUTF8Encoding:request.URLString];
-
+    NSURLSessionDataTask *dataTask=nil;
     if (request.methodType==ZBMethodTypeGET) {
-        return [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
+        dataTask = [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePOST) {
-        return [self POST:URLString parameters:request.parameters progress:progress success:success failure:failure];
+        dataTask = [self POST:URLString parameters:request.parameters progress:progress success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePUT){
-        return [self PUT:URLString parameters:request.parameters success:success failure:failure];
+        dataTask = [self PUT:URLString parameters:request.parameters success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePATCH){
-        return [self PATCH:URLString parameters:request.parameters success:success failure:failure];
+        dataTask = [self PATCH:URLString parameters:request.parameters success:success failure:failure];
     }else if (request.methodType==ZBMethodTypeDELETE){
-        return [self DELETE:URLString parameters:request.parameters success:success failure:failure];
+        dataTask = [self DELETE:URLString parameters:request.parameters success:success failure:failure];
     }else{
-        return [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
+        dataTask = [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
     }
+    [request setIdentifier:dataTask.taskIdentifier];
+    return request.identifier;
 }
 
 #pragma mark - upload
-- (NSURLSessionDataTask *)uploadWithRequest:(ZBURLRequest *)request
+- (NSUInteger)uploadWithRequest:(ZBURLRequest *)request
                                 progress:(void (^)(NSProgress * _Nonnull))uploadProgressBlock
                                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
@@ -133,11 +135,13 @@ NSString *const _progressBlock =@"_progressBlock";
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         uploadProgressBlock ? uploadProgressBlock(uploadProgress) : nil;
     } success:success failure:failure];
-    return uploadTask;
+    
+    [request setIdentifier:uploadTask.taskIdentifier];
+    return request.identifier;
 }
 
 #pragma mark - DownLoad
-- (NSURLSessionDownloadTask *)downloadWithRequest:(ZBURLRequest *)request
+- (NSUInteger)downloadWithRequest:(ZBURLRequest *)request
                                              progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
                                     completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
     [self headersAndTimeConfig:request];
@@ -156,14 +160,16 @@ NSString *const _progressBlock =@"_progressBlock";
     } else {
         downloadFileSavePath = [NSURL fileURLWithPath:request.downloadSavePath isDirectory:NO];
     }
-    NSURLSessionDownloadTask *dataTask = [self downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
+    NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
         downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
     } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
         return downloadFileSavePath;
     } completionHandler:completionHandler];
     
-    [dataTask resume];
-    return dataTask;
+    [downloadTask resume];
+    
+    [request setIdentifier:downloadTask.taskIdentifier];
+    return request.identifier;
 }
 
 - (NSInteger)networkReachability {
@@ -300,6 +306,16 @@ NSString *const _progressBlock =@"_progressBlock";
     request.consoleLog = self.consoleLog;
 }
 
+- (void)cancelRequestByIdentifier:(NSUInteger)identifier {
+    if (identifier == 0) return;
+    [self.tasks enumerateObjectsUsingBlock:^(NSURLSessionTask *task, NSUInteger idx, BOOL *stop) {
+        if (task.taskIdentifier == identifier) {
+            [task cancel];
+            *stop = YES;
+        }
+    }];
+}
+
 - (void)cancelAllRequest{
     if (self.tasks.count>0) {
         [self.tasks makeObjectsPerformSelector:@selector(cancel)];
@@ -329,7 +345,7 @@ NSString *const _progressBlock =@"_progressBlock";
 
 - (id)objectRequestForkey:(NSString *)key{
     if(!key)return nil;
-        return [_requestDic objectForKey:key];
+    return [_requestDic objectForKey:key];
 }
 
 #pragma mark - Accessor

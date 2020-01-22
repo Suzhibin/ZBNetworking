@@ -91,8 +91,7 @@ typedef NS_ENUM(NSUInteger, ZBResponseKeepType) {
     ZBResponseKeepLast
 
 };
-/** 批量请求配置的Block */
-typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest);
+//==================================================================
 /** 请求配置的Block */
 typedef void (^ZBRequestConfigBlock)(ZBURLRequest * _Nonnull request);
 /** 请求成功的Block */
@@ -103,11 +102,15 @@ typedef void (^ZBRequestFailureBlock)(NSError * _Nullable error);
 typedef void (^ZBRequestProgressBlock)(NSProgress * _Nullable progress);
 /** 请求取消的Block */
 typedef void (^ZBRequestFinishedBlock)(id _Nullable responseObject,NSError * _Nullable error);
+//==================================================================
+/** 批量请求配置的Block */
+typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest);
 /** 批量请求完成的Block */
 typedef void (^ZBBatchRequestFinishedBlock)(NSArray<id> * _Nullable responseObjects);
+//==================================================================
 /** 自定义请求 处理逻辑的方法 Block */
 typedef void (^ZBRequestProcessBlock)(ZBURLRequest * _Nullable request,id _Nullable __autoreleasing * _Nullable setObject);
 /** 自定义响应 处理逻辑的方法 Block */
 typedef void (^ZBResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error);
-
+//==================================================================
 #endif /* ZBRequestConst_h */

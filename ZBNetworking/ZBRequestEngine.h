@@ -36,13 +36,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  发起网络请求
 
- @param request ZBURLRequest
- @param progress 进度
- @param success 成功回调
- @param failure 失败回调
- @return task
+ @param request             ZBURLRequest
+ @param progress            进度
+ @param success             成功回调
+ @param failure             失败回调
+ @return identifier         请求标识符
  */
-- (NSURLSessionDataTask *_Nullable)dataTaskWithMethod:(ZBURLRequest *_Nullable)request
+- (NSUInteger)dataTaskWithMethod:(ZBURLRequest *_Nullable)request
                                           progress:(void (^_Nullable)(NSProgress * _Nullable))progress
                                               success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
                                               failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
@@ -50,13 +50,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  上传文件
 
- @param request ZBURLRequest
- @param uploadProgressBlock 进度
- @param success 成功回调
- @param failure 失败回调
- @return task
+ @param request                 ZBURLRequest
+ @param uploadProgressBlock     进度
+ @param success                 成功回调
+ @param failure                 失败回调
+ @return identifier             请求标识符
  */
-- (NSURLSessionUploadTask *_Nullable)uploadWithRequest:(ZBURLRequest *_Nullable)request
+- (NSUInteger)uploadWithRequest:(ZBURLRequest *_Nullable)request
                                 progress:(void (^)(NSProgress * _Nonnull))uploadProgressBlock
                                     success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
                                     failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
@@ -64,12 +64,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  下载文件
 
- @param request ZBURLRequest
- @param downloadProgressBlock 进度
- @param completionHandler 回调
- @return task
+ @param request                 ZBURLRequest
+ @param downloadProgressBlock   进度
+ @param completionHandler       回调
+ @return identifier             请求标识符
  */
-- (NSURLSessionDownloadTask *_Nullable)downloadWithRequest:(ZBURLRequest *_Nullable)request
+- (NSUInteger)downloadWithRequest:(ZBURLRequest *_Nullable)request
                                                   progress:(void (^_Nullable)(NSProgress * _Nullable downloadProgress)) downloadProgressBlock
                                          completionHandler:(void (^_Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
@@ -77,6 +77,12 @@ NS_ASSUME_NONNULL_BEGIN
    当前网络的状态值，-1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
  */
 - (NSInteger)networkReachability;
+
+/**
+ * 取消单个请求任务
+ * @param identifier        请求identifier
+ */
+- (void)cancelRequestByIdentifier:(NSUInteger)identifier;
 
 /**
  * 取消所有请求任务

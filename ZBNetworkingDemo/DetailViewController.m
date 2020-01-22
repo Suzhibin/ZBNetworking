@@ -13,8 +13,7 @@
 @interface DetailViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
-@property (nonatomic, strong) NSURLSessionTask *currentTask;
-
+@property (nonatomic,assign)NSUInteger identifier;
 @end
 
 @implementation DetailViewController
@@ -26,8 +25,8 @@
     /**
        如果请求未完成，就退出，可以取消本次请求，节省用户流量，节约开销。已请求成功和读缓存，不会取消。
      */
-    [self.currentTask cancel];//取消本次请求
-    //[ZBRequestManager cancelAllRequest];// 取消全部请求 如果有多个请求直接用这个方法
+    [ZBRequestManager cancelRequest:self.identifier];//取消本次请求
+
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
 }
 - (void)viewDidLoad {
@@ -47,7 +46,7 @@
     parameters[@"limit"] =@"50";
     parameters[@"offset"] = @"0";
     parameters[@"path"] = @"DetailViewController";
-   self.currentTask=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+    self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
          //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
        request.URLString=details_URL;
        request.parameters=parameters;

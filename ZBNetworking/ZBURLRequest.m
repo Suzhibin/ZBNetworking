@@ -7,8 +7,6 @@
 //
 
 #import "ZBURLRequest.h"
-#import "ZBRequestManager.h"
-
 @implementation ZBURLRequest
 - (instancetype)init {
     self = [super init];
@@ -20,6 +18,7 @@
     _methodType=ZBMethodTypeGET;
     _apiType=ZBRequestTypeRefresh;
     _retryCount=0;
+    _identifier = 0;
     return self;
 }
 
@@ -45,7 +44,9 @@
 }
 
 - (void)dealloc{
-    //NSLog(@"%s",__func__);
+#ifdef DEBUG
+    NSLog(@"%s",__func__);
+#endif
 }
 
 #pragma mark - 上传请求参数

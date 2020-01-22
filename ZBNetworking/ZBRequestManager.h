@@ -30,12 +30,37 @@
 
 /**
  *  请求方法
+ *  @param config           请求配置  Block
+ *  @param success          请求成功的 Block
+ *  @return identifier      请求标识符
+ */
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config success:(ZBRequestSuccessBlock _Nullable )success;
+
+/**
+ *  请求方法
+ *  @param config           请求配置  Block
+ *  @param failure          请求失败的 Block
+ *  @return identifier      请求标识符
+ */
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config failure:(ZBRequestFailureBlock _Nullable )failure;
+
+/**
+ *  请求方法
+ *  @param config           请求配置  Block
+ *  @param finished         请求完成的 Block
+ *  @return identifier      请求标识符
+ */
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config finished:(ZBRequestFinishedBlock _Nullable )finished;
+
+/**
+ *  请求方法
  *
  *  @param config           请求配置  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
+ *  @return identifier      请求标识符
  */
-+ (NSURLSessionTask *_Nullable)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
 
 /**
  *  请求方法 进度
@@ -44,17 +69,9 @@
  *  @param progress         请求进度  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
+ *  @return identifier      请求标识符
  */
-+ (NSURLSessionTask *_Nullable)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
-
-/**
- *  批量请求方法
- *
- *  @param config           请求配置  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- */
-+ (void)sendBatchRequest:(ZBBatchRequestConfigBlock _Nonnull )config success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
 
 /**
  *  批量请求方法
@@ -63,18 +80,9 @@
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
  *  @param finished         批量请求完成的 Block
+ *  @return BatchRequest    批量请求对象
 */
-+ (void)sendBatchRequest:(ZBBatchRequestConfigBlock _Nonnull )config success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
-
-/**
- *  批量请求方法 进度
- *
- *  @param config           请求配置  Block
- *  @param progress         请求进度  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- */
-+ (void)sendBatchRequest:(ZBBatchRequestConfigBlock _Nonnull )config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
++ (ZBBatchRequest *_Nullable)sendBatchRequest:(ZBBatchRequestConfigBlock _Nonnull )config success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
 
 /**
  *  批量请求方法 进度
@@ -84,11 +92,24 @@
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
  *  @param finished         批量请求完成的 Block
+ *  @return BatchRequest    批量请求对象
 */
-+ (void)sendBatchRequest:(ZBBatchRequestConfigBlock _Nonnull )config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
++ (ZBBatchRequest *_Nullable)sendBatchRequest:(ZBBatchRequestConfigBlock _Nonnull )config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
 
 /**
- * 取消所有请求任务
+ * 取消单个请求任务
+ * @param identifier        请求identifier
+ */
++ (void)cancelRequest:(NSUInteger)identifier;
+
+/**
+ * 取消批量请求任务
+ * @param batchRequest       批量请求对象
+ */
++ (void)cancelBatchRequest:(ZBBatchRequest *_Nullable)batchRequest;
+
+/**
+ * 取消所有请求任务 整个APP基于AFNetworking 活跃的请求都会被取消
  */
 + (void)cancelAllRequest;
 
