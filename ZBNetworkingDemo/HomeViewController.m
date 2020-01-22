@@ -240,7 +240,7 @@
             [self alertTitle:@"请求失败" andMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];
         }
         [self.refreshControl endRefreshing];  //结束刷新
-    }];
+    } ];
 }
 
 #pragma mark - refresh

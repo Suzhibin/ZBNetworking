@@ -74,6 +74,18 @@
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
 
 /**
+ *  请求方法 进度
+ *
+ *  @param config           请求配置  Block
+ *  @param progress         请求进度  Block
+ *  @param success          请求成功的 Block
+ *  @param failure          请求失败的 Block
+ *  @param finished         请求完成的 Block
+ *  @return identifier      请求标识符
+ */
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull)config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBRequestFinishedBlock _Nullable )finished;
+
+/**
  *  批量请求方法
  *
  *  @param config           请求配置  Block
