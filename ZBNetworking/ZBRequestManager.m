@@ -83,18 +83,18 @@ NSString *const _cacheKey =@"_cacheKey";
             return 0;
         }
     }
-
+ 
     ZBURLRequest *originalRequest= [[ZBRequestEngine defaultEngine]objectRequestForkey:request.URLString];
     if (request.keepType==ZBResponseKeepFirst&&originalRequest) {
-        return request.identifier;
+        return 0;
     }
     if (request.keepType==ZBResponseKeepLast&&originalRequest) {
         [self cancelRequest:originalRequest.identifier];
     }
-    
-    request.identifier=[self startSendRequest:request];
+
+    NSUInteger identifier=[self startSendRequest:request];
     [[ZBRequestEngine defaultEngine]setRequestObject:request forkey:request.URLString];
-    return request.identifier;
+    return identifier;
 }
 
 + (NSUInteger)startSendRequest:(ZBURLRequest *)request{
