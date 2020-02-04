@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic,copy)NSString *cacheKey;
 
+@property(nonatomic,copy)NSString *tag;
 /**
  *  数据管理对象单例
  *

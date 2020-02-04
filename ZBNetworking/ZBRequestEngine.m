@@ -109,7 +109,7 @@ NSString *const _progressBlock =@"_progressBlock";
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-   NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.URLString] parameters:request.parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.URLString] parameters:request.parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
         [request.uploadDatas enumerateObjectsUsingBlock:^(ZBUploadData *obj, NSUInteger idx, BOOL *stop) {
             if (obj.fileData) {
@@ -224,6 +224,7 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     self.consoleLog=config.consoleLog;
 }
+
 - (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock{
     if (successBlock) {
         [request setValue:successBlock forKey:_successBlock];

@@ -10,6 +10,7 @@
 #import "DetailsModel.h"
 #import "ZBNetworking.h"
 #import <UIImageView+WebCache.h>
+#import "DataManager.h"
 @interface DetailViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
@@ -52,7 +53,7 @@
        request.parameters=parameters;
        request.apiType=ZBRequestTypeCache;
        request.filtrationCacheKey=@[@"path"];
-       request.userInfo=@{@"tag":requestTag};
+       request.userInfo=@{@"tag":[DataManager sharedInstance].tag};
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dataDict = (NSDictionary *)responseObject;

@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, copy) ZBResponseProcessBlock responseProcessHandler;
 
+@property (nonatomic, copy) ZBErrorProcessBlock errorProcessHandler;
+
 /**
  公共基础配置
  */

@@ -108,9 +108,11 @@ typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest
 /** 批量请求完成的Block */
 typedef void (^ZBBatchRequestFinishedBlock)(NSArray<id> * _Nullable responseObjects);
 //==================================================================
-/** 自定义请求 处理逻辑的方法 Block */
+/** 请求 处理逻辑的方法 Block */
 typedef void (^ZBRequestProcessBlock)(ZBURLRequest * _Nullable request,id _Nullable __autoreleasing * _Nullable setObject);
-/** 自定义响应 处理逻辑的方法 Block */
-typedef void (^ZBResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error);
+/** 响应 处理逻辑的方法 Block */
+typedef id _Nullable (^ZBResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error);
+/** 错误 处理逻辑的方法 Block */
+typedef void (^ZBErrorProcessBlock)(ZBURLRequest * _Nullable request, NSError * _Nullable error);
 //==================================================================
 #endif /* ZBRequestConst_h */

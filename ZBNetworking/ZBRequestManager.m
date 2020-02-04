@@ -20,9 +20,16 @@ NSString *const _cacheKey =@"_cacheKey";
     [[ZBRequestEngine defaultEngine] setupBaseConfig:block];
 }
 
-+ (void)requestProcessHandler:(ZBRequestProcessBlock)requestHandler responseProcessHandler:(ZBResponseProcessBlock)responseHandler{
++ (void)setRequestProcessHandler:(ZBRequestProcessBlock)requestHandler{
     [ZBRequestEngine defaultEngine].requestProcessHandler=requestHandler;
+}
+
++ (void)setResponseProcessHandler:(ZBResponseProcessBlock)responseHandler{
     [ZBRequestEngine defaultEngine].responseProcessHandler = responseHandler;
+}
+
++ (void)setErrorProcessHandler:(ZBErrorProcessBlock)errorHandler{
+    [ZBRequestEngine defaultEngine].errorProcessHandler=errorHandler;
 }
 
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config success:(ZBRequestSuccessBlock)success{
@@ -48,7 +55,7 @@ NSString *const _cacheKey =@"_cacheKey";
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
     ZBURLRequest *request=[[ZBURLRequest alloc]init];
     config ? config(request) : nil;
-    return [self sendRequest:request progress:progress success:success failure:failure finished:nil];
+    return [self sendRequest:request progress:progress success:success failure:failure finished:finished];
 }
 
 + (ZBBatchRequest *)sendBatchRequest:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
@@ -66,7 +73,6 @@ NSString *const _cacheKey =@"_cacheKey";
     }];
     return batchRequest;
 }
-
 
 #pragma mark - 发起请求
 + (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
@@ -212,9 +218,12 @@ NSString *const _cacheKey =@"_cacheKey";
 
 + (void)successWithResponseObject:(id)responseObject request:(ZBURLRequest *)request {
     id result=[self responsetSerializerConfig:request responseObject:responseObject];
-    NSError *processError = nil;
     if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
-        [ZBRequestEngine defaultEngine].responseProcessHandler(request, result,&processError);
+        NSError *processError = nil;
+        id newResult =[ZBRequestEngine defaultEngine].responseProcessHandler(request, result,&processError);
+        if (newResult) {
+            result = newResult;
+        }
         if (processError) {
             [self failureWithError:processError request:request];
             return;
@@ -234,13 +243,18 @@ NSString *const _cacheKey =@"_cacheKey";
     if (request.consoleLog==YES) {
         [self printfailureInfoWithError:error request:request];
     }
+    if ([ZBRequestEngine defaultEngine].errorProcessHandler) {
+        [ZBRequestEngine defaultEngine].errorProcessHandler(request, error);
+    }
+    
     if (request.retryCount > 0) {
         request.retryCount --;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self dataTaskWithHTTPRequest:request];
         });
         return;
     }
+   
     request.failureBlock?request.failureBlock(error):nil;
     request.finishedBlock?request.finishedBlock(nil,error):nil;
     [request cleanAllBlocks];
@@ -253,6 +267,13 @@ NSString *const _cacheKey =@"_cacheKey";
             [self printCacheInfoWithkey:key filePath:filePath request:request];
         }
         id result=[self responsetSerializerConfig:request responseObject:data];
+        if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
+            NSError *processError = nil;
+            id newResult =[ZBRequestEngine defaultEngine].responseProcessHandler(request, result,&processError);
+            if (newResult) {
+                result = newResult;
+            }
+        }
         [request setValue:key forKey:_cacheKey];
         [request setValue:@(YES) forKey:_isCache];
         request.successBlock?request.successBlock(result, request):nil;
@@ -272,7 +293,7 @@ NSString *const _cacheKey =@"_cacheKey";
 }
 
 + (void)printfailureInfoWithError:(NSError *)error request:(ZBURLRequest *)request{
-    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.URLString,request.retryCount,error);
+    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.URLString,request.retryCount,error.localizedDescription);
 }
 
 @end

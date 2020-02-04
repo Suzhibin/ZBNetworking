@@ -12,7 +12,6 @@
 
 #define details_URL @"shipin/latest"
 
-#define requestTag @"1000"
 //屏幕宽
 #define SCREEN_WIDTH                ([UIScreen mainScreen].bounds.size.width)
 //屏幕高

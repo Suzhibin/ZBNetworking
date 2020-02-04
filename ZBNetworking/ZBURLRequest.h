@@ -92,9 +92,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy,readonly) NSString * cacheKey;
 
 /**
- *  是否使用了缓存
+ *  是否使用了缓存 只有得到响应数据时 才是准确的
  */
 @property (nonatomic,assign,readonly) BOOL isCache;
+
+@property (nullable, readonly, copy) NSURLResponse *response;
 
 @property (nonatomic,assign) BOOL consoleLog;
 @property (nonatomic,assign) BOOL isRequestSerializer;
