@@ -65,7 +65,15 @@
     [[UIApplication sharedApplication].keyWindow addSubview:self.aiv];
     
     [DataManager sharedInstance].tag=@"6666";
-    
+    /**
+       自定义 所有 请求,响应,错误 处理逻辑的方法
+
+       比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
+           2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
+           3.一个应用有多个服务器地址，可在此进行配置
+           4.统一loading 等UI处理
+           5. ......
+       */
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
          NSLog(@"请求之前");
         if ([request.userInfo[@"tag"]isEqualToString:@"6666"]) {
@@ -185,8 +193,9 @@
                 [self.aiv stopAnimating];
             }
         }
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut){
+        if (error.code==NSURLErrorCancelled){
+             NSLog(@"请求取消❌------------------");
+        }else if (error.code==NSURLErrorTimedOut){
             [self alertTitle:@"请求超时" andMessage:@""];
         }else{
             [self alertTitle:@"请求失败" andMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];
@@ -205,20 +214,7 @@
     
     [self addItemWithTitle:@"设置缓存" selector:@selector(btnClick) location:NO];
 }
-- (void)leftBtnClick:(UIButton *)sender{
-    sender.selected = !sender.selected;
-    
-    /**
-    自定义 所有 请求,响应,错误 处理逻辑的方法
-    [ZBRequestManager requestProcessHandler:nil responseProcessHandler:nil errorProcessHandler:nil];
-    比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
-        2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
-        3.一个应用有多个服务器地址，在此进行配置
-        4.统一loading 等UI处理
-        5. ......
-    */
-   
-}
+
 #pragma mark - request
 //apiType 是请求类型 在ZBRequestConst 里
 - (void)getDataWithApiType:(ZBApiType)apiType{
@@ -273,7 +269,6 @@
         }
         
     } failure:^(NSError *error){
-       
         [self.refreshControl endRefreshing];  //结束刷新
     } ];
 }

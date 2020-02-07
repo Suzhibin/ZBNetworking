@@ -54,14 +54,7 @@
             [self.tableView reloadData];
         }
     
-    } failure:^(NSError *error) {
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut) {
-            [self alertTitle:@"请求超时" andMessage:@""];
-        }else{
-            [self alertTitle:@"请求失败" andMessage:@""];
-        }
-    }];
+    } failure:nil];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

@@ -70,15 +70,7 @@
             }
         }
     
-    } failure:^(NSError *error){
-        if (error.code==NSURLErrorCancelled){
-             NSLog(@"请求取消❌------------------");
-        }else if (error.code==NSURLErrorTimedOut){
-            [self alertTitle:@"请求超时" andMessage:@""];
-        }else{
-            [self alertTitle:@"请求失败" andMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];
-        }
-    }];
+    } failure:nil];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

@@ -355,14 +355,7 @@ static const NSInteger cacheTime = 15;//过期时间
             
         }
         
-    } failure:^(NSError *error){
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut){
-            NSLog(@"请求超时");
-        }else{
-            NSLog(@"请求失败");
-        }
-    }finished:nil];
+    } failure:nil finished:nil];
 }
 
 - (void)cancelClick{
