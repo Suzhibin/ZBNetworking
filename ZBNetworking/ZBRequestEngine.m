@@ -198,29 +198,29 @@ NSString *const _progressBlock =@"_progressBlock";
     if (config.baseURL) {
         self.baseURLString=config.baseURL;
     }
-    if (config.baseTimeoutInterval) {
-        self.baseTimeoutInterval=config.baseTimeoutInterval;
+    if (config.timeoutInterval) {
+        self.baseTimeoutInterval=config.timeoutInterval;
     }
-    if (config.baseParameters.count>0) {
-        [self.baseParameters addEntriesFromDictionary:config.baseParameters];
+    if (config.parameters.count>0) {
+        [self.baseParameters addEntriesFromDictionary:config.parameters];
     }
-    if (config.baseHeaders.count>0) {
-        [self.baseHeaders addEntriesFromDictionary:config.baseHeaders];
+    if (config.headers.count>0) {
+        [self.baseHeaders addEntriesFromDictionary:config.headers];
     }
-    if (config.baseFiltrationCacheKey) {
-        [self.baseFiltrationCacheKey addObjectsFromArray:config.baseFiltrationCacheKey];
+    if (config.filtrationCacheKey) {
+        [self.baseFiltrationCacheKey addObjectsFromArray:config.filtrationCacheKey];
     }
     if (config.isRequestSerializer==YES) {
-        self.baseRequestSerializer=config.baseRequestSerializer;
+        self.baseRequestSerializer=config.requestSerializer;
     }
     if (config.isResponseSerializer==YES) {
-        self.baseResponseSerializer=config.baseResponseSerializer;
+        self.baseResponseSerializer=config.responseSerializer;
     }
-    if (config.baseRetryCount) {
-        self.baseRetryCount=config.baseRetryCount;
+    if (config.retryCount) {
+        self.baseRetryCount=config.retryCount;
     }
-    if (config.baseUserInfo) {
-        self.baseUserInfo=config.baseUserInfo;
+    if (config.userInfo) {
+        self.baseUserInfo=config.userInfo;
     }
     self.consoleLog=config.consoleLog;
 }

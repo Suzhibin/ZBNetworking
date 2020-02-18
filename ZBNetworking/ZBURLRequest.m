@@ -154,13 +154,13 @@
 #pragma mark - ZBConfig
 
 @implementation ZBConfig
-- (void)setBaseRequestSerializer:(ZBRequestSerializerType)baseRequestSerializer{
-    _baseRequestSerializer=baseRequestSerializer;
+- (void)setrequestSerializer:(ZBRequestSerializerType)requestSerializer{
+    _requestSerializer=requestSerializer;
     _isRequestSerializer=YES;
 }
 
-- (void)setBaseResponseSerializer:(ZBResponseSerializerType)baseResponseSerializer{
-    _baseResponseSerializer=baseResponseSerializer;
+- (void)setresponseSerializer:(ZBResponseSerializerType)responseSerializer{
+    _responseSerializer=responseSerializer;
     _isResponseSerializer=YES;
 }
 

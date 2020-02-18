@@ -93,15 +93,15 @@ typedef NS_ENUM(NSUInteger, ZBResponseKeepType) {
 };
 //==================================================================
 /** 请求配置的Block */
-typedef void (^ZBRequestConfigBlock)(ZBURLRequest * _Nonnull request);
+typedef void (^ZBRequestConfigBlock)(ZBURLRequest *request);
 /** 请求成功的Block */
-typedef void (^ZBRequestSuccessBlock)(id _Nullable responseObject,ZBURLRequest * _Nullable request);
+typedef void (^ZBRequestSuccessBlock)(id responseObject,ZBURLRequest *request);
 /** 请求失败的Block */
-typedef void (^ZBRequestFailureBlock)(NSError * _Nullable error);
+typedef void (^ZBRequestFailureBlock)(NSError *error);
 /** 请求进度的Block */
-typedef void (^ZBRequestProgressBlock)(NSProgress * _Nullable progress);
-/** 请求取消的Block */
-typedef void (^ZBRequestFinishedBlock)(id _Nullable responseObject,NSError * _Nullable error);
+typedef void (^ZBRequestProgressBlock)(NSProgress * progress);
+/** 请求完成的Block */
+typedef void (^ZBRequestFinishedBlock)(id responseObject,NSError * error);
 //==================================================================
 /** 批量请求配置的Block */
 typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest);

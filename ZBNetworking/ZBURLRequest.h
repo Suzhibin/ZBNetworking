@@ -183,24 +183,24 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *   参数
 */
-@property (nonatomic, strong, nullable) NSDictionary *baseParameters;
+@property (nonatomic, strong, nullable) NSDictionary *parameters;
 /**
  *   请求头
 */
-@property (nonatomic, strong, nullable) NSDictionary *baseHeaders;
+@property (nonatomic, strong, nullable) NSDictionary *headers;
 
 /**
  *   请求的信息，可以用来注释和判断使用
 */
-@property (nonatomic, strong, nullable) NSDictionary *baseUserInfo;
+@property (nonatomic, strong, nullable) NSDictionary *userInfo;
 /**
  *  过滤parameters 里的随机参数
  */
-@property (nonatomic, strong, nullable) NSArray *baseFiltrationCacheKey;
+@property (nonatomic, strong, nullable) NSArray *filtrationCacheKey;
 /**
 *  超时时间
 */
-@property (nonatomic, assign) NSTimeInterval baseTimeoutInterval;
+@property (nonatomic, assign) NSTimeInterval timeoutInterval;
 /**
  是否开启打印控制台log
  */
@@ -209,17 +209,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  请求参数的类型
  */
-@property (nonatomic,assign) ZBRequestSerializerType baseRequestSerializer;
+@property (nonatomic,assign) ZBRequestSerializerType requestSerializer;
 
 /**
  *  响应数据的类型
  */
-@property (nonatomic,assign) ZBResponseSerializerType baseResponseSerializer;
+@property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
   请求失败,设置自动重试 请求次数 默认是0.
  */
-@property (nonatomic, assign) NSUInteger baseRetryCount;
+@property (nonatomic, assign) NSUInteger retryCount;
 
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
