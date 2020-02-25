@@ -191,10 +191,7 @@ NSString *const _progressBlock =@"_progressBlock";
 }
 
 #pragma mark - 其他配置
-- (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
-    ZBConfig *config=[[ZBConfig alloc]init];
-    config.consoleLog=NO;
-    block ? block(config) : nil;
+- (void)setupBaseConfig:(ZBConfig *)config{
     if (config.baseURL) {
         self.baseURLString=config.baseURL;
     }

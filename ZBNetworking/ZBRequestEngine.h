@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  公共基础配置
  */
-- (void)setupBaseConfig:(void(^)(ZBConfig *config))block;
+- (void)setupBaseConfig:(ZBConfig *)config;
 
 /**
  公共基础配置与单个请求配置的兼容

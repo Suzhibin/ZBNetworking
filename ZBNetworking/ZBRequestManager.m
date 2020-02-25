@@ -17,7 +17,10 @@ NSString *const _cacheKey =@"_cacheKey";
 
 #pragma mark - 配置请求
 + (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
-    [[ZBRequestEngine defaultEngine] setupBaseConfig:block];
+    ZBConfig *config=[[ZBConfig alloc]init];
+    config.consoleLog=NO;
+    block ? block(config) : nil;
+    [[ZBRequestEngine defaultEngine] setupBaseConfig:config];
 }
 
 + (void)setRequestProcessHandler:(ZBRequestProcessBlock)requestHandler{
