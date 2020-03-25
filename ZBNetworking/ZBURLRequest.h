@@ -96,7 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign,readonly) BOOL isCache;
 
-@property (nullable, readonly, copy) NSURLResponse *response;
+@property (nullable, copy) NSURLResponse *response;
 
 @property (nonatomic,assign) BOOL consoleLog;
 @property (nonatomic,assign) BOOL isRequestSerializer;
@@ -130,7 +130,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong , readonly) NSMutableArray<id> *responseArray;
 
-- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
+- (void)onFinishedRequest:(ZBURLRequest*)request response:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
 
 @end
 

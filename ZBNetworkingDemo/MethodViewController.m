@@ -153,7 +153,7 @@
         }else{
               NSLog(@"error: %@", error);
         }
-    }finished:^(NSArray<id> * _Nullable responseObjects) {
+    }finished:^(NSArray * _Nullable responseObjects, NSArray * _Nullable errors) {
         NSLog(@"请求完毕 包含成功和错误: %@",responseObjects);
         // NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
                 
@@ -197,6 +197,7 @@
             request.methodType=ZBMethodTypeGET;//默认get
             request.apiType=ZBRequestTypeRefresh;
             request.keepType=keepType; //
+           // request.userInfo=@{@"tag":@"7777"};
         } success:^(id responseObject,ZBURLRequest *request) {
             
             NSLog(@"第 %d 次请求成功☑️------------------", i);

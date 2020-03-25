@@ -84,6 +84,7 @@
 #pragma mark - ZBBatchRequest
 @interface ZBBatchRequest () {
     NSUInteger _batchRequestCount;
+    BOOL _failed;
 }
 @end
 
@@ -98,16 +99,31 @@
     _responseArray = [NSMutableArray array];
     return self;
 }
-- (void)requestFinishedResponse:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished{
-    if (error) {
-        [_responseArray addObject:error];
+- (void)onFinishedRequest:(ZBURLRequest*)request response:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished{
+    NSUInteger index = [_requestArray indexOfObject:request];
+    NSMutableDictionary  *dict=[NSMutableDictionary dictionary];
+    if (responseObject) {
+         [dict setObject:responseObject forKey:@"responseObject"];
+         [dict setObject:request forKey:@"request"];
+         [_responseArray replaceObjectAtIndex:index withObject:dict];
     }else{
-        [_responseArray addObject:responseObject];
+         _failed = YES;
+         [dict setObject:error forKey:@"error"];
+         [dict setObject:request forKey:@"request"];
+         if (error) {
+             [_responseArray replaceObjectAtIndex:index withObject:dict];
+         }
     }
     _batchRequestCount++;
     if (_batchRequestCount == _requestArray.count) {
-        if (finished) {
-            finished(_responseArray);
+        if (!_failed) {
+            if (finished) {
+                finished(_responseArray,nil);
+            }
+        }else{
+            if (finished) {
+                finished(nil,_responseArray);
+            }
         }
     }
 }

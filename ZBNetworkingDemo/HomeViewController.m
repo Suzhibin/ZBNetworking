@@ -87,9 +87,10 @@
             if (request.apiType != ZBRequestTypeCache) {
                       /**
                       //⚠️setObject 赋值 就会走成功回调
-                      如判断内的请求包含keep请求，keep功能将不会受此影响
+                      如判断内的请求包含keep请求，keep功能将受影响
                       request.keepType=ZBResponseKeepFirst
                       request.keepType=ZBResponseKeepLast
+                       都不会不起作用了。所有请求都会成功了。
                        */
                 *setObject=@{ @"authors":@[@{@"errorCode":@"400"}],
                                 @"videos":@[@{@"errorCode":@"400"}]};
@@ -241,6 +242,10 @@
         request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};//与baseUserInfo 不兼容 优先级大于 全局设置
     }  success:^(id responseObject,ZBURLRequest * request){
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)request.response;
+        NSDictionary *allHeaders = response.allHeaderFields;
+        NSLog(@"allHeaders:%@",allHeaders);
+        
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];
