@@ -256,7 +256,7 @@ NSString *const _cacheKey =@"_cacheKey";
     if (request.retryCount > 0) {
         request.retryCount --;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self dataTaskWithHTTPRequest:request];
+            [self startSendRequest:request];
         });
         return;
     }
