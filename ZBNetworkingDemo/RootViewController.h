@@ -7,10 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#define server_URL @"http://api.dotaly.com/lol/api/v1/"
-#define list_URL @"authors"
-
-#define details_URL @"shipin/latest"
+#import "RequestTool.h"
 
 //屏幕宽
 #define SCREEN_WIDTH                ([UIScreen mainScreen].bounds.size.width)
