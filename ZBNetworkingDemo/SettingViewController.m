@@ -64,7 +64,7 @@ static const NSInteger cacheTime = 15;//过期时间
         cell.textLabel.text=@"清除全部缓存";
         
         CGFloat cacheSize=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
-        CGFloat imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
+        CGFloat imageSize = [[SDImageCache sharedImageCache]totalDiskSize];//图片缓存大小
         CGFloat AppCacheSize=cacheSize+imageSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         
@@ -76,7 +76,7 @@ static const NSInteger cacheTime = 15;//过期时间
         cell.userInteractionEnabled = NO;
         
         CGFloat cacheCount=[[ZBCacheManager sharedInstance]getCacheCount];//json缓存文件个数
-        CGFloat imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
+        CGFloat imageCount=[[SDImageCache sharedImageCache]totalDiskCount];//图片缓存个数
         CGFloat AppCacheCount=cacheCount+imageCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
         
@@ -105,7 +105,7 @@ static const NSInteger cacheTime = 15;//过期时间
     
     if (indexPath.row==4) {
         cell.textLabel.text=@"清除图片缓存方法";
-         CGFloat imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
+         CGFloat imageSize = [[SDImageCache sharedImageCache]totalDiskSize];//图片缓存大小
         
          imageSize=imageSize/1000.0/1000.0;
         
@@ -117,7 +117,7 @@ static const NSInteger cacheTime = 15;//过期时间
         cell.textLabel.text=@"图片缓存数量方法";
         cell.userInteractionEnabled = NO;
         
-        CGFloat imageCount=[[SDImageCache sharedImageCache]getDiskCount];//图片缓存个数
+        CGFloat imageCount=[[SDImageCache sharedImageCache]totalDiskCount];//图片缓存个数
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",imageCount];
     }
@@ -198,7 +198,7 @@ static const NSInteger cacheTime = 15;//过期时间
         [[ZBCacheManager sharedInstance]clearCacheOnCompletion:^{
             [[ZBCacheManager sharedInstance]clearMemory];
             //清除图片缓存
-            [[SDImageCache sharedImageCache] clearDisk];
+            [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
             [[SDImageCache sharedImageCache] clearMemory];
        
             [self.tableView reloadData];
@@ -320,34 +320,30 @@ static const NSInteger cacheTime = 15;//过期时间
                 [self.imageArray addObject:model];
                 
                 //使用SDWebImage 下载图片， YYWebImang等逻辑一样
-                BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.thumb];
+               
+                BOOL isKey=[[SDImageCache sharedImageCache]diskImageDataExistsWithKey:model.thumb];
                 if (isKey) {
-                    
                     NSLog(@"已经下载了");
                 } else{
-                    
-                    [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-                        
+                    [[SDWebImageManager sharedManager]loadImageWithURL:[NSURL URLWithString:model.thumb] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
                         NSLog(@"%@",[self progressStrWithSize:(CGFloat)receivedSize/expectedSize]);
                         
-                    } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
-                        
+                    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
                         NSLog(@"单个图片完成");
-                        
+                                               
                         [self.tableView reloadData];//耗性能  正式开发建议刷新单行
-                        
+                                               
                         //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                         NSString *imageURLStr = [imageURL absoluteString];
                         NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
-                        
-                        if ([imageURLStr isEqualToString:lastImage]) {
-                            NSLog(@"url相同下载完成");
-                        }
-                        
-                        if (error) {
-                            NSLog(@"图片下载失败");
-                        }
-                        
+                                               
+                            if ([imageURLStr isEqualToString:lastImage]) {
+                                NSLog(@"url相同下载完成");
+                            }
+                                               
+                            if (error) {
+                                NSLog(@"图片下载失败");
+                            }
                     }];
                 }
                 

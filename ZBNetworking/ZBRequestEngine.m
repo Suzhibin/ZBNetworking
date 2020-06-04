@@ -68,7 +68,7 @@ NSString *const _progressBlock =@"_progressBlock";
 }
 
 - (void)dealloc {
-    [self invalidateSessionCancelingTasks:YES];
+   // [self invalidateSessionCancelingTasks:YES];
 }
 
 #pragma mark - GET/POST/PUT/PATCH/DELETE
@@ -84,17 +84,17 @@ NSString *const _progressBlock =@"_progressBlock";
     NSString *URLString=[NSString zb_stringUTF8Encoding:request.URLString];
     NSURLSessionDataTask *dataTask=nil;
     if (request.methodType==ZBMethodTypeGET) {
-        dataTask = [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
+        dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePOST) {
-        dataTask = [self POST:URLString parameters:request.parameters progress:progress success:success failure:failure];
+        dataTask = [self POST:URLString parameters:request.parameters headers:nil progress:progress  success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePUT){
-        dataTask = [self PUT:URLString parameters:request.parameters success:success failure:failure];
+        dataTask = [self PUT:URLString parameters:request.parameters headers:nil success:success failure:failure];
     }else if (request.methodType==ZBMethodTypePATCH){
-        dataTask = [self PATCH:URLString parameters:request.parameters success:success failure:failure];
+        dataTask = [self PATCH:URLString parameters:request.parameters headers:nil success:success failure:failure];
     }else if (request.methodType==ZBMethodTypeDELETE){
-        dataTask = [self DELETE:URLString parameters:request.parameters success:success failure:failure];
+        dataTask = [self DELETE:URLString parameters:request.parameters headers:nil success:success failure:failure];
     }else{
-        dataTask = [self GET:URLString parameters:request.parameters progress:progress success:success failure:failure];
+        dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
     }
     [request setIdentifier:dataTask.taskIdentifier];
     return request.identifier;
@@ -109,7 +109,7 @@ NSString *const _progressBlock =@"_progressBlock";
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.URLString] parameters:request.parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.URLString] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
         [request.uploadDatas enumerateObjectsUsingBlock:^(ZBUploadData *obj, NSUInteger idx, BOOL *stop) {
             if (obj.fileData) {
