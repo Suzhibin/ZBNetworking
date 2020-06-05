@@ -1,5 +1,9 @@
 
-版本 1.1.0 发布于2020年1月13日，周一
+ 发布于2020年6月4日，周四
+ 1.更新了AFNetworking 4.0版本
+ 2.优化demo的公共设置
+ 
+ 发布于2020年1月13日，周一
  1.增加了 公共配置参数功能
  2.请求增加了Keep 功能，多次请求可以只响应第一次请求或最后一次请求
  3.取消请求方法变更，请求成功回调参数变更
@@ -11,7 +15,6 @@
  8.请求失败 可控制设置 重新连接
 
 发布于2018年9月19日，周三
-
 更新
 增加响应数据 格式的枚举 responseSerializer  默认为ZBJSONResponseSerializer   json格式
 请求参数枚举 使用时 由 requestSerializerType 改为requestSerializer
