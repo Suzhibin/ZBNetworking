@@ -136,7 +136,14 @@ static const CGFloat unit = 1000.0;
 }
 
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
-
+    if (!content || !key) {
+        if (isSuccess) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                isSuccess(NO);
+            });
+        }
+        return;
+    }
     [self.memoryCache setObject:content forKey:key ];
     
     dispatch_async(self.operationQueue,^{
