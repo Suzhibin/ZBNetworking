@@ -35,7 +35,7 @@
         config.requestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.responseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
         config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
-        //config.baseRetryCount=2;//请求失败 所有请求重新连接次数
+        //config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
         config.userInfo=@{@"info":@"ZBNetworking"};//请求的信息，可以用来注释和判断使用
     }];
