@@ -39,7 +39,7 @@ static const NSInteger cacheTime = 15;//过期时间
     NSString *cachePath= [[ZBCacheManager sharedInstance]cachesPath];
     
     //得到沙盒cache文件夹下的 SDWebImage 存储路径
-    NSString *sdImage=@"default/com.hackemist.SDWebImageCache.default";
+    NSString *sdImage=@"com.hackemist.SDImageCache/default";
     self.imagePath=[NSString stringWithFormat:@"%@/%@",cachePath,sdImage];
     
     [self.view addSubview:self.tableView];

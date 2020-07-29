@@ -40,6 +40,7 @@
         config.userInfo=@{@"info":@"ZBNetworking"};//请求的信息，可以用来注释和判断使用
     }];
     /**
+       插件机制
        自定义 所有 请求,响应,错误 处理逻辑的方法
 
        比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
@@ -102,6 +103,7 @@
             }
         }
     }];
+    
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
         NSLog(@"成功回调 数据返回之前");
         if ([request.userInfo[@"tag"]isEqualToString:@"5555"]) {

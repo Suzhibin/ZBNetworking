@@ -96,6 +96,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign,readonly) BOOL isCache;
 
+/**
+ *  获取 服务器响应信息
+ */
 @property (nullable, copy) NSURLResponse *response;
 
 @property (nonatomic,assign) BOOL consoleLog;
