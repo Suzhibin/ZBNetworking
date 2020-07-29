@@ -71,10 +71,7 @@
         request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};//与baseUserInfo 不兼容 优先级大于 全局设置
     }  success:^(id responseObject,ZBURLRequest * request){
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)request.response;
-        NSDictionary *allHeaders = response.allHeaderFields;
-        NSLog(@"allHeaders:%@",allHeaders);
-        
+      
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];
@@ -99,6 +96,9 @@
                 [DataManager sharedInstance].cacheKey=request.cacheKey;
             }else{
                 self.title=@"重新请求";
+                NSHTTPURLResponse *response = (NSHTTPURLResponse *)request.response;
+                NSDictionary *allHeaders = response.allHeaderFields;
+                NSLog(@"allHeaders:%@",allHeaders);
             }
         }
         
