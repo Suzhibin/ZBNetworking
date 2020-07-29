@@ -125,23 +125,20 @@
     //开始刷新
     [self.refreshControl beginRefreshing];
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"加载中"];
-    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timer) userInfo:nil repeats:NO];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        /**
+            *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefreshAndCache  每次就会重新请求url
+            *  请求下来的缓存会覆盖原有的缓存文件
+            */
+           [self getDataWithApiType:ZBRequestTypeRefreshAndCache];
+           
+           self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
+           
+           /**
+            * 上拉加载 要添加 apiType 类型 ZBRequestTypeRefreshMore(重新请求)
+            */
+    });
 }
-
-- (void)timer{
-    /**
-     *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefreshAndCache  每次就会重新请求url
-     *  请求下来的缓存会覆盖原有的缓存文件
-     */
-    [self getDataWithApiType:ZBRequestTypeRefreshAndCache];
-    
-    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
-    
-    /**
-     * 上拉加载 要添加 apiType 类型 ZBRequestTypeRefreshMore(重新请求)
-     */
-}
-
 #pragma mark tableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
