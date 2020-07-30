@@ -39,8 +39,6 @@
     [self.view addSubview:self.tableView];
     
     [self getDetailDataWithApiType:ZBRequestTypeCache];
-    
-    [self addItemWithTitle:@"查看缓存文件" selector:@selector(cacheFileClick) location:NO];
 }
 - (void)getDetailDataWithApiType:(ZBApiType)apiType{
     /**
@@ -111,10 +109,6 @@
 
     return cell;
 }
-- (void)cacheFileClick{
-    
-}
-
 //懒加载
 - (UITableView *)tableView{
     if (!_tableView) {
