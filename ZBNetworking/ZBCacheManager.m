@@ -224,6 +224,11 @@ static const CGFloat unit = 1000.0;
  
     NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
 
+    return [self getDiskFileAttributesWithFilePath:filePath];
+}
+
+-  (NSDictionary* )getDiskFileAttributesWithFilePath:(NSString *)filePath{
+    
     NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
     return info;
 }

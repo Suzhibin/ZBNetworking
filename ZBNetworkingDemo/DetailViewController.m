@@ -14,6 +14,7 @@
 @interface DetailViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic,strong)UIRefreshControl *refreshControl;
 @property (nonatomic,assign)NSUInteger identifier;
 @end
 
@@ -34,8 +35,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets=NO;
-    
+    [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
+    
+    [self getDetailDataWithApiType:ZBRequestTypeCache];
+    
+    [self addItemWithTitle:@"查看缓存文件" selector:@selector(cacheFileClick) location:NO];
+}
+- (void)getDetailDataWithApiType:(ZBApiType)apiType{
     /**
      *  如果页面不想使用缓存 要添加 apiType 类型
      *   ZBRequestTypeRefresh  每次就会重新请求url 不存储缓存
@@ -51,11 +58,16 @@
          //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
        request.URLString=details_URL;
        request.parameters=parameters;
-       request.apiType=ZBRequestTypeCache;
+       request.apiType=apiType;
        request.filtrationCacheKey=@[@"path"];
        request.userInfo=@{@"tag":[DataManager sharedInstance].tag};
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            //如果是刷新的数据
+            if (request.apiType==ZBRequestTypeRefreshAndCache) {
+                [self.dataArray removeAllObjects];
+                          
+            }
             NSDictionary *dataDict = (NSDictionary *)responseObject;
             NSArray *array=[dataDict objectForKey:@"videos"];
             for (NSDictionary *dict in array) {
@@ -63,6 +75,7 @@
                 [self.dataArray addObject:model];
             }
             [self.tableView reloadData];
+             [self.refreshControl endRefreshing];    //结束刷新
             if (request.isCache==YES) {
                 self.title=@"使用了缓存";
             }else{
@@ -70,9 +83,10 @@
             }
         }
     
-    } failure:nil];
+    } failure:^(NSError *error) {
+         [self.refreshControl endRefreshing];    //结束刷新
+    }];
 }
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
     
@@ -97,6 +111,10 @@
 
     return cell;
 }
+- (void)cacheFileClick{
+    
+}
+
 //懒加载
 - (UITableView *)tableView{
     if (!_tableView) {
@@ -112,7 +130,41 @@
     }
     return _dataArray;
 }
+#pragma mark - refresh
+- (UIRefreshControl *)refreshControl{
+    if (!_refreshControl) {
+        
+        //下拉刷新
+        _refreshControl = [[UIRefreshControl alloc] init];
+        //标题
+        _refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
+        //事件
+        [_refreshControl addTarget:self action:@selector(refreshDown) forControlEvents:UIControlEventValueChanged];
+    }
+    return _refreshControl;
+}
 
+- (void)refreshDown{
+    //开始刷新
+    [self.refreshControl beginRefreshing];
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"加载中"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        /**
+            *  下拉刷新是不读缓存的 要添加 apiType 类型 ZBRequestTypeRefreshAndCache  每次就会重新请求url
+            *  请求下来的缓存会覆盖原有的缓存文件
+            */
+           [self getDetailDataWithApiType:ZBRequestTypeRefreshAndCache];
+           
+           self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"下拉刷新..."];
+           
+           /**
+            * 上拉加载 要添加 apiType 类型 ZBRequestTypeRefreshMore(重新请求)
+            */
+    });
+}
+- (void)viewDidLayoutSubviews{
+    [self.refreshControl.superview sendSubviewToBack:self.refreshControl];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

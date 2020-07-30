@@ -164,11 +164,17 @@ typedef void(^ZBCacheCompletedBlock)(void);
 - (NSArray *)getDiskCacheFileWithPath:(NSString *)path;
 
 /**
- *  返回缓存文件的属性     
+ * 返回缓存文件的属性     
  * @param path          路径
- *  @param key          缓存文件
+ * @param key           缓存文件 key
  */
--(NSDictionary* )getDiskFileAttributes:(NSString *)key path:(NSString *)path;
+- (NSDictionary* )getDiskFileAttributes:(NSString *)key path:(NSString *)path;
+
+/**
+ * 返回缓存文件的属性
+ * @param filePath       路径文件
+ */
+- (NSDictionary* )getDiskFileAttributesWithFilePath:(NSString *)filePath;
 
 /**
  * 显示data文件缓存大小 默认缓存路径/Library/Caches/ZBKit/AppCache
