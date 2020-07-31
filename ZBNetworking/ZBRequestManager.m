@@ -13,9 +13,10 @@
 
 NSString *const _isCache =@"_isCache";
 NSString *const _cacheKey =@"_cacheKey";
+NSString *const _filePath =@"_filePath";
 @implementation ZBRequestManager
 
-#pragma mark - 配置请求
+#pragma mark - 插件
 + (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
     ZBConfig *config=[[ZBConfig alloc]init];
     config.consoleLog=NO;
@@ -35,6 +36,7 @@ NSString *const _cacheKey =@"_cacheKey";
     [ZBRequestEngine defaultEngine].errorProcessHandler=errorHandler;
 }
 
+#pragma mark - 配置请求
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config success:(ZBRequestSuccessBlock)success{
     return [self requestWithConfig:config progress:nil success:success failure:nil finished:nil];
 }
@@ -60,6 +62,7 @@ NSString *const _cacheKey =@"_cacheKey";
     config ? config(request) : nil;
     return [self sendRequest:request progress:progress success:success failure:failure finished:finished];
 }
+
 #pragma mark - 配置批量请求
 + (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
     return [self requestBatchWithConfig:config progress:nil success:success failure:failure finished:finished];
@@ -281,6 +284,7 @@ NSString *const _cacheKey =@"_cacheKey";
                 result = newResult;
             }
         }
+        [request setValue:filePath forKey:_filePath];
         [request setValue:key forKey:_cacheKey];
         [request setValue:@(YES) forKey:_isCache];
         request.successBlock?request.successBlock(result, request):nil;

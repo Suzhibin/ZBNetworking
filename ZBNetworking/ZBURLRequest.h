@@ -11,6 +11,8 @@
 @class ZBUploadData;
 @interface ZBURLRequest : NSObject
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - 配置请求
 /**
  *  用于标识不同类型的request状态
  */
@@ -86,10 +88,16 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
 
+#pragma mark - 获取信息
 /**
- *  缓存key 
+ *  缓存key  读取缓存 返回
  */
 @property (nonatomic,copy,readonly) NSString * cacheKey;
+
+/**
+ *  缓存路径文件 读取沙盒缓存返回，内存缓存无
+ */
+@property (nonatomic,copy,readonly) NSString * filePath;
 
 /**
  *  是否使用了缓存 只有得到响应数据时 才是准确的
@@ -101,6 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nullable, copy) NSURLResponse *response;
 
+#pragma mark - 内部调用
 @property (nonatomic,assign) BOOL consoleLog;
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
@@ -115,6 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)cleanAllBlocks;
 
+#pragma mark - 上传请求参数
 //============================================================
 - (void)addFormDataWithName:(NSString *)name fileData:(NSData *)fileData;
 - (void)addFormDataWithName:(NSString *)name fileName:(NSString *)fileName mimeType:(NSString *)mimeType fileData:(NSData *)fileData;

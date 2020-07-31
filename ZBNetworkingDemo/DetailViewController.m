@@ -76,6 +76,7 @@
              [self.refreshControl endRefreshing];    //结束刷新
             if (request.isCache==YES) {
                 self.title=@"使用了缓存";
+                NSLog(@"filePath:%@",request.filePath);
             }else{
                 self.title=@"重新请求";
             }
