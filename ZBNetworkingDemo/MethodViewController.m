@@ -122,7 +122,7 @@
 //批量请求
 - (void)downLoadBatchRequest{
     
-    ZBBatchRequest *batchRequest=[ZBRequestManager sendBatchRequest:^(ZBBatchRequest * batchRequest) {
+    ZBBatchRequest *batchRequest=[ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest * batchRequest) {
          for (int i=0; i<=3; i++) {
              ZBURLRequest *request=[[ZBURLRequest alloc]init];
              request.URLString=@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip";

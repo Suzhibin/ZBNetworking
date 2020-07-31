@@ -60,12 +60,12 @@ NSString *const _cacheKey =@"_cacheKey";
     config ? config(request) : nil;
     return [self sendRequest:request progress:progress success:success failure:failure finished:finished];
 }
-
-+ (ZBBatchRequest *)sendBatchRequest:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
-    return [self sendBatchRequest:config progress:nil success:success failure:failure finished:finished];
+#pragma mark - 配置批量请求
++ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
+    return [self requestBatchWithConfig:config progress:nil success:success failure:failure finished:finished];
 }
 
-+ (ZBBatchRequest *)sendBatchRequest:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
++ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
     ZBBatchRequest *batchRequest=[[ZBBatchRequest alloc]init];
     config ? config(batchRequest) : nil;
     if (batchRequest.requestArray.count==0)return nil;
@@ -162,6 +162,7 @@ NSString *const _cacheKey =@"_cacheKey";
     }];
 }
 
+#pragma mark - 取消请求
 + (void)cancelRequest:(NSUInteger)identifier{
     [[ZBRequestEngine defaultEngine]cancelRequestByIdentifier:identifier];
 }

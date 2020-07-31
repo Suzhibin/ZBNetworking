@@ -292,7 +292,7 @@ static const NSInteger cacheTime = 15;//过期时间
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
 
     //批量请求
-   self.batchRequest = [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest){
+   self.batchRequest = [ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest *batchRequest){
         for (HomeModel *model in offlineArray) {
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
             parameters[@"path"] = @"SettingViewController";
