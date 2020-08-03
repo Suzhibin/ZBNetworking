@@ -139,7 +139,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
  *  @param key             url
  *  @return YES/NO
  */
-- (BOOL)diskCacheExistsWithKey:(NSString *)key;
+- (BOOL)diskCacheExistsForKey:(NSString *)key;
 
 /**
  *  判断沙盒是否有对应的文件
@@ -148,7 +148,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
  *  @param path            沙盒路径
  *  @return YES/NO
  */
-- (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path;
+- (BOOL)diskCacheExistsForKey:(NSString *)key path:(NSString *)path;
 
 /**
  *  返回数据及路径
