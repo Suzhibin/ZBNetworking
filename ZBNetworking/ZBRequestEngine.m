@@ -68,7 +68,7 @@ NSString *const _progressBlock =@"_progressBlock";
 }
 
 - (void)dealloc {
-   // [self invalidateSessionCancelingTasks:YES];
+    [self invalidateSessionCancelingTasks:YES resetSession:NO];
 }
 
 #pragma mark - GET/POST/PUT/PATCH/DELETE
