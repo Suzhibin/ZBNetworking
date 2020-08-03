@@ -134,6 +134,15 @@ typedef void(^ZBCacheCompletedBlock)(void);
 - (BOOL)cacheExistsForKey:(NSString *)key;
 
 /**
+ *  判断缓存是否有对应的值 （内存，沙盒）
+ *
+ *  @param key             url
+ *  @param path            沙盒路径
+ *  @return YES/NO
+ */
+- (BOOL)cacheExistsForKey:(NSString *)key path:(NSString *)path;
+
+/**
  *  判断沙盒是否有对应的文件
  *
  *  @param key             url
@@ -340,8 +349,6 @@ typedef void(^ZBCacheCompletedBlock)(void);
  *  @param completion      block 后续操作
  */
 - (void)clearDiskWithpath:(NSString *)path completion:(ZBCacheCompletedBlock)completion;
-
-
 
 @end
 

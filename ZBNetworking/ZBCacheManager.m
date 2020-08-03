@@ -121,12 +121,16 @@ static const CGFloat unit = 1000.0;
 
 #pragma  mark - 缓存是否存在
 - (BOOL)cacheExistsForKey:(NSString *)key{
+    return [self cacheExistsForKey:key path:self.diskCachePath];
+}
+
+- (BOOL)cacheExistsForKey:(NSString *)key path:(NSString *)path{
     
-    BOOL isInMemoryCache =  [self.memoryCache objectForKey:key];;
+    BOOL isInMemoryCache =  [self.memoryCache objectForKey:key];
     if (isInMemoryCache) {
         return YES;
     }
-    return  [self diskCacheExistsForKey:key];
+    return [self diskCacheExistsForKey:key path:path];
 }
 
 - (BOOL)diskCacheExistsForKey:(NSString *)key{
