@@ -28,7 +28,7 @@
 
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
         config.baseURL=server_URL;//如果同一个环境，有多个域名 不要设置baseURL
-        config.parameters=parameters;//公告参数
+        config.parameters=parameters;//公共参数
         // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
         config.filtrationCacheKey=@[@"timeString"];
         config.headers=headers;//请求头
