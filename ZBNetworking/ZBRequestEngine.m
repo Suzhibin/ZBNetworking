@@ -338,7 +338,9 @@ NSString *const _progressBlock =@"_progressBlock";
 
 - (void)removeRequestForkey:(NSString *)key{
     if(!key)return;
-    [_requestDic removeObjectForKey:key];
+    if ([self objectRequestForkey:key]) {
+        [_requestDic removeObjectForKey:key];
+    }
 }
 
 - (id)objectRequestForkey:(NSString *)key{

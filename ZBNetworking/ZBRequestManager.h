@@ -120,24 +120,24 @@
 + (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nonnull )config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
 
 /**
- * 取消单个请求任务
- * @param identifier        请求identifier
+ *  取消单个请求任务
+ *  @param identifier        请求identifier
  */
 + (void)cancelRequest:(NSUInteger)identifier;
 
 /**
- * 取消批量请求任务
- * @param batchRequest       批量请求对象
+ *  取消批量请求任务
+ *  @param batchRequest       批量请求对象
  */
 + (void)cancelBatchRequest:(ZBBatchRequest *_Nullable)batchRequest;
 
 /**
- * 取消所有请求任务 整个APP基于AFNetworking 活跃的请求都会被取消
+ *  取消所有请求任务 整个APP基于AFNetworking 活跃的请求都会被取消
  */
 + (void)cancelAllRequest;
 
 /**
- * 获取网络状态 是否可用
+ *  获取网络状态 是否可用
  */
 + (BOOL)isNetworkReachable;
 

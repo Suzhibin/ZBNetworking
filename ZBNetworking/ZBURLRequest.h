@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBMethodType methodType;
 
 /**
- *   多次请求一个URL 保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果
+ *  多次请求一个URL 保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果
  */
 @property (nonatomic,assign) ZBResponseKeepType keepType;
 
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
- ZBURLRequest对象唯一标识符
+ *  ZBURLRequest对象唯一标识符
  */
 @property (nonatomic, assign) NSUInteger identifier;
 
@@ -69,13 +69,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 /**
-  请求失败,设置自动重试 请求次数 默认是0.
+ *  请求失败,设置自动重试 请求次数 默认是0.
  */
 @property (nonatomic, assign) NSUInteger retryCount;
 
 /**
-  当前请求的信息，可以用来区分具有相同上下文的请求
-*/
+ *  当前请求的信息，可以用来区分具有相同上下文的请求
+ */
 @property (nonatomic, strong, nullable) NSDictionary *userInfo;
 
 /**
@@ -137,10 +137,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ZBBatchRequest : NSObject
 
 /**
- 请求url列队容器
+ *  请求url 列队容器
  */
 @property (nonatomic, strong , nullable) NSMutableArray<ZBURLRequest *> * requestArray;
 
+/**
+ *  响应内容 列队容器 （成功回调返回）
+ */
 @property (nonatomic, strong , readonly) NSMutableArray<id> *responseArray;
 
 - (void)onFinishedRequest:(ZBURLRequest*)request response:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
@@ -149,32 +152,32 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - ZBUploadData
 /**
- 上传文件数据的类
+ *  上传文件数据的类
  */
 @interface ZBUploadData : NSObject
 
 /**
- 文件对应服务器上的字段
+ *  文件对应服务器上的字段
  */
 @property (nonatomic, copy) NSString * name;
 
 /**
- 文件名
+ *  文件名
  */
 @property (nonatomic, copy, nullable) NSString *fileName;
 
 /**
- 图片文件的类型,例:png、jpeg....
+ *  图片文件的类型,例:png、jpeg....
  */
 @property (nonatomic, copy, nullable) NSString *mimeType;
 
 /**
- The data to be encoded and appended to the form data, and it is prior than `fileURL`.
+ *  The data to be encoded and appended to the form data, and it is prior than `fileURL`.
  */
 @property (nonatomic, strong, nullable) NSData *fileData;
 
 /**
- The URL corresponding to the file whose content will be appended to the form, BUT, when the `fileData` is assigned，the `fileURL` will be ignored.
+ *  The URL corresponding to the file whose content will be appended to the form, BUT, when the `fileData` is assigned，the `fileURL` will be ignored.
  */
 @property (nonatomic, strong, nullable) NSURL *fileURL;
 
@@ -190,20 +193,20 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ZBConfig : NSObject
 
 /**
- *   基础URL 域名
+ *  基础URL 域名
 */
 @property (nonatomic, copy, nullable) NSString *baseURL;
 /**
- *   参数
+ *  参数
 */
 @property (nonatomic, strong, nullable) NSDictionary *parameters;
 /**
- *   请求头
+ *  请求头
 */
 @property (nonatomic, strong, nullable) NSDictionary *headers;
 
 /**
- *   请求的信息，可以用来注释和判断使用
+ *  请求的信息，可以用来注释和判断使用
 */
 @property (nonatomic, strong, nullable) NSDictionary *userInfo;
 /**
@@ -211,11 +214,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong, nullable) NSArray *filtrationCacheKey;
 /**
-*  超时时间
-*/
+ *  超时时间
+ */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 /**
- 是否开启打印控制台log
+ *  是否开启打印控制台log
  */
 @property (nonatomic, assign)BOOL consoleLog;
 
@@ -230,7 +233,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
-  请求失败,设置自动重试 请求次数 默认是0.
+ *  请求失败,设置自动重试 请求次数 默认是0.
  */
 @property (nonatomic, assign) NSUInteger retryCount;
 

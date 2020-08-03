@@ -119,11 +119,21 @@ static const CGFloat unit = 1000.0;
     }
 }
 
-- (BOOL)diskCacheExistsWithKey:(NSString *)key{
-    return [self diskCacheExistsWithKey:key path:self.diskCachePath];
+#pragma  mark - 缓存是否存在
+- (BOOL)cacheExistsForKey:(NSString *)key{
+    
+    BOOL isInMemoryCache =  [self.memoryCache objectForKey:key];;
+    if (isInMemoryCache) {
+        return YES;
+    }
+    return  [self diskCacheExistsForKey:key];
 }
 
-- (BOOL)diskCacheExistsWithKey:(NSString *)key path:(NSString *)path{
+- (BOOL)diskCacheExistsForKey:(NSString *)key{
+    return [self diskCacheExistsForKey:key path:self.diskCachePath];
+}
+
+- (BOOL)diskCacheExistsForKey:(NSString *)key path:(NSString *)path{
     
     NSString *isExists=[[self getDiskCacheWithCodingForKey:key path:path] stringByDeletingPathExtension];
 

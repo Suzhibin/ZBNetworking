@@ -147,7 +147,7 @@ NSString *const _filePath =@"_filePath";
 
 + (NSUInteger)sendHTTPRequest:(ZBURLRequest *)request{
     NSString *key = [self keyWithParameters:request];
-    if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:key]&&request.apiType==ZBRequestTypeCache){
+    if ([[ZBCacheManager sharedInstance]cacheExistsForKey:key]&&request.apiType==ZBRequestTypeCache){
         [self getCacheDataForKey:key request:request];
         return 0;
     }else{
@@ -290,6 +290,7 @@ NSString *const _filePath =@"_filePath";
         request.successBlock?request.successBlock(result, request):nil;
         request.finishedBlock?request.finishedBlock(result, nil):nil;
         [request cleanAllBlocks];
+        [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
     }];
 }
 
