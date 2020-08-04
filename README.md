@@ -79,6 +79,37 @@
         config.baseRetryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
     }];
+
+    /**
+       插件机制
+       自定义 所有 请求,响应,错误 处理逻辑的方法
+
+       比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
+           2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
+           3.一个应用有多个服务器地址，可在此进行配置
+           4.统一loading 等UI处理
+           5. ......
+       */
+    [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
+         NSLog(@"请求之前");
+    }];
+    
+    [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
+        NSLog(@"成功回调 数据返回之前");
+       
+    }];
+    [ZBRequestManager setErrorProcessHandler:^(ZBURLRequest * _Nullable request, NSError * _Nullable error) {
+        if (error.code==NSURLErrorCancelled){
+            NSLog(@"请求取消❌------------------");
+        }else if (error.code==NSURLErrorTimedOut){
+            NSLog(@"请求超时");
+        }else{
+            NSLog(@"请求失败");
+        }
+    }];
+
+
+
     
 //请求方法 会默认创建缓存路径    
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
