@@ -39,11 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
- *  ZBURLRequest对象唯一标识符
- */
-@property (nonatomic, assign) NSUInteger identifier;
-
-/**
  *  接口(请求地址)
  */
 @property (nonatomic,copy) NSString * URLString;
@@ -89,6 +84,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
 
 #pragma mark - 获取信息
+
+/**
+ *  ZBURLRequest对象唯一标识符
+ */
+@property (nonatomic, assign) NSUInteger identifier;
+
 /**
  *  缓存key  读取缓存 返回
  */
