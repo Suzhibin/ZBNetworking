@@ -75,7 +75,6 @@
         request.timeoutInterval=10;//默认30 //优先级 高于 公共配置,不影响其他请求设置
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};//与公共配置 UserInfo 不兼容 优先级大于 公共配置
     }  success:^(id responseObject,ZBURLRequest * request){
-      
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSArray *array=[dict objectForKey:@"authors"];
