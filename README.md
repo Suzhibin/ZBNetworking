@@ -52,7 +52,7 @@
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
 ## 使用 
-####公共配置
+#### 公共配置
 ```objective-c
  /**
      基础配置
@@ -81,7 +81,7 @@
         config.consoleLog=YES;//开log
     }];
 ```
-####插件机制
+#### 插件机制
 ```
     /**
        插件机制
@@ -111,7 +111,7 @@
         }
     }];
 ```
-####请求方法
+#### 请求方法
 ```
 //请求方法 会默认创建缓存路径    
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
@@ -155,7 +155,7 @@
     }];
 
 ```
-####离线下载 批量下载
+#### 离线下载 批量下载
 ```objective-c
  [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest)
             for (NSString *urlString in offlineArray) {
@@ -178,8 +178,7 @@
 ```
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
 
-
-2.缓存相关
+#### 缓存相关
 ```objective-c
  //显示缓存大小 可以自定义路径
  [[ZBCacheManager sharedInstance]getCacheSize];
@@ -201,7 +200,7 @@
 
 ![](https://upload-images.jianshu.io/upload_images/1830250-3636c0621ebb6fa1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/621)
 
-## 缓存key过滤
+#### 缓存key过滤
  ```
     NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
     NSTimeInterval a=[dat timeIntervalSince1970];
