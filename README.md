@@ -52,6 +52,7 @@
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
 ## 使用 
+####公共配置
 ```objective-c
  /**
      基础配置
@@ -79,7 +80,9 @@
         config.baseRetryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
     }];
-
+```
+####插件机制
+```
     /**
        插件机制
        自定义 所有 请求,响应,错误 处理逻辑的方法
@@ -107,10 +110,9 @@
             NSLog(@"请求失败");
         }
     }];
-
-
-
-    
+```
+####请求方法
+```
 //请求方法 会默认创建缓存路径    
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"path"] = @"HomeViewController";
@@ -153,11 +155,7 @@
     }];
 
 ```
-
-## 使用 其他功能
-1.离线下载 批量下载
-
-
+####离线下载 批量下载
 ```objective-c
  [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest)
             for (NSString *urlString in offlineArray) {
