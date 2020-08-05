@@ -10,7 +10,7 @@
 #import "ZBNetworking.h"
 #import "DataManager.h"
 @implementation RequestTool
-+ (void)setup {
++ (void)setupPublicParameters{
     /**
      基础配置
      需要在请求之前配置，设置后所有请求都会带上 此基础配置

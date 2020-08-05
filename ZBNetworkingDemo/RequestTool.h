@@ -14,7 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RequestTool : NSObject
-+ (void)setup;
++ (void)setupPublicParameters;
 @end
 
 NS_ASSUME_NONNULL_END

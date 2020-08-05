@@ -101,12 +101,12 @@ typedef void (^ZBRequestFailureBlock)(NSError *error);
 /** 请求进度的Block */
 typedef void (^ZBRequestProgressBlock)(NSProgress * progress);
 /** 请求完成的Block */
-typedef void (^ZBRequestFinishedBlock)(id responseObject,NSError * error);
+typedef void (^ZBRequestFinishedBlock)(id responseObject,NSError * error,ZBURLRequest *request);
 //==================================================================
 /** 批量请求配置的Block */
 typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest);
-/** 批量请求完成的Block */
-typedef void (^ZBBatchRequestFinishedBlock)(NSArray * _Nullable responseObjects,NSArray * _Nullable errors);
+/** 批量请求 全部完成的Block 无论成功和失败 */
+typedef void (^ZBBatchRequestFinishedBlock)(NSArray * _Nullable responseObjects,NSArray<NSError *> * _Nullable errors,NSArray<ZBURLRequest *> *_Nullable requests);
 //==================================================================
 /** 请求 处理逻辑的方法 Block */
 typedef void (^ZBRequestProcessBlock)(ZBURLRequest * _Nullable request,id _Nullable __autoreleasing * _Nullable setObject);

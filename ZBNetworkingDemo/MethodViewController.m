@@ -153,8 +153,11 @@
         }else{
               NSLog(@"error: %@", error);
         }
-    }finished:^(NSArray * _Nullable responseObjects, NSArray * _Nullable errors) {
-        NSLog(@"请求完毕 包含成功和错误: %@",responseObjects);
+    }finished:^(NSArray * _Nullable responseObjects, NSArray<NSError *> * _Nullable errors, NSArray<ZBURLRequest *> * _Nullable requests) {
+  
+        [requests enumerateObjectsUsingBlock:^(ZBURLRequest * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSLog(@"批量完成事件 URLString:%@",obj.URLString);
+        }];
         // NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
                 
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小

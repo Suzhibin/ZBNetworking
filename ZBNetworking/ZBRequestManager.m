@@ -53,6 +53,10 @@ NSString *const _filePath =@"_filePath";
     return [self requestWithConfig:config progress:nil success:success failure:failure finished:nil];
 }
 
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBRequestFinishedBlock _Nullable )finished{
+    return [self requestWithConfig:config progress:nil success:success failure:failure finished:finished];
+}
+
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure{
     return [self requestWithConfig:config progress:progress success:success failure:failure finished:nil];
 }
@@ -72,10 +76,10 @@ NSString *const _filePath =@"_filePath";
     ZBBatchRequest *batchRequest=[[ZBBatchRequest alloc]init];
     config ? config(batchRequest) : nil;
     if (batchRequest.requestArray.count==0)return nil;
-     [batchRequest.responseArray removeAllObjects];
+    [batchRequest.responseArray removeAllObjects];
     [batchRequest.requestArray enumerateObjectsUsingBlock:^(ZBURLRequest *request , NSUInteger idx, BOOL *stop) {
         [batchRequest.responseArray addObject:[NSNull null]];
-        [self sendRequest:request progress:progress success:success failure:failure finished:^(id responseObject, NSError *error) {
+        [self sendRequest:request progress:progress success:success failure:failure finished:^(id responseObject, NSError *error,ZBURLRequest *request) {
             [batchRequest onFinishedRequest:request response:responseObject error:error finished:finished];
         }];
     }];
@@ -244,7 +248,7 @@ NSString *const _filePath =@"_filePath";
     request.response=response;
     [request setValue:@(NO) forKey:_isCache];
     request.successBlock?request.successBlock(result, request):nil;
-    request.finishedBlock?request.finishedBlock(result, nil):nil;
+    request.finishedBlock?request.finishedBlock(result, nil,request):nil;
     [request cleanAllBlocks];
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
 }
@@ -266,7 +270,7 @@ NSString *const _filePath =@"_filePath";
     }
    
     request.failureBlock?request.failureBlock(error):nil;
-    request.finishedBlock?request.finishedBlock(nil,error):nil;
+    request.finishedBlock?request.finishedBlock(nil,error,request):nil;
     [request cleanAllBlocks];
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
 }
@@ -288,7 +292,7 @@ NSString *const _filePath =@"_filePath";
         [request setValue:key forKey:_cacheKey];
         [request setValue:@(YES) forKey:_isCache];
         request.successBlock?request.successBlock(result, request):nil;
-        request.finishedBlock?request.finishedBlock(result, nil):nil;
+        request.finishedBlock?request.finishedBlock(result, nil,request):nil;
         [request cleanAllBlocks];
         [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
     }];

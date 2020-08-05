@@ -17,6 +17,7 @@
     _responseSerializer=ZBJSONResponseSerializer;
     _methodType=ZBMethodTypeGET;
     _apiType=ZBRequestTypeRefresh;
+    _timeoutInterval=30;
     _retryCount=0;
     _identifier = 0;
     return self;
@@ -101,28 +102,23 @@
 }
 - (void)onFinishedRequest:(ZBURLRequest*)request response:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished{
     NSUInteger index = [_requestArray indexOfObject:request];
-    NSMutableDictionary  *dict=[NSMutableDictionary dictionary];
     if (responseObject) {
-         [dict setObject:responseObject forKey:@"responseObject"];
-         [dict setObject:request forKey:@"request"];
-         [_responseArray replaceObjectAtIndex:index withObject:dict];
+         [_responseArray replaceObjectAtIndex:index withObject:responseObject];
     }else{
          _failed = YES;
-         [dict setObject:error forKey:@"error"];
-         [dict setObject:request forKey:@"request"];
          if (error) {
-             [_responseArray replaceObjectAtIndex:index withObject:dict];
+             [_responseArray replaceObjectAtIndex:index withObject:error];
          }
     }
     _batchRequestCount++;
     if (_batchRequestCount == _requestArray.count) {
         if (!_failed) {
             if (finished) {
-                finished(_responseArray,nil);
+                finished(_responseArray,nil,_requestArray);
             }
         }else{
             if (finished) {
-                finished(nil,_responseArray);
+                finished(nil,_responseArray,_requestArray);
             }
         }
     }

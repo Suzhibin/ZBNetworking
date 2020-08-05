@@ -187,7 +187,7 @@ NSString *const _progressBlock =@"_progressBlock";
             [self.requestSerializer setValue:value forHTTPHeaderField:field];
         }];
     }
-    self.requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:30;
+    self.requestSerializer.timeoutInterval=request.timeoutInterval;
 }
 
 #pragma mark - 其他配置
