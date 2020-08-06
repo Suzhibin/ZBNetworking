@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseKeepType keepType;
 
 /**
- *  请求参数的类型   baseRequestSerializer 设置有用
+ *  请求参数的类型   
  */
 @property (nonatomic,assign) ZBRequestSerializerType requestSerializer;
 

@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger,ZBMethodType) {
 };
 /**
  请求参数的格式.
- 默认为HTTP.   default:ZBJSONRequestSerializer
+ 默认为JSON.   default:ZBJSONRequestSerializer
  */
 typedef NS_ENUM(NSUInteger, ZBRequestSerializerType) {
     /** 设置请求参数为JSON格式*/
