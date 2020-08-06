@@ -238,6 +238,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) NSUInteger retryCount;
 
+/**
+ *  添加响应数据 内容类型
+ */
+@property (nonatomic, strong, nullable)NSArray *responseContentTypes;
+
+//===========内部调用===============
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
 NS_ASSUME_NONNULL_END

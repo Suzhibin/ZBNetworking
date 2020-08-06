@@ -21,6 +21,7 @@ NSString *const _progressBlock =@"_progressBlock";
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSString *> *baseHeaders;
 @property (nonatomic, strong, nullable) NSDictionary *baseUserInfo;
 @property (nonatomic, strong, nullable) NSMutableArray *baseFiltrationCacheKey;
+@property (nonatomic, strong, nullable) NSMutableArray *responseContentTypes;
 @property (nonatomic, assign) NSTimeInterval baseTimeoutInterval;
 @property (nonatomic, assign) NSUInteger baseRetryCount;
 @property (nonatomic,assign) ZBRequestSerializerType baseRequestSerializer;
@@ -56,7 +57,8 @@ NSString *const _progressBlock =@"_progressBlock";
         self.securityPolicy.allowInvalidCertificates = YES;
         self.securityPolicy.validatesDomainName = NO;
         self.responseSerializer = [AFHTTPResponseSerializer serializer];
-        self.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip",nil];
+        [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"]];
+        self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
          _requestDic =[[NSMutableDictionary alloc] init];
     }
@@ -219,6 +221,10 @@ NSString *const _progressBlock =@"_progressBlock";
     if (config.userInfo) {
         self.baseUserInfo=config.userInfo;
     }
+    if (config.responseContentTypes.count>0) {
+        [self.responseContentTypes addObjectsFromArray:config.responseContentTypes];
+        self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
+    }
     self.consoleLog=config.consoleLog;
 }
 
@@ -368,5 +374,10 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     return _baseFiltrationCacheKey;
 }
-
+- (NSMutableArray *)responseContentTypes {
+    if (!_responseContentTypes) {
+        _responseContentTypes = [NSMutableArray array];
+    }
+    return _responseContentTypes;
+}
 @end

@@ -143,7 +143,7 @@
 + (void)cancelBatchRequest:(ZBBatchRequest *_Nullable)batchRequest;
 
 /**
- *  取消所有请求任务 整个APP基于AFNetworking 活跃的请求都会被取消
+ *  取消所有请求任务 活跃的请求都会被取消
  */
 + (void)cancelAllRequest;
 
