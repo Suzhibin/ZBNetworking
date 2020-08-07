@@ -181,6 +181,8 @@
 
 //具体演示看demo
 ```
+![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
+
 #### 取消请求
 ```
  //取消当前请求
@@ -190,9 +192,6 @@
  //取消所有请求
  [ZBRequestManager cancelAllRequest];
   ```
-
-![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
-
 #### 缓存相关
 ```objective-c
  //显示缓存大小 可以自定义路径
