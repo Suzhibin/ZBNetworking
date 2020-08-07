@@ -181,6 +181,16 @@
 
 //具体演示看demo
 ```
+#### 取消请求
+```
+ //取消当前请求
+ [ZBRequestManager cancelRequest:identifier];
+ //取消批量请求
+ [ZBRequestManager cancelBatchRequest:batchRequest];
+ //取消所有请求
+ [ZBRequestManager cancelAllRequest];
+  ```
+
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/cY8K3L2*GJ9RO3i*z1If9XTmzas0cylmafMXWqdFe4o!/b/dK0AAAAAAAAA&bo=aAHwAAAAAAACLJE!&rf=viewer_4)
 
 #### 缓存相关
@@ -197,10 +207,6 @@
  [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
   //按路径清除缓存
  [[ZBCacheManager sharedInstance]clearDiskWithpath:@"路径" completion:nil];
-  //取消当前请求
- [self.currentTask cancel];//取消本次请求
-  //取消所有请求
-  [ZBRequestManager cancelAllRequest];
  ```
 
 ![](https://upload-images.jianshu.io/upload_images/1830250-3636c0621ebb6fa1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/621)
