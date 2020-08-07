@@ -102,16 +102,16 @@ NSString *const _filePath =@"_filePath";
         }
     }
  
-    ZBURLRequest *originalRequest= [[ZBRequestEngine defaultEngine]objectRequestForkey:request.URLString];
-    if (request.keepType==ZBResponseKeepFirst&&originalRequest) {
+    NSNumber * keepIdentifier= [[ZBRequestEngine defaultEngine]objectRequestForkey:request.URLString];
+    if (request.keepType==ZBResponseKeepFirst&&keepIdentifier) {
         return 0;
     }
-    if (request.keepType==ZBResponseKeepLast&&originalRequest) {
-        [self cancelRequest:originalRequest.identifier];
+    if (request.keepType==ZBResponseKeepLast&&keepIdentifier) {
+        [self cancelRequest:[keepIdentifier integerValue]];
     }
 
     NSUInteger identifier=[self startSendRequest:request];
-    [[ZBRequestEngine defaultEngine]setRequestObject:request forkey:request.URLString];
+    [[ZBRequestEngine defaultEngine]setRequestObject:@(request.identifier) forkey:request.URLString];
     return identifier;
 }
 

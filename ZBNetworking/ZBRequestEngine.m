@@ -346,6 +346,8 @@ NSString *const _progressBlock =@"_progressBlock";
     if(!key)return;
     if ([self objectRequestForkey:key]) {
         [_requestDic removeObjectForKey:key];
+    }else{
+        [_requestDic removeAllObjects];
     }
 }
 
