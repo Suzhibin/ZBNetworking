@@ -79,6 +79,11 @@
         config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
         config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
+        config.responseContentTypes=@[@"text/aaa",@"text/bbb"];//添加新的响应数据类型
+        /**
+         内部已存在的响应数据类型
+         @"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"
+         */
     }];
 ```
 #### 插件机制
