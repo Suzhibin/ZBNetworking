@@ -70,14 +70,14 @@
     
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
         config.baseURL=server_URL;//如果同一个环境，有多个域名 不建议设置baseURL
-        config.baseParameters=parameters;//公告参数
+        config.parameters=parameters;//公告参数
         // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
-        config.baseFiltrationCacheKey=@[@"timeString"];
-        config.baseHeaders=headers;//请求头
-        config.baseRequestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
-        config.baseResponseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
-        config.baseTimeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
-        config.baseRetryCount=2;//请求失败 所有请求重新连接次数
+        config.filtrationCacheKey=@[@"timeString"];
+        config.headers=headers;//请求头
+        config.requestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
+        config.responseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
+        config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
+        config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
     }];
 ```
