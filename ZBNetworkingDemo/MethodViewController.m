@@ -9,7 +9,7 @@
 #import "MethodViewController.h"
 #import "ZBNetworking.h"
 #define urlStr @"http://api.dotaly.com/lol/api/v1/shipin/latest"
-@interface MethodViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface MethodViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLRequestDelegate>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSArray *dataArray;
 @property (nonatomic, copy) NSString *AccessToken;
@@ -22,7 +22,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view addSubview:self.tableView];
-    self.dataArray=[NSArray arrayWithObjects:@"GET / POST / PUT / PATCH / DELETE / 取消请求",@"上传文件",@"下载文件",@"批量请求",@"多次请求,保留第一次请求(场景:发帖,评论等)",@"多次请求,保留最后一次请求(场景:搜索)",@"parameters过滤动态参数",nil];
+    self.dataArray=[NSArray arrayWithObjects:@"GET / POST / PUT / PATCH / DELETE / 取消请求",@"代理方法",@"上传文件",@"下载文件",@"批量请求",@"多次请求,保留第一次请求(场景:发帖,评论等)",@"多次请求,保留最后一次请求(场景:搜索)",@"parameters过滤动态参数",nil];
      self.path = [[ZBCacheManager sharedInstance] tmpPath];
     NSLog(@"path:%@",self.path);
    
@@ -30,7 +30,7 @@
     
 }
 
-//多类型请求方法
+#pragma mark - 多类型请求方法
 - (void)requestMethod{
     /*
      GET/POST/PUT/PATCH/DELETE 请求 都有缓存功能
@@ -66,7 +66,32 @@
     [ZBRequestManager cancelRequest:identifier];//取消请求  （已请求完和读缓存 无法取消）
 }
 
-//上传文件
+#pragma mark - 代理请求
+- (void)delegateRequest{
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
+        request.URLString=@"https://URL";
+    } target:self];
+}
+#pragma mark - ZBURLRequestDelegate
+- (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
+    if (request.isCache) {
+        NSLog(@"使用了缓存");
+    }else{
+        NSLog(@"重新请求");
+    }
+}
+- (void)request:(ZBURLRequest *)request failedForError:(NSError *)error{
+    NSLog(@"请求失败");
+}
+- (void)request:(ZBURLRequest *)request forProgress:(NSProgress *)progress{
+    NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
+}
+- (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
+    NSLog(@"code:%ld",error.code);
+    NSLog(@"URLString:%@",request.URLString);
+}
+
+#pragma mark - 上传文件方法
 - (void)UploadRequest{
     
    // UIImage *image = [UIImage imageNamed:@"testImage"];
@@ -92,7 +117,8 @@
         NSLog(@"error: %@", error);
     }];
 }
-//下载文件
+
+#pragma mark - 下载文件方法
 - (void)downLoadRequest{
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
@@ -106,20 +132,21 @@
         NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
-        
+        /*
         sleep(3);
         //删除下载的文件
-        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
+        [[ZBCacheManager sharedInstance]clearDiskWithPath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
             NSLog(@"删除下载的文件");
             [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];
         }];
-        
+        */
         
     } failure:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
     }];
 }
-//批量请求
+
+#pragma mark - 批量请求
 - (void)downLoadBatchRequest{
     
     ZBBatchRequest *batchRequest=[ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest * batchRequest) {
@@ -180,6 +207,8 @@
    // [ZBRequestManager cancelBatchRequest:batchRequest];
     
 }
+
+#pragma mark - 保留第一个 或 最后一次请求
 /**
  多次相同的请求，保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果 (ZBRequestTypeRefresh或ZBRequestTypeRefreshMore //request.keepType 设置才有效 ）
  */
@@ -219,6 +248,7 @@
     }
 }
 
+#pragma mark - 过滤缓存key
 //过滤掉parameters 缓存key里的 变动参数
 - (void)parametersfiltrationCacheKey{
     //POST等 使用了parameters 的请求 缓存key会是URLString+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个parametersfiltrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
@@ -236,7 +266,7 @@
 }
 
 - (void)downLoadPathSize:(NSString *)path{
-    CGFloat downLoadPathSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:path];
+    CGFloat downLoadPathSize=[[ZBCacheManager sharedInstance]getFileSizeWithPath:path];
     downLoadPathSize=downLoadPathSize/1000.0/1000.0;
     NSLog(@"downLoadPathSize: %.2fM", downLoadPathSize);
 }
@@ -249,21 +279,24 @@
             [self requestMethod];//多类型请求方法
             break;
         case 1:
-            [self UploadRequest];//上传文件
+            [self delegateRequest];//代理请求方法
             break;
         case 2:
-            [self downLoadRequest];//下载文件
+            [self UploadRequest];//上传文件
             break;
         case 3:
-            [self downLoadBatchRequest];//批量下载文件或批量请求
+            [self downLoadRequest];//下载文件
             break;
         case 4:
-            [self keepResultType:ZBResponseKeepFirst];//只使用第一次请求结果
+            [self downLoadBatchRequest];//批量下载文件或批量请求
             break;
         case 5:
-            [self keepResultType:ZBResponseKeepLast];//只使用最后一次请求结果
+            [self keepResultType:ZBResponseKeepFirst];//只使用第一次请求结果
             break;
         case 6:
+            [self keepResultType:ZBResponseKeepLast];//只使用最后一次请求结果
+            break;
+        case 7:
             [self parametersfiltrationCacheKey];//过滤掉parameters 缓存key里的 变动参数
             break;
         default:

@@ -11,6 +11,7 @@
 #import "DataManager.h"
 @implementation RequestTool
 + (void)setupPublicParameters{
+    #pragma mark -  公共配置
     /**
      基础配置
      需要在请求之前配置，设置后所有请求都会带上 此基础配置
@@ -44,6 +45,8 @@
          @"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"
          */
     }];
+    
+    #pragma mark -  插件机制
     /**
        插件机制
        自定义 所有 请求,响应,错误 处理逻辑的方法
@@ -54,6 +57,7 @@
            4.统一loading 等UI处理
            5. ......
        */
+    //预处理 请求
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
          NSLog(@"请求之前");
       
@@ -108,7 +112,7 @@
             }
         }
     }];
-    
+    //预处理 响应
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
         NSLog(@"成功回调 数据返回之前");
         if ([request.userInfo[@"tag"]isEqualToString:@"5555"]) {
@@ -160,6 +164,7 @@
             }
         return nil;
     }];
+     //预处理 错误
     [ZBRequestManager setErrorProcessHandler:^(ZBURLRequest * _Nullable request, NSError * _Nullable error) {
    
         if (error.code==NSURLErrorCancelled){
@@ -170,5 +175,24 @@
             NSLog(@"请求失败");
         }
     }];
+    #pragma mark -  证书设置
+    /**
+     证书设置
+     ZBRequestEngine 继承AFHTTPSessionManager，所需其他设置 可以使用[ZBRequestEngine defaultEngine] 自行设置
+     */
+    NSString *name=@"";
+    if (name.length>0) {
+        // 先导入证书
+        NSString *cerPath = [[NSBundle mainBundle] pathForResource:name ofType:@"cer"];//证书的路径
+        NSData *cerData = [NSData dataWithContentsOfFile:cerPath];
+        AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+           // 如果需要验证自建证书(无效证书)，需要设置为YES，默认为NO;
+        securityPolicy.allowInvalidCertificates = YES;
+           // 是否需要验证域名，默认为YES;
+        securityPolicy.validatesDomainName = NO;
+        securityPolicy.pinnedCertificates = [[NSSet alloc] initWithObjects:cerData, nil];
+        [ZBRequestEngine defaultEngine].securityPolicy=securityPolicy;
+    }
+   
 }
 @end

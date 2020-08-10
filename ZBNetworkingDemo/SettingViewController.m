@@ -125,11 +125,11 @@ static const NSInteger cacheTime = 15;//过期时间
     if (indexPath.row==6) {
         cell.textLabel.text=@"清除自定义路径缓存";
     
-        CGFloat cacheSize=[[ZBCacheManager sharedInstance]getFileSizeWithpath:self.imagePath];
+        CGFloat cacheSize=[[ZBCacheManager sharedInstance]getFileSizeWithPath:self.imagePath];
         
         cacheSize=cacheSize/1000.0/1000.0;
         
-        CGFloat size=[[ZBCacheManager sharedInstance]getFileSizeWithpath:self.imagePath];
+        CGFloat size=[[ZBCacheManager sharedInstance]getFileSizeWithPath:self.imagePath];
 
         //fileUnitWithSize 转换单位方法
         cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fM(%@)",cacheSize,[[ZBCacheManager sharedInstance] fileUnitWithSize:size]];
@@ -140,7 +140,7 @@ static const NSInteger cacheTime = 15;//过期时间
         cell.textLabel.text=@"自定义路径缓存数量";
         cell.userInteractionEnabled = NO;
         
-        CGFloat count=[[ZBCacheManager sharedInstance]getFileCountWithpath:self.imagePath];
+        CGFloat count=[[ZBCacheManager sharedInstance]getFileCountWithPath:self.imagePath];
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
         
@@ -227,7 +227,7 @@ static const NSInteger cacheTime = 15;//过期时间
 
         //用ZBCacheManager 方法代替sdwebimage方法
         // [[ZBCacheManager sharedInstance]clearDiskWithpath:self.imagePath];
-        [[ZBCacheManager sharedInstance]clearDiskWithpath:self.imagePath completion:^{
+        [[ZBCacheManager sharedInstance]clearDiskWithPath:self.imagePath completion:^{
             [self.tableView reloadData];
             
         }];
@@ -248,7 +248,7 @@ static const NSInteger cacheTime = 15;//过期时间
         
         //清除单个图片缓存文件
         //url 过期 去log里找新的
-        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" path:self.imagePath  completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" inPath:self.imagePath  completion:^{
             
             [self.tableView reloadData];
         }];
@@ -264,7 +264,7 @@ static const NSInteger cacheTime = 15;//过期时间
     if (indexPath.row==11) {
        
         //图片url 过期 去log里找新的
-        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" time:cacheTime path:self.imagePath completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheForkey:@"https://r1.ykimg.com/054101015918B62E8B3255666622E929" time:cacheTime inPath:self.imagePath completion:^{
             [self.tableView reloadData];
         }];
     }
@@ -277,7 +277,7 @@ static const NSInteger cacheTime = 15;//过期时间
     
     if (indexPath.row==13) {
          // 路径要准确
-        [[ZBCacheManager sharedInstance]clearCacheWithTime:cacheTime path:self.imagePath completion:^{
+        [[ZBCacheManager sharedInstance]clearCacheWithTime:cacheTime inPath:self.imagePath completion:^{
             [self.tableView reloadData];
         }];
     }

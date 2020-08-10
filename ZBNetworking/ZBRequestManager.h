@@ -42,6 +42,14 @@
 /**
  *  请求方法
  *  @param config           请求配置  Block
+ *  @param target         执行代理的对象
+ *  @return identifier      请求标识符
+ */
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config target:(id<ZBURLRequestDelegate>_Nonnull)target;
+
+/**
+ *  请求方法
+ *  @param config           请求配置  Block
  *  @param success          请求成功的 Block
  *  @return identifier      请求标识符
  */
@@ -106,6 +114,14 @@
  *  @return identifier      请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull)config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBRequestFinishedBlock _Nullable )finished;
+
+/**
+ *  请求方法
+ *  @param config           请求配置  Block
+ *  @param target           执行代理的对象
+ *  @return identifier      请求标识符
+ */
++ (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nullable )config target:(id<ZBURLRequestDelegate>_Nonnull)target;
 
 /**
  *  批量请求方法

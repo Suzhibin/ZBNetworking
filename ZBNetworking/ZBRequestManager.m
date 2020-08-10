@@ -37,6 +37,10 @@ NSString *const _filePath =@"_filePath";
 }
 
 #pragma mark - 配置请求
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config target:(id<ZBURLRequestDelegate>_Nonnull)target{
+    return [self requestWithConfig:config progress:nil success:nil failure:nil finished:nil target:target];
+}
+
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config success:(ZBRequestSuccessBlock)success{
     return [self requestWithConfig:config progress:nil success:success failure:nil finished:nil];
 }
@@ -62,17 +66,29 @@ NSString *const _filePath =@"_filePath";
 }
 
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
+    return [self requestWithConfig:config progress:progress success:success failure:failure finished:finished target:nil];
+}
+
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
     ZBURLRequest *request=[[ZBURLRequest alloc]init];
     config ? config(request) : nil;
-    return [self sendRequest:request progress:progress success:success failure:failure finished:finished];
+    return [self sendRequest:request progress:progress success:success failure:failure finished:finished target:target];
 }
 
 #pragma mark - 配置批量请求
++ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config target:(id<ZBURLRequestDelegate>_Nonnull)target{
+    return [self requestBatchWithConfig:config progress:nil success:nil failure:nil finished:nil target:target];
+}
+
 + (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
     return [self requestBatchWithConfig:config progress:nil success:success failure:failure finished:finished];
 }
 
 + (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
+    return [self requestBatchWithConfig:config progress:progress success:success failure:failure finished:finished target:nil];
+}
+
++ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
     ZBBatchRequest *batchRequest=[[ZBBatchRequest alloc]init];
     config ? config(batchRequest) : nil;
     if (batchRequest.requestArray.count==0)return nil;
@@ -81,17 +97,17 @@ NSString *const _filePath =@"_filePath";
         [batchRequest.responseArray addObject:[NSNull null]];
         [self sendRequest:request progress:progress success:success failure:failure finished:^(id responseObject, NSError *error,ZBURLRequest *request) {
             [batchRequest onFinishedRequest:request response:responseObject error:error finished:finished];
-        }];
+        }target:target];
     }];
     return batchRequest;
 }
 
 #pragma mark - 发起请求
-+ (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
++ (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
     
     if([request.URLString isEqualToString:@""]||request.URLString==nil)return 0;
     
-    [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished];
+    [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
     
     id obj=nil;
     if ([ZBRequestEngine defaultEngine].requestProcessHandler) {
@@ -101,8 +117,7 @@ NSString *const _filePath =@"_filePath";
             return 0;
         }
     }
- 
-    NSNumber * keepIdentifier= [[ZBRequestEngine defaultEngine]objectRequestForkey:request.URLString];
+    NSNumber * keepIdentifier=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.URLString];
     if (request.keepType==ZBResponseKeepFirst&&keepIdentifier) {
         return 0;
     }
@@ -128,6 +143,9 @@ NSString *const _filePath =@"_filePath";
 + (NSUInteger)sendUploadRequest:(ZBURLRequest *)request{
     request.apiType=ZBRequestTypeRefresh;
     return [[ZBRequestEngine defaultEngine] uploadWithRequest:request progress:^(NSProgress * _Nonnull uploadProgress) {
+        if (request.delegate&&[request.delegate respondsToSelector:@selector(request:forProgress:)]) {
+            [request.delegate request:request forProgress:uploadProgress];
+        }
         request.progressBlock?request.progressBlock(uploadProgress):nil;
     } success:^(NSURLSessionDataTask *task, id responseObject) {
         [self successWithResponse:task.response responseObject:responseObject request:request];
@@ -139,6 +157,9 @@ NSString *const _filePath =@"_filePath";
 + (NSUInteger)sendDownLoadRequest:(ZBURLRequest *)request{
     request.apiType=ZBRequestTypeRefresh;
     return [[ZBRequestEngine defaultEngine] downloadWithRequest:request progress:^(NSProgress * _Nullable downloadProgress) {
+        if (request.delegate&&[request.delegate respondsToSelector:@selector(request:forProgress:)]) {
+            [request.delegate request:request forProgress:downloadProgress];
+        }
         request.progressBlock?request.progressBlock(downloadProgress):nil;
     }  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         if (error) {
@@ -161,6 +182,9 @@ NSString *const _filePath =@"_filePath";
 
 + (NSUInteger)dataTaskWithHTTPRequest:(ZBURLRequest *)request{
     return [[ZBRequestEngine defaultEngine]dataTaskWithMethod:request progress:^(NSProgress * _Nonnull zb_progress) {
+        if (request.delegate&&[request.delegate respondsToSelector:@selector(request:forProgress:)]) {
+            [request.delegate request:request forProgress:zb_progress];
+        }
         request.progressBlock ? request.progressBlock(zb_progress) : nil;
     } success:^(NSURLSessionDataTask *task, id responseObject) {
         [self successWithResponse:task.response responseObject:responseObject request:request];
@@ -189,8 +213,8 @@ NSString *const _filePath =@"_filePath";
 }
 
 #pragma mark - 其他配置
-+ (void)configBaseWithRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
-    [[ZBRequestEngine defaultEngine] configBaseWithRequest:request progressBlock:progress successBlock:success failureBlock:failure finishedBlock:finished];
++ (void)configBaseWithRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
+    [[ZBRequestEngine defaultEngine] configBaseWithRequest:request progressBlock:progress successBlock:success failureBlock:failure finishedBlock:finished target:target];
 }
 
 + (NSString *)keyWithParameters:(ZBURLRequest *)request{
@@ -247,10 +271,7 @@ NSString *const _filePath =@"_filePath";
     }
     request.response=response;
     [request setValue:@(NO) forKey:_isCache];
-    request.successBlock?request.successBlock(result, request):nil;
-    request.finishedBlock?request.finishedBlock(result, nil,request):nil;
-    [request cleanAllBlocks];
-    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
+    [self successWithCacheCallbackForResult:result forRequest:request];
 }
 
 + (void)failureWithError:(NSError *)error request:(ZBURLRequest *)request{
@@ -260,7 +281,6 @@ NSString *const _filePath =@"_filePath";
     if ([ZBRequestEngine defaultEngine].errorProcessHandler) {
         [ZBRequestEngine defaultEngine].errorProcessHandler(request, error);
     }
-    
     if (request.retryCount > 0) {
         request.retryCount --;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -268,11 +288,7 @@ NSString *const _filePath =@"_filePath";
         });
         return;
     }
-   
-    request.failureBlock?request.failureBlock(error):nil;
-    request.finishedBlock?request.finishedBlock(nil,error,request):nil;
-    [request cleanAllBlocks];
-    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
+    [self failureCallbackForError:error forRequest:request];
 }
 
 + (void)getCacheDataForKey:(NSString *)key request:(ZBURLRequest *)request{
@@ -291,11 +307,34 @@ NSString *const _filePath =@"_filePath";
         [request setValue:filePath forKey:_filePath];
         [request setValue:key forKey:_cacheKey];
         [request setValue:@(YES) forKey:_isCache];
-        request.successBlock?request.successBlock(result, request):nil;
-        request.finishedBlock?request.finishedBlock(result, nil,request):nil;
-        [request cleanAllBlocks];
-        [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
+        [self successWithCacheCallbackForResult:result forRequest:request];
     }];
+}
+
++ (void)successWithCacheCallbackForResult:(id)result forRequest:(ZBURLRequest *)request{
+    if (request.delegate&&[request.delegate respondsToSelector:@selector(request:successForResponseObject:)]) {
+        [request.delegate request:request successForResponseObject:result];
+    }
+    if (request.delegate&&[request.delegate respondsToSelector:@selector(request:finishedForResponseObject:forError:)]) {
+        [request.delegate request:request finishedForResponseObject:result forError:nil];
+    }
+    request.successBlock?request.successBlock(result, request):nil;
+    request.finishedBlock?request.finishedBlock(result, nil,request):nil;
+    [request cleanAllCallback];
+    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
+}
+
++ (void)failureCallbackForError:(NSError *)error forRequest:(ZBURLRequest *)request{
+    if (request.delegate&&[request.delegate respondsToSelector:@selector(request:failedForError:)]) {
+        [request.delegate request:request failedForError:error];
+    }
+    if (request.delegate&&[request.delegate respondsToSelector:@selector(request:finishedForResponseObject:forError:)]) {
+        [request.delegate request:request finishedForResponseObject:nil forError:error];
+    }
+    request.failureBlock?request.failureBlock(error):nil;
+    request.finishedBlock?request.finishedBlock(nil,error,request):nil;
+    [request cleanAllCallback];
+    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
 }
 
 + (BOOL)isNetworkReachable {

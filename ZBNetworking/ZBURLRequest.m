@@ -17,7 +17,6 @@
     _responseSerializer=ZBJSONResponseSerializer;
     _methodType=ZBMethodTypeGET;
     _apiType=ZBRequestTypeRefresh;
-    _timeoutInterval=30;
     _retryCount=0;
     _identifier = 0;
     return self;
@@ -33,11 +32,12 @@
     _isResponseSerializer=YES;
 }
 
-- (void)cleanAllBlocks {
+- (void)cleanAllCallback{
     _successBlock = nil;
     _failureBlock = nil;
     _finishedBlock = nil;
     _progressBlock = nil;
+    _delegate=nil;
 }
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
@@ -113,10 +113,16 @@
     _batchRequestCount++;
     if (_batchRequestCount == _requestArray.count) {
         if (!_failed) {
+            if (request.delegate&&[request.delegate respondsToSelector:@selector(requests:batchFinishedForResponseObjects:errors:)]) {
+                [request.delegate requests:_requestArray batchFinishedForResponseObjects:_responseArray errors:nil];
+            }
             if (finished) {
                 finished(_responseArray,nil,_requestArray);
             }
         }else{
+            if (request.delegate&&[request.delegate respondsToSelector:@selector(requests:batchFinishedForResponseObjects:errors:)]) {
+                [request.delegate requests:_requestArray batchFinishedForResponseObjects:nil errors:_responseArray];
+            }
             if (finished) {
                 finished(nil,_responseArray,_requestArray);
             }

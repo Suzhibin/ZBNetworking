@@ -11,7 +11,7 @@
 #import "ZBNetworking.h"
 #import <UIImageView+WebCache.h>
 #import "DataManager.h"
-@interface DetailViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface DetailViewController ()<UITableViewDataSource,UITableViewDelegate,ZBURLRequestDelegate>
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)UIRefreshControl *refreshControl;
@@ -52,6 +52,16 @@
     parameters[@"limit"] =@"50";
     parameters[@"offset"] = @"0";
     parameters[@"path"] = @"DetailViewController";
+    
+    self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
+        //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
+        request.URLString=details_URL;
+        request.parameters=parameters;
+        request.apiType=apiType;
+        request.filtrationCacheKey=@[@"path"];
+        request.userInfo=@{@"tag":[DataManager sharedInstance].tag};
+    } target:self];
+    /*
     self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
          //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
        request.URLString=details_URL;
@@ -85,7 +95,42 @@
     } failure:^(NSError *error) {
          [self.refreshControl endRefreshing];    //结束刷新
     }];
+     */
 }
+#pragma mark - ZBURLRequestDelegate
+- (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
+    if ([responseObject isKindOfClass:[NSDictionary class]]) {
+        //如果是刷新的数据
+        if (request.apiType==ZBRequestTypeRefreshAndCache) {
+            [self.dataArray removeAllObjects];
+                      
+        }
+        NSDictionary *dataDict = (NSDictionary *)responseObject;
+        NSArray *array=[dataDict objectForKey:@"videos"];
+        for (NSDictionary *dict in array) {
+            DetailsModel *model=[[DetailsModel alloc]initWithDict:dict];
+            [self.dataArray addObject:model];
+        }
+        [self.tableView reloadData];
+         [self.refreshControl endRefreshing];    //结束刷新
+        if (request.isCache==YES) {
+            self.title=@"使用了缓存";
+            NSLog(@"filePath:%@",request.filePath);
+        }else{
+            self.title=@"重新请求";
+        }
+    }
+}
+- (void)request:(ZBURLRequest *)request failedForError:(NSError *)error{
+    NSLog(@"请求失败");
+}
+- (void)request:(ZBURLRequest *)request forProgress:(NSProgress *)progress{
+    NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
+}
+- (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
+    NSLog(@"URLString:%@ code:%ld",request.URLString,error.code);
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
     

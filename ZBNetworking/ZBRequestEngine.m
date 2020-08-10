@@ -15,6 +15,7 @@ NSString *const _successBlock =@"_successBlock";
 NSString *const _failureBlock =@"_failureBlock";
 NSString *const _finishedBlock =@"_finishedBlock";
 NSString *const _progressBlock =@"_progressBlock";
+NSString *const _delegate =@"_delegate";
 @interface ZBRequestEngine ()
 @property (nonatomic, copy, nullable) NSString *baseURLString;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, id> *baseParameters;
@@ -24,9 +25,9 @@ NSString *const _progressBlock =@"_progressBlock";
 @property (nonatomic, strong, nullable) NSMutableArray *responseContentTypes;
 @property (nonatomic, assign) NSTimeInterval baseTimeoutInterval;
 @property (nonatomic, assign) NSUInteger baseRetryCount;
-@property (nonatomic,assign) ZBRequestSerializerType baseRequestSerializer;
-@property (nonatomic,assign) ZBResponseSerializerType baseResponseSerializer;
-@property (nonatomic, assign)BOOL consoleLog;
+@property (nonatomic, assign) ZBRequestSerializerType baseRequestSerializer;
+@property (nonatomic, assign) ZBResponseSerializerType baseResponseSerializer;
+@property (nonatomic, assign) BOOL consoleLog;
 
 @end
 
@@ -45,17 +46,16 @@ NSString *const _progressBlock =@"_progressBlock";
 /*
    硬性设置：
    1.因为与缓存互通 服务器返回的数据格式 必须是二进制
-   2.证书设置
-   3.开启菊花
+   2.开启菊花
 */
 - (instancetype)init {
     self = [super init];
     if (self) {
         //无条件地信任服务器端返回的证书。
-        self.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-        self.securityPolicy = [AFSecurityPolicy defaultPolicy];
-        self.securityPolicy.allowInvalidCertificates = YES;
-        self.securityPolicy.validatesDomainName = NO;
+//        self.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+//        self.securityPolicy = [AFSecurityPolicy defaultPolicy];
+//        self.securityPolicy.allowInvalidCertificates = YES;
+//        self.securityPolicy.validatesDomainName = NO;
         self.responseSerializer = [AFHTTPResponseSerializer serializer];
         [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"]];
         self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
@@ -225,10 +225,11 @@ NSString *const _progressBlock =@"_progressBlock";
         [self.responseContentTypes addObjectsFromArray:config.responseContentTypes];
         self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
     }
+  
     self.consoleLog=config.consoleLog;
 }
 
-- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock{
+- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock target:(id<ZBURLRequestDelegate>)target{
     if (successBlock) {
         [request setValue:successBlock forKey:_successBlock];
     }
@@ -240,6 +241,9 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     if (progressBlock) {
         [request setValue:progressBlock forKey:_progressBlock];
+    }
+    if (target) {
+        [request setValue:target forKey:_delegate];
     }
      //=====================================================
     NSURL *baseURL = [NSURL URLWithString:self.baseURLString];
@@ -332,7 +336,7 @@ NSString *const _progressBlock =@"_progressBlock";
         NSString *requestStr=request.requestSerializer==ZBHTTPRequestSerializer ?@"HTTP":@"JOSN";
         NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
         NSLog(@"\n\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",address,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);
-   }
+    }
 }
 
 #pragma mark - request 生命周期管理
@@ -343,7 +347,6 @@ NSString *const _progressBlock =@"_progressBlock";
 }
 
 - (void)removeRequestForkey:(NSString *)key{
-    if(!key)return;
     if ([self objectRequestForkey:key]) {
         [_requestDic removeObjectForKey:key];
     }else{
@@ -363,7 +366,6 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     return _baseParameters;
 }
-
 - (NSMutableDictionary<NSString *, NSString *> *)baseHeaders {
     if (!_baseHeaders) {
         _baseHeaders = [NSMutableDictionary dictionary];

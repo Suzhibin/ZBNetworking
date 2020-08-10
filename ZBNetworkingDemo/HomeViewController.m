@@ -28,13 +28,12 @@
     /**
      公共配置
      插件机制
+     证书设置
      */
     [RequestTool setupPublicParameters];
 
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
-    
- 
      
     /**
      *  ZBRequestTypeRefresh          每次会重新请求 不存储缓存

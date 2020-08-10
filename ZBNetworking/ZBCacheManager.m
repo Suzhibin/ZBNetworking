@@ -47,9 +47,9 @@ static const CGFloat unit = 1000.0;
 - (id)init{
     self = [super init];
     if (self) {
-          NSString *memoryNameSpace = [@"memory.ZBCacheManager" stringByAppendingString:defaultCachePathName];
+        NSString *memoryNameSpace = [@"memory.ZBCacheManager" stringByAppendingString:defaultCachePathName];
         
-         _operationQueue = dispatch_queue_create("dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
+        _operationQueue = dispatch_queue_create("dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
         
         _memoryCache = [[NSCache alloc] init];
         _memoryCache.name = memoryNameSpace;
@@ -105,9 +105,7 @@ static const CGFloat unit = 1000.0;
 #pragma mark - 创建存储文件夹
 
 - (void)initCachesfileWithName:(NSString *)name{
-
     self.diskCachePath =[[self ZBKitPath] stringByAppendingPathComponent:name];
-  
     [self createDirectoryAtPath:self.diskCachePath];
 }
 
@@ -121,35 +119,32 @@ static const CGFloat unit = 1000.0;
 
 #pragma  mark - 缓存是否存在
 - (BOOL)cacheExistsForKey:(NSString *)key{
-    return [self cacheExistsForKey:key path:self.diskCachePath];
+    return [self cacheExistsForKey:key inPath:self.diskCachePath];
 }
 
-- (BOOL)cacheExistsForKey:(NSString *)key path:(NSString *)path{
-    
+- (BOOL)cacheExistsForKey:(NSString *)key inPath:(NSString *)path{
     BOOL isInMemoryCache =  [self.memoryCache objectForKey:key];
     if (isInMemoryCache) {
         return YES;
     }
-    return [self diskCacheExistsForKey:key path:path];
+    return [self diskCacheExistsForKey:key inPath:path];
 }
 
 - (BOOL)diskCacheExistsForKey:(NSString *)key{
-    return [self diskCacheExistsForKey:key path:self.diskCachePath];
+    return [self diskCacheExistsForKey:key inPath:self.diskCachePath];
 }
 
-- (BOOL)diskCacheExistsForKey:(NSString *)key path:(NSString *)path{
-    
-    NSString *isExists=[[self getDiskCacheWithCodingForKey:key path:path] stringByDeletingPathExtension];
-
+- (BOOL)diskCacheExistsForKey:(NSString *)key inPath:(NSString *)path{
+    NSString *isExists=[[self getDiskCacheWithCodingForKey:key inPath:path] stringByDeletingPathExtension];
     return [[NSFileManager defaultManager] fileExistsAtPath:isExists];
 }
 
 #pragma  mark - 存储
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
-    [self storeContent:content forKey:key path:self.diskCachePath isSuccess:isSuccess];
+    [self storeContent:content forKey:key inPath:self.diskCachePath isSuccess:isSuccess];
 }
 
-- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key inPath:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
     if (!content || !key) {
         if (isSuccess) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -161,7 +156,7 @@ static const CGFloat unit = 1000.0;
     [self.memoryCache setObject:content forKey:key ];
     
     dispatch_async(self.operationQueue,^{
-        NSString *codingPath =[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
+        NSString *codingPath =[[self getDiskCacheWithCodingForKey:key inPath:path]stringByDeletingPathExtension];
         BOOL result=[self setContent:content writeToFile:codingPath];
         if (isSuccess) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -185,12 +180,30 @@ static const CGFloat unit = 1000.0;
 }
 
 #pragma  mark - 获取存储数据
-- (void)getCacheDataForKey:(NSString *)key value:(ZBCacheValueBlock)value{
-    
-    [self getCacheDataForKey:key path:self.diskCachePath value:value];
+- (NSData *)getCacheDataForKey:(NSString *)key{
+    return [self getCacheDataForKey:key inPath:self.diskCachePath];
 }
 
-- (void)getCacheDataForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value{
+- (NSData *)getCacheDataForKey:(NSString *)key inPath:(NSString *)path{
+    if (!key)return nil;
+    NSData *obj = [self.memoryCache objectForKey:key];
+    if (obj) {
+        return obj;
+    }else{
+        NSString *filePath=[[self getDiskCacheWithCodingForKey:key inPath:path]stringByDeletingPathExtension];
+        NSData *diskdata= [NSData dataWithContentsOfFile:filePath];
+        if (diskdata) {
+            [self.memoryCache setObject:diskdata forKey:key];
+        }
+       return diskdata;
+    }
+}
+
+- (void)getCacheDataForKey:(NSString *)key value:(ZBCacheValueBlock)value{
+    [self getCacheDataForKey:key inPath:self.diskCachePath value:value];
+}
+
+- (void)getCacheDataForKey:(NSString *)key inPath:(NSString *)path value:(ZBCacheValueBlock)value{
     if (!key)return;
     NSData *obj = [self.memoryCache objectForKey:key];
     if (obj) {
@@ -200,7 +213,7 @@ static const CGFloat unit = 1000.0;
     }else{
         dispatch_async(self.operationQueue,^{
             @autoreleasepool {
-                NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
+                NSString *filePath=[[self getDiskCacheWithCodingForKey:key inPath:path]stringByDeletingPathExtension];
                 NSData *diskdata= [NSData dataWithContentsOfFile:filePath];
                 if (diskdata) {
                     if (value) {
@@ -210,7 +223,6 @@ static const CGFloat unit = 1000.0;
                     }
                     [self.memoryCache setObject:diskdata forKey:key];
                 }
-                
             }
         });
     }
@@ -218,9 +230,7 @@ static const CGFloat unit = 1000.0;
 
 - (NSArray *)getDiskCacheFileWithPath:(NSString *)path{
     NSMutableArray *array=[[NSMutableArray alloc]init];
-    
     dispatch_sync(self.operationQueue, ^{
-        
         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
         for (NSString *fileName in fileEnumerator){
             if (fileName.length==32) {
@@ -232,27 +242,23 @@ static const CGFloat unit = 1000.0;
     return array;
 }
 
--(NSDictionary* )getDiskFileAttributes:(NSString *)key path:(NSString *)path{
- 
-    NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
-
+-(NSDictionary* )getDiskFileAttributes:(NSString *)key inPath:(NSString *)path{
+    NSString *filePath=[[self getDiskCacheWithCodingForKey:key inPath:path]stringByDeletingPathExtension];
     return [self getDiskFileAttributesWithFilePath:filePath];
 }
 
 -  (NSDictionary* )getDiskFileAttributesWithFilePath:(NSString *)filePath{
-    
     NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
     return info;
 }
 
 #pragma mark -  编码
 - (NSString *)getDiskCacheWithCodingForKey:(NSString *)key{
-        
-    NSString *path=[self getDiskCacheWithCodingForKey:key path:self.diskCachePath];
+    NSString *path=[self getDiskCacheWithCodingForKey:key inPath:self.diskCachePath];
     return path;
 }
 
-- (NSString *)getDiskCacheWithCodingForKey:(NSString *)key path:(NSString *)path {
+- (NSString *)getDiskCacheWithCodingForKey:(NSString *)key inPath:(NSString *)path {
     NSString *filename = [self MD5StringForKey:key];
     return [path stringByAppendingPathComponent:filename];
 }
@@ -279,14 +285,14 @@ static const CGFloat unit = 1000.0;
 }
 #pragma  mark - 计算大小与个数
 - (NSUInteger)getCacheSize {
-    return [self getFileSizeWithpath:self.diskCachePath];
+    return [self getFileSizeWithPath:self.diskCachePath];
 }
 
 - (NSUInteger)getCacheCount {
-    return [self getFileCountWithpath:self.diskCachePath];
+    return [self getFileCountWithPath:self.diskCachePath];
 }
 
-- (NSUInteger)getFileSizeWithpath:(NSString *)path{
+- (NSUInteger)getFileSizeWithPath:(NSString *)path{
     __block NSUInteger size = 0;
     //sync
     dispatch_sync(self.operationQueue, ^{
@@ -298,11 +304,10 @@ static const CGFloat unit = 1000.0;
             size += [attrs fileSize];
         }
     });
-    
     return size;
 }
 
-- (NSUInteger)getFileCountWithpath:(NSString *)path{
+- (NSUInteger)getFileCountWithPath:(NSString *)path{
     __block NSUInteger count = 0;
     //sync
     dispatch_sync(self.operationQueue, ^{
@@ -323,7 +328,6 @@ static const CGFloat unit = 1000.0;
 }
 
 - (NSUInteger)diskSystemSpace{
-    
     __block NSUInteger size = 0.0;
     dispatch_sync(self.operationQueue, ^{
         NSError *error=nil;
@@ -336,11 +340,9 @@ static const CGFloat unit = 1000.0;
         }
     });
     return size;
-
 }
 
 - (NSUInteger)diskFreeSystemSpace{
-    
     __block NSUInteger size = 0.0;
     dispatch_sync(self.operationQueue, ^{
         NSError *error=nil;
@@ -361,10 +363,10 @@ static const CGFloat unit = 1000.0;
 }
 
 - (void)clearCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
-     [self clearCacheWithTime:time path:self.diskCachePath completion:completion];
+     [self clearCacheWithTime:time inPath:self.diskCachePath completion:completion];
 }
 
-- (void)clearCacheWithTime:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+- (void)clearCacheWithTime:(NSTimeInterval)time inPath:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     if (!time||!path)return;
     dispatch_async(self.operationQueue,^{
         // “-” time
@@ -403,7 +405,7 @@ static const CGFloat unit = 1000.0;
         bgTask = UIBackgroundTaskInvalid;
     }];
     // Start the long-running task and return immediately.
-    [self clearCacheWithTime:defaultCacheMaxCacheAge path:path completion:^{
+    [self clearCacheWithTime:defaultCacheMaxCacheAge inPath:path completion:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
@@ -415,24 +417,19 @@ static const CGFloat unit = 1000.0;
 
 #pragma  mark - 清除单个缓存文件
 - (void)clearCacheForkey:(NSString *)key{
- 
     [self clearCacheForkey:key completion:nil];
 }
 
 - (void)clearCacheForkey:(NSString *)key completion:(ZBCacheCompletedBlock)completion{
-    
-    [self clearCacheForkey:key path:self.diskCachePath completion:completion];
+    [self clearCacheForkey:key inPath:self.diskCachePath completion:completion];
 }
 
-- (void)clearCacheForkey:(NSString *)key path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+- (void)clearCacheForkey:(NSString *)key inPath:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     if (!key)return;
     [self.memoryCache removeObjectForKey:key];
     dispatch_async(self.operationQueue,^{
-        
-        NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
-        
+        NSString *filePath=[[self getDiskCacheWithCodingForKey:key inPath:path]stringByDeletingPathExtension];
         [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
-        
         if (completion) {
             dispatch_async(dispatch_get_main_queue(),^{
                 completion();
@@ -446,16 +443,16 @@ static const CGFloat unit = 1000.0;
 }
 
 - (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
-    [self clearCacheForkey:key time:time path:self.diskCachePath completion:completion];
+    [self clearCacheForkey:key time:time inPath:self.diskCachePath completion:completion];
 }
 
-- (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time path:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+- (void)clearCacheForkey:(NSString *)key time:(NSTimeInterval)time inPath:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     if (!time||!key||!path)return;
     dispatch_async(self.operationQueue,^{
         // “-” time
         NSDate *expirationDate = [NSDate dateWithTimeIntervalSinceNow:-time];
         
-        NSString *filePath=[[self getDiskCacheWithCodingForKey:key path:path]stringByDeletingPathExtension];
+        NSString *filePath=[[self getDiskCacheWithCodingForKey:key inPath:path]stringByDeletingPathExtension];
         
         NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
         NSDate *current = [info objectForKey:NSFileModificationDate];
@@ -481,7 +478,6 @@ static const CGFloat unit = 1000.0;
 }
 
 - (void)clearCacheOnCompletion:(ZBCacheCompletedBlock)completion{
-
     dispatch_async(self.operationQueue, ^{
             //[self clearDiskWithpath:self.diskCachePath];
         [[NSFileManager defaultManager] removeItemAtPath:self.diskCachePath error:nil];
@@ -494,19 +490,16 @@ static const CGFloat unit = 1000.0;
     });
 }
 #pragma  mark - 清除自定义路径缓存
-- (void)clearDiskWithpath:(NSString *)path{
-    [self clearDiskWithpath:path completion:nil];
+- (void)clearDiskWithPath:(NSString *)path{
+    [self clearDiskWithPath:path completion:nil];
 }
 
-- (void)clearDiskWithpath:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
+- (void)clearDiskWithPath:(NSString *)path completion:(ZBCacheCompletedBlock)completion{
     if (!path)return;
      dispatch_async(self.operationQueue, ^{
-  
-           NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
-         for (NSString *fileName in fileEnumerator)
-         {
+         NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
+         for (NSString *fileName in fileEnumerator){
              NSString *filePath = [path stringByAppendingPathComponent:fileName];
-         
              [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
          }
          if (completion) {
