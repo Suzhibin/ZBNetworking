@@ -151,12 +151,6 @@
           NSLog(@"得到数据:%@",responseObject);
       
     } failure:^(NSError *error){
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut){
-            [self alertTitle:@"请求超时" andMessage:@""];
-        }else{
-            [self alertTitle:@"请求失败" andMessage:@""];
-        }
     }];
 
 ```
@@ -200,12 +194,6 @@
     }  success:^(id responseObj,ZBURLRequest * request){
       
     } failure:^(NSError *error){
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut){
-            [self alertTitle:@"请求超时" andMessage:@""];
-        }else{
-            [self alertTitle:@"请求失败" andMessage:@""];
-        }
     }];
 
 //具体演示看demo
