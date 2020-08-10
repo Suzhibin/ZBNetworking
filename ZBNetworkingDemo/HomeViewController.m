@@ -22,7 +22,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-     NSLog(@"当前是否有网：%d",[ZBRequestManager isNetworkReachable]);
+     NSLog(@"当前是否有网：%d 状态：%ld",[ZBRequestManager isNetworkReachable],[ZBRequestManager networkReachability]);
     [DataManager sharedInstance].tag=@"6666";
     
     /**

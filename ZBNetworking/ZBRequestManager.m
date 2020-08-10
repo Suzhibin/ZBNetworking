@@ -341,6 +341,10 @@ NSString *const _filePath =@"_filePath";
     return [ZBRequestEngine defaultEngine].networkReachability != 0;
 }
 
++ (NSInteger)networkReachability{
+    return [[ZBRequestEngine defaultEngine]networkReachability];
+}
+
 #pragma mark - 打印log
 + (void)printCacheInfoWithkey:(NSString *)key filePath:(NSString *)filePath request:(ZBURLRequest *)request{
     NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";

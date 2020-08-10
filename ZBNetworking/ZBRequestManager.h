@@ -116,7 +116,7 @@
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull)config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBRequestFinishedBlock _Nullable )finished;
 
 /**
- *  请求方法
+ *  批量请求方法
  *  @param config           请求配置  Block
  *  @param target           执行代理的对象
  *  @return identifier      请求标识符
@@ -167,6 +167,12 @@
  *  获取网络状态 是否可用
  */
 + (BOOL)isNetworkReachable;
+
+/**
+ *  当前网络的状态值，
+ *  -1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
+ */
++ (NSInteger)networkReachability;
 
 @end
 
