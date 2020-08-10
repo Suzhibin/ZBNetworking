@@ -192,8 +192,9 @@
             [batchRequest.urlArray addObject:request];
         }
     }  success:^(id responseObj,ZBURLRequest * request){
-      
     } failure:^(NSError *error){
+    } finished:^(NSArray * _Nullable responseObjects, NSArray<NSError *> * _Nullable errors, NSArray<ZBURLRequest *> * _Nullable requests) {
+            NSLog(@"批量完成事件");
     }];
 
 //具体演示看demo
