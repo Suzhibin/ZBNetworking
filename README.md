@@ -116,7 +116,7 @@
         }
     }];
 ```
-#### 请求方法
+#### Block 请求方法
 ```
 //请求方法 会默认创建缓存路径    
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
@@ -160,7 +160,35 @@
     }];
 
 ```
-#### 离线下载 批量下载
+#### Delegate 请求方法
+```
+  [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
+       request.URLString=listUrl;
+       request.apiType=type;
+  } target:self];//ZBRequestDelegate
+#pragma mark - ZBURLRequestDelegate
+- (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
+        if (request.apiType==ZBRequestTypeRefresh) 
+             //结束刷新
+        }
+        if (request.apiType==ZBRequestTypeLoadMore) {
+            //结束上拉加载
+        }
+        //请求成功
+          NSLog(@"得到数据:%@",responseObject);
+}
+- (void)request:(ZBURLRequest *)request failedForError:(NSError * _Nullable)error{
+}
+- (void)request:(ZBURLRequest *)request forProgress:(NSProgress *)progress{
+    NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
+}
+- (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
+//    NSLog(@"code:%ld",error.code);
+//    NSLog(@"URLString:%@",request.URLString);
+}
+
+```
+#### 批量下载
 ```objective-c
  [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest)
             for (NSString *urlString in offlineArray) {
