@@ -166,6 +166,7 @@
        request.URLString=listUrl;
        request.apiType=type;
   } target:self];//ZBRequestDelegate
+  
 #pragma mark - ZBURLRequestDelegate
 - (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
         if (request.apiType==ZBRequestTypeRefresh) 
