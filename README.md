@@ -220,8 +220,10 @@
  [[ZBCacheManager sharedInstance]clearCache];
  //清除内存缓存
  [[ZBCacheManager sharedInstance]clearMemory];
-  //清除单个缓存文件
+  //清除单个缓存
  [[ZBCacheManager sharedInstance]clearCacheForkey:list_URL];
+ //按时间清除缓存
+  [[ZBCacheManager sharedInstance]clearCacheForkey:menu_URL time:60*60];
   //按路径清除缓存
  [[ZBCacheManager sharedInstance]clearDiskWithpath:@"路径" completion:nil];
  ```
