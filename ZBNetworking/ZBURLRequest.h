@@ -74,7 +74,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSDictionary *userInfo;
 
 /**
- *  存储路径 只有下载文件方法有用
+ *  下载文件存储路径 ，methodType=ZBMethodTypeDownLoad有用
+ *  如不设置 默认下载到/Library/Caches/ZBKit/AppDownload
  */
 @property (nonatomic,copy,nullable) NSString *downloadSavePath;
 

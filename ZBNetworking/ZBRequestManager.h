@@ -121,7 +121,7 @@
  *  @param target           执行代理的对象
  *  @return identifier      请求标识符
  */
-+ (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nullable )config target:(id<ZBURLRequestDelegate>_Nonnull)target;
++ (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nonnull )config target:(id<ZBURLRequestDelegate>_Nonnull)target;
 
 /**
  *  批量请求方法

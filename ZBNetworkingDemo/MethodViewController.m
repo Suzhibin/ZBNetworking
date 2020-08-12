@@ -124,15 +124,20 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
         request.URLString=@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip";
         request.methodType=ZBMethodTypeDownLoad;
-        request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
+       // request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];//不设置 会默认创建下载路径/Library/Caches/ZBKit/AppDownload
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
         
     } success:^(id  responseObject,ZBURLRequest * request) {
         NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
         
-        [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
+        [self downLoadPathSize:request.downloadSavePath];//返回下载路径的大小
+        [[ZBCacheManager sharedInstance]clearDiskWithPath:request.downloadSavePath completion:^{
+            NSLog(@"删除下载的文件");
+            [self downLoadPathSize:request.downloadSavePath];
+        }];
         /*
+        [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
         sleep(3);
         //删除下载的文件
         [[ZBCacheManager sharedInstance]clearDiskWithPath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{

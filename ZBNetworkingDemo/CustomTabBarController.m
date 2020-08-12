@@ -19,13 +19,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     HomeViewController *HomeVC=[[HomeViewController alloc]init];
-    [self setupChildViewController:HomeVC title:@"缓存展示"];
+    [self setupChildViewController:HomeVC title:@"首页" image:@"equal.square" selectedImage:@"equal.square.fill"];
+    
     MethodViewController *MethodVC=[[MethodViewController alloc]init];
-    [self setupChildViewController:MethodVC title:@"方法展示"];
+    [self setupChildViewController:MethodVC title:@"方法展示" image:@"tray.full" selectedImage:@"tray.full.fill"];
 }
-- (void)setupChildViewController:(UIViewController *)vc title:(NSString *)title
+- (void)setupChildViewController:(UIViewController *)vc title:(NSString *)title image:(NSString *)image selectedImage:(NSString *)selectedImage
 {
     vc.title = title;
+    if (@available(iOS 13.0, *)) {
+          vc.tabBarItem.image=[[UIImage systemImageNamed:image]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+          vc.tabBarItem.selectedImage=[[UIImage systemImageNamed:selectedImage]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+      }
     [self addChildViewController:[[UINavigationController alloc] initWithRootViewController:vc]];
 }
 

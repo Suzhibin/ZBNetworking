@@ -245,6 +245,10 @@ NSString *const _delegate =@"_delegate";
     if (target) {
         [request setValue:target forKey:_delegate];
     }
+    if (request.methodType==ZBMethodTypeUpload||request.methodType==ZBMethodTypeDownLoad) {
+        request.apiType=ZBRequestTypeRefresh;
+        request.keepType=ZBResponseKeepFirst;
+    }
      //=====================================================
     NSURL *baseURL = [NSURL URLWithString:self.baseURLString];
             

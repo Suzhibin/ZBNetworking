@@ -14,6 +14,7 @@
 NSString *const _isCache =@"_isCache";
 NSString *const _cacheKey =@"_cacheKey";
 NSString *const _filePath =@"_filePath";
+NSString *const _downloadPath =@"AppDownload";
 @implementation ZBRequestManager
 
 #pragma mark - 插件
@@ -141,7 +142,6 @@ NSString *const _filePath =@"_filePath";
 }
 
 + (NSUInteger)sendUploadRequest:(ZBURLRequest *)request{
-    request.apiType=ZBRequestTypeRefresh;
     return [[ZBRequestEngine defaultEngine] uploadWithRequest:request progress:^(NSProgress * _Nonnull uploadProgress) {
         if (request.delegate&&[request.delegate respondsToSelector:@selector(request:forProgress:)]) {
             [request.delegate request:request forProgress:uploadProgress];
@@ -155,7 +155,11 @@ NSString *const _filePath =@"_filePath";
 }
 
 + (NSUInteger)sendDownLoadRequest:(ZBURLRequest *)request{
-    request.apiType=ZBRequestTypeRefresh;
+    if (request.downloadSavePath.length<=0) {
+        NSString *AppDownloadPath =  [[[ZBCacheManager sharedInstance]ZBKitPath]stringByAppendingPathComponent:_downloadPath];
+        [[ZBCacheManager sharedInstance]createDirectoryAtPath:AppDownloadPath];
+        request.downloadSavePath = AppDownloadPath;
+    }
     return [[ZBRequestEngine defaultEngine] downloadWithRequest:request progress:^(NSProgress * _Nullable downloadProgress) {
         if (request.delegate&&[request.delegate respondsToSelector:@selector(request:forProgress:)]) {
             [request.delegate request:request forProgress:downloadProgress];

@@ -336,14 +336,14 @@ static const NSInteger cacheTime = 15;//过期时间
                         //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                         NSString *imageURLStr = [imageURL absoluteString];
                         NSString *lastImage=[NSString stringWithFormat:@"%@",((DetailsModel *)[self.imageArray lastObject]).thumb];
+                        if ([imageURLStr isEqualToString:lastImage]) {
+                            NSLog(@"url相同下载完成");
+                                                    
+                        }
                                                
-                            if ([imageURLStr isEqualToString:lastImage]) {
-                                NSLog(@"url相同下载完成");
-                            }
-                                               
-                            if (error) {
-                                NSLog(@"图片下载失败");
-                            }
+                        if (error) {
+                            NSLog(@"图片下载失败");
+                        }
                     }];
                 }
                 

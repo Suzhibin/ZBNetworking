@@ -94,10 +94,10 @@
             [self.tableView reloadData];
             [self.refreshControl endRefreshing];    //结束刷新
             if (request.isCache==YES) {
-                self.title=@"使用了缓存";
+                self.navigationItem.title=@"使用了缓存";
                 [DataManager sharedInstance].cacheKey=request.cacheKey;
             }else{
-                self.title=@"重新请求";
+                self.navigationItem.title=@"重新请求";
                 NSHTTPURLResponse *response = (NSHTTPURLResponse *)request.response;
                 NSDictionary *allHeaders = response.allHeaderFields;
                 NSLog(@"allHeaders:%@",allHeaders);
@@ -172,6 +172,7 @@
     HomeModel *model=[self.dataArray objectAtIndex:indexPath.row];
     DetailViewController *detailsVC=[[DetailViewController alloc]init];
     detailsVC.wid=model.wid;
+    detailsVC.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:detailsVC animated:YES];
     
 }
