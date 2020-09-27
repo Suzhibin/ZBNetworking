@@ -88,8 +88,8 @@
                       request.keepType=ZBResponseKeepLast
                        都不会不起作用了。所有请求都会成功了。
                        */
-                *setObject=@{ @"authors":@[@{@"errorCode":@"400"}],
-                                @"videos":@[@{@"errorCode":@"400"}]};
+                *setObject=@{ @"authors":@[@{@"errorCode":@"401"}],
+                                @"videos":@[@{@"errorCode":@"401"}]};
             }
                        
         }
@@ -132,7 +132,7 @@
                 }
                              
                 NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
-                if ([errorCode isEqualToString:@"400"]) {//假设400 登录过期
+                if ([errorCode isEqualToString:@"401"]) {//假设401 登录过期
                     NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
                     NSLog(@"重新开始业务请求：%@ 参数：%@",request.url,request.parameters[@"path"]);
                                
