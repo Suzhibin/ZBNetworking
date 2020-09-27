@@ -3,7 +3,7 @@
  1.原来的基础设置里的参数baseURL 改为 baseServer
  2.ZBURLRequest里增加参数server 与 baseServer 不兼容，当本次请求设置了server 会替换本次请求的baseServer，不影响其他请求
  3.ZBURLRequest内原来的URLString 改为 url  
- 4.如果多个环境 有不同的 公共参数， 可以在插件机制里的 预处理请求方法内，判断server 或是userInfo等参数 进行添加 进行添加
+ 4.如果多个环境 有不同的 公共参数， 可以在插件机制里的 预处理请求方法内，判断server 或是userInfo等参数 进行添加
   
  发布于2020年8月12日，周三
  1.上传，下载方法 添加默认设置 防止重复请求
