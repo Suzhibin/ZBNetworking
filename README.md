@@ -69,8 +69,18 @@
     headers[@"Token"] = @"Token";
     
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
-        config.baseURL=server_URL;//如果同一个环境，有多个域名 不建议设置baseURL
-        config.parameters=parameters;//公告参数
+         /**
+         config.baseServer 设置基础服务器地址
+         如果同一个环境，有多个服务器地址，可以在每个请求单独设置 requestr.server  优先级大于config.baseServer
+         */
+        config.baseServer=server_URL;
+        /**
+         config.parameters公共参数
+         如果同一个环境，有多个服务器地址，公共参数不同有两种方式
+         1.在每个请求单独添加parameters
+         2.在插件机制里 预处理 请求。判断对应的server添加
+         */
+        config.parameters=parameters;
         // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
         config.filtrationCacheKey=@[@"timeString"];
         config.headers=headers;//请求头
@@ -96,15 +106,26 @@
            2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
            3.一个应用有多个服务器地址，可在此进行配置
            4.统一loading 等UI处理
-           5. ......
+           5.为某个服务器单独添加参数
+           6. ......
        */
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
          NSLog(@"请求之前");
+         if ([request.server isEqualToString:m4_URL]) {
+            //为某个服务器 单独添加公共参数
+            [request.parameters setValue:@"pb这个参数，只会在下载文件的参数里显示" forKey:@"pb"];
+        }
     }];
     
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
         NSLog(@"成功回调 数据返回之前");
-       
+       NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
+         orCode isEqualToString:@"401"]) {//假设401 登录过期
+          NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+             NSLog(@"重新开始业务请求：%@ 参数：%@",request.url,request.parameters[@"path"]);
+              //⚠️给*error指针 错误信息，网络请求就会走 失败回调
+               *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
+          }
     }];
     [ZBRequestManager setErrorProcessHandler:^(ZBURLRequest * _Nullable request, NSError * _Nullable error) {
         if (error.code==NSURLErrorCancelled){
@@ -124,7 +145,7 @@
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"headers"] = @"herader";
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=list_URL;
+        request.url=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
         request.parameters=parameters;
@@ -157,7 +178,7 @@
 #### Delegate 请求方法
 ```
   [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
-       request.URLString=listUrl;
+       request.url=listUrl;
        request.apiType=type;
   } target:self];//ZBRequestDelegate
   
@@ -188,7 +209,7 @@
  [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest)
             for (NSString *urlString in offlineArray) {
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-            request.URLString=urlString;
+            request.url=urlString;
             [batchRequest.urlArray addObject:request];
         }
     }  success:^(id responseObj,ZBURLRequest * request){
@@ -238,7 +259,7 @@
     
      // 使用了parameters 的请求 缓存key会是URLString+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个 filtrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=@"http://URL";
+        request.url=@"http://URL";
         request.methodType=ZBMethodTypePOST;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//默认为ZBRequestTypeRefresh
         request.parameters=@{@"1": @"one", @"2": @"two", @"time": @"12345667"};
