@@ -39,9 +39,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
- *  接口(请求地址)
+ *  接口(服务器地址)
+ *  server 优先级大于 baseServer 
  */
-@property (nonatomic,copy) NSString * URLString;
+@property (nonatomic,copy) NSString *server;
+
+/**
+ *  接口(路径)
+ */
+@property (nonatomic,copy) NSString * url;
+
 
 /**
  *  提供给外部配置参数使用
@@ -199,7 +206,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  基础URL 域名
 */
-@property (nonatomic, copy, nullable) NSString *baseURL;
+@property (nonatomic, copy, nullable) NSString *baseServer;
 
 /**
  *  参数

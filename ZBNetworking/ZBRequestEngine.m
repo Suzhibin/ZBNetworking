@@ -17,7 +17,7 @@ NSString *const _finishedBlock =@"_finishedBlock";
 NSString *const _progressBlock =@"_progressBlock";
 NSString *const _delegate =@"_delegate";
 @interface ZBRequestEngine ()
-@property (nonatomic, copy, nullable) NSString *baseURLString;
+@property (nonatomic, copy, nullable) NSString *baseServerString;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, id> *baseParameters;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSString *> *baseHeaders;
 @property (nonatomic, strong, nullable) NSDictionary *baseUserInfo;
@@ -83,7 +83,7 @@ NSString *const _delegate =@"_delegate";
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-    NSString *URLString=[NSString zb_stringUTF8Encoding:request.URLString];
+    NSString *URLString=[NSString zb_stringUTF8Encoding:request.url];
     NSURLSessionDataTask *dataTask=nil;
     if (request.methodType==ZBMethodTypeGET) {
         dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
@@ -111,7 +111,7 @@ NSString *const _delegate =@"_delegate";
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.URLString] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.url] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
         [request.uploadDatas enumerateObjectsUsingBlock:^(ZBUploadData *obj, NSUInteger idx, BOOL *stop) {
             if (obj.fileData) {
@@ -149,7 +149,7 @@ NSString *const _delegate =@"_delegate";
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.URLString]]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.url]]];
     
     NSURL *downloadFileSavePath;
     BOOL isDirectory;
@@ -194,8 +194,8 @@ NSString *const _delegate =@"_delegate";
 
 #pragma mark - 其他配置
 - (void)setupBaseConfig:(ZBConfig *)config{
-    if (config.baseURL) {
-        self.baseURLString=config.baseURL;
+    if (config.baseServer) {
+        self.baseServerString=config.baseServer;
     }
     if (config.timeoutInterval) {
         self.baseTimeoutInterval=config.timeoutInterval;
@@ -250,13 +250,16 @@ NSString *const _delegate =@"_delegate";
         request.keepType=ZBResponseKeepFirst;
     }
      //=====================================================
-    NSURL *baseURL = [NSURL URLWithString:self.baseURLString];
+    if (request.server.length == 0&& self.baseServerString.length > 0) {
+        request.server=self.baseServerString;
+    }
+    NSURL *baseURL = [NSURL URLWithString:request.server];
             
     if ([[baseURL path] length] > 0 && ![[baseURL absoluteString] hasSuffix:@"/"]) {
                    baseURL = [baseURL URLByAppendingPathComponent:@""];
     }
      
-    request.URLString= [[NSURL URLWithString:request.URLString relativeToURL:baseURL] absoluteString];
+    request.url= [[NSURL URLWithString:request.url relativeToURL:baseURL] absoluteString];
     //=====================================================
     if (self.baseTimeoutInterval) {
         NSTimeInterval timeout;
@@ -336,7 +339,7 @@ NSString *const _delegate =@"_delegate";
 
 - (void)printParameterWithRequest:(ZBURLRequest *)request{
     if (request.consoleLog==YES) {
-        NSString *address=[NSString zb_urlString:request.URLString appendingParameters:request.parameters];
+        NSString *address=[NSString zb_urlString:request.url appendingParameters:request.parameters];
         NSString *requestStr=request.requestSerializer==ZBHTTPRequestSerializer ?@"HTTP":@"JOSN";
         NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
         NSLog(@"\n\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",address,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);

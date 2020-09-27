@@ -25,12 +25,13 @@
      NSLog(@"当前是否有网：%d 状态：%ld",[ZBRequestManager isNetworkReachable],[ZBRequestManager networkReachability]);
     [DataManager sharedInstance].tag=@"6666";
     
+    #pragma mark -  公共配置 RequestTool
     /**
      公共配置
      插件机制
      证书设置
      */
-    [RequestTool setupPublicParameters];
+    [RequestTool setupPublicParameters]; //设置在所有请求前 一般放在AppDelegate 中调用
 
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
@@ -56,8 +57,8 @@
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"headers"] = @"herader";
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,list_URL] ;
-        request.URLString=list_URL;
+       //request.server=server_URL; 优先级大于 公共配置baseServer 兼容了同一环境，有多个服务器地址的问题
+        request.url=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
         request.parameters=parameters;//与公共配置 Parameters 兼容

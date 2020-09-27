@@ -106,7 +106,7 @@ NSString *const _downloadPath =@"AppDownload";
 #pragma mark - 发起请求
 + (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
     
-    if([request.URLString isEqualToString:@""]||request.URLString==nil)return 0;
+    if([request.url isEqualToString:@""]||request.url==nil)return 0;
     
     [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
     
@@ -118,7 +118,7 @@ NSString *const _downloadPath =@"AppDownload";
             return 0;
         }
     }
-    NSNumber * keepIdentifier=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.URLString];
+    NSNumber * keepIdentifier=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
     if (request.keepType==ZBResponseKeepFirst&&keepIdentifier) {
         return 0;
     }
@@ -127,7 +127,7 @@ NSString *const _downloadPath =@"AppDownload";
     }
 
     NSUInteger identifier=[self startSendRequest:request];
-    [[ZBRequestEngine defaultEngine]setRequestObject:@(request.identifier) forkey:request.URLString];
+    [[ZBRequestEngine defaultEngine]setRequestObject:@(request.identifier) forkey:request.url];
     return identifier;
 }
 
@@ -231,7 +231,7 @@ NSString *const _downloadPath =@"AppDownload";
         newParameters = request.parameters;
     }
 
-    return [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.URLString appendingParameters:newParameters]];
+    return [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.url appendingParameters:newParameters]];
 }
 
 + (void)storeObject:(NSObject *)object request:(ZBURLRequest *)request{
@@ -325,7 +325,7 @@ NSString *const _downloadPath =@"AppDownload";
     request.successBlock?request.successBlock(result, request):nil;
     request.finishedBlock?request.finishedBlock(result, nil,request):nil;
     [request cleanAllCallback];
-    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
+    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.url];
 }
 
 + (void)failureCallbackForError:(NSError *)error forRequest:(ZBURLRequest *)request{
@@ -338,7 +338,7 @@ NSString *const _downloadPath =@"AppDownload";
     request.failureBlock?request.failureBlock(error):nil;
     request.finishedBlock?request.finishedBlock(nil,error,request):nil;
     [request cleanAllCallback];
-    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.URLString];
+    [[ZBRequestEngine defaultEngine] removeRequestForkey:request.url];
 }
 
 + (BOOL)isNetworkReachable {
@@ -360,7 +360,7 @@ NSString *const _downloadPath =@"AppDownload";
 }
 
 + (void)printfailureInfoWithError:(NSError *)error request:(ZBURLRequest *)request{
-    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.URLString,request.retryCount,error.localizedDescription);
+    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.url,request.retryCount,error.localizedDescription);
 }
 
 @end

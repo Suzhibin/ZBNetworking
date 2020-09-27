@@ -36,8 +36,8 @@
 
     //请求最新频道列表 ZBApiType 默认ZBRequestTypeRefresh 重新请求 也不会存储缓存
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
-         //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,list_URL] ;
-        request.URLString=list_URL;
+//        request.server=server_URL;
+        request.url=list_URL;
         request.parameters=parameters;
     } success:^(id responseObject,ZBURLRequest *request) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {

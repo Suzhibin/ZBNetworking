@@ -54,8 +54,7 @@
     parameters[@"path"] = @"DetailViewController";
     
     self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
-        //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
-        request.URLString=details_URL;
+        request.url=details_URL;
         request.parameters=parameters;
         request.apiType=apiType;
         request.filtrationCacheKey=@[@"path"];
@@ -63,8 +62,7 @@
     } target:self];
     /*
     self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-         //request.URLString=[NSString stringWithFormat:@"%@%@",server_URL,details_URL] ;
-       request.URLString=details_URL;
+       request.url=details_URL;
        request.parameters=parameters;
        request.apiType=apiType;
        request.filtrationCacheKey=@[@"path"];
@@ -128,7 +126,7 @@
     NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
 }
 - (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
-    NSLog(@"URLString:%@ code:%ld",request.URLString,error.code);
+    NSLog(@"url:%@ code:%ld",request.url,error.code);
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

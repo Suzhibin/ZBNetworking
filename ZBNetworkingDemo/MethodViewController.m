@@ -40,7 +40,7 @@
      */
     
     NSUInteger identifier= [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=@"https://URL";
+        request.url=@"https://URL";
         request.methodType=ZBMethodTypePOST;//ZBMethodTypePUT//ZBMethodTypePATCH//ZBMethodTypeDELETE//ZBMethodTypeGET 默认为GET
         request.requestSerializer=ZBJSONRequestSerializer;//默认ZBJSONRequestSerializer 上传参数默认为json 格式
         request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
@@ -69,7 +69,7 @@
 #pragma mark - 代理请求
 - (void)delegateRequest{
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
-        request.URLString=@"https://URL";
+        request.url=@"https://URL";
     } target:self];
 }
 #pragma mark - ZBURLRequestDelegate
@@ -88,7 +88,7 @@
 }
 - (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
     NSLog(@"code:%ld",error.code);
-    NSLog(@"URLString:%@",request.URLString);
+    NSLog(@"url:%@",request.url);
 }
 
 #pragma mark - 上传文件方法
@@ -101,7 +101,7 @@
     NSURL *fileURL = [NSURL fileURLWithPath:path isDirectory:NO];
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.URLString=@"https://URL";
+        request.url=@"https://URL";
         request.methodType=ZBMethodTypeUpload;
         
        // [request addFormDataWithName:@"image[]" fileData:fileData];
@@ -122,7 +122,8 @@
 - (void)downLoadRequest{
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.URLString=@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip";
+        request.server=m4_URL;
+        request.url=@"/cjh3/LogMeInInstaller7009.zip";
         request.methodType=ZBMethodTypeDownLoad;
        // request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];//不设置 会默认创建下载路径/Library/Caches/ZBKit/AppDownload
     } progress:^(NSProgress * _Nullable progress) {
@@ -157,20 +158,20 @@
     ZBBatchRequest *batchRequest=[ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest * batchRequest) {
          for (int i=0; i<=3; i++) {
              ZBURLRequest *request=[[ZBURLRequest alloc]init];
-             request.URLString=@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip";
+             request.url=@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip";
              request.methodType=ZBMethodTypeDownLoad;
              request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
              [batchRequest.requestArray addObject:request];
          }
          /*
         ZBURLRequest *request1=[[ZBURLRequest alloc]init];
-        request1.URLString=@"";
+        request1.url=@"";
         request1.methodType=ZBMethodTypeDownLoad;
         request1.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
         [batchRequest.urlArray addObject:request1];
         
         ZBURLRequest *request2=[[ZBURLRequest alloc]init];
-        request2.URLString=@"";
+        request2.url=@"";
         request2.methodType=ZBMethodTypeDownLoad;
         request2.downloadSavePath = [[ZBCacheManager sharedInstance] documentPath];
         [batchRequest.urlArray addObject:request2];
@@ -188,7 +189,7 @@
     }finished:^(NSArray * _Nullable responseObjects, NSArray<NSError *> * _Nullable errors, NSArray<ZBURLRequest *> * _Nullable requests) {
   
         [requests enumerateObjectsUsingBlock:^(ZBURLRequest * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"批量完成事件 URLString:%@",obj.URLString);
+            NSLog(@"批量完成事件 url:%@",obj.url);
         }];
         // NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
                 
@@ -229,7 +230,7 @@
     parameters[@"offset"] = @"0";
     for (int i = 0; i < 5; i++) {
         NSUInteger identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
-            request.URLString=urlStr;
+            request.url=urlStr;
             request.parameters=parameters;
             request.methodType=ZBMethodTypeGET;//默认get
             request.apiType=ZBRequestTypeRefresh;
@@ -256,13 +257,13 @@
 #pragma mark - 过滤缓存key
 //过滤掉parameters 缓存key里的 变动参数
 - (void)parametersfiltrationCacheKey{
-    //POST等 使用了parameters 的请求 缓存key会是URLString+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个parametersfiltrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
+    //POST等 使用了parameters 的请求 缓存key会是url+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个parametersfiltrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
     
     NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
     NSString *timeString = [NSString stringWithFormat:@"%f",timeInterval];
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=@"https://URL";
+        request.url=@"https://URL";
         request.methodType=ZBMethodTypePOST;//默认为GET
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
         request.parameters=@{@"1": @"one", @"2": @"two", @"time":timeString};

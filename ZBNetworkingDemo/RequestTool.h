@@ -11,6 +11,9 @@
 #define list_URL @"authors"
 
 #define details_URL @"shipin/latest"
+
+#define m4_URL @"http://m4.pc6.com"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RequestTool : NSObject
