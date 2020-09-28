@@ -119,7 +119,8 @@
     
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
         NSLog(@"成功回调 数据返回之前");
-       NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
+        NSArray * authors=responseObject[@"authors"]
+        NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
          if ([orCode isEqualToString:@"401"]) {//假设401 登录过期
              NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
              NSLog(@"重新开始业务请求：%@ 参数：%@",request.url,request.parameters[@"path"]);
