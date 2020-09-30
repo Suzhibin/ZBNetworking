@@ -64,43 +64,36 @@
      
        比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
            2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
-           3.一个应用有多个服务器地址，可在此进行配置
+           3.一个应用有多个服务器地址，可在此进行单独配置参数
            4.统一loading 等UI处理
-           5.为某个服务器单独添加参数
+           5.业务数据数据的一些处理
            6. ......
        */
     //预处理 请求
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
-         NSLog(@"请求之前");
-        
+         NSLog(@"请求之前 url:%@",request.url);
+
         if ([request.server isEqualToString:m4_URL]) {
             //为某个服务器 单独添加公共参数
-            [request.parameters setValue:@"pb这个参数，只会在下载文件的参数里显示" forKey:@"pb"];
+            NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+            parameters[@"pb"] = @"从插件机制添加：pb这个参数，只会在下载请求的参数里显示";
+            
+            //[request.parameters setValue:@"从插件机制添加：pb这个参数，只会在下载请求的参数里显示" forKey:@"pb"];//这样添加 其他参数依然存在。
+            request.parameters=parameters;//这样添加 其他参数被删除
+            
+            NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+            headers[@"x-Token"] = @"从插件机制添加：x-Token";
+            request.headers=headers;
+
         }
 
-        //比如 我们可以根据参数寻找一个业务的请求 ，给改该请求做一个替换响应数据的操作
-        if ([request.userInfo[@"tag"]isEqualToString:@"7777"]) {
-            if (request.apiType != ZBRequestTypeCache) {
-                      /**
-                      //⚠️setObject 赋值 就会走成功回调
-                      如判断内的请求包含keep请求，keep功能将受影响
-                      request.keepType=ZBResponseKeepFirst
-                      request.keepType=ZBResponseKeepLast
-                       都不会不起作用了。所有请求都会成功了。
-                       */
-                *setObject=@{ @"authors":@[@{@"errorCode":@"401"}],
-                                @"videos":@[@{@"errorCode":@"401"}]};
-            }
-                       
-        }
-      
         if ([request.userInfo[@"tag"]isEqualToString:@"9999"]) {
               
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             request.apiType=ZBRequestTypeRefresh;
             //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
-                NSDictionary *dict= [[DataManager sharedInstance] dataInfoWithKey:[NSString stringWithFormat:@"%@%@",request.url,request.parameters[@"author"]]];
+                NSDictionary *dict= [[DataManager sharedInstance] dataInfoWithKey:[NSString stringWithFormat:@"%@%@",request.url,request.parameters[@"github"]]];
                 if (dict) {
                   //⚠️setObject 赋值 就会走成功回调
                     *setObject=dict;
@@ -122,30 +115,15 @@
                  比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
                  */
                  // 举个例子 假设服务器成功回调内返回了code码
-                NSArray * authors;
-                NSString *path= request.parameters[@"path"];
-                if ([path isEqualToString:@"HomeViewController"]) {
-                    authors=responseObject[@"authors"];
-                }
-                if ([path isEqualToString:@"DetailViewController"]) {
-                    authors=responseObject[@"videos"];
-                }
-                             
-                NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
-                if ([errorCode isEqualToString:@"401"]) {//假设401 登录过期
-                    NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-                    NSLog(@"重新开始业务请求：%@ 参数：%@",request.url,request.parameters[@"path"]);
-                               
+                NSDictionary *data= responseObject[@"Data"];
+                NSString * errorCode=[data objectForKey:@"HttpStatusCode"];
+                 errorCode= @"401";//假设401 登录过期
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+                NSLog(@"重新开始业务请求：%@ 参数：%@",request.url,request.parameters[@"path"]);
+                           
 
-                    //⚠️给*error指针 错误信息，网络请求就会走 失败回调
-                    *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
-
-                }else{
-                    //转模型
-                    NSDictionary *resultData = responseObject;
-                    return resultData;
-                }
-            
+                //⚠️给*error指针 错误信息，网络请求就会走 失败回调
+                *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
                     
         }
 
@@ -153,9 +131,9 @@
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
                            //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
-                    [[DataManager sharedInstance] saveDataInfo:responseObject key:[NSString stringWithFormat:@"%@%@",request.url,request.parameters[@"author"]]];
-                    }
+                [[DataManager sharedInstance] saveDataInfo:responseObject key:[NSString stringWithFormat:@"%@%@",request.url,request.parameters[@"github"]]];
             }
+        }
         return nil;
     }];
      //预处理 错误

@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  提供给外部配置参数使用
  */
-@property (nonatomic,strong,nullable) NSDictionary * parameters;
+@property (nonatomic,strong,nullable) id parameters;
 
 /**
  *  添加请求头
@@ -90,6 +90,24 @@ NS_ASSUME_NONNULL_BEGIN
  *  为上传请求提供数据
  */
 @property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
+
+/**
+ * 是否使用 公共配置的 服务器 默认YES
+ * 只在请求设置时生效
+ */
+@property (nonatomic,assign) BOOL isBaseServer;
+
+/**
+ * 是否使用 公共配置的 参数 默认YES
+ * 只在请求设置时生效
+ */
+@property (nonatomic,assign) BOOL isBaseParameters;
+
+/**
+* 是否使用 公共配置的  请求头 默认YES
+* 只在请求设置时生效
+*/
+@property (nonatomic,assign) BOOL isBaseHeaders;
 
 #pragma mark - 获取信息
 

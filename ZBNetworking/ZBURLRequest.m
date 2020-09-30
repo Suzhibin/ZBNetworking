@@ -19,6 +19,10 @@
     _apiType=ZBRequestTypeRefresh;
     _retryCount=0;
     _identifier = 0;
+    
+    _isBaseServer=YES;
+    _isBaseParameters=YES;
+    _isBaseHeaders=YES;
     return self;
 }
 

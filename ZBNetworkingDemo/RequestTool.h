@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#define server_URL @"http://api.dotaly.com/lol/api/v1/"
-#define list_URL @"authors"
+#define server_URL @"http://api.dotaly.com"
+#define list_URL @"/lol/api/v1/authors"
 
-#define details_URL @"shipin/latest"
+#define details_URL @"/lol/api/v1/shipin/latest"
 
 #define m4_URL @"http://m4.pc6.com"
 

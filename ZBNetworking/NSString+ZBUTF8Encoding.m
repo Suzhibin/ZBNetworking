@@ -23,10 +23,21 @@
         return urlString;
     }else{
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (NSString *key in parameters) {
-            id obj = [parameters objectForKey:key];
-            NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
-            [array addObject:str];
+        if ([parameters isKindOfClass:[NSDictionary class]]){
+            for (NSString *key in parameters) {
+                id obj = [parameters objectForKey:key];
+                NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
+                [array addObject:str];
+            }
+        }
+        if ([parameters isKindOfClass:[NSArray class]]){
+            for (NSDictionary *dict in parameters) {
+                for (NSString *key in dict) {
+                    id obj = [dict objectForKey:key];
+                    NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
+                    [array addObject:str];
+                }
+            }
         }
         
         NSString *parametersString = [array componentsJoinedByString:@"&"];

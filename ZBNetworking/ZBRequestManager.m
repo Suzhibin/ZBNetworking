@@ -118,6 +118,7 @@ NSString *const _downloadPath =@"AppDownload";
             return 0;
         }
     }
+    
     NSNumber * keepIdentifier=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
     if (request.keepType==ZBResponseKeepFirst&&keepIdentifier) {
         return 0;
@@ -222,11 +223,22 @@ NSString *const _downloadPath =@"AppDownload";
 }
 
 + (NSString *)keyWithParameters:(ZBURLRequest *)request{
-    NSDictionary *newParameters;
+    NSMutableDictionary *newParameters;
     if (request.filtrationCacheKey.count>0) {
-        NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:request.parameters];
-        [mutableParameters removeObjectsForKeys:request.filtrationCacheKey];
-        newParameters = [mutableParameters copy];
+        if ([request.parameters isKindOfClass:[NSDictionary class]]){
+            NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:request.parameters];
+            [mutableParameters removeObjectsForKeys:request.filtrationCacheKey];
+            newParameters = [mutableParameters copy];
+        }
+        if ([request.parameters isKindOfClass:[NSArray class]]) {
+            NSArray *parameters =(NSArray *)request.parameters;
+            newParameters=[[NSMutableDictionary alloc]init];
+            for (NSDictionary *dict in parameters) {
+                NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:dict];
+                [mutableParameters removeObjectsForKeys:request.filtrationCacheKey];
+                [newParameters addEntriesFromDictionary:mutableParameters];
+            }
+        }
     }else{
         newParameters = request.parameters;
     }
@@ -353,9 +365,9 @@ NSString *const _downloadPath =@"AppDownload";
 + (void)printCacheInfoWithkey:(NSString *)key filePath:(NSString *)filePath request:(ZBURLRequest *)request{
     NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
     if ([filePath isEqualToString:@"memoryCache"]) {
-        NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-responseSerializer-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,responseStr);
+        NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-responseSerializer-:%@\n-filtrationCacheKey-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,responseStr,request.filtrationCacheKey);
     }else{
-        NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-cacheFileInfo-:%@\n-responseSerializer-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,[[ZBCacheManager sharedInstance] getDiskFileAttributesWithFilePath:filePath],responseStr);
+        NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-cacheFileInfo-:%@\n-responseSerializer-:%@\n-filtrationCacheKey-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,[[ZBCacheManager sharedInstance] getDiskFileAttributesWithFilePath:filePath],responseStr,request.filtrationCacheKey);
     }
 }
 

@@ -133,10 +133,12 @@
         NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
         
         [self downLoadPathSize:request.downloadSavePath];//返回下载路径的大小
+        /*
         [[ZBCacheManager sharedInstance]clearDiskWithPath:request.downloadSavePath completion:^{
             NSLog(@"删除下载的文件");
             [self downLoadPathSize:request.downloadSavePath];
         }];
+         */
         /*
         [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
         sleep(3);

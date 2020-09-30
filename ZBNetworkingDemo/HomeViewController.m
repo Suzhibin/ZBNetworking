@@ -23,7 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
      NSLog(@"当前是否有网：%d 状态：%ld",[ZBRequestManager isNetworkReachable],[ZBRequestManager networkReachability]);
-    [DataManager sharedInstance].tag=@"6666";
+    [DataManager sharedInstance].tag=@"1111";
     
     #pragma mark -  公共配置 RequestTool
     /**
@@ -56,12 +56,21 @@
     parameters[@"path"] = @"HomeViewController";
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"headers"] = @"herader";
+    /**
+     支持数组类型参数，可能你没见过，但真的有,这种公共参数一般都在请求头里，可以在预处理方法内添加
+     如果设置了公共Parameters 需要在当次请求设置
+     request.isBaseParameters=NO;//不使用公共参数
+      NSArray  *parameters=@[@{@"path":@"HomeViewController",@"pa":@"aaaa"},@{@"pc":@"bbbb"}];
+     
+     */
+   
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
        //request.server=server_URL; 优先级大于 公共配置baseServer 兼容了同一环境，有多个服务器地址的问题
         request.url=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
         request.parameters=parameters;//与公共配置 Parameters 兼容
+        //request.isBaseParameters=NO;//本次 请求不使用 公共参数
         request.headers= headers;//与公共配置 Headers 兼容
         /**
          多次请求同一个接口 保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone 什么都不做
@@ -69,7 +78,7 @@
          */
         //request.keepType=ZBResponseKeepNone;
        // request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
-        request.filtrationCacheKey=@[@""];//与公共配置 filtrationCacheKey 兼容
+       // request.filtrationCacheKey=@[@""];//过滤变动参数 与公共配置 filtrationCacheKey 兼容
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 公共配置,不影响其他请求设置
         request.timeoutInterval=10;//默认30 //优先级 高于 公共配置,不影响其他请求设置

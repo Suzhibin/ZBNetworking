@@ -250,7 +250,7 @@ NSString *const _delegate =@"_delegate";
         request.keepType=ZBResponseKeepFirst;
     }
      //=====================================================
-    if (request.server.length == 0&& self.baseServerString.length > 0) {
+    if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {
         request.server=self.baseServerString;
     }
     NSURL *baseURL = [NSURL URLWithString:request.server];
@@ -270,16 +270,18 @@ NSString *const _delegate =@"_delegate";
         request.timeoutInterval=timeout;
     }
     //=====================================================
-    if (self.baseParameters.count > 0) {
+    if (request.isBaseParameters && self.baseParameters.count > 0) {
         NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
         [parameters addEntriesFromDictionary:self.baseParameters];
-        if (request.parameters.count > 0) {
-            [parameters addEntriesFromDictionary:request.parameters];
+        if ([request.parameters isKindOfClass:[NSDictionary class]]){
+            if([request.parameters allValues].count > 0) {
+                [parameters addEntriesFromDictionary:request.parameters];
+            }
         }
         request.parameters = parameters;
     }
     //=====================================================
-    if (self.baseHeaders.count > 0) {
+    if (request.isBaseHeaders &&self.baseHeaders.count > 0) {
         NSMutableDictionary *headers = [NSMutableDictionary dictionary];
         [headers addEntriesFromDictionary:self.baseHeaders];
         if (request.headers) {
