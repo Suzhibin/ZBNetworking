@@ -181,7 +181,7 @@
   [ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
        request.url=listUrl;
        request.apiType=type;
-  } target:self];//ZBRequestDelegate
+  } target:self];//ZBURLRequestDelegate
   
 #pragma mark - ZBURLRequestDelegate
 - (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
