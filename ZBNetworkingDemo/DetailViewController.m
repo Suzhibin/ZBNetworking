@@ -51,7 +51,6 @@
     parameters[@"iap"] = @"0";
     parameters[@"limit"] =@"50";
     parameters[@"offset"] = @"0";
-    parameters[@"path"] = @"DetailViewController";
     self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
         request.url=details_URL;
         request.parameters=parameters;
@@ -63,7 +62,6 @@
        request.url=details_URL;
        request.parameters=parameters;
        request.apiType=apiType;
-       request.filtrationCacheKey=@[@"path"];
        request.userInfo=@{@"tag":[DataManager sharedInstance].tag};
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {

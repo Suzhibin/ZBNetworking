@@ -295,7 +295,6 @@ static const NSInteger cacheTime = 15;//过期时间
    self.batchRequest = [ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest *batchRequest){
         for (HomeModel *model in offlineArray) {
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-            parameters[@"path"] = @"SettingViewController";
             parameters[@"author"] =model.wid;
             parameters[@"iap"] = @"0";
             parameters[@"limit"] =@"50";
