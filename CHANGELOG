@@ -1,4 +1,9 @@
  
+ 发布于2020年11月17日，周二
+ 1.Download方法 断点下载
+ 2.传参数parameters 支持字典，数组，字符串等类型
+ 3.优化了部分方法性能开销
+
  发布于2020年9月30日，周日
  1.请求参数 支持数组类型
  2.增加请求是否使用 公共参数的功能
@@ -20,7 +25,7 @@
  3.公共配置可以添加新的 响应类型
  4.修复获取缓存时，request有时对象无法释放的问题
 
-发布于2020年6月4日，周四
+ 发布于2020年6月4日，周四
  1.更新了AFNetworking 4.0版本
  2.优化demo的公共设置
  
@@ -36,8 +41,7 @@
  8.请求失败 可控制设置 重新连接
 
 发布于2018年9月19日，周三
-更新
-增加响应数据 格式的枚举 responseSerializer  默认为ZBJSONResponseSerializer   json格式
-请求参数枚举 使用时 由 requestSerializerType 改为requestSerializer
-ZBRequestManager.m 内新增 私有方法 responsetSerializerConfig：responseObject：用于格式化数据使用
-Demo 在解析时去掉 手动格式化NSJSONSerialization，增加返回json时 是数组或字典的判断
+1.增加响应数据 格式的枚举 responseSerializer  默认为ZBJSONResponseSerializer   json格式
+2.请求参数枚举 使用时 由 requestSerializerType 改为requestSerializer
+3.ZBRequestManager.m 内新增 私有方法 responsetSerializerConfig：responseObject：用于格式化数据使用
+4.Demo 在解析时去掉 手动格式化NSJSONSerialization，增加返回json时 是数组或字典的判断
