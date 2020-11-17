@@ -99,7 +99,7 @@
     
     if (self.offlineArray.count==0) {
         
-        [self alertTitle:@"请添加栏目" andMessage:@""];
+        [self alertTitle:@"请添加栏目" andMessage:@"" completed:nil];
         
     }else{
        

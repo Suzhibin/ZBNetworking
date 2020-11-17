@@ -52,25 +52,38 @@
 #pragma mark - request
 //apiType 是请求类型 在ZBRequestConst 里
 - (void)getDataWithApiType:(ZBApiType)apiType{
+    /**
+     字典类型参数
+     */
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"path"] = @"HomeViewController";
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"headers"] = @"herader";
     /**
-     支持数组类型参数，可能你没见过，但真的有,这种公共参数一般都在请求头里，可以在预处理方法内添加
+     数组类型参数,这种公共参数一般都在请求头里，
+     可以在setupBaseConfig 添加公共headers
+     也可以在 预处理方法setRequestProcessHandler单独添加公共参数
      如果设置了公共Parameters 需要在当次请求设置
      request.isBaseParameters=NO;//不使用公共参数
       NSArray  *parameters=@[@{@"path":@"HomeViewController",@"pa":@"aaaa"},@{@"pc":@"bbbb"}];
-     
      */
-   
+    /**
+     字符串类型参数
+     NSString *parameters=@"adadadad";
+     request.isBaseParameters=NO;//不使用公共参数
+     */
+    /*
+     //NSNumber类型参数
+     NSNumber * parameters=@(1213);
+     request.isBaseParameters=NO;//不使用公共参数
+     */
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
        //request.server=server_URL; 优先级大于 公共配置baseServer 兼容了同一环境，有多个服务器地址的问题
         request.url=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
         request.parameters=parameters;//与公共配置 Parameters 兼容
-        //request.isBaseParameters=NO;//本次 请求不使用 公共参数
+       // request.isBaseParameters=NO;//本次 请求不使用 公共参数
         request.headers= headers;//与公共配置 Headers 兼容
         /**
          多次请求同一个接口 保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone 什么都不做
@@ -113,7 +126,6 @@
                 NSLog(@"allHeaders:%@",allHeaders);
             }
         }
-        
     } failure:^(NSError *error){
         [self.refreshControl endRefreshing];  //结束刷新
     } finished:^(id responseObject, NSError *error, ZBURLRequest *request) {

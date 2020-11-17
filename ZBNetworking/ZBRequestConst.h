@@ -89,7 +89,16 @@ typedef NS_ENUM(NSUInteger, ZBResponseKeepType) {
     /** 使用最后一次请求结果*/
     ZBResponseKeepLast
 };
-//==================================================================
+/**
+ 操作状态
+ */
+typedef NS_ENUM(NSUInteger, ZBDownloadState) {
+    /** 开始请求*/
+    ZBDownloadStateStart,
+    /** 暂停请求*/
+    ZBDownloadStateStop,
+};
+//==================================================
 /** 请求配置的Block */
 typedef void (^ZBRequestConfigBlock)(ZBURLRequest * _Nullable request);
 /** 请求成功的Block */
@@ -100,19 +109,19 @@ typedef void (^ZBRequestFailureBlock)(NSError * _Nullable error);
 typedef void (^ZBRequestProgressBlock)(NSProgress * _Nullable progress);
 /** 请求完成的Block 无论成功和失败**/
 typedef void (^ZBRequestFinishedBlock)(id _Nullable responseObject,NSError * _Nullable error,ZBURLRequest * _Nullable request);
-//==================================================================
+//==================================================
 /** 批量请求配置的Block */
 typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest);
 /** 批量请求 全部完成的Block 无论成功和失败*/
 typedef void (^ZBBatchRequestFinishedBlock)(NSArray * _Nullable responseObjects,NSArray<NSError *> * _Nullable errors,NSArray<ZBURLRequest *> *_Nullable requests);
-//==================================================================
+//==================================================
 /** 请求 处理逻辑的方法 Block */
 typedef void (^ZBRequestProcessBlock)(ZBURLRequest * _Nullable request,id _Nullable __autoreleasing * _Nullable setObject);
 /** 响应 处理逻辑的方法 Block */
 typedef id _Nullable (^ZBResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error);
 /** 错误 处理逻辑的方法 Block */
 typedef void (^ZBErrorProcessBlock)(ZBURLRequest * _Nullable request, NSError * _Nullable error);
-//==================================================================
+//==================================================
 /** Request协议*/
 @protocol ZBURLRequestDelegate <NSObject>
 @required
@@ -126,7 +135,7 @@ typedef void (^ZBErrorProcessBlock)(ZBURLRequest * _Nullable request, NSError * 
 /** 请求完成的 代理方法 无论成功和失败**/
 - (void)request:(ZBURLRequest *_Nullable)request finishedForResponseObject:(id _Nullable)responseObject forError:(NSError *_Nullable)error ;
 /** 批量请求 全部完成的 代理方法，无论成功和失败*/
-- (void)requests:(NSArray<ZBURLRequest *> *_Nullable)requests batchFinishedForResponseObjects:(NSArray * _Nullable) responseObjects errors:(NSArray<NSError *> * _Nullable)errors ;
+- (void)requests:(NSArray<ZBURLRequest *> *_Nullable)requests batchFinishedForResponseObjects:(NSArray * _Nullable) responseObjects errors:(NSArray<NSError *> * _Nullable)errors;
 @end
 
 #endif /* ZBRequestConst_h */

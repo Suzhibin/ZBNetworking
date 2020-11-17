@@ -8,12 +8,16 @@
 
 #import "MethodViewController.h"
 #import "ZBNetworking.h"
+#import "PlayerViewController.h"
 #define urlStr @"http://api.dotaly.com/lol/api/v1/shipin/latest"
 @interface MethodViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLRequestDelegate>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSArray *dataArray;
 @property (nonatomic, copy) NSString *AccessToken;
 @property (nonatomic, copy) NSString *path;
+@property (nonatomic, strong) UIButton *controlButton;
+@property (nonatomic, assign)BOOL isDownload;
+@property (nonatomic, assign)NSUInteger identifier;
 @end
 
 @implementation MethodViewController
@@ -22,12 +26,26 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view addSubview:self.tableView];
-    self.dataArray=[NSArray arrayWithObjects:@"GET / POST / PUT / PATCH / DELETE / 取消请求",@"代理方法",@"上传文件",@"下载文件",@"批量请求",@"多次请求,保留第一次请求(场景:发帖,评论等)",@"多次请求,保留最后一次请求(场景:搜索)",@"parameters过滤动态参数",nil];
+    self.dataArray=[NSArray arrayWithObjects:@"GET / POST / PUT / PATCH / DELETE ",@"取消请求",@"代理方法",@"上传文件",@"下载文件（支持断点）",@"批量请求",@"多次请求,保留第一次请求(场景:发帖,评论等)",@"多次请求,保留最后一次请求(场景:搜索)",@"parameters过滤动态参数",nil];
      self.path = [[ZBCacheManager sharedInstance] tmpPath];
     NSLog(@"path:%@",self.path);
-   
     
+    __weak typeof(self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        if (weakSelf.isDownload==YES) {
+            NSLog(@"进入后台 暂停下载");
+            [weakSelf downloadWithState:ZBDownloadStateStop];
+            weakSelf.controlButton.selected=YES;
+        }
+    }];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        if (weakSelf.isDownload==YES) {
+            NSLog(@"进入前台 恢复下载");
+            [weakSelf downloadWithState:ZBDownloadStateStart];
+            weakSelf.controlButton.selected=NO;
+        }
+    }];
 }
 
 #pragma mark - 多类型请求方法
@@ -39,12 +57,13 @@
      默认缓存路径/Library/Caches/ZBKit/AppCache
      */
     
-    NSUInteger identifier= [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+    self.identifier= [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.url=@"https://URL";
         request.methodType=ZBMethodTypePOST;//ZBMethodTypePUT//ZBMethodTypePATCH//ZBMethodTypeDELETE//ZBMethodTypeGET 默认为GET
         request.requestSerializer=ZBJSONRequestSerializer;//默认ZBJSONRequestSerializer 上传参数默认为json 格式
         request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
+        // request.isBaseParameters=NO;//本次 请求不使用 公共参数
         request.timeoutInterval=10;//默认30
         request.parameters=@{@"1": @"one", @"2": @"two"};
         request.headers=@{@"headers": @"headers"};
@@ -59,13 +78,11 @@
     } failure:^(NSError *error){
         NSLog(@"error: %@", error);
     }];
-    
-    
-    sleep(3);
-          
-    [ZBRequestManager cancelRequest:identifier];//取消请求  （已请求完和读缓存 无法取消）
-}
 
+}
+- (void)cancelRequest{
+    [ZBRequestManager cancelRequest:self.identifier];//取消请求  （已请求完和读缓存 无法取消）
+}
 #pragma mark - 代理请求
 - (void)delegateRequest{
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
@@ -119,34 +136,42 @@
 }
 
 #pragma mark - 下载文件方法
-- (void)downLoadRequest{
-    
-    [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.server=m4_URL;
-        request.url=@"/cjh3/LogMeInInstaller7009.zip";
+- (void)downloadWithState:(ZBDownloadState)state{
+  //  会默认创建下载路径/Library/Caches/ZBKit/AppDownload
+   self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
+        request.url=@"https://fcvideo.cdn.bcebos.com/smart/f103c4fc97d2b2e63b15d2d5999d6477.mp4";
         request.methodType=ZBMethodTypeDownLoad;
-       // request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];//不设置 会默认创建下载路径/Library/Caches/ZBKit/AppDownload
+        request.downloadState=state;//下载状态
+        request.userInfo=@{@"tag":@"10086"};
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
-        
     } success:^(id  responseObject,ZBURLRequest * request) {
         NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
+        [self downLoadPathSize:[ZBRequestManager AppDownloadPath]];//返回下载路径的大小
+        self.controlButton.selected=NO;
         
-        [self downLoadPathSize:request.downloadSavePath];//返回下载路径的大小
-        /*
-        [[ZBCacheManager sharedInstance]clearDiskWithPath:request.downloadSavePath completion:^{
-            NSLog(@"删除下载的文件");
-            [self downLoadPathSize:request.downloadSavePath];
+        [self alertTitle:@"下载完毕" andMessage:@"" completed:^{
+            
+            /*
+            //在任何地方拿到下载文件
+             NSString *file=[ZBRequestManager getDownloadFileForKey:request.url];
+             */
+            //播放下载的mp4
+            PlayerViewController *playerVC=[[PlayerViewController alloc]init];
+            NSURL *videoURL = [NSURL fileURLWithPath:responseObject];
+            //NSURL *videoURL = [NSURL fileURLWithPath:file];
+            playerVC.videoUrl=videoURL.absoluteString;
+            playerVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:playerVC animated:YES];
         }];
-         */
+       
         /*
-        [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
-        sleep(3);
+        sleep(5);
         //删除下载的文件
-        [[ZBCacheManager sharedInstance]clearDiskWithPath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
-            NSLog(@"删除下载的文件");
-            [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];
-        }];
+         [[ZBCacheManager sharedInstance]clearDiskWithPath:[ZBRequestManager AppDownloadPath] completion:^{
+             NSLog(@"删除下载的文件");
+             [self downLoadPathSize:[ZBRequestManager AppDownloadPath]];
+         }];
         */
         
     } failure:^(NSError * _Nullable error) {
@@ -156,32 +181,31 @@
 
 #pragma mark - 批量请求
 - (void)downLoadBatchRequest{
-    
+    NSArray *array=@[@"https://fcvideo.cdn.bcebos.com/smart/f103c4fc97d2b2e63b15d2d5999d6477.mp4",@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip"];
+
     ZBBatchRequest *batchRequest=[ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest * batchRequest) {
-         for (int i=0; i<=3; i++) {
-             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-             request.url=@"http://m4.pc6.com/cjh3/LogMeInInstaller7009.zip";
-             request.methodType=ZBMethodTypeDownLoad;
-             request.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
-             [batchRequest.requestArray addObject:request];
-         }
+        [array enumerateObjectsUsingBlock:^(NSString * obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ZBURLRequest *request=[[ZBURLRequest alloc]init];
+            request.url= obj;
+            request.methodType=ZBMethodTypeDownLoad;
+            [batchRequest.requestArray addObject:request];
+        }];
+
          /*
         ZBURLRequest *request1=[[ZBURLRequest alloc]init];
         request1.url=@"";
         request1.methodType=ZBMethodTypeDownLoad;
-        request1.downloadSavePath = [[ZBCacheManager sharedInstance] tmpPath];
         [batchRequest.urlArray addObject:request1];
         
         ZBURLRequest *request2=[[ZBURLRequest alloc]init];
         request2.url=@"";
         request2.methodType=ZBMethodTypeDownLoad;
-        request2.downloadSavePath = [[ZBCacheManager sharedInstance] documentPath];
         [batchRequest.urlArray addObject:request2];
           */
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
     } success:^(id  _Nullable responseObject, ZBURLRequest *request) {
-       
+        NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
     } failure:^(NSError * _Nullable error) {
         if (error.code==NSURLErrorCancelled){
             NSLog(@"请求取消❌------------------");
@@ -195,19 +219,14 @@
         }];
         // NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
                 
-        [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];//返回下载路径的大小
-        //[self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];//返回下载路径的大小
+        [self downLoadPathSize:[ZBRequestManager AppDownloadPath]];//返回下载路径的大小
+
 //        sleep(5);
 //        //删除下载的文件
-//        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] tmpPath]completion:^{
+//        [[ZBCacheManager sharedInstance]clearDiskWithpath:[ZBRequestManager AppDownloadPath] completion:^{
 //            NSLog(@"删除下载的文件");
-//            [self downLoadPathSize:[[ZBCacheManager sharedInstance] tmpPath]];
+//            [self downLoadPathSize:[ZBRequestManager AppDownloadPath]];
 //        }];
-        //        //删除下载的文件
-        //        [[ZBCacheManager sharedInstance]clearDiskWithpath:[[ZBCacheManager sharedInstance] documentPath]completion:^{
-        //            NSLog(@"删除下载的文件");
-        //            [self downLoadPathSize:[[ZBCacheManager sharedInstance] documentPath]];
-        //        }];
     }];
     /**
      批量请求取消
@@ -247,9 +266,9 @@
             if (error.code==NSURLErrorCancelled){
                  NSLog(@"第 %d 次请求取消❌------------------", i);
             }else if (error.code==NSURLErrorTimedOut) {
-                [self alertTitle:@"请求超时" andMessage:@""];
+                [self alertTitle:@"请求超时" andMessage:@"" completed:nil];
             }else{
-                [self alertTitle:@"请求失败" andMessage:@""];
+                [self alertTitle:@"请求失败" andMessage:@""completed:nil];
             }
         }];
         NSLog(@"identifier:%ld",identifier);
@@ -278,33 +297,46 @@
     downLoadPathSize=downLoadPathSize/1000.0/1000.0;
     NSLog(@"downLoadPathSize: %.2fM", downLoadPathSize);
 }
-
+#pragma mark - Action
+- (void)controlDidTap:(UIButton *)sender {
+    sender.selected =!sender.selected;
+    self.isDownload=YES;
+    if (sender.isSelected==YES) {
+        [self downloadWithState:ZBDownloadStateStart];
+    }else{
+        [self downloadWithState:ZBDownloadStateStop];
+    }
+}
 #pragma mark tableView
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    self.isDownload=NO;
     switch (indexPath.row) {
         case 0:
             [self requestMethod];//多类型请求方法
             break;
         case 1:
-            [self delegateRequest];//代理请求方法
+            [self cancelRequest];//代理请求方法
             break;
         case 2:
-            [self UploadRequest];//上传文件
+            [self delegateRequest];//代理请求方法
             break;
         case 3:
-            [self downLoadRequest];//下载文件
+            [self UploadRequest];//上传文件
             break;
         case 4:
-            [self downLoadBatchRequest];//批量下载文件或批量请求
+            //按钮事件
             break;
         case 5:
-            [self keepResultType:ZBResponseKeepFirst];//只使用第一次请求结果
+            [self downLoadBatchRequest];//批量下载文件或批量请求
             break;
         case 6:
-            [self keepResultType:ZBResponseKeepLast];//只使用最后一次请求结果
+            [self keepResultType:ZBResponseKeepFirst];//只使用第一次请求结果
             break;
         case 7:
+            [self keepResultType:ZBResponseKeepLast];//只使用最后一次请求结果
+            break;
+        case 8:
             [self parametersfiltrationCacheKey];//过滤掉parameters 缓存key里的 变动参数
             break;
         default:
@@ -322,16 +354,25 @@
     
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:iden];
     if (cell==nil) {
-        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:iden];
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:iden];
     }
     NSString *title=[self.dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text=title;
+    if (indexPath.row==3) {
+        UIButton *controlButton = [[UIButton alloc] init];
+        [controlButton setTitle:@"开始" forState:UIControlStateNormal];
+        [controlButton setTitle:@"暂停" forState:UIControlStateSelected];
+        [controlButton setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+        controlButton.frame=CGRectMake(cell.contentView.frame.size.width-44, 0, 44, 44);
+        [controlButton addTarget:self action:@selector(controlDidTap:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:controlButton];
+        self.controlButton=controlButton;
+    }
     return cell;
 }
 
 //懒加载
 - (UITableView *)tableView{
-    
     if (!_tableView) {
         _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.delegate=self;

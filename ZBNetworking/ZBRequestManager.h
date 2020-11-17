@@ -22,18 +22,21 @@
 
 /**
  *  插件机制
+ *
  *  自定义 请求 处理逻辑的方法
- *  @param requestHandler           处理请求前的逻辑 Block
+ *  @param requestHandler        处理请求前的逻辑 Block
  */
 + (void)setRequestProcessHandler:(ZBRequestProcessBlock _Nullable )requestHandler;
 /**
  *  插件机制
+ *
  *  自定义 响应 处理逻辑的方法
- *  @param responseHandler          处理响应结果的逻辑 Block
+ *  @param responseHandler       处理响应结果的逻辑 Block
  */
 + (void)setResponseProcessHandler:(ZBResponseProcessBlock _Nullable )responseHandler;
 /**
  *  插件机制
+ *
  *  自定义 错误 处理逻辑的方法
  *  @param errorHandler          处理响应结果的逻辑 Block
  */
@@ -41,14 +44,16 @@
 
 /**
  *  请求方法
+ *
  *  @param config           请求配置  Block
- *  @param target         执行代理的对象
+ *  @param target           执行代理的对象
  *  @return identifier      请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config target:(id<ZBURLRequestDelegate>_Nonnull)target;
 
 /**
  *  请求方法
+ *
  *  @param config           请求配置  Block
  *  @param success          请求成功的 Block
  *  @return identifier      请求标识符
@@ -57,6 +62,7 @@
 
 /**
  *  请求方法
+ *
  *  @param config           请求配置  Block
  *  @param failure          请求失败的 Block
  *  @return identifier      请求标识符
@@ -65,6 +71,7 @@
 
 /**
  *  请求方法
+ *
  *  @param config           请求配置  Block
  *  @param finished         请求完成的 Block
  *  @return identifier      请求标识符
@@ -117,6 +124,7 @@
 
 /**
  *  批量请求方法
+ *
  *  @param config           请求配置  Block
  *  @param target           执行代理的对象
  *  @return identifier      请求标识符
@@ -148,12 +156,14 @@
 
 /**
  *  取消单个请求任务
- *  @param identifier        请求identifier
+ *
+ *  @param identifier         请求identifier
  */
 + (void)cancelRequest:(NSUInteger)identifier;
 
 /**
  *  取消批量请求任务
+ *  
  *  @param batchRequest       批量请求对象
  */
 + (void)cancelBatchRequest:(ZBBatchRequest *_Nullable)batchRequest;
@@ -173,6 +183,21 @@
  *  -1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
  */
 + (NSInteger)networkReachability;
+
+/**
+ *  获取下载文件
+ *
+ *  @param  key                 一般为请求地址
+ *  @return 获取下载文件
+ */
++ (NSString *_Nullable)getDownloadFileForKey:(NSString *_Nonnull)key;
+
+/**
+ *  获取沙盒默认创建的AppDownload目录
+ *
+ *  @return Library/Caches/ZBKit/AppDownload路径
+ */
++ (NSString *_Nonnull)AppDownloadPath;
 
 @end
 

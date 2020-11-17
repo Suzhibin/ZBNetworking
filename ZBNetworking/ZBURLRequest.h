@@ -29,6 +29,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseKeepType keepType;
 
 /**
+ *  操作状态
+ */
+@property (nonatomic,assign) ZBDownloadState  downloadState;
+
+/**
  *  请求参数的类型
  */
 @property (nonatomic,assign) ZBRequestSerializerType requestSerializer;
@@ -47,8 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  接口(路径)
  */
-@property (nonatomic,copy) NSString * url;
-
+@property (nonatomic,copy) NSString *url;
 
 /**
  *  提供给外部配置参数使用
@@ -58,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  添加请求头
  */
-@property (nonatomic,strong,nullable) NSDictionary * headers;
+@property (nonatomic,strong,nullable) NSDictionary *headers;
 
 /**
  *  过滤parameters 里的随机参数
@@ -68,63 +72,56 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  设置超时时间  默认30秒
  */
-@property (nonatomic, assign) NSTimeInterval timeoutInterval;
+@property (nonatomic,assign) NSTimeInterval timeoutInterval;
 
 /**
  *  请求失败,设置自动重试 请求次数 默认是0.
  */
-@property (nonatomic, assign) NSUInteger retryCount;
+@property (nonatomic,assign) NSUInteger retryCount;
 
 /**
  *  当前请求的信息，可以用来区分具有相同上下文的请求
  */
-@property (nonatomic, strong, nullable) NSDictionary *userInfo;
+@property (nonatomic,strong,nullable) NSDictionary *userInfo;
 
 /**
- *  下载文件存储路径 ，methodType=ZBMethodTypeDownLoad有用
- *  如不设置 默认下载到/Library/Caches/ZBKit/AppDownload
- */
-@property (nonatomic,copy,nullable) NSString *downloadSavePath;
-
-/**
- *  为上传请求提供数据
- */
-@property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
-
-/**
- * 是否使用 公共配置的 服务器 默认YES
- * 只在请求设置时生效
+ *  是否使用 公共配置的 服务器 默认YES
+ *  只在请求设置时生效
  */
 @property (nonatomic,assign) BOOL isBaseServer;
 
 /**
- * 是否使用 公共配置的 参数 默认YES
- * 只在请求设置时生效
+ *  是否使用 公共配置的 参数 默认YES
+ *  只在请求设置时生效
  */
 @property (nonatomic,assign) BOOL isBaseParameters;
 
 /**
-* 是否使用 公共配置的  请求头 默认YES
-* 只在请求设置时生效
-*/
+ *  是否使用 公共配置的  请求头 默认YES
+ *  只在请求设置时生效
+ */
 @property (nonatomic,assign) BOOL isBaseHeaders;
 
 #pragma mark - 获取信息
+/**
+ *  NSURLSessionTask对象
+ */
+@property (nonatomic,strong) NSURLSessionTask *_Nullable  task;
 
 /**
  *  ZBURLRequest对象唯一标识符
  */
-@property (nonatomic, assign) NSUInteger identifier;
+@property (nonatomic,assign) NSUInteger identifier;
 
 /**
  *  缓存key  读取缓存 返回
  */
-@property (nonatomic,copy,readonly) NSString * cacheKey;
+@property (nonatomic,copy,readonly) NSString *cacheKey;
 
 /**
  *  缓存路径文件 读取沙盒缓存返回，内存缓存无
  */
-@property (nonatomic,copy,readonly) NSString * filePath;
+@property (nonatomic,copy,readonly) NSString *filePath;
 
 /**
  *  是否使用了缓存 只有得到响应数据时 才是准确的
@@ -134,13 +131,16 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  获取 服务器响应信息
  */
-@property (nullable, copy) NSURLResponse *response;
+@property (nullable, copy,readonly) NSURLResponse *response;
 
 #pragma mark - 内部调用
 @property (nonatomic,assign) BOOL consoleLog;
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
-
+/**
+ *  为上传请求提供数据
+ */
+@property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
 @property (nonatomic, weak, readonly, nullable) id<ZBURLRequestDelegate> delegate;
 
 @property (nonatomic, copy, readonly, nullable) ZBRequestSuccessBlock successBlock;
@@ -188,7 +188,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  文件对应服务器上的字段
  */
-@property (nonatomic, copy) NSString * name;
+@property (nonatomic, copy) NSString *name;
 
 /**
  *  文件名

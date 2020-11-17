@@ -32,6 +32,7 @@
 		9F244A582170D92500482E41 /* HomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A572170D92500482E41 /* HomeModel.m */; };
 		9F8959422486523500559BEC /* RequestTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8959412486523500559BEC /* RequestTool.m */; };
 		9F9177B32489080600DF1B9D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F9177B22489080600DF1B9D /* WebKit.framework */; };
+		9F9E6729255A36AB003CEB7E /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F9E6728255A36AB003CEB7E /* PlayerViewController.m */; };
 		9FB4BB3823D4658E0013EA17 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FB4BB3723D4658E0013EA17 /* DataManager.m */; };
 /* End PBXBuildFile section */
 
@@ -103,6 +104,8 @@
 		9F8959402486523500559BEC /* RequestTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RequestTool.h; sourceTree = "<group>"; };
 		9F8959412486523500559BEC /* RequestTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RequestTool.m; sourceTree = "<group>"; };
 		9F9177B22489080600DF1B9D /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		9F9E6727255A36AB003CEB7E /* PlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
+		9F9E6728255A36AB003CEB7E /* PlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
 		9FB4BB3623D4658E0013EA17 /* DataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
 		9FB4BB3723D4658E0013EA17 /* DataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		C572061DEBB8B1709A68AEA1 /* Pods-ZBNetworkingDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNetworkingDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNetworkingDemo/Pods-ZBNetworkingDemo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -296,6 +299,8 @@
 			children = (
 				9F244A4E2170D53700482E41 /* MethodViewController.h */,
 				9F244A4F2170D53700482E41 /* MethodViewController.m */,
+				9F9E6727255A36AB003CEB7E /* PlayerViewController.h */,
+				9F9E6728255A36AB003CEB7E /* PlayerViewController.m */,
 			);
 			name = MethodViewController;
 			sourceTree = "<group>";
@@ -464,6 +469,7 @@
 				9F8959422486523500559BEC /* RequestTool.m in Sources */,
 				7DF826351D5815BE000D1109 /* AppDelegate.m in Sources */,
 				9FB4BB3823D4658E0013EA17 /* DataManager.m in Sources */,
+				9F9E6729255A36AB003CEB7E /* PlayerViewController.m in Sources */,
 				7D10B45D1F4553A400E87520 /* ZBRequestEngine.m in Sources */,
 				9F244A582170D92500482E41 /* HomeModel.m in Sources */,
 				7DF826821D58170C000D1109 /* DetailsModel.m in Sources */,

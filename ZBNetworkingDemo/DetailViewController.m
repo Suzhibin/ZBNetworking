@@ -55,14 +55,12 @@
         request.url=details_URL;
         request.parameters=parameters;
         request.apiType=apiType;
-        request.userInfo=@{@"tag":[DataManager sharedInstance].tag};
     } target:self];
     /*
     self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
        request.url=details_URL;
        request.parameters=parameters;
        request.apiType=apiType;
-       request.userInfo=@{@"tag":[DataManager sharedInstance].tag};
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             //如果是刷新的数据

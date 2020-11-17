@@ -128,13 +128,13 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  判断缓存是否有对应的值 （内存，沙盒）
  *
- *  @param key             缓存key
+ *  @param key             缓存key  编码
  *  @return YES/NO
  */
 - (BOOL)cacheExistsForKey:(NSString *_Nullable)key;
 
 /**
- *  判断缓存是否有对应的值 （内存，沙盒）
+ *  判断缓存是否有对应的值 （内存，沙盒） 编码
  *
  *  @param key             缓存key
  *  @param path            沙盒路径
@@ -145,7 +145,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  判断沙盒是否有对应的文件
  *
- *  @param key             缓存key
+ *  @param key             缓存key  编码
  *  @return YES/NO
  */
 - (BOOL)diskCacheExistsForKey:(NSString *_Nullable)key;
@@ -153,24 +153,32 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  判断沙盒是否有对应的文件
  *
- *  @param key             缓存key
+ *  @param key             缓存key  编码
  *  @param path            沙盒路径
  *  @return YES/NO
  */
 - (BOOL)diskCacheExistsForKey:(NSString *_Nullable)key inPath:(NSString *_Nullable)path;
 
 /**
- *  返回数据及路径
+ *  判断沙盒是否有对应的文件
  *
- *  @param  key         存储的文件的key
+ *  @param key             缓存key  无编码
+ *  @return YES/NO
+ */
+- (BOOL)fileExistsAtPath:(NSString *_Nullable)key;
+
+/**
+ *  返回数据
+ *
+ *  @param  key         存储的文件的key  编码
  *  @return NSData      返回存储的数据
  */
 - (NSData * _Nullable)getCacheDataForKey:(NSString *_Nullable)key;
 
 /**
- *  返回数据及路径
+ *  返回数据
  *
- *  @param  key         存储的文件的key
+ *  @param  key         存储的文件的key  编码
  *  @param  path        存储的文件的路径
  *  @return NSData      返回存储的数据
  */
@@ -179,7 +187,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  返回数据及路径
  *
- *  @param  key         存储的文件的key
+ *  @param  key         存储的文件的key  编码
  *  @param  value       返回在本地的数据及存储文件路径
  */
 - (void)getCacheDataForKey:(NSString *_Nullable)key value:(ZBCacheValueBlock _Nullable )value;
@@ -187,11 +195,20 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  返回数据及路径
  *
- *  @param  key         存储的文件的key
+ *  @param  key         存储的文件的key  编码
  *  @param  path        存储的文件的路径
  *  @param  value       返回在本地的数据及存储文件路径
  */
 - (void)getCacheDataForKey:(NSString *_Nullable)key inPath:(NSString *_Nullable)path value:(ZBCacheValueBlock _Nullable )value;
+
+/**
+ *  返回存储的文件
+ *
+ *  @param  key         存储的文件的key  无编码
+ *  @param  path        存储的文件的路径
+ *  @return String      返回存储文件
+ */
+- (NSString *_Nullable)getDiskFileForKey:(NSString *_Nullable)key inPath:(NSString *_Nullable)path;
 
 /**
  *  返回某个路径下的所有数据文件
@@ -205,7 +222,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
  *  返回缓存文件的属性
  *
  *  @param path          路径
- *  @param key           缓存文件 key
+ *  @param key           缓存文件 key   编码
  *  @return Dictionary   缓存文件的属性
  */
 - (NSDictionary* _Nullable )getDiskFileAttributes:(NSString *_Nullable)key inPath:(NSString *_Nullable)path;
@@ -213,7 +230,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  返回缓存文件的属性
  *
- *  @param filePath      路径文件
+ *  @param filePath      路径文件       无编码
  *  @return Dictionary   缓存文件的属性
  */
 - (NSDictionary* _Nullable )getDiskFileAttributesWithFilePath:(NSString *_Nullable)filePath;

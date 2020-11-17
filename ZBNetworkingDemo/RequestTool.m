@@ -71,9 +71,8 @@
        */
     //预处理 请求
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
-         NSLog(@"请求之前 url:%@",request.url);
-
-        if ([request.server isEqualToString:m4_URL]) {
+        NSLog(@"请求之前 可以进行参数加工");
+        if ([request.userInfo[@"tag"]isEqualToString:@"10086"]) {
             //为某个服务器 单独添加公共参数
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
             parameters[@"pb"] = @"从插件机制添加：pb这个参数，只会在下载请求的参数里显示";
@@ -104,6 +103,15 @@
     //预处理 响应
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
         NSLog(@"成功回调 数据返回之前");
+        if ([request.userInfo[@"tag"]isEqualToString:@"1111"]) {
+            NSArray *array=[responseObject objectForKey:@"authors"];
+            /**
+             如果请求成功，但数组为空，又不想覆盖原有缓存文件，在此判断改变request对象apiType属性
+             */
+            if (array.count==0) {
+                request.apiType=ZBRequestTypeRefresh;
+            }
+        }
         if ([request.userInfo[@"tag"]isEqualToString:@"5555"]) {
             //json 转模型
         }

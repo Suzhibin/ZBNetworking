@@ -53,10 +53,19 @@
               self.navigationItem.rightBarButtonItem = rightBtnItem;
           }
 }
-- (void)alertTitle:(NSString *)title andMessage:(NSString *)message{
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    //
-    [alertView show];
+- (void)alertTitle:(NSString *)title andMessage:(NSString *)message completed:(completedBlock)completed{
+    UIAlertController *alertView = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:(UIAlertControllerStyleAlert)];
+    UIAlertAction *alertText = [UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        if (completed) {
+            completed();
+        }
+    }];
+
+    UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alertView addAction:cancleAction];
+    [alertView addAction:alertText];
+    [self presentViewController:alertView animated:YES completion:nil];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -21,9 +21,9 @@
 #import "ZBCacheManager.h"
 #import <CommonCrypto/CommonDigest.h>
 
-NSString *const PathSpace =@"ZBKit";
-NSString *const defaultCachePathName =@"AppCache";
-static const NSInteger defaultCacheMaxCacheAge  = 60*60*24*7;
+NSString *const zb_PathSpace =@"ZBKit";
+NSString *const zb_defaultCachePathName =@"AppCache";
+static const NSInteger zb_defaultCacheMaxCacheAge  = 60*60*24*7;
 //static const NSInteger defaultCacheMixCacheAge = 60;
 static const CGFloat unit = 1000.0;
 @interface ZBCacheManager ()
@@ -47,14 +47,14 @@ static const CGFloat unit = 1000.0;
 - (id)init{
     self = [super init];
     if (self) {
-        NSString *memoryNameSpace = [@"memory.ZBCacheManager" stringByAppendingString:defaultCachePathName];
+        NSString *memoryNameSpace = [@"memory.ZBCacheManager" stringByAppendingString:zb_defaultCachePathName];
         
         _operationQueue = dispatch_queue_create("dispatch.ZBCacheManager", DISPATCH_QUEUE_SERIAL);
         
         _memoryCache = [[NSCache alloc] init];
         _memoryCache.name = memoryNameSpace;
         
-        [self initCachesfileWithName:defaultCachePathName];
+        [self initCachesfileWithName:zb_defaultCachePathName];
   
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearMemory) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
@@ -95,7 +95,7 @@ static const CGFloat unit = 1000.0;
 }
 
 - (NSString *)ZBKitPath{
-    return [[self cachesPath]stringByAppendingPathComponent:PathSpace];
+    return [[self cachesPath]stringByAppendingPathComponent:zb_PathSpace];
 }
 
 - (NSString *)ZBAppCachePath{
@@ -136,7 +136,11 @@ static const CGFloat unit = 1000.0;
 
 - (BOOL)diskCacheExistsForKey:(NSString *)key inPath:(NSString *)path{
     NSString *isExists=[[self getDiskCacheWithCodingForKey:key inPath:path] stringByDeletingPathExtension];
-    return [[NSFileManager defaultManager] fileExistsAtPath:isExists];
+    return [self fileExistsAtPath:isExists];
+}
+
+- (BOOL)fileExistsAtPath:(NSString *)key{
+    return [[NSFileManager defaultManager] fileExistsAtPath:key];
 }
 
 #pragma  mark - 存储
@@ -226,6 +230,11 @@ static const CGFloat unit = 1000.0;
             }
         });
     }
+}
+
+- (NSString *)getDiskFileForKey:(NSString *)key inPath:(NSString *)path{
+    if (!key)return path;
+    return [path stringByAppendingPathComponent:key];
 }
 
 - (NSArray *)getDiskCacheFileWithPath:(NSString *)path{
@@ -359,7 +368,7 @@ static const CGFloat unit = 1000.0;
 
 #pragma  mark - 设置过期时间 清除某路径缓存文件
 - (void)automaticCleanCache{
-   [self clearCacheWithTime:defaultCacheMaxCacheAge completion:nil];
+   [self clearCacheWithTime:zb_defaultCacheMaxCacheAge completion:nil];
 }
 
 - (void)clearCacheWithTime:(NSTimeInterval)time completion:(ZBCacheCompletedBlock)completion{
@@ -405,7 +414,7 @@ static const CGFloat unit = 1000.0;
         bgTask = UIBackgroundTaskInvalid;
     }];
     // Start the long-running task and return immediately.
-    [self clearCacheWithTime:defaultCacheMaxCacheAge inPath:path completion:^{
+    [self clearCacheWithTime:zb_defaultCacheMaxCacheAge inPath:path completion:^{
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];

@@ -11,10 +11,12 @@
 #import "ZBURLRequest.h"
 #import "NSString+ZBUTF8Encoding.h"
 
+NSString *const _response =@"_response";
 NSString *const _isCache =@"_isCache";
 NSString *const _cacheKey =@"_cacheKey";
 NSString *const _filePath =@"_filePath";
-NSString *const _downloadPath =@"AppDownload";
+NSString *const zb_downloadTempPath =@"AppTempDownload";
+NSString *const zb_downloadPath =@"AppDownload";
 @implementation ZBRequestManager
 
 #pragma mark - 插件
@@ -106,8 +108,6 @@ NSString *const _downloadPath =@"AppDownload";
 #pragma mark - 发起请求
 + (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
     
-    if([request.url isEqualToString:@""]||request.url==nil)return 0;
-    
     [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
     
     id obj=nil;
@@ -119,16 +119,16 @@ NSString *const _downloadPath =@"AppDownload";
         }
     }
     
-    NSNumber * keepIdentifier=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
-    if (request.keepType==ZBResponseKeepFirst&&keepIdentifier) {
+    NSURLSessionTask * task=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
+    if (request.keepType==ZBResponseKeepFirst&&task) {
         return 0;
     }
-    if (request.keepType==ZBResponseKeepLast&&keepIdentifier) {
-        [self cancelRequest:[keepIdentifier integerValue]];
+    if (request.keepType==ZBResponseKeepLast&&task) {
+        [self cancelRequest:task.taskIdentifier];
     }
 
     NSUInteger identifier=[self startSendRequest:request];
-    [[ZBRequestEngine defaultEngine]setRequestObject:@(request.identifier) forkey:request.url];
+    [[ZBRequestEngine defaultEngine]setRequestObject:request.task forkey:request.url];
     return identifier;
 }
 
@@ -151,37 +151,21 @@ NSString *const _downloadPath =@"AppDownload";
     } success:^(NSURLSessionDataTask *task, id responseObject) {
         [self successWithResponse:task.response responseObject:responseObject request:request];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        [self failureWithError:error request:request ];
-    }];
-}
-
-+ (NSUInteger)sendDownLoadRequest:(ZBURLRequest *)request{
-    if (request.downloadSavePath.length<=0) {
-        NSString *AppDownloadPath =  [[[ZBCacheManager sharedInstance]ZBKitPath]stringByAppendingPathComponent:_downloadPath];
-        [[ZBCacheManager sharedInstance]createDirectoryAtPath:AppDownloadPath];
-        request.downloadSavePath = AppDownloadPath;
-    }
-    return [[ZBRequestEngine defaultEngine] downloadWithRequest:request progress:^(NSProgress * _Nullable downloadProgress) {
-        if (request.delegate&&[request.delegate respondsToSelector:@selector(request:forProgress:)]) {
-            [request.delegate request:request forProgress:downloadProgress];
-        }
-        request.progressBlock?request.progressBlock(downloadProgress):nil;
-    }  completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        if (error) {
-            [self failureWithError:error request:request];
-        }else{
-            [self successWithResponse:response responseObject:[filePath path] request:request];
-        }
+        [self failureWithError:error request:request];
     }];
 }
 
 + (NSUInteger)sendHTTPRequest:(ZBURLRequest *)request{
-    NSString *key = [self keyWithParameters:request];
-    if ([[ZBCacheManager sharedInstance]cacheExistsForKey:key]&&request.apiType==ZBRequestTypeCache){
-        [self getCacheDataForKey:key request:request];
-        return 0;
-    }else{
+    if (request.apiType==ZBRequestTypeRefresh||request.apiType==ZBRequestTypeRefreshMore) {
         return [self dataTaskWithHTTPRequest:request];
+    }else{
+        NSString *key = [self keyWithParameters:request];
+        if ([[ZBCacheManager sharedInstance]cacheExistsForKey:key]&&request.apiType==ZBRequestTypeCache){
+            [self getCacheDataForKey:key request:request];
+            return 0;
+        }else{
+            return [self dataTaskWithHTTPRequest:request];
+        }
     }
 }
 
@@ -196,6 +180,55 @@ NSString *const _downloadPath =@"AppDownload";
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         [self failureWithError:error request:request];
     }];
+}
+
++ (NSUInteger)sendDownLoadRequest:(ZBURLRequest *)request{
+    if (request.downloadState==ZBDownloadStateStart) {
+        [[ZBCacheManager sharedInstance]createDirectoryAtPath:[self AppDownloadPath]];
+        return [self downloadStartWithRequest:request];
+    }else{
+        return [self downloadStopWithRequest:request];
+    }
+}
+
++ (NSUInteger)downloadStartWithRequest:(ZBURLRequest*)request{
+    NSString *AppDownloadTempPath=[self downloadTempPath];
+    NSData *resumeData;
+    if ([[ZBCacheManager sharedInstance]cacheExistsForKey:request.url inPath:AppDownloadTempPath]) {
+        resumeData=[[ZBCacheManager sharedInstance]getCacheDataForKey:request.url inPath:AppDownloadTempPath];
+    }
+    return [[ZBRequestEngine defaultEngine] downloadWithRequest:request resumeData:resumeData savePath:[self AppDownloadPath] progress:^(NSProgress * _Nullable downloadProgress) {
+        if (request.delegate&&[request.delegate respondsToSelector:@selector(request:forProgress:)]) {
+            [request.delegate request:request forProgress:downloadProgress];
+        }
+        request.progressBlock?request.progressBlock(downloadProgress):nil;
+    }completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        if (error) {
+            [self failureWithError:error request:request];
+        }else{
+            [self successWithResponse:response responseObject:[filePath path] request:request];
+            if ([[ZBCacheManager sharedInstance]cacheExistsForKey:request.url inPath:AppDownloadTempPath]) {
+                [[ZBCacheManager sharedInstance]clearCacheForkey:request.url inPath:AppDownloadTempPath completion:nil];
+            }
+        }
+    }];
+}
+
++ (NSUInteger)downloadStopWithRequest:(ZBURLRequest*)request{
+    NSURLSessionTask * task=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
+    NSURLSessionDownloadTask *downloadTask=(NSURLSessionDownloadTask *)task;
+    [downloadTask cancelByProducingResumeData:^(NSData *resumeData) {
+        NSString *AppDownloadTempPath=[self downloadTempPath];
+        [[ZBCacheManager sharedInstance]createDirectoryAtPath:AppDownloadTempPath];
+        [[ZBCacheManager sharedInstance] storeContent:resumeData forKey:request.url inPath:AppDownloadTempPath isSuccess:^(BOOL isSuccess) {
+            if (request.consoleLog==YES) {
+                NSLog(@"\n------------ZBNetworking------download info------begin------\n暂停下载请求，保存当前已下载文件进度\n-URLAddress-:%@\n-downloadFileDirectory-:%@\n------------ZBNetworking------download info-------end-------",request.url,AppDownloadTempPath);
+            }
+        }];
+    }];
+    [request setTask:downloadTask];
+    [request setIdentifier:downloadTask.taskIdentifier];
+    return request.identifier;
 }
 
 #pragma mark - 取消请求
@@ -223,32 +256,32 @@ NSString *const _downloadPath =@"AppDownload";
 }
 
 + (NSString *)keyWithParameters:(ZBURLRequest *)request{
-    NSMutableDictionary *newParameters;
+    id newParameters;
     if (request.filtrationCacheKey.count>0) {
-        if ([request.parameters isKindOfClass:[NSDictionary class]]){
+        if ([request.parameters isKindOfClass:[NSDictionary class]]) {
             NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:request.parameters];
             [mutableParameters removeObjectsForKeys:request.filtrationCacheKey];
             newParameters = [mutableParameters copy];
-        }
-        if ([request.parameters isKindOfClass:[NSArray class]]) {
+        }else if ([request.parameters isKindOfClass:[NSArray class]]) {
             NSArray *parameters =(NSArray *)request.parameters;
-            newParameters=[[NSMutableDictionary alloc]init];
             for (NSDictionary *dict in parameters) {
                 NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:dict];
                 [mutableParameters removeObjectsForKeys:request.filtrationCacheKey];
-                [newParameters addEntriesFromDictionary:mutableParameters];
+                newParameters = [mutableParameters copy];
             }
+        }else{
+            newParameters = request.parameters;
         }
     }else{
         newParameters = request.parameters;
     }
-
-    return [NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.url appendingParameters:newParameters]];
+    NSString *key=[NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.url appendingParameters:newParameters]];
+    [request setValue:key forKey:_cacheKey];
+    return key;
 }
 
 + (void)storeObject:(NSObject *)object request:(ZBURLRequest *)request{
-    NSString * key= [self keyWithParameters:request];
-    [[ZBCacheManager sharedInstance] storeContent:object forKey:key isSuccess:nil];
+    [[ZBCacheManager sharedInstance] storeContent:object forKey:request.cacheKey isSuccess:nil];
 }
 
 + (id)responsetSerializerConfig:(ZBURLRequest *)request responseObject:(id)responseObject{
@@ -285,7 +318,7 @@ NSString *const _downloadPath =@"AppDownload";
     if (request.apiType == ZBRequestTypeRefreshAndCache||request.apiType == ZBRequestTypeCache) {
         [self storeObject:responseObject request:request];
     }
-    request.response=response;
+    [request setValue:response forKey:_response];
     [request setValue:@(NO) forKey:_isCache];
     [self successWithCacheCallbackForResult:result forRequest:request];
 }
@@ -321,7 +354,6 @@ NSString *const _downloadPath =@"AppDownload";
             }
         }
         [request setValue:filePath forKey:_filePath];
-        [request setValue:key forKey:_cacheKey];
         [request setValue:@(YES) forKey:_isCache];
         [self successWithCacheCallbackForResult:result forRequest:request];
     }];
@@ -353,12 +385,26 @@ NSString *const _downloadPath =@"AppDownload";
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.url];
 }
 
+#pragma mark - 获取网络状态
 + (BOOL)isNetworkReachable {
     return [ZBRequestEngine defaultEngine].networkReachability != 0;
 }
 
 + (NSInteger)networkReachability{
     return [[ZBRequestEngine defaultEngine]networkReachability];
+}
+
+#pragma mark - 下载获取文件
++ (NSString *)getDownloadFileForKey:(NSString *)key{
+    return [[ZBCacheManager sharedInstance]getDiskFileForKey:[key lastPathComponent] inPath:[self AppDownloadPath]];
+}
+
++ (NSString *)AppDownloadPath{
+    return [[[ZBCacheManager sharedInstance] ZBKitPath]stringByAppendingPathComponent:zb_downloadPath];
+}
+
++ (NSString *)downloadTempPath{
+    return [[[ZBCacheManager sharedInstance] ZBKitPath]stringByAppendingPathComponent:zb_downloadTempPath];
 }
 
 #pragma mark - 打印log
@@ -372,7 +418,7 @@ NSString *const _downloadPath =@"AppDownload";
 }
 
 + (void)printfailureInfoWithError:(NSError *)error request:(ZBURLRequest *)request{
-    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.url,request.retryCount,error.localizedDescription);
+    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-%ld\n-error code-:%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.url,request.retryCount,error.code,error.localizedDescription);
 }
 
 @end

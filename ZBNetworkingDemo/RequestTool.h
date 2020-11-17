@@ -12,8 +12,6 @@
 
 #define details_URL @"/lol/api/v1/shipin/latest"
 
-#define m4_URL @"http://m4.pc6.com"
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RequestTool : NSObject

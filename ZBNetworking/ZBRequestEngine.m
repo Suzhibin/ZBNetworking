@@ -51,11 +51,6 @@ NSString *const _delegate =@"_delegate";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        //无条件地信任服务器端返回的证书。
-//        self.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-//        self.securityPolicy = [AFSecurityPolicy defaultPolicy];
-//        self.securityPolicy.allowInvalidCertificates = YES;
-//        self.securityPolicy.validatesDomainName = NO;
         self.responseSerializer = [AFHTTPResponseSerializer serializer];
         [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"]];
         self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
@@ -98,6 +93,7 @@ NSString *const _delegate =@"_delegate";
     }else{
         dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
     }
+    [request setTask:dataTask];
     [request setIdentifier:dataTask.taskIdentifier];
     return request.identifier;
 }
@@ -137,41 +133,50 @@ NSString *const _delegate =@"_delegate";
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         uploadProgressBlock ? uploadProgressBlock(uploadProgress) : nil;
     } success:success failure:failure];
-    
+    [request setTask:uploadTask];
     [request setIdentifier:uploadTask.taskIdentifier];
     return request.identifier;
 }
 
 #pragma mark - DownLoad
-- (NSUInteger)downloadWithRequest:(ZBURLRequest *)request
-                                             progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
-                                    completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
+- (NSUInteger)downloadWithRequest:(ZBURLRequest *)request resumeData:(NSData *)resumeData savePath:(NSString *)savePath progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.url]]];
     
-    NSURL *downloadFileSavePath;
-    BOOL isDirectory;
-    if(![[NSFileManager defaultManager] fileExistsAtPath:request.downloadSavePath isDirectory:&isDirectory]) {
-        isDirectory = NO;
+    NSString *fileName = [urlRequest.URL lastPathComponent];
+    NSURL *downloadFileSavePath = [NSURL fileURLWithPath:[NSString pathWithComponents:@[savePath, fileName]] isDirectory:NO];
+    
+    NSURLSessionDownloadTask *downloadTask = nil;
+    if (resumeData.length>0) {
+        downloadTask = [self downloadWithResumeData:resumeData progress:^(NSProgress *downloadProgress) {
+            downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
+        } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+            return downloadFileSavePath;
+        } completionHandler:completionHandler];
+    }else{
+        downloadTask = [self downloadWithUrlRequest:urlRequest progress:^(NSProgress *downloadProgress) {
+            downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
+        } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+            return downloadFileSavePath;
+        } completionHandler:completionHandler];
     }
-    if (isDirectory) {
-        NSString *fileName = [urlRequest.URL lastPathComponent];
-        downloadFileSavePath = [NSURL fileURLWithPath:[NSString pathWithComponents:@[request.downloadSavePath, fileName]] isDirectory:NO];
-    } else {
-        downloadFileSavePath = [NSURL fileURLWithPath:request.downloadSavePath isDirectory:NO];
-    }
-    NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
-        downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
-    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-        return downloadFileSavePath;
-    } completionHandler:completionHandler];
     
     [downloadTask resume];
-    
+    [request setTask:downloadTask];
     [request setIdentifier:downloadTask.taskIdentifier];
     return request.identifier;
+}
+
+- (NSURLSessionDownloadTask *)downloadWithUrlRequest:(NSURLRequest *)urlRequest progress:(void (^)(NSProgress *downloadProgress))downloadProgressBlock destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
+    NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithRequest:urlRequest progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
+    return downloadTask;
+}
+
+- (NSURLSessionDownloadTask *)downloadWithResumeData:(NSData *_Nonnull)resumeData progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
+    NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithResumeData:resumeData progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
+    return downloadTask;
 }
 
 - (NSInteger)networkReachability {
@@ -245,11 +250,18 @@ NSString *const _delegate =@"_delegate";
     if (target) {
         [request setValue:target forKey:_delegate];
     }
-    if (request.methodType==ZBMethodTypeUpload||request.methodType==ZBMethodTypeDownLoad) {
+    //=====================================================
+    if (request.methodType==ZBMethodTypeUpload) {
         request.apiType=ZBRequestTypeRefresh;
         request.keepType=ZBResponseKeepFirst;
     }
-     //=====================================================
+    if (request.methodType==ZBMethodTypeDownLoad) {
+        request.apiType=ZBRequestTypeRefresh;
+        if (request.downloadState==ZBDownloadStateStart) {
+            request.keepType=ZBResponseKeepFirst;
+        }
+    }
+    //=====================================================
     if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {
         request.server=self.baseServerString;
     }
@@ -341,10 +353,9 @@ NSString *const _delegate =@"_delegate";
 
 - (void)printParameterWithRequest:(ZBURLRequest *)request{
     if (request.consoleLog==YES) {
-        NSString *address=[NSString zb_urlString:request.url appendingParameters:request.parameters];
         NSString *requestStr=request.requestSerializer==ZBHTTPRequestSerializer ?@"HTTP":@"JOSN";
         NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
-        NSLog(@"\n\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",address,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);
+        NSLog(@"\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",request.url,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);
     }
 }
 
