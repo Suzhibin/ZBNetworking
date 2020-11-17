@@ -358,7 +358,7 @@
     }
     NSString *title=[self.dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text=title;
-    if (indexPath.row==3) {
+    if (indexPath.row==4) {
         UIButton *controlButton = [[UIButton alloc] init];
         [controlButton setTitle:@"开始" forState:UIControlStateNormal];
         [controlButton setTitle:@"暂停" forState:UIControlStateSelected];
