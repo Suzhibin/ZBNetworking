@@ -205,7 +205,23 @@
 }
 
 ```
-#### 批量下载
+#### 断点下载
+```
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
+        request.url=@"https://URL";
+        request.methodType=ZBMethodTypeDownLoad;
+        request.downloadState=ZBDownloadStateStart;//开始 //ZBDownloadStateStop暂停
+    } progress:^(NSProgress * _Nullable progress) {
+        NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
+    } success:^(id  responseObject,ZBURLRequest * request) {
+        NSLog(@"ZBMethodTypeDownLoad 此时会返回存储路径文件: %@", responseObject);
+         //在任何地方拿到下载文件
+        NSString *file=[ZBRequestManager getDownloadFileForKey:request.url];
+    } failure:^(NSError * _Nullable error) {
+        NSLog(@"error: %@", error);
+    }];
+```
+#### 批量请求
 ```objective-c
  [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *batchRequest)
             for (NSString *urlString in offlineArray) {
