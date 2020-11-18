@@ -63,19 +63,15 @@
      数组类型参数,这种公共参数一般都在请求头里，
      可以在setupBaseConfig 添加公共headers
      也可以在 预处理方法setRequestProcessHandler单独添加公共参数
-     如果设置了公共Parameters 需要在当次请求设置
-     request.isBaseParameters=NO;//不使用公共参数
       NSArray  *parameters=@[@{@"path":@"HomeViewController",@"pa":@"aaaa"},@{@"pc":@"bbbb"}];
      */
     /**
      字符串类型参数
      NSString *parameters=@"adadadad";
-     request.isBaseParameters=NO;//不使用公共参数
      */
     /*
      //NSNumber类型参数
      NSNumber * parameters=@(1213);
-     request.isBaseParameters=NO;//不使用公共参数
      */
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
        //request.server=server_URL; 优先级大于 公共配置baseServer 兼容了同一环境，有多个服务器地址的问题

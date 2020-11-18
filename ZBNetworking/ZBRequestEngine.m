@@ -303,12 +303,14 @@ NSString *const _delegate =@"_delegate";
     }
     //=====================================================
     if (self.baseFiltrationCacheKey.count>0) {
-        NSMutableArray *filtrationCacheKey=[NSMutableArray array];
-        [filtrationCacheKey addObjectsFromArray:self.baseFiltrationCacheKey];
-        if (request.filtrationCacheKey) {
-            [filtrationCacheKey addObjectsFromArray:request.filtrationCacheKey];
+        if ([request.parameters isKindOfClass:[NSDictionary class]]||request.parameters==nil){
+            NSMutableArray *filtrationCacheKey=[NSMutableArray array];
+            [filtrationCacheKey addObjectsFromArray:self.baseFiltrationCacheKey];
+            if (request.filtrationCacheKey) {
+                [filtrationCacheKey addObjectsFromArray:request.filtrationCacheKey];
+            }
+            request.filtrationCacheKey=filtrationCacheKey;
         }
-        request.filtrationCacheKey=filtrationCacheKey;
     }
     //=====================================================
     if (request.isRequestSerializer==NO) {
