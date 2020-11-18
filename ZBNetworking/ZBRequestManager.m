@@ -108,6 +108,8 @@ NSString *const zb_downloadPath =@"AppDownload";
 #pragma mark - 发起请求
 + (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
     
+    if ([request.url isEqualToString:@""]||request.url==nil)return 0;
+    
     [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
     
     id obj=nil;
@@ -377,7 +379,7 @@ NSString *const zb_downloadPath =@"AppDownload";
     return [ZBRequestEngine defaultEngine].networkReachability != 0;
 }
 
-+ (NSInteger)networkReachability{
++ (AFNetworkReachabilityStatus)networkReachability{
     return [[ZBRequestEngine defaultEngine]networkReachability];
 }
 

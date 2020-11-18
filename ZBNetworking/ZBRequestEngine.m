@@ -179,7 +179,7 @@ NSString *const _delegate =@"_delegate";
     return downloadTask;
 }
 
-- (NSInteger)networkReachability {
+- (AFNetworkReachabilityStatus)networkReachability {
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
 //请求参数的格式

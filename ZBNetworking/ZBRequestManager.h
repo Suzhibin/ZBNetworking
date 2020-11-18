@@ -182,7 +182,7 @@
  *  当前网络的状态值，
  *  -1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
  */
-+ (NSInteger)networkReachability;
++ (AFNetworkReachabilityStatus)networkReachability;
 
 /**
  *  获取下载文件
