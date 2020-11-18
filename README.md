@@ -151,7 +151,7 @@
         request.url=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=ZBRequestTypeRefresh;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
-        request.parameters=parameters;//支持 字典、数组、字符串 等类型 
+        request.parameters=parameters;//支持 字典、数组、字符串 等类型 。 因为公共参数是字典类型，可以使用isBaseParameters 设置是否使用公共参数
         request.headers=headers;
         /**
          保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone 什么都不做
