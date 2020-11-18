@@ -25,12 +25,10 @@
         NSString *parametersString;
         if ([parameters isKindOfClass:[NSDictionary class]]){
             NSMutableArray *array = [[NSMutableArray alloc] init];
-            if ([parameters isKindOfClass:[NSDictionary class]]){
-                for (NSString *key in parameters) {
-                    id obj = [parameters objectForKey:key];
-                    NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
-                    [array addObject:str];
-                }
+            for (NSString *key in parameters) {
+                id obj = [parameters objectForKey:key];
+                NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
+                [array addObject:str];
             }
             parametersString = [array componentsJoinedByString:@"&"];
         }else{
