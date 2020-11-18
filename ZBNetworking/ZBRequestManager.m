@@ -192,7 +192,7 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (NSUInteger)downloadStartWithRequest:(ZBURLRequest*)request{
-    NSString *AppDownloadTempPath=[self downloadTempPath];
+    NSString *AppDownloadTempPath=[self AppDownloadTempPath];
     NSData *resumeData;
     if ([[ZBCacheManager sharedInstance]cacheExistsForKey:request.url inPath:AppDownloadTempPath]) {
         resumeData=[[ZBCacheManager sharedInstance]getCacheDataForKey:request.url inPath:AppDownloadTempPath];
@@ -218,7 +218,7 @@ NSString *const zb_downloadPath =@"AppDownload";
     NSURLSessionTask * task=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
     NSURLSessionDownloadTask *downloadTask=(NSURLSessionDownloadTask *)task;
     [downloadTask cancelByProducingResumeData:^(NSData *resumeData) {
-        NSString *AppDownloadTempPath=[self downloadTempPath];
+        NSString *AppDownloadTempPath=[self AppDownloadTempPath];
         [[ZBCacheManager sharedInstance]createDirectoryAtPath:AppDownloadTempPath];
         [[ZBCacheManager sharedInstance] storeContent:resumeData forKey:request.url inPath:AppDownloadTempPath isSuccess:^(BOOL isSuccess) {
             if (request.consoleLog==YES) {
@@ -403,7 +403,7 @@ NSString *const zb_downloadPath =@"AppDownload";
     return [[[ZBCacheManager sharedInstance] ZBKitPath]stringByAppendingPathComponent:zb_downloadPath];
 }
 
-+ (NSString *)downloadTempPath{
++ (NSString *)AppDownloadTempPath{
     return [[[ZBCacheManager sharedInstance] ZBKitPath]stringByAppendingPathComponent:zb_downloadTempPath];
 }
 

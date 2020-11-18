@@ -167,10 +167,14 @@
        
         /*
         sleep(5);
-        //删除下载的文件
+        //清空下载的文件的路径
          [[ZBCacheManager sharedInstance]clearDiskWithPath:[ZBRequestManager AppDownloadPath] completion:^{
              NSLog(@"删除下载的文件");
              [self downLoadPathSize:[ZBRequestManager AppDownloadPath]];
+         }];
+         //删除下载的文件
+         [[ZBCacheManager sharedInstance]clearCacheForkey:request.url inPath:[ZBRequestManager AppDownloadPath] completion:^{
+             NSLog(@"删除下载的文件");
          }];
         */
         
