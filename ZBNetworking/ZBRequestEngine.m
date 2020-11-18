@@ -283,14 +283,14 @@ NSString *const _delegate =@"_delegate";
     }
     //=====================================================
     if (request.isBaseParameters && self.baseParameters.count > 0) {
-        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-        [parameters addEntriesFromDictionary:self.baseParameters];
         if ([request.parameters isKindOfClass:[NSDictionary class]]){
+            NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+            [parameters addEntriesFromDictionary:self.baseParameters];
             if([request.parameters allValues].count > 0) {
                 [parameters addEntriesFromDictionary:request.parameters];
             }
+            request.parameters = parameters;
         }
-        request.parameters = parameters;
     }
     //=====================================================
     if (request.isBaseHeaders &&self.baseHeaders.count > 0) {

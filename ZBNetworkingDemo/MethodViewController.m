@@ -64,7 +64,7 @@
         request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
         request.timeoutInterval=10;//默认30
-        request.parameters=@{@"1": @"one", @"2": @"two"};//如果是字典类型与公共配置 Parameters 兼容，如果是其他类型与公共配置 Parameters不兼容，需使用isBaseParameters=NO;屏蔽公共参数
+        request.parameters=@{@"1": @"one", @"2": @"two"};//如果是字典类型与公共配置 Parameters 兼容，如果是其他类型与公共配置 Parameters不兼容，会自动屏蔽公共参数
         // request.isBaseParameters=NO;//本次 请求不使用 公共参数
         request.headers=@{@"headers": @"headers"};
         request.userInfo=@{@"tag":@"111"};//用于标示 请求信息

@@ -258,20 +258,7 @@ NSString *const zb_downloadPath =@"AppDownload";
 + (NSString *)keyWithParameters:(ZBURLRequest *)request{
     id newParameters;
     if (request.filtrationCacheKey.count>0) {
-        if ([request.parameters isKindOfClass:[NSDictionary class]]) {
-            NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:request.parameters];
-            [mutableParameters removeObjectsForKeys:request.filtrationCacheKey];
-            newParameters = [mutableParameters copy];
-        }else if ([request.parameters isKindOfClass:[NSArray class]]) {
-            NSArray *parameters =(NSArray *)request.parameters;
-            for (NSDictionary *dict in parameters) {
-                NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:dict];
-                [mutableParameters removeObjectsForKeys:request.filtrationCacheKey];
-                newParameters = [mutableParameters copy];
-            }
-        }else{
-            newParameters = request.parameters;
-        }
+        newParameters=[ZBRequestTool formaParameters:request.parameters filtrationCacheKey:request.filtrationCacheKey];
     }else{
         newParameters = request.parameters;
     }

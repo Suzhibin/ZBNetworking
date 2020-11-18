@@ -28,3 +28,16 @@
 + (NSString *)zb_urlString:(NSString *)urlString appendingParameters:(id)parameters;
 
 @end
+
+@interface ZBRequestTool : NSObject
+
+/**
+ *  参数过滤变动参数
+ *
+ *  @param parameters           参数
+ *  @param filtrationCacheKey   需要过滤的参数
+ *  @return 返回过滤后的参数
+ */
++ (id)formaParameters:(id)parameters filtrationCacheKey:(NSArray *)filtrationCacheKey;
+
+@end
