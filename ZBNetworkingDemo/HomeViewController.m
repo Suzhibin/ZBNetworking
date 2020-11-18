@@ -82,7 +82,7 @@
         request.url=list_URL;
         request.methodType=ZBMethodTypeGET;//默认为GET
         request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
-        request.parameters=parameters;//与公共配置 Parameters 兼容
+        request.parameters=parameters;//如果是字典类型与公共配置 Parameters 兼容，如果是其他类型与公共配置 Parameters不兼容，需使用isBaseParameters=NO;屏蔽公共参数
        // request.isBaseParameters=NO;//本次 请求不使用 公共参数
         request.headers= headers;//与公共配置 Headers 兼容
         /**
