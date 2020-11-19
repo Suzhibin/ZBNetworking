@@ -98,6 +98,20 @@ typedef NS_ENUM(NSUInteger, ZBDownloadState) {
     /** 暂停请求*/
     ZBDownloadStateStop,
 };
+/**
+ *  当前网络的状态值，
+ */
+typedef NS_ENUM(NSInteger, ZBNetworkReachabilityStatus) {
+    /** Unknown*/
+    ZBNetworkReachabilityStatusUnknown          = -1,
+    /** NotReachable*/
+    ZBNetworkReachabilityStatusNotReachable     = 0,
+    /** WWAN*/
+    ZBNetworkReachabilityStatusViaWWAN          = 1,
+    /** WiFi*/
+    ZBNetworkReachabilityStatusViaWiFi          = 2,
+};
+
 //==================================================
 /** 请求配置的Block */
 typedef void (^ZBRequestConfigBlock)(ZBURLRequest * _Nullable request);

@@ -179,10 +179,18 @@
 + (BOOL)isNetworkReachable;
 
 /**
- *  当前网络的状态值，
- *  -1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
+ *  是否为WiFi网络
  */
-+ (AFNetworkReachabilityStatus)networkReachability;
++ (BOOL)isNetworkWiFi;
+
+/**
+ *  当前网络的状态值，
+ *  ZBNetworkReachabilityStatusUnknown      表示 `Unknown`，
+ *  ZBNetworkReachabilityStatusNotReachable 表示 `NotReachable
+ *  ZBNetworkReachabilityStatusViaWWAN      表示 `WWAN`
+ *  ZBNetworkReachabilityStatusViaWiFi      表示 `WiFi`
+ */
++ (ZBNetworkReachabilityStatus)networkReachability;
 
 /**
  *  获取下载文件

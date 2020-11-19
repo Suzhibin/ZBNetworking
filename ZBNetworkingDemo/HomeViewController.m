@@ -22,7 +22,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-     NSLog(@"当前是否有网：%d 状态：%ld",[ZBRequestManager isNetworkReachable],[ZBRequestManager networkReachability]);
+    ZBNetworkReachabilityStatus status=[ZBRequestManager networkReachability];
+     NSLog(@"当前是否有网：%d\n  是否为WiFi:%d  状态：%ld",[ZBRequestManager isNetworkReachable],[ZBRequestManager isNetworkWiFi],status);
     [DataManager sharedInstance].tag=@"1111";
     
     #pragma mark -  公共配置 RequestTool

@@ -375,11 +375,15 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 #pragma mark - 获取网络状态
-+ (BOOL)isNetworkReachable {
++ (BOOL)isNetworkReachable{
     return [ZBRequestEngine defaultEngine].networkReachability != 0;
 }
 
-+ (AFNetworkReachabilityStatus)networkReachability{
++ (BOOL)isNetworkWiFi{
+    return [ZBRequestEngine defaultEngine].networkReachability == 2;
+}
+
++ (ZBNetworkReachabilityStatus)networkReachability{
     return [[ZBRequestEngine defaultEngine]networkReachability];
 }
 
