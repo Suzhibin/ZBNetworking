@@ -103,7 +103,7 @@
     //预处理 响应
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
         NSLog(@"成功回调 数据返回之前");
-        if ([request.userInfo[@"tag"]isEqualToString:@"1111"]) {
+        if ([request.userInfo[@"tag"]isEqualToString:@"2222"]) {
             NSArray *array=[responseObject objectForKey:@"authors"];
             /**
              如果请求成功，但数组为空，又不想覆盖原有缓存文件，在此判断改变request对象apiType属性
