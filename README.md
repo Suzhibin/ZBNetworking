@@ -1,6 +1,6 @@
 # ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
  
- 本来想发布到cocoaPods的发现名字已经被占用了，也不想改名了。大家就手动下载用吧
+ 本来想发布到cocoaPods的发现名字已经被使用了，也不想改名了。大家就手动下载用吧
 
 [变更日志](https://github.com/Suzhibin/ZBNetworking/blob/master/CHANGELOG)
  
