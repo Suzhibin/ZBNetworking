@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ZBNetworking"
-  s.version      = "1.0.1"
+  s.version      = "1.3.0"
   s.summary      = "The network request library adds caching policies."
 
   s.homepage     = "https://github.com/Suzhibin/ZBNetworking"

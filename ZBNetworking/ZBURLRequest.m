@@ -117,15 +117,15 @@
     _batchRequestCount++;
     if (_batchRequestCount == _requestArray.count) {
         if (!_failed) {
-            if (request.delegate&&[request.delegate respondsToSelector:@selector(requests:batchFinishedForResponseObjects:errors:)]) {
-                [request.delegate requests:_requestArray batchFinishedForResponseObjects:_responseArray errors:nil];
+            if (request.delegate&&[request.delegate respondsToSelector:@selector(requestBatchFinished:responseObjects:errors:)]) {
+                [request.delegate requestBatchFinished:_requestArray responseObjects:_responseArray errors:nil];
             }
             if (finished) {
                 finished(_responseArray,nil,_requestArray);
             }
         }else{
-            if (request.delegate&&[request.delegate respondsToSelector:@selector(requests:batchFinishedForResponseObjects:errors:)]) {
-                [request.delegate requests:_requestArray batchFinishedForResponseObjects:nil errors:_responseArray];
+            if (request.delegate&&[request.delegate respondsToSelector:@selector(requestBatchFinished:responseObjects:errors:)]) {
+                [request.delegate requestBatchFinished:_requestArray responseObjects:nil errors:_responseArray];
             }
             if (finished) {
                 finished(nil,_responseArray,_requestArray);

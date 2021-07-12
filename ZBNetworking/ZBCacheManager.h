@@ -211,10 +211,10 @@ typedef void(^ZBCacheCompletedBlock)(void);
 - (NSString *_Nullable)getDiskFileForKey:(NSString *_Nullable)key inPath:(NSString *_Nullable)path;
 
 /**
- *  返回某个路径下的所有数据文件
+ *  返回某个路径下的所有文件
  *
  *  @param path          路径
- *  @return array        所在路径下的所有存储数据
+ *  @return array        所在路径下的所有存储文件
  */
 - (NSArray *_Nullable)getDiskCacheFileWithPath:(NSString *_Nullable)path;
 
@@ -310,21 +310,21 @@ typedef void(^ZBCacheCompletedBlock)(void);
 
 /**
  *  清除某一个缓存文件      默认路径/Library/Caches/ZBKit/AppCache
- *  @param key          请求的协议地址
+ *  @param key          存储的文件的key
  */
 - (void)clearCacheForkey:(NSString *_Nullable)key;
 
 /**
  *  清除某一个缓存文件      默认路径/Library/Caches/ZBKit/AppCache
  *
- *  @param key          请求的协议地址
+ *  @param key          存储的文件的key
  *  @param completion   block 后续操作
  */
 - (void)clearCacheForkey:(NSString *_Nullable)key completion:(ZBCacheCompletedBlock _Nullable )completion;
 
 /**
  *  清除某一个缓存文件     自定义路径
- *  @param key          请求的协议地址
+ *  @param key          存储的文件的key
  *  @param path         自定义路径
  *  @param completion   block 后续操作
  */
@@ -332,14 +332,14 @@ typedef void(^ZBCacheCompletedBlock)(void);
 
 /** 
  *  设置过期时间 清除某一个缓存文件  默认路径/Library/Caches/ZBKit/AppCache
- *  @param key          请求的协议地址
+ *  @param key          存储的文件的key
  *  @param time         时间
  */
 - (void)clearCacheForkey:(NSString *_Nullable)key time:(NSTimeInterval)time;
 
 /**
  *  设置过期时间 清除某一个缓存文件  默认路径/Library/Caches/ZBKit/AppCache
- *  @param key          请求的协议地址
+ *  @param key          存储的文件的key
  *  @param time         时间
  *  @param completion   block 后续操作
  */
@@ -348,7 +348,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
 /**
  *  设置过期时间 清除某一个缓存文件  自定义路径
  *  Remove all expired cached file from disk
- *  @param key          请求的协议地址
+ *  @param key          存储的文件的key
  *  @param time         时间
  *  @param path         路径
  *  @param completion   block 后续操作

@@ -140,16 +140,16 @@ typedef void (^ZBErrorProcessBlock)(ZBURLRequest * _Nullable request, NSError * 
 @protocol ZBURLRequestDelegate <NSObject>
 @required
 /** 请求成功的 代理方法*/
-- (void)request:(ZBURLRequest *_Nullable)request successForResponseObject:(id _Nullable)responseObject ;
+- (void)requestSuccess:(ZBURLRequest *_Nullable)request responseObject:(id _Nullable)responseObject ;
 @optional
 /** 请求失败的 代理方法*/
-- (void)request:(ZBURLRequest *_Nullable)request failedForError:(NSError *_Nullable)error;
+- (void)requestFailed:(ZBURLRequest *_Nullable)request error:(NSError *_Nullable)error;
 /** 请求进度的 代理方法*/
-- (void)request:(ZBURLRequest *_Nullable)request forProgress:(NSProgress * _Nullable)progress;
+- (void)requestForProgress:(NSProgress * _Nullable)progress;
 /** 请求完成的 代理方法 无论成功和失败**/
-- (void)request:(ZBURLRequest *_Nullable)request finishedForResponseObject:(id _Nullable)responseObject forError:(NSError *_Nullable)error ;
+- (void)requestFinished:(ZBURLRequest *_Nullable)request responseObject:(id _Nullable)responseObject error:(NSError *_Nullable)error;
 /** 批量请求 全部完成的 代理方法，无论成功和失败*/
-- (void)requests:(NSArray<ZBURLRequest *> *_Nullable)requests batchFinishedForResponseObjects:(NSArray * _Nullable) responseObjects errors:(NSArray<NSError *> * _Nullable)errors;
+- (void)requestBatchFinished:(NSArray<ZBURLRequest *> *_Nullable)requests responseObjects:(NSArray * _Nullable) responseObjects errors:(NSArray<NSError *> * _Nullable)errors;
 @end
 
 #endif /* ZBRequestConst_h */

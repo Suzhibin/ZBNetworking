@@ -240,12 +240,10 @@ static const CGFloat unit = 1000.0;
 - (NSArray *)getDiskCacheFileWithPath:(NSString *)path{
     NSMutableArray *array=[[NSMutableArray alloc]init];
     dispatch_sync(self.operationQueue, ^{
-        NSDirectoryEnumerator *fileEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
+        NSArray* fileEnumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
         for (NSString *fileName in fileEnumerator){
-            if (fileName.length==32) {
-                NSString *filePath = [path stringByAppendingPathComponent:fileName];
-                [array addObject:filePath];
-            }
+            NSString *filePath = [path stringByAppendingPathComponent:fileName];
+            [array addObject:filePath];
         }
     });
     return array;

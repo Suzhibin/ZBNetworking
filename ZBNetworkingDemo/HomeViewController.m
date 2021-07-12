@@ -123,7 +123,7 @@
                 NSLog(@"allHeaders:%@",allHeaders);
             }
         }
-    } failure:^(NSError *error){
+    } failure:^(NSError * _Nullable error) {
         [self.refreshControl endRefreshing];  //结束刷新
     } finished:^(id responseObject, NSError *error, ZBURLRequest *request) {
         NSLog(@"请求完成userInfo:%@",request.userInfo);

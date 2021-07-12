@@ -91,7 +91,7 @@
      */
 }
 #pragma mark - ZBURLRequestDelegate
-- (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
+- (void)requestSuccess:(ZBURLRequest *)request responseObject:(id)responseObject{
     if ([responseObject isKindOfClass:[NSDictionary class]]) {
         //如果是刷新的数据
         if (request.apiType==ZBRequestTypeRefreshAndCache) {
@@ -114,13 +114,13 @@
         }
     }
 }
-- (void)request:(ZBURLRequest *)request failedForError:(NSError *)error{
+- (void)requestFailed:(ZBURLRequest *)request error:(NSError *)error{
     NSLog(@"请求失败");
 }
-- (void)request:(ZBURLRequest *)request forProgress:(NSProgress *)progress{
+- (void)requestForProgress:(NSProgress *)progress{
     NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
 }
-- (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
+- (void)requestFinished:(ZBURLRequest *)request responseObject:(id)responseObject error:(NSError *)error{
     NSLog(@"url:%@ code:%ld",request.url,error.code);
 }
 

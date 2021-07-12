@@ -74,7 +74,7 @@
         }else{
             NSLog(@"重新请求");
         }
-    } failure:^(NSError *error){
+    } failure:^(NSError * _Nullable error) {
         NSLog(@"error: %@", error);
     }];
 
@@ -89,20 +89,20 @@
     } target:self];
 }
 #pragma mark - ZBURLRequestDelegate
-- (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
+- (void)requestSuccess:(ZBURLRequest *)request forResponseObject:(id)responseObject{
     if (request.isCache) {
         NSLog(@"使用了缓存");
     }else{
         NSLog(@"重新请求");
     }
 }
-- (void)request:(ZBURLRequest *)request failedForError:(NSError *)error{
+- (void)requestFailed:(ZBURLRequest *)request forError:(NSError *)error{
     NSLog(@"请求失败");
 }
-- (void)request:(ZBURLRequest *)request forProgress:(NSProgress *)progress{
+- (void)requestForProgress:(NSProgress *)progress{
     NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
 }
-- (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
+- (void)requestFinished:(ZBURLRequest *)request forResponseObject:(id)responseObject forError:(NSError *)error{
     NSLog(@"code:%ld",error.code);
     NSLog(@"url:%@",request.url);
 }
@@ -138,7 +138,9 @@
 - (void)downloadWithState:(ZBDownloadState)state{
   //  会默认创建下载路径/Library/Caches/ZBKit/AppDownload
    self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.url=@"https://fcvideo.cdn.bcebos.com/smart/f103c4fc97d2b2e63b15d2d5999d6477.mp4";
+       request.url=@"https://fcvideo.cdn.bcebos.com/smart/f103c4fc97d2b2e63b15d2d5999d6477.mp4";
+       //request.url=@"http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.2.4.dmg";
+   
         request.methodType=ZBMethodTypeDownLoad;
         request.downloadState=state;//下载状态
         request.userInfo=@{@"tag":@"10086"};
@@ -151,14 +153,14 @@
         
         [self alertTitle:@"下载完毕" andMessage:@"" completed:^{
             
-            /*
+            
             //在任何地方拿到下载文件
              NSString *file=[ZBRequestManager getDownloadFileForKey:request.url];
-             */
+             
             //播放下载的mp4
             PlayerViewController *playerVC=[[PlayerViewController alloc]init];
-            NSURL *videoURL = [NSURL fileURLWithPath:responseObject];
-            //NSURL *videoURL = [NSURL fileURLWithPath:file];
+           // NSURL *videoURL = [NSURL fileURLWithPath:responseObject];
+            NSURL *videoURL = [NSURL fileURLWithPath:file];
             playerVC.videoUrl=videoURL.absoluteString;
             playerVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:playerVC animated:YES];
@@ -265,7 +267,7 @@
             NSLog(@"第 %d 次请求成功☑️------------------", i);
             
         } failure:^(NSError * _Nullable error) {
-           
+   
             if (error.code==NSURLErrorCancelled){
                  NSLog(@"第 %d 次请求取消❌------------------", i);
             }else if (error.code==NSURLErrorTimedOut) {
