@@ -89,20 +89,20 @@
     } target:self];
 }
 #pragma mark - ZBURLRequestDelegate
-- (void)requestSuccess:(ZBURLRequest *)request forResponseObject:(id)responseObject{
+- (void)requestSuccess:(ZBURLRequest *)request responseObject:(id)responseObject{
     if (request.isCache) {
         NSLog(@"使用了缓存");
     }else{
         NSLog(@"重新请求");
     }
 }
-- (void)requestFailed:(ZBURLRequest *)request forError:(NSError *)error{
+- (void)requestFailed:(ZBURLRequest *)request error:(NSError *)error{
     NSLog(@"请求失败");
 }
-- (void)requestForProgress:(NSProgress *)progress{
+- (void)requestProgress:(NSProgress *)progress{
     NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
 }
-- (void)requestFinished:(ZBURLRequest *)request forResponseObject:(id)responseObject forError:(NSError *)error{
+- (void)requestFinished:(ZBURLRequest *)request responseObject:(id)responseObject error:(NSError *)error{
     NSLog(@"code:%ld",error.code);
     NSLog(@"url:%@",request.url);
 }

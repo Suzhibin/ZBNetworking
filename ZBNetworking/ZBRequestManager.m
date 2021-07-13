@@ -146,8 +146,8 @@ NSString *const zb_downloadPath =@"AppDownload";
 
 + (NSUInteger)sendUploadRequest:(ZBURLRequest *)request{
     return [[ZBRequestEngine defaultEngine] uploadWithRequest:request progress:^(NSProgress * _Nonnull uploadProgress) {
-        if (request.delegate&&[request.delegate respondsToSelector:@selector(requestForProgress:)]) {
-            [request.delegate requestForProgress:uploadProgress];
+        if (request.delegate&&[request.delegate respondsToSelector:@selector(requestProgress:)]) {
+            [request.delegate requestProgress:uploadProgress];
         }
         request.progressBlock?request.progressBlock(uploadProgress):nil;
     } success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -173,8 +173,8 @@ NSString *const zb_downloadPath =@"AppDownload";
 
 + (NSUInteger)dataTaskWithHTTPRequest:(ZBURLRequest *)request{
     return [[ZBRequestEngine defaultEngine]dataTaskWithMethod:request progress:^(NSProgress * _Nonnull zb_progress) {
-        if (request.delegate&&[request.delegate respondsToSelector:@selector(requestForProgress:)]) {
-            [request.delegate requestForProgress:zb_progress];
+        if (request.delegate&&[request.delegate respondsToSelector:@selector(requestProgress:)]) {
+            [request.delegate requestProgress:zb_progress];
         }
         request.progressBlock ? request.progressBlock(zb_progress) : nil;
     } success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -200,8 +200,8 @@ NSString *const zb_downloadPath =@"AppDownload";
         resumeData=[[ZBCacheManager sharedInstance]getCacheDataForKey:request.url inPath:AppDownloadTempPath];
     }
     return [[ZBRequestEngine defaultEngine] downloadWithRequest:request resumeData:resumeData savePath:[self AppDownloadPath] progress:^(NSProgress * _Nullable downloadProgress) {
-        if (request.delegate&&[request.delegate respondsToSelector:@selector(requestForProgress:)]) {
-            [request.delegate requestForProgress:downloadProgress];
+        if (request.delegate&&[request.delegate respondsToSelector:@selector(requestProgress:)]) {
+            [request.delegate requestProgress:downloadProgress];
         }
         request.progressBlock?request.progressBlock(downloadProgress):nil;
     }completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {

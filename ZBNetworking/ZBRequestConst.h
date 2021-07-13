@@ -145,7 +145,7 @@ typedef void (^ZBErrorProcessBlock)(ZBURLRequest * _Nullable request, NSError * 
 /** 请求失败的 代理方法*/
 - (void)requestFailed:(ZBURLRequest *_Nullable)request error:(NSError *_Nullable)error;
 /** 请求进度的 代理方法*/
-- (void)requestForProgress:(NSProgress * _Nullable)progress;
+- (void)requestProgress:(NSProgress * _Nullable)progress;
 /** 请求完成的 代理方法 无论成功和失败**/
 - (void)requestFinished:(ZBURLRequest *_Nullable)request responseObject:(id _Nullable)responseObject error:(NSError *_Nullable)error;
 /** 批量请求 全部完成的 代理方法，无论成功和失败*/
