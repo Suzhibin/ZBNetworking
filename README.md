@@ -186,7 +186,7 @@
   } target:self];//ZBURLRequestDelegate
   
 #pragma mark - ZBURLRequestDelegate
-- (void)request:(ZBURLRequest *)request successForResponseObject:(id)responseObject{
+- (void)requestSuccess:(ZBURLRequest *)request responseObject:(id)responseObject{
         if (request.apiType==ZBRequestTypeRefresh) 
              //结束刷新
         }
@@ -196,12 +196,12 @@
         //请求成功
           NSLog(@"得到数据:%@",responseObject);
 }
-- (void)request:(ZBURLRequest *)request failedForError:(NSError * _Nullable)error{
+- (void)requestFailed:(ZBURLRequest *)request error:(NSError *)error{
 }
-- (void)request:(ZBURLRequest *)request forProgress:(NSProgress *)progress{
+- (void)requestProgress:(NSProgress *)progress{
     NSLog(@"onProgress: %.f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
 }
-- (void)request:(ZBURLRequest *)request finishedForResponseObject:(id)responseObject forError:(NSError *)error{
+- (void)requestFinished:(ZBURLRequest *)request responseObject:(id)responseObject error:(NSError *)error{
 //    NSLog(@"code:%ld",error.code);
 //    NSLog(@"URLString:%@",request.URLString);
 }
