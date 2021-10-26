@@ -25,7 +25,7 @@
     parameters[@"timeString"] =timeString;//时间戳
 
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    headers[@"Token"] = @"Token";
+    headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
 
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
         /**
@@ -48,7 +48,7 @@
         config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
         //config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
-        config.userInfo=@{@"info":@"ZBNetworking"};//请求的信息，可以用来注释和判断使用
+        config.userInfo=@{@"info":@"ZBNetworking"};//自定义请求的信息，可以用来注释和判断使用
         config.responseContentTypes=@[@"application/pdf",@"video/mpeg4"];//添加新的响应数据类型
         /**
          内部已存在的响应数据类型
@@ -81,8 +81,8 @@
             request.parameters=parameters;//这样添加 其他参数被删除
             
             NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-            headers[@"x-Token"] = @"从插件机制添加：x-Token";
-            request.headers=headers;
+            headers[@"Token"] = @"从插件机制添加：Token";
+            request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
 
         }
 
@@ -94,7 +94,7 @@
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
                 NSDictionary *dict= [[DataManager sharedInstance] dataInfoWithKey:[NSString stringWithFormat:@"%@%@",request.url,request.parameters[@"github"]]];
                 if (dict) {
-                  //⚠️setObject 赋值 就会走成功回调
+                  //⚠️setObject 赋值 就会走成功回调，这样就读到了 自己的缓存数据
                     *setObject=dict;
                 }
             }
@@ -118,26 +118,30 @@
     
         if ([request.userInfo[@"tag"]isEqualToString:@"7777"]) {
           
-                /**
-                 网络请求 自定义响应结果的处理逻辑
-                 比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
-                 */
-                 // 举个例子 假设服务器成功回调内返回了code码
-                NSDictionary *data= responseObject[@"Data"];
-                NSString * errorCode=[data objectForKey:@"HttpStatusCode"];
-                 errorCode= @"401";//假设401 登录过期
-                NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-                NSLog(@"重新开始业务请求：%@ 参数：%@",request.url,request.parameters[@"path"]);
-                           
-
+            /**
+            网络请求 自定义响应结果的处理逻辑
+            比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
+            */
+            // 举个例子 假设服务器成功回调内返回了code码
+            NSDictionary *data= responseObject[@"Data"];
+            NSString *errorStr=responseObject[@"Error"];//服务器返回的 错误内容
+            NSString * errorCode=[data objectForKey:@"HttpStatusCode"];
+            NSDictionary *userInfo = @{NSLocalizedDescriptionKey:errorStr};
+            errorCode= @"401";//假设401 登录过期或Token 失效
+            if ([errorCode integerValue]==401) {
+                request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
+                userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+                //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 失败的网络请求，3次不够的话，次数可以多设置一些。
+            }else{
+                //吐司提示错误  errorStr
                 //⚠️给*error指针 错误信息，网络请求就会走 失败回调
                 *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
-                    
+            }
         }
 
         if([request.userInfo[@"tag"]isEqualToString:@"9999"]){
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
-                           //排除上传和下载请求
+            //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
                 [[DataManager sharedInstance] saveDataInfo:responseObject key:[NSString stringWithFormat:@"%@%@",request.url,request.parameters[@"github"]]];
             }

@@ -63,7 +63,7 @@
         request.requestSerializer=ZBJSONRequestSerializer;//默认ZBJSONRequestSerializer 上传参数默认为json 格式
         request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
         request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
-        request.timeoutInterval=10;//默认30
+        request.timeoutInterval=10;//设置超时时间
         request.parameters=@{@"1": @"one", @"2": @"two"};//如果是字典类型与公共配置 Parameters 兼容，如果是其他类型与公共配置 Parameters不兼容，会自动屏蔽公共参数
         request.headers=@{@"headers": @"headers"};
         request.userInfo=@{@"tag":@"111"};//用于标示 请求信息
@@ -140,7 +140,6 @@
    self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
        request.url=@"https://fcvideo.cdn.bcebos.com/smart/f103c4fc97d2b2e63b15d2d5999d6477.mp4";
        //request.url=@"http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.2.4.dmg";
-   
         request.methodType=ZBMethodTypeDownLoad;
         request.downloadState=state;//下载状态
         request.userInfo=@{@"tag":@"10086"};

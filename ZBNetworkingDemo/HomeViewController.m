@@ -91,7 +91,7 @@
        // request.filtrationCacheKey=@[@""];//过滤变动参数 与公共配置 filtrationCacheKey 兼容
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 公共配置,不影响其他请求设置
-        request.timeoutInterval=10;//默认30 //优先级 高于 公共配置,不影响其他请求设置
+        request.timeoutInterval=10;//设置超时时间 //优先级 高于 公共配置,不影响其他请求设置
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};//与公共配置 UserInfo 不兼容 优先级大于 公共配置
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSDictionary class]]) {

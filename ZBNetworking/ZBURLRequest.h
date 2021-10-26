@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong,nullable) NSArray *filtrationCacheKey;
 
 /**
- *  设置超时时间  默认30秒
+ *  设置超时时间
  */
 @property (nonatomic,assign) NSTimeInterval timeoutInterval;
 
