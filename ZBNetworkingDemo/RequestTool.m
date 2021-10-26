@@ -124,18 +124,23 @@
             */
             // 举个例子 假设服务器成功回调内返回了code码
             NSDictionary *data= responseObject[@"Data"];
-            NSString *errorStr=responseObject[@"Error"];//服务器返回的 错误内容
-            NSString * errorCode=[data objectForKey:@"HttpStatusCode"];
-            NSDictionary *userInfo = @{NSLocalizedDescriptionKey:errorStr};
-            errorCode= @"401";//假设401 登录过期或Token 失效
-            if ([errorCode integerValue]==401) {
-                request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
-                userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-                //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 失败的网络请求，3次不够的话，次数可以多设置一些。
-            }else{
-                //吐司提示错误  errorStr
+            NSInteger IsError= [data[@"IsError"] integerValue];
+            if (IsError==1) {
+                NSString *errorStr=responseObject[@"Error"];//服务器返回的 错误内容
+                NSString * errorCode=[data objectForKey:@"HttpStatusCode"];
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey:errorStr};
+                errorCode= @"401";//假设401 登录过期或Token 失效
+                if ([errorCode integerValue]==401) {
+                    request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
+                    userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+                    //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 失败的网络请求，3次不够的话，次数可以多设置一些。
+                }else{
+                    //吐司提示错误  errorStr
+                }
                 //⚠️给*error指针 错误信息，网络请求就会走 失败回调
                 *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
+            }else{
+                NSLog(@"响应成功%@",responseObject);
             }
         }
 
