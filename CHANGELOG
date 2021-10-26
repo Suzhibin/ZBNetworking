@@ -1,3 +1,5 @@
+ 发布于2021年10月26日，周二
+ 1.删除ZBResponseKeepType 类型，原功能移动到 ZBApiType 使用。
  
  发布于2020年11月17日，周二
  1.Download方法 支持断点下载
