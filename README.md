@@ -24,7 +24,9 @@
 
 9.DownLoad支持断点下载 ，批量请求等功能
 
-10.多种请求缓存类型的判断。也可不遵循，自由随你定。
+10.重复请求的处理 ，可设置 保留第一次请求或最后一次请求
+
+11.多种请求缓存类型的判断。也可不遵循，自由随你定。
 
 ```objective-c
   /**
@@ -59,7 +61,7 @@
      */
     ZBRequestTypeKeepLast,
 ```
-11.可见的缓存文件
+12.可见的缓存文件
 
 ![](http://a3.qpic.cn/psb?/V12I5WUv0Ual5v/uls*nG1YySR.EpyYI8*lFu9kW.lwzjgW.cnPbGMUBG8!/b/dPgAAAAAAAAA&bo=aAHwAAAAAAACDLE!&rf=viewer_4)
 
