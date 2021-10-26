@@ -122,10 +122,10 @@ NSString *const zb_downloadPath =@"AppDownload";
     }
     
     NSURLSessionTask * task=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
-    if (request.keepType==ZBResponseKeepFirst&&task) {
+    if (request.apiType==ZBRequestTypeKeepFirst&&task) {
         return 0;
     }
-    if (request.keepType==ZBResponseKeepLast&&task) {
+    if (request.apiType==ZBRequestTypeKeepLast&&task) {
         [self cancelRequest:task.taskIdentifier];
     }
 
@@ -158,7 +158,7 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (NSUInteger)sendHTTPRequest:(ZBURLRequest *)request{
-    if (request.apiType==ZBRequestTypeRefresh||request.apiType==ZBRequestTypeRefreshMore) {
+    if (request.apiType==ZBRequestTypeRefresh||request.apiType==ZBRequestTypeRefreshMore||request.apiType==ZBRequestTypeKeepFirst||request.apiType==ZBRequestTypeKeepLast) {
         return [self dataTaskWithHTTPRequest:request];
     }else{
         NSString *key = [self keyWithParameters:request];

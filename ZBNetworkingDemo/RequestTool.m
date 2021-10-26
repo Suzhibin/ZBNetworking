@@ -48,7 +48,7 @@
         config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
         //config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
-        config.userInfo=@{@"info":@"ZBNetworking"};//自定义请求的信息，可以用来注释和判断使用
+        config.userInfo=@{@"info":@"ZBNetworking"};//自定义请求的信息，可以用来注释和判断使用，不会传给服务器
         config.responseContentTypes=@[@"application/pdf",@"video/mpeg4"];//添加新的响应数据类型
         /**
          内部已存在的响应数据类型
@@ -71,14 +71,14 @@
        */
     //预处理 请求
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
-        NSLog(@"请求之前 可以进行参数加工");
+        NSLog(@"插件响应 请求之前 可以进行参数加工");
         if ([request.userInfo[@"tag"]isEqualToString:@"10086"]) {
             //为某个服务器 单独添加公共参数
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
             parameters[@"pb"] = @"从插件机制添加：pb这个参数，只会在下载请求的参数里显示";
             
-            //[request.parameters setValue:@"从插件机制添加：pb这个参数，只会在下载请求的参数里显示" forKey:@"pb"];//这样添加 其他参数依然存在。
-            request.parameters=parameters;//这样添加 其他参数被删除
+            [request.parameters setValue:@"从插件机制添加：pb这个参数，只会在下载请求的参数里显示" forKey:@"pb"];//这样添加 其他参数依然存在。
+           // request.parameters=parameters;//这样添加 其他参数被删除
             
             NSMutableDictionary *headers = [NSMutableDictionary dictionary];
             headers[@"Token"] = @"从插件机制添加：Token";
@@ -102,7 +102,7 @@
     }];
     //预处理 响应
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
-        NSLog(@"成功回调 数据返回之前");
+        NSLog(@"插件响应 成功回调 数据返回之前");
         if ([request.userInfo[@"tag"]isEqualToString:@"2222"]) {
             NSArray *array=[responseObject objectForKey:@"authors"];
             /**
@@ -125,7 +125,7 @@
             // 举个例子 假设服务器成功回调内返回了code码
             NSDictionary *data= responseObject[@"Data"];
             NSInteger IsError= [data[@"IsError"] integerValue];
-            if (IsError==1) {
+            if (IsError==1) {//假设与服务器约定 IsError==1代表错误
                 NSString *errorStr=responseObject[@"Error"];//服务器返回的 错误内容
                 NSString * errorCode=[data objectForKey:@"HttpStatusCode"];
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey:errorStr};
@@ -133,14 +133,14 @@
                 if ([errorCode integerValue]==401) {
                     request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
                     userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-                    //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 失败的网络请求，3次不够的话，次数可以多设置一些。
+                    //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 已失败的网络请求，3次不够的话，次数可以多设置一些。
                 }else{
                     //吐司提示错误  errorStr
                 }
                 //⚠️给*error指针 错误信息，网络请求就会走 失败回调
                 *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
             }else{
-                NSLog(@"响应成功%@",responseObject);
+                //请求成功
             }
         }
 
@@ -157,11 +157,11 @@
     [ZBRequestManager setErrorProcessHandler:^(ZBURLRequest * _Nullable request, NSError * _Nullable error) {
    
         if (error.code==NSURLErrorCancelled){
-            NSLog(@"请求取消❌------------------");
+            NSLog(@"插件响应 请求取消❌------------------");
         }else if (error.code==NSURLErrorTimedOut){
-            NSLog(@"请求超时");
+            NSLog(@"插件响应 请求超时");
         }else{
-            NSLog(@"请求失败");
+            NSLog(@"插件响应 请求失败");
         }
     }];
     #pragma mark -  证书设置

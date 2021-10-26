@@ -44,12 +44,12 @@ static const NSInteger cacheTime = 15;//过期时间
     
     [self.view addSubview:self.tableView];
     
-    [self addItemWithTitle:@"取消离线下载" selector:@selector(cancelClick) location:NO];
+  //  [self addItemWithTitle:@"取消离线下载" selector:@selector(cancelClick) location:NO];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 15;
+    return 14;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -57,7 +57,6 @@ static const NSInteger cacheTime = 15;//过期时间
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIde];
     if (!cell) {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIde];
-      
     }
     
     if (indexPath.row==0) {
@@ -79,7 +78,7 @@ static const NSInteger cacheTime = 15;//过期时间
         CGFloat imageCount=[[SDImageCache sharedImageCache]totalDiskCount];//图片缓存个数
         CGFloat AppCacheCount=cacheCount+imageCount;
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",AppCacheCount];
-        
+        cell.accessoryType=UITableViewCellAccessoryNone;
     }
 
     if (indexPath.row==2) {
@@ -100,7 +99,7 @@ static const NSInteger cacheTime = 15;//过期时间
         CGFloat cacheCount=[[ZBCacheManager sharedInstance]getCacheCount];//json缓存文件个数
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",cacheCount];
-        
+        cell.accessoryType=UITableViewCellAccessoryNone;
     }
     
     if (indexPath.row==4) {
@@ -120,6 +119,7 @@ static const NSInteger cacheTime = 15;//过期时间
         CGFloat imageCount=[[SDImageCache sharedImageCache]totalDiskCount];//图片缓存个数
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",imageCount];
+        cell.accessoryType=UITableViewCellAccessoryNone;
     }
     
     if (indexPath.row==6) {
@@ -143,47 +143,48 @@ static const NSInteger cacheTime = 15;//过期时间
         CGFloat count=[[ZBCacheManager sharedInstance]getFileCountWithPath:self.imagePath];
         
         cell.detailTextLabel.text= [NSString stringWithFormat:@"%.f",count];
-        
+        cell.accessoryType=UITableViewCellAccessoryNone;
     }
     if (indexPath.row==8) {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text=@"清除单个json缓存文件(例:删除首页)";
-        
+        cell.textLabel.text=@"清除单个json缓存文件";
+        cell.detailTextLabel.text=@"";
     }
     if (indexPath.row==9) {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text=@"清除单个图片缓存文件(手动添加url)";
+        cell.textLabel.text=@"清除单个图片缓存文件";
+        cell.detailTextLabel.text=@"";
     }
     
     if (indexPath.row==10) {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text=@"按过期时间清除“单个”json缓存(例:menu,超15秒)";
-        cell.textLabel.font=[UIFont systemFontOfSize:14];
+        cell.textLabel.text=@"按过期时间清除“单个”json缓存)";
+        cell.detailTextLabel.text=@"";
     }
     
     if (indexPath.row==11) {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text=@"按过期时间清除“单个”图片缓存(手动添加url,超15秒)";
-        cell.textLabel.font=[UIFont systemFontOfSize:14];
+        cell.textLabel.text=@"按过期时间清除“单个”图片缓存";
+        cell.detailTextLabel.text=@"";
     }
 
     if (indexPath.row==12) {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text=@"按过期时间清除全部过期json缓存(例:超过15秒)";
-        cell.textLabel.font=[UIFont systemFontOfSize:14];
+        cell.textLabel.text=@"按过期时间清除全部过期json缓存";
+        cell.detailTextLabel.text=@"";
     }
     
     if (indexPath.row==13) {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text=@"按过期时间清除全部过期图片缓存(例:超过15秒)";
-        cell.textLabel.font=[UIFont systemFontOfSize:14];
+        cell.textLabel.text=@"按过期时间清除全部过期图片缓存";
+        cell.detailTextLabel.text=@"";
     }
     
-    if (indexPath.row==14) {
-        cell.textLabel.text=@"离线下载";
-        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        
-    }
+//    if (indexPath.row==14) {
+//        cell.textLabel.text=@"离线下载";
+//        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+//
+//    }
     
     return cell;
 }
@@ -283,11 +284,12 @@ static const NSInteger cacheTime = 15;//过期时间
     }
     if (indexPath.row==14) {
        
-        offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
-        offlineVC.delegate=self;
-        [self.navigationController pushViewController:offlineVC animated:YES];
+//        offlineDownloadViewController *offlineVC=[[offlineDownloadViewController alloc]init];
+//        offlineVC.delegate=self;
+//        [self.navigationController pushViewController:offlineVC animated:YES];
     }
 }
+/*
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
 
@@ -295,12 +297,12 @@ static const NSInteger cacheTime = 15;//过期时间
    self.batchRequest = [ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest *batchRequest){
         for (HomeModel *model in offlineArray) {
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-            parameters[@"author"] =model.wid;
+           // parameters[@"author"] =model.wid;
             parameters[@"iap"] = @"0";
             parameters[@"limit"] =@"50";
             parameters[@"offset"] = @"0";
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-            request.url=details_URL;
+          //  request.url=details_URL;
             request.apiType=ZBRequestTypeRefreshAndCache;//重新请求 并覆盖原来缓存文件
             request.parameters=parameters;
             request.filtrationCacheKey=@[@"path"];
@@ -357,7 +359,7 @@ static const NSInteger cacheTime = 15;//过期时间
     [[SDWebImageManager sharedManager] cancelAll];//取消图片下载
     [self.imageArray removeAllObjects];
 }
-
+ */
 //懒加载
 - (UITableView *)tableView{
     

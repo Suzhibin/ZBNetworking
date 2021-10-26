@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#define server_URL @"http://api.dotaly.com"
-#define list_URL @"/lol/api/v1/authors"
+//#define server_URL @"http://api.dotaly.com"
+#define server_URL @"http://h5.jp.51wnl.com"
+//#define list_URL @"/lol/api/v1/authors"
+#define list_URL @"/wnl/tag/page"
 
-#define details_URL @"/lol/api/v1/shipin/latest"
+//#define details_URL @"/lol/api/v1/shipin/latest"
 
 NS_ASSUME_NONNULL_BEGIN
 

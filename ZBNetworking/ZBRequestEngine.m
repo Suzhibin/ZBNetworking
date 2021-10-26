@@ -252,14 +252,10 @@ NSString *const _delegate =@"_delegate";
     }
     //=====================================================
     if (request.methodType==ZBMethodTypeUpload) {
-        request.apiType=ZBRequestTypeRefresh;
-        request.keepType=ZBResponseKeepFirst;
+        request.apiType=ZBRequestTypeKeepFirst;
     }
     if (request.methodType==ZBMethodTypeDownLoad) {
-        request.apiType=ZBRequestTypeRefresh;
-        if (request.downloadState==ZBDownloadStateStart) {
-            request.keepType=ZBResponseKeepFirst;
-        }
+        request.apiType=ZBRequestTypeKeepFirst;
     }
     //=====================================================
     if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {

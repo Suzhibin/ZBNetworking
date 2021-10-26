@@ -16,25 +16,35 @@
  */
 typedef NS_ENUM(NSInteger,ZBApiType) {
     /**
-     重新请求:   不读取缓存，不存储缓存
+     重新请求:  不读取缓存，不存储缓存
      没有缓存需求的，单独使用
      */
     ZBRequestTypeRefresh,
     /**
-     重新请求:   不读取缓存，但存储缓存
+     重新请求:  不读取缓存，但存储缓存
      可以与 ZBRequestTypeCache 配合使用
      */
     ZBRequestTypeRefreshAndCache,
     /**
-     读取缓存:   有缓存,读取缓存--无缓存，重新请求并存储缓存
+     读取缓存:  有缓存,读取缓存--无缓存，重新请求并存储缓存
      可以与ZBRequestTypeRefreshAndCache 配合使用
      */
     ZBRequestTypeCache,
     /**
-     重新请求：  上拉加载更多业务，不读取缓存，不存储缓存
+     重新请求： 上拉加载更多业务，不读取缓存，不存储缓存
      用于区分业务 可以不用
      */
     ZBRequestTypeRefreshMore,
+    /**
+     重新请求:  不读取缓存，不存储缓存.同一请求重复请求，请求结果没有响应的时候，使用第一次请求结果
+     如果请求结果响应了，会终止此过程
+     */
+    ZBRequestTypeKeepFirst,
+    /**
+     重新请求:   不读取缓存，不存储缓存.同一请求重复请求，请求结果没有响应的时候，使用最后一次请求结果
+     如果请求结果响应了，会终止此过程
+     */
+    ZBRequestTypeKeepLast,
 };
 /**
  HTTP 请求类型.
@@ -75,19 +85,6 @@ typedef NS_ENUM(NSUInteger, ZBResponseSerializerType) {
     ZBJSONResponseSerializer,
     /** 设置响应数据为二进制格式*/
     ZBHTTPResponseSerializer
-};
-/**
- 相同的URL 多次网络请求,请求结果没有响应的时候。可以指定使用第一次或最后一次请求结果。
- 如果请求结果响应了，会终止此过程。
- 默认不做任何操作.  default:ZBResponseKeepNone
- */
-typedef NS_ENUM(NSUInteger, ZBResponseKeepType) {
-    /** 不进行任何操作*/
-    ZBResponseKeepNone,
-    /** 使用第一次请求结果*/
-    ZBResponseKeepFirst,
-    /** 使用最后一次请求结果*/
-    ZBResponseKeepLast
 };
 /**
  操作状态

@@ -52,7 +52,7 @@
     parameters[@"limit"] =@"50";
     parameters[@"offset"] = @"0";
     self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
-        request.url=details_URL;
+       // request.url=details_URL;
         request.parameters=parameters;
         request.apiType=apiType;
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};

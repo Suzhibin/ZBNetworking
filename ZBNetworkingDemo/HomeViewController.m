@@ -46,8 +46,7 @@
      *  沙盒默认缓存路径/Library/Caches/ZBKit/AppCache
      */
     [self getDataWithApiType:ZBRequestTypeCache];
-    
-    [self addItemWithTitle:@"设置缓存" selector:@selector(btnClick) location:NO];
+    [self addItemWithTitle:@"重新请求" selector:@selector(requestClick) location:NO];
 }
 
 #pragma mark - request
@@ -58,6 +57,8 @@
      */
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"path"] = @"HomeViewController";
+    parameters[@"id"]=@"66";
+    parameters[@"p"]=@"1";
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"headers"] = @"herader";
     /**
@@ -94,9 +95,8 @@
         request.timeoutInterval=10;//设置超时时间 //优先级 高于 公共配置,不影响其他请求设置
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};//与公共配置 UserInfo 不兼容 优先级大于 公共配置
     }  success:^(id responseObject,ZBURLRequest * request){
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *dict = (NSDictionary *)responseObject;
-            NSArray *array=[dict objectForKey:@"authors"];
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            NSArray *array = (NSArray *)responseObject;
             //如果是刷新的数据
             if (request.apiType==ZBRequestTypeRefreshAndCache) {
                 [self.dataArray removeAllObjects];
@@ -120,7 +120,7 @@
                 self.navigationItem.title=@"重新请求";
                 NSHTTPURLResponse *response = (NSHTTPURLResponse *)request.response;
                 NSDictionary *allHeaders = response.allHeaderFields;
-                NSLog(@"allHeaders:%@",allHeaders);
+                //NSLog(@"allHeaders:%@",allHeaders);
             }
         }
     } failure:^(NSError * _Nullable error) {
@@ -162,6 +162,9 @@
             */
     });
 }
+-(void)requestClick{
+    [self getDataWithApiType:ZBRequestTypeRefreshAndCache];
+}
 #pragma mark tableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -181,18 +184,13 @@
     
     HomeModel *model=[self.dataArray objectAtIndex:indexPath.row];
     
-    cell.textLabel.text=model.name;
-    cell.detailTextLabel.text=[NSString stringWithFormat:@"更新时间:%@",model.detail];
+    cell.textLabel.text=model.title;
+    cell.detailTextLabel.text=[NSString stringWithFormat:@"更新时间:%@",model.online];
     return cell;
     
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    HomeModel *model=[self.dataArray objectAtIndex:indexPath.row];
-    DetailViewController *detailsVC=[[DetailViewController alloc]init];
-    detailsVC.wid=model.wid;
-    detailsVC.hidesBottomBarWhenPushed=YES;
-    [self.navigationController pushViewController:detailsVC animated:YES];
     
 }
 
@@ -214,13 +212,6 @@
         _dataArray = [[NSMutableArray alloc] init];
     }
     return _dataArray;
-}
-
-- (void)btnClick{
-    
-    SettingViewController *settingVC=[[SettingViewController alloc]init];
-    settingVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:settingVC animated:YES];
 }
 
 - (void)viewDidLayoutSubviews{

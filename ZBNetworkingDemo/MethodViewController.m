@@ -243,23 +243,20 @@
 /**
  多次相同的请求，保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果 (ZBRequestTypeRefresh或ZBRequestTypeRefreshMore //request.keepType 设置才有效 ）
  */
-- (void)keepResultType:(ZBResponseKeepType)keepType{
+- (void)keepResultType:(ZBApiType)keepType{
     /**
      注意⚠️ 请求使用keep功能 要使用parameters。不要把参数拼接在url后，有可能会因为参数变动 导致url不一样无法取消请求
      */
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"path"] = @"MethodViewController";
-    parameters[@"author"] =@"xiaomo";
-    parameters[@"iap"] = @"0";
-    parameters[@"limit"] =@"50";
-    parameters[@"offset"] = @"0";
+    parameters[@"id"]=@"66";
+    parameters[@"p"]=@"1";
     for (int i = 0; i < 5; i++) {
         NSUInteger identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
-            request.url=urlStr;
+            request.url=list_URL;
             request.parameters=parameters;
             request.methodType=ZBMethodTypeGET;//默认get
-            request.apiType=ZBRequestTypeRefresh;
-            request.keepType=keepType; //
+            request.apiType=keepType;
            // request.userInfo=@{@"tag":@"7777"};
         } success:^(id responseObject,ZBURLRequest *request) {
             
@@ -269,10 +266,6 @@
    
             if (error.code==NSURLErrorCancelled){
                  NSLog(@"第 %d 次请求取消❌------------------", i);
-            }else if (error.code==NSURLErrorTimedOut) {
-                [self alertTitle:@"请求超时" andMessage:@"" completed:nil];
-            }else{
-                [self alertTitle:@"请求失败" andMessage:@""completed:nil];
             }
         }];
         NSLog(@"identifier:%ld",identifier);
@@ -290,7 +283,7 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.url=@"https://URL";
         request.methodType=ZBMethodTypePOST;//默认为GET
-        request.apiType=ZBRequestTypeCache;//默认为ZBRequestTypeRefresh
+        request.apiType=ZBRequestTypeRefresh;
         request.parameters=@{@"1": @"one", @"2": @"two", @"time":timeString};
         request.filtrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里变动参数比如 时间戳
     }success:nil failure:nil];
@@ -335,10 +328,10 @@
             [self downLoadBatchRequest];//批量下载文件或批量请求
             break;
         case 6:
-            [self keepResultType:ZBResponseKeepFirst];//只使用第一次请求结果
+            [self keepResultType:ZBRequestTypeKeepFirst];//只使用第一次请求结果
             break;
         case 7:
-            [self keepResultType:ZBResponseKeepLast];//只使用最后一次请求结果
+            [self keepResultType:ZBRequestTypeKeepLast];//只使用最后一次请求结果
             break;
         case 8:
             [self parametersfiltrationCacheKey];//过滤掉parameters 缓存key里的 变动参数

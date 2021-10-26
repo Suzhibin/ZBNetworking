@@ -24,11 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBMethodType methodType;
 
 /**
- *  多次请求一个URL 保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果
- */
-@property (nonatomic,assign) ZBResponseKeepType keepType;
-
-/**
  *  操作状态
  */
 @property (nonatomic,assign) ZBDownloadState  downloadState;
@@ -237,7 +232,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSDictionary *headers;
 
 /**
- *  请求的信息，可以用来注释和判断使用
+ *  请求的信息，可以用来本地注释和判断使用，不会传给服务器
 */
 @property (nonatomic, strong, nullable) NSDictionary *userInfo;
 

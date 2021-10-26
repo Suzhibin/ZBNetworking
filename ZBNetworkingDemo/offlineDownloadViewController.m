@@ -46,8 +46,8 @@
             
             for (NSDictionary *dic in array) {
                 HomeModel *model=[[HomeModel alloc]init];
-                model.name=[dic objectForKey:@"name"];
-                model.wid=[dic objectForKey:@"id"];
+//                model.name=[dic objectForKey:@"name"];
+//                model.wid=[dic objectForKey:@"id"];
                 [self.dataArray addObject:model];
                 
             }
@@ -75,7 +75,7 @@
     cell.accessoryView = sw;
     
     HomeModel *model=[self.dataArray objectAtIndex:indexPath.row];
-    cell.textLabel.text=model.name;
+    cell.textLabel.text=model.title;
     
     return cell;
 }
@@ -106,7 +106,7 @@
         NSLog(@"离线请求的栏目/url个数:%lu",self.offlineArray.count);
     
         for (HomeModel *model in self.offlineArray) {
-            NSLog(@"离线请求的name:%@",model.name);
+            NSLog(@"离线请求的name:%@",model.title);
         }
         if ([self.delegate respondsToSelector:@selector(downloadWithArray:)]){
                [self.delegate downloadWithArray:self.offlineArray];

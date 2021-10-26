@@ -11,9 +11,9 @@
 @implementation HomeModel
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
     //  NSLog(@"undefinedKey:%@",key);
-    if ([key isEqualToString:@"id"]) {
-        self.wid=value;
-    }
+//    if ([key isEqualToString:@"id"]) {
+//        self.wid=value;
+//    }
 }
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self=[super init]) {
