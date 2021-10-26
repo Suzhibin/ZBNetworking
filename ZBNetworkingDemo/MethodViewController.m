@@ -241,7 +241,7 @@
 
 #pragma mark - 保留第一个 或 最后一次请求
 /**
- 多次相同的请求，保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果 (ZBRequestTypeRefresh或ZBRequestTypeRefreshMore //request.keepType 设置才有效 ）
+ 多次相同的请求，保留第一次或最后一次请求结果 
  */
 - (void)keepResultType:(ZBApiType)keepType{
     /**
