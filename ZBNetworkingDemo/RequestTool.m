@@ -70,17 +70,15 @@
            6. ......
        */
     //预处理 请求
+
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
         NSLog(@"插件响应 请求之前 可以进行参数加工");
         if ([request.userInfo[@"tag"]isEqualToString:@"10086"]) {
             //为某个服务器 单独添加公共参数
-            NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
             parameters[@"pb"] = @"从插件机制添加：pb这个参数，只会在下载请求的参数里显示";
-            
-            [request.parameters setValue:@"从插件机制添加：pb这个参数，只会在下载请求的参数里显示" forKey:@"pb"];//这样添加 其他参数依然存在。
+            [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
            // request.parameters=parameters;//这样添加 其他参数被删除
             
-            NSMutableDictionary *headers = [NSMutableDictionary dictionary];
             headers[@"Token"] = @"从插件机制添加：Token";
             request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
 
