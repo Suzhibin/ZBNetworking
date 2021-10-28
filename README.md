@@ -80,7 +80,7 @@
     parameters[@"timeString"] =timeString;//时间戳
 
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    headers[@"Token"] = @"Token";
+    headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
     
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
          /**
@@ -129,6 +129,8 @@
             //为某个服务器 单独添加公共参数
             [request.parameters setValue:@"pb这个参数，只会在下载文件的参数里显示" forKey:@"pb"];
         }
+         headers[@"Token"] = @"从插件机制添加：Token";
+          request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
     }];
     
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
