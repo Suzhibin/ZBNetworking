@@ -14,33 +14,33 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - 配置请求
 /**
- *  用于标识不同类型的request状态
+ *  用于标识不同类型的request状态   默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存
  */
 @property (nonatomic,assign) ZBApiType apiType;
 
 /**
- *  用于标识不同类型的request
+ *  用于标识不同类型的request    默认为GET
  */
 @property (nonatomic,assign) ZBMethodType methodType;
 
 /**
- *  操作状态
+ *  下载请求操作状态
  */
 @property (nonatomic,assign) ZBDownloadState  downloadState;
 
 /**
- *  请求参数的类型
+ *  请求参数的类型  单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
  */
 @property (nonatomic,assign) ZBRequestSerializerType requestSerializer;
 
 /**
- *  响应数据的类型
+ *  响应数据的类型  单次请求设置 响应格式 默认JSON，优先级大于 公共配置,不影响其他请求设置
  */
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
  *  接口(服务器地址)
- *  server 优先级大于 baseServer 
+ *  server 优先级大于公共配置 baseServer 
  */
 @property (nonatomic,copy) NSString *server;
 
@@ -50,12 +50,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy) NSString *url;
 
 /**
- *  提供给外部配置参数使用
+ *  提供给外部配置参数使用    如果是字典类型与公共配置 Parameters 兼容，如果是其他类型（字符串，数组等）与公共配置 Parameters不兼容，会自动屏蔽公共参数
  */
 @property (nonatomic,strong,nullable) id parameters;
 
 /**
- *  添加请求头
+ *  添加请求头  与公共配置 Headers 兼容
  */
 @property (nonatomic,strong,nullable) NSDictionary *headers;
 
@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong,nullable) NSArray *filtrationCacheKey;
 
 /**
- *  设置超时时间
+ *  设置超时时间   优先级 高于 公共配置,不影响其他请求设置
  */
 @property (nonatomic,assign) NSTimeInterval timeoutInterval;
 
@@ -218,30 +218,32 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  基础URL 域名
+ *  请求不单独设置域名server 时，默认会使用baseServer。
 */
 @property (nonatomic, copy, nullable) NSString *baseServer;
 
 /**
- *  参数
+ *  公共参数
+ *  请求正常情况都会携带此公共参数，但当请求的传参为数组或字符串 不会携带该参数
 */
 @property (nonatomic, strong, nullable) NSDictionary *parameters;
 
 /**
- *  请求头
+ *  公共请求头
 */
 @property (nonatomic, strong, nullable) NSDictionary *headers;
 
 /**
- *  请求的信息，可以用来本地注释和判断使用，不会传给服务器
+ *  公共请求的信息，可以用来本地注释和判断使用，不会传给服务器，
 */
 @property (nonatomic, strong, nullable) NSDictionary *userInfo;
 
 /**
- *  过滤parameters 里的随机参数
+ *  所有请求过滤parameters 里的随机参数
  */
 @property (nonatomic, strong, nullable) NSArray *filtrationCacheKey;
 /**
- *  超时时间
+ *  所有请求的超时时间
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
@@ -251,17 +253,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL consoleLog;
 
 /**
- *  请求参数的类型
+ *  所有请求参数的类型
  */
 @property (nonatomic, assign) ZBRequestSerializerType requestSerializer;
 
 /**
- *  响应数据的类型
+ *  所有响应数据的类型
  */
 @property (nonatomic, assign) ZBResponseSerializerType responseSerializer;
 
 /**
- *  请求失败,设置自动重试 请求次数 默认是0.
+ *  所有请求失败,设置自动重试 请求次数 默认是0.
  */
 @property (nonatomic, assign) NSUInteger retryCount;
 

@@ -38,10 +38,12 @@
     [self.view addSubview:self.tableView];
      
     /**
-     *  ZBRequestTypeRefresh          每次会重新请求 不存储缓存
+     *  ZBRequestTypeRefresh           每次会重新请求 不存储缓存
      *  ZBRequestTypeRefreshAndCache  每次会重新请求 存储，更新缓存
-     *  ZBRequestTypeCache            有缓存使用缓存 无缓存就重新请求 存储，更新缓存
-     *  ZBRequestTypeRefreshMore      每次会重新请求 不存储缓存 （业务类型，可不使用，只是为了区分上拉加载业务）
+     *  ZBRequestTypeCache             有缓存使用缓存 无缓存就重新请求 存储，更新缓存
+     *  ZBRequestTypeRefreshMore    每次会重新请求 不存储缓存 （业务类型，可不使用，只是为了区分上拉加载业务）
+     *  ZBRequestTypeKeepFirst         同一请求重复请求，请求结果没有响应的时候，使用第一次请求结果
+     *  ZBRequestTypeKeepLast         同一请求重复请求，请求结果没有响应的时候，使用最后一次请求结果
      *  支持内存缓存 和 沙盒缓存
      *  沙盒默认缓存路径/Library/Caches/ZBKit/AppCache
      */

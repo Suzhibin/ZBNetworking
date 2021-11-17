@@ -279,7 +279,7 @@ NSString *const _delegate =@"_delegate";
     }
     //=====================================================
     if (request.isBaseParameters && self.baseParameters.count > 0) {
-        if ([request.parameters isKindOfClass:[NSDictionary class]]){
+        if ([request.parameters isKindOfClass:[NSDictionary class]]||request.parameters==nil){
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
             [parameters addEntriesFromDictionary:self.baseParameters];
             if([request.parameters allValues].count > 0) {

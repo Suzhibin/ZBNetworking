@@ -14,28 +14,28 @@
 @interface ZBRequestManager : NSObject
 
 /**
- *  公共配置方法
+ *  公共配置方法   此回调只会在配置时调用一次，如果不变的公共参数可在此配置。
  *
  *  @param block           请求配置  Block
  */
 + (void)setupBaseConfig:(void(^_Nullable)(ZBConfig * _Nullable config))block;
 
 /**
- *  插件机制
+ *  插件机制    此回调每次请求时调用一次，如果公共参数是动态的 可在此配置。
  *
  *  自定义 请求 处理逻辑的方法
  *  @param requestHandler        处理请求前的逻辑 Block
  */
 + (void)setRequestProcessHandler:(ZBRequestProcessBlock _Nullable )requestHandler;
 /**
- *  插件机制
+ *  插件机制   此回调每次请求成功时调用一次。
  *
  *  自定义 响应 处理逻辑的方法
  *  @param responseHandler       处理响应结果的逻辑 Block
  */
 + (void)setResponseProcessHandler:(ZBResponseProcessBlock _Nullable )responseHandler;
 /**
- *  插件机制
+ *  插件机制   此回调每次请求失败时调用一次。
  *
  *  自定义 错误 处理逻辑的方法
  *  @param errorHandler          处理响应结果的逻辑 Block

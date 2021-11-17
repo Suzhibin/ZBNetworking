@@ -15,14 +15,12 @@
     /**
      基础配置
      需要在请求之前配置，设置后所有请求都会带上 此基础配置
+     此回调只会在配置时调用一次，如果不变的公共参数可在此配置。
      */
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
     parameters[@"jianshu"] = @"https://www.jianshu.com/p/55cda3341d11";
     parameters[@"iap"]=@"0";
-    NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
-    NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
-    parameters[@"timeString"] =timeString;//时间戳
 
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
@@ -60,7 +58,8 @@
     /**
        插件机制
        自定义 所有 请求,响应,错误 处理逻辑的方法
-        在这里 你可以根据request对象的参数 添加你的逻辑 比如server,url,userInfo,parameters
+       在这里 你可以根据request对象的参数 添加你的逻辑 比如server,url,userInfo,parameters
+       此回调每次请求时调用一次，如果公共参数是动态的 可在此配置。
      
        比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
            2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
@@ -72,17 +71,18 @@
     //预处理 请求
 
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
-        NSLog(@"插件响应 请求之前 可以进行参数加工");
-        if ([request.userInfo[@"tag"]isEqualToString:@"10086"]) {
-            //为某个服务器 单独添加公共参数
-            parameters[@"pb"] = @"从插件机制添加：pb这个参数，只会在下载请求的参数里显示";
-            [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
-           // request.parameters=parameters;//这样添加 其他参数被删除
-            
-            headers[@"Token"] = @"从插件机制添加：Token";
-            request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
-
-        }
+        NSLog(@"插件响应 请求之前 可以进行参数加工,动态参数可在此添加");
+        
+        NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
+        NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
+        [request.parameters setValue:timeString forKey:@"timeString"];//时间戳
+        
+        parameters[@"pb"] = @"从插件机制添加";
+        [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
+       // request.parameters=parameters;//这样添加 其他参数被删除
+        
+        headers[@"Token"] = @"从插件机制添加：Token";
+        request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
 
         if ([request.userInfo[@"tag"]isEqualToString:@"9999"]) {
               
