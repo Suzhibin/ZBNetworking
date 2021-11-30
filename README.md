@@ -70,14 +70,12 @@
 ```objective-c
  /**
      基础配置
-     需要在请求之前配置，设置后所有请求都会带上 此基础配置
+     需要在请求之前配置，设置后所有请求都会带上 此基础配置 
+     此回调只会在配置时调用一次，如果不变的公共参数可在此配置,动态的参数不要在此配置
      */
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
     parameters[@"jianshu"] = @"https://www.jianshu.com/p/55cda3341d11";
-    NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
-    NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
-    parameters[@"timeString"] =timeString;//时间戳
 
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
@@ -115,7 +113,9 @@
     /**
        插件机制
        自定义 所有 请求,响应,错误 处理逻辑的方法
-
+       在这里 你可以根据request对象的参数 添加你的逻辑 比如server,url,userInfo,parameters
+       此回调每次请求时调用一次，如果公共参数是动态的 可在此配置。
+       
        比如 1.自定义缓存逻辑 感觉ZBNetworking缓存不好，想使用yycache 等
            2.自定义响应逻辑 服务器会在成功回调里做 返回code码的操作
            3.一个应用有多个服务器地址，可在此进行配置
@@ -124,25 +124,46 @@
            6. ......
        */
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
-         NSLog(@"请求之前");
-         if ([request.server isEqualToString:m4_URL]) {
-            //为某个服务器 单独添加公共参数
-            [request.parameters setValue:@"pb这个参数，只会在下载文件的参数里显示" forKey:@"pb"];
-        }
-         headers[@"Token"] = @"从插件机制添加：Token";
-          request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
+         NSLog(@"插件响应 请求之前 可以进行参数加工,动态参数可在此添加");
+        NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
+        NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
+        [request.parameters setValue:timeString forKey:@"timeString"];//时间戳
+        
+        parameters[@"pb"] = @"从插件机制添加";
+        [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
+       // request.parameters=parameters;//这样添加 其他参数被删除
+        
+        headers[@"Token"] = @"从插件机制添加：Token";
+        request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
     }];
     
     [ZBRequestManager setResponseProcessHandler:^id(ZBURLRequest * _Nullable request, id  _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error) {
         NSLog(@"成功回调 数据返回之前");
-        NSArray * authors=responseObject[@"authors"]
-        NSString * errorCode= [[authors objectAtIndex:0]objectForKey:@"errorCode"];
-         if ([orCode isEqualToString:@"401"]) {//假设401 登录过期
-             NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-             NSLog(@"重新开始业务请求：%@ 参数：%@",request.url,request.parameters[@"path"]);
-              //⚠️给*error指针 错误信息，网络请求就会走 失败回调
-               *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
-          }
+       /**
+            网络请求 自定义响应结果的处理逻辑
+            比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
+            */
+            // 举个例子 假设服务器成功回调内返回了code码
+            NSDictionary *data= responseObject[@"Data"];
+            NSInteger IsError= [data[@"IsError"] integerValue];
+            if (IsError==1) {//假设与服务器约定 IsError==1代表错误
+                NSString *errorStr=responseObject[@"Error"];//服务器返回的 错误内容
+                NSString * errorCode=[data objectForKey:@"HttpStatusCode"];
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey:errorStr};
+                errorCode= @"401";//假设401 登录过期或Token 失效
+                if ([errorCode integerValue]==401) {
+                    request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
+                    userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+                    //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 已失败的网络请求，3次不够的话，次数可以多设置一些。
+                }else{
+                    //吐司提示错误  errorStr
+                }
+                //⚠️给*error指针 错误信息，网络请求就会走 失败回调
+                *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
+            }else{
+                //请求成功 不对数据进行加工过滤等操作，也不用 return
+            }
+            return nil;
     }];
     [ZBRequestManager setErrorProcessHandler:^(ZBURLRequest * _Nullable request, NSError * _Nullable error) {
         if (error.code==NSURLErrorCancelled){
