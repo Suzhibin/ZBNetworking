@@ -91,11 +91,16 @@
          如果同一个环境，有多个服务器地址，公共参数不同有两种方式
          1.在每个请求单独添加parameters
          2.在插件机制里 预处理 请求。判断对应的server添加
+         3.此回调只会在配置时调用一次，如果不变的公共参数可在此配置，动态的参数不要在此配置。可以在插件 setRequestProcessHandler 方法内添加
          */
         config.parameters=parameters;
         // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
         config.filtrationCacheKey=@[@"timeString"];
-        config.headers=headers;//请求头
+        /**
+         config.headers公共参数
+         .此回调只会在配置时调用一次，如果请求头内的Token 是动态获取 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
+         */
+        config.headers=headers;//请求头 
         config.requestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.responseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
         config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
@@ -128,7 +133,7 @@
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
         NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
         [request.parameters setValue:timeString forKey:@"timeString"];//时间戳
-        
+        //此回调每次请求时调用一次，如果公共参数是动态的 可在此配置
         parameters[@"pb"] = @"从插件机制添加";
         [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
        // request.parameters=parameters;//这样添加 其他参数被删除
