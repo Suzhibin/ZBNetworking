@@ -21,7 +21,7 @@
 + (void)setupBaseConfig:(void(^_Nullable)(ZBConfig * _Nullable config))block;
 
 /**
- *  插件机制    此回调每次请求时调用一次，如果公共参数是动态的 可在此配置。
+ *  插件机制    此回调每次请求前调用一次，如果公共参数是动态的 可在此配置。
  *
  *  自定义 请求 处理逻辑的方法
  *  @param requestHandler        处理请求前的逻辑 Block
@@ -191,6 +191,16 @@
  *  ZBNetworkReachabilityStatusViaWiFi      表示 `WiFi`
  */
 + (ZBNetworkReachabilityStatus)networkReachability;
+
+/**
+ *  动态获取当前网络的状态值，
+ *  @param block         当前网络的状态值
+ *  ZBNetworkReachabilityStatusUnknown      表示 `Unknown`，
+ *  ZBNetworkReachabilityStatusNotReachable 表示 `NotReachable
+ *  ZBNetworkReachabilityStatusViaWWAN      表示 `WWAN`
+ *  ZBNetworkReachabilityStatusViaWiFi      表示 `WiFi`
+ */
++ (void)setReachabilityStatusChangeBlock:(nullable void (^)(ZBNetworkReachabilityStatus status))block;
 
 /**
  *  获取下载文件

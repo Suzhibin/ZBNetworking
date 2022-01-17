@@ -19,7 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBApiType apiType;
 
 /**
- *  用于标识不同类型的request    默认为GET
+ *  用于标识不同的请求类型
+ *  默认请求类型为 GET请求
+ *  可在公共配置  setupBaseConfig方法内   更改默认请求类型config.methodType=
  */
 @property (nonatomic,assign) ZBMethodType methodType;
 
@@ -29,12 +31,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBDownloadState  downloadState;
 
 /**
- *  请求参数的类型  单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
+ *  请求参数的类型
+ *  单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
  */
 @property (nonatomic,assign) ZBRequestSerializerType requestSerializer;
 
 /**
- *  响应数据的类型  单次请求设置 响应格式 默认JSON，优先级大于 公共配置,不影响其他请求设置
+ *  响应数据的类型
+ *  单次请求设置 响应格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
  */
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
@@ -50,50 +54,52 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy) NSString *url;
 
 /**
- *  提供给外部配置参数使用    如果是字典类型与公共配置 Parameters 兼容，如果是其他类型（字符串，数组等）与公共配置 Parameters不兼容，会自动屏蔽公共参数
+ *  配置参数
+ *  如果是字典类型与公共配置 Parameters 兼容，如果是其他类型（字符串，数组等）与公共配置 Parameters不兼容，会自动屏蔽公共参数
  */
 @property (nonatomic,strong,nullable) id parameters;
 
 /**
- *  添加请求头  与公共配置 Headers 兼容
+ *  添加请求头
+ *  与公共配置 Headers 兼容
  */
 @property (nonatomic,strong,nullable) NSDictionary *headers;
 
 /**
  *  过滤parameters 里的随机参数
+ *  与公共配置 filtrationCacheKey 兼容
  */
 @property (nonatomic,strong,nullable) NSArray *filtrationCacheKey;
 
 /**
- *  设置超时时间   优先级 高于 公共配置,不影响其他请求设置
+ *  设置超时时间
+ *  优先级 高于 公共配置,不影响其他请求设置
  */
 @property (nonatomic,assign) NSTimeInterval timeoutInterval;
 
 /**
  *  请求失败,设置自动重试 请求次数 默认是0.
+ *  单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
  */
 @property (nonatomic,assign) NSUInteger retryCount;
 
 /**
- *  当前请求的信息，可以用来区分具有相同上下文的请求
+ *  当前请求的信息，可以用来区分具有相同上下文的请求，不会传给服务器，
  */
 @property (nonatomic,strong,nullable) NSDictionary *userInfo;
 
 /**
  *  是否使用 公共配置的 服务器 默认YES
- *  只在请求设置时生效
  */
 @property (nonatomic,assign) BOOL isBaseServer;
 
 /**
  *  是否使用 公共配置的 参数 默认YES
- *  只在请求设置时生效
  */
 @property (nonatomic,assign) BOOL isBaseParameters;
 
 /**
  *  是否使用 公共配置的  请求头 默认YES
- *  只在请求设置时生效
  */
 @property (nonatomic,assign) BOOL isBaseHeaders;
 
@@ -132,6 +138,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) BOOL consoleLog;
 @property (nonatomic,assign) BOOL isRequestSerializer;
 @property (nonatomic,assign) BOOL isResponseSerializer;
+@property (nonatomic,assign) BOOL isMethodType;
 /**
  *  为上传请求提供数据
  */
@@ -230,6 +237,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  公共请求头
+ *  与单次请求配置 Headers 兼容
 */
 @property (nonatomic, strong, nullable) NSDictionary *headers;
 
@@ -240,10 +248,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  所有请求过滤parameters 里的随机参数
+ *  与单次请求配置 filtrationCacheKey 兼容
  */
 @property (nonatomic, strong, nullable) NSArray *filtrationCacheKey;
 /**
  *  所有请求的超时时间
+ *  优先级 小于 单次请求的设置
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
@@ -254,16 +264,28 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  所有请求参数的类型
+ *  全局设置 请求格式 默认JSON
+ *  优先级 小于 单次请求的设置
  */
 @property (nonatomic, assign) ZBRequestSerializerType requestSerializer;
 
 /**
  *  所有响应数据的类型
+ *  全局设置 响应格式 默认JSON
+ *  优先级 小于 单次请求的设置
  */
 @property (nonatomic, assign) ZBResponseSerializerType responseSerializer;
 
 /**
+ *  全局设置 所有请求的 默认请求类型
+ *  优先级 小于 单次请求的设置
+ *  如果服务器给的接口大多不是get 请求，可以在此更改默认请求类型。单次默认类型的请求，就不用在标明请求类型了。
+ */
+@property (nonatomic, assign) ZBMethodType methodType;
+
+/**
  *  所有请求失败,设置自动重试 请求次数 默认是0.
+ *  优先级 小于 单次请求的设置
  */
 @property (nonatomic, assign) NSUInteger retryCount;
 
@@ -275,6 +297,7 @@ NS_ASSUME_NONNULL_BEGIN
 //===========内部调用===============
 @property (nonatomic, assign) BOOL isRequestSerializer;
 @property (nonatomic, assign) BOOL isResponseSerializer;
+@property (nonatomic, assign) BOOL isMethodType;
 NS_ASSUME_NONNULL_END
 @end
 

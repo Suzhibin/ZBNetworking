@@ -77,6 +77,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSInteger)networkReachability;
 
 /**
+ *  动态获取 当前网络的状态值，-1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
+ */
+- (void)setReachabilityStatusChangeBlock:(void (^)(NSInteger status))block;
+
+/**
  *  取消单个请求任务
  *  @param identifier        请求identifier
  */

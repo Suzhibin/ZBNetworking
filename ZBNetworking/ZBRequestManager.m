@@ -292,6 +292,8 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (void)successWithResponse:(NSURLResponse *)response responseObject:(id)responseObject request:(ZBURLRequest *)request{
+    [request setValue:response forKey:_response];
+    [request setValue:@(NO) forKey:_isCache];
     id result=[self responsetSerializerConfig:request responseObject:responseObject];
     if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
         NSError *processError = nil;
@@ -307,8 +309,6 @@ NSString *const zb_downloadPath =@"AppDownload";
     if (request.apiType == ZBRequestTypeRefreshAndCache||request.apiType == ZBRequestTypeCache) {
         [self storeObject:responseObject request:request];
     }
-    [request setValue:response forKey:_response];
-    [request setValue:@(NO) forKey:_isCache];
     [self successWithCacheCallbackForResult:result forRequest:request];
 }
 
@@ -334,6 +334,8 @@ NSString *const zb_downloadPath =@"AppDownload";
         if (request.consoleLog==YES) {
             [self printCacheInfoWithkey:key filePath:filePath request:request];
         }
+        [request setValue:filePath forKey:_filePath];
+        [request setValue:@(YES) forKey:_isCache];
         id result=[self responsetSerializerConfig:request responseObject:data];
         if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
             NSError *processError = nil;
@@ -342,8 +344,6 @@ NSString *const zb_downloadPath =@"AppDownload";
                 result = newResult;
             }
         }
-        [request setValue:filePath forKey:_filePath];
-        [request setValue:@(YES) forKey:_isCache];
         [self successWithCacheCallbackForResult:result forRequest:request];
     }];
 }
@@ -385,6 +385,10 @@ NSString *const zb_downloadPath =@"AppDownload";
 
 + (ZBNetworkReachabilityStatus)networkReachability{
     return [[ZBRequestEngine defaultEngine]networkReachability];
+}
+
++ (void)setReachabilityStatusChangeBlock:(void (^)(ZBNetworkReachabilityStatus status))block{
+    [[ZBRequestEngine defaultEngine]setReachabilityStatusChangeBlock:block];
 }
 
 #pragma mark - 下载获取文件

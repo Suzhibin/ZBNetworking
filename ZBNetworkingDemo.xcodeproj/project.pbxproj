@@ -32,6 +32,7 @@
 		9F244A582170D92500482E41 /* HomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A572170D92500482E41 /* HomeModel.m */; };
 		9F8959422486523500559BEC /* RequestTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8959412486523500559BEC /* RequestTool.m */; };
 		9F9177B32489080600DF1B9D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F9177B22489080600DF1B9D /* WebKit.framework */; };
+		9F94958F27912C98002D8CAB /* APMModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F94958E27912C98002D8CAB /* APMModel.m */; };
 		9F9E6729255A36AB003CEB7E /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F9E6728255A36AB003CEB7E /* PlayerViewController.m */; };
 		9FB4BB3823D4658E0013EA17 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FB4BB3723D4658E0013EA17 /* DataManager.m */; };
 /* End PBXBuildFile section */
@@ -104,6 +105,8 @@
 		9F8959402486523500559BEC /* RequestTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RequestTool.h; sourceTree = "<group>"; };
 		9F8959412486523500559BEC /* RequestTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RequestTool.m; sourceTree = "<group>"; };
 		9F9177B22489080600DF1B9D /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		9F94958D27912C98002D8CAB /* APMModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APMModel.h; sourceTree = "<group>"; };
+		9F94958E27912C98002D8CAB /* APMModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APMModel.m; sourceTree = "<group>"; };
 		9F9E6727255A36AB003CEB7E /* PlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
 		9F9E6728255A36AB003CEB7E /* PlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
 		9FB4BB3623D4658E0013EA17 /* DataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
@@ -213,6 +216,8 @@
 				7DF826341D5815BE000D1109 /* AppDelegate.m */,
 				7DF826361D5815BE000D1109 /* ViewController.h */,
 				7DF826371D5815BE000D1109 /* ViewController.m */,
+				9F94958D27912C98002D8CAB /* APMModel.h */,
+				9F94958E27912C98002D8CAB /* APMModel.m */,
 				9F8959402486523500559BEC /* RequestTool.h */,
 				9F8959412486523500559BEC /* RequestTool.m */,
 				9FB4BB3623D4658E0013EA17 /* DataManager.h */,
@@ -373,6 +378,7 @@
 				TargetAttributes = {
 					7DF8262C1D5815BE000D1109 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = E6LU458855;
 					};
 					7DF826451D5815BE000D1109 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -477,6 +483,7 @@
 				9F244A502170D53700482E41 /* MethodViewController.m in Sources */,
 				7DD0B4381E65629500E5634E /* ZBCacheManager.m in Sources */,
 				7DF826321D5815BE000D1109 /* main.m in Sources */,
+				9F94958F27912C98002D8CAB /* APMModel.m in Sources */,
 				7D10B4601F45543E00E87520 /* ZBRequestManager.m in Sources */,
 				7D4C69CD1D6D888C006CCE4C /* HomeViewController.m in Sources */,
 				7D4C69D01D6D8BA5006CCE4C /* DetailViewController.m in Sources */,
@@ -624,6 +631,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = E6LU458855;
 				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.2.0;
@@ -638,6 +646,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = E6LU458855;
 				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.2.0;

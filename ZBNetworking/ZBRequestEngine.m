@@ -27,6 +27,7 @@ NSString *const _delegate =@"_delegate";
 @property (nonatomic, assign) NSUInteger baseRetryCount;
 @property (nonatomic, assign) ZBRequestSerializerType baseRequestSerializer;
 @property (nonatomic, assign) ZBResponseSerializerType baseResponseSerializer;
+@property (nonatomic, assign) ZBMethodType baseMethodType;
 @property (nonatomic, assign) BOOL consoleLog;
 
 @end
@@ -182,6 +183,11 @@ NSString *const _delegate =@"_delegate";
 - (NSInteger)networkReachability {
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
+
+- (void)setReachabilityStatusChangeBlock:(void (^)(NSInteger status))block{
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:block];
+}
+
 //请求参数的格式
 - (void)requestSerializerConfig:(ZBURLRequest *)request{
     self.requestSerializer =request.requestSerializer==ZBHTTPRequestSerializer ?[AFHTTPRequestSerializer serializer]:[AFJSONRequestSerializer serializer];
@@ -219,6 +225,9 @@ NSString *const _delegate =@"_delegate";
     }
     if (config.isResponseSerializer==YES) {
         self.baseResponseSerializer=config.responseSerializer;
+    }
+    if (config.isMethodType==YES) {
+        self.baseMethodType=config.methodType;
     }
     if (config.retryCount) {
         self.baseRetryCount=config.retryCount;
@@ -315,6 +324,10 @@ NSString *const _delegate =@"_delegate";
     //=====================================================
     if (request.isResponseSerializer==NO) {
         request.responseSerializer=self.baseResponseSerializer;
+    }
+    //=====================================================
+    if (request.isMethodType==NO) {
+        request.methodType=self.baseMethodType;
     }
     //=====================================================
     if (self.baseRetryCount) {

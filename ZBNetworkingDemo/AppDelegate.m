@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "CustomTabBarController.h"
 #import "ZBNetworking.h"
+#import "RequestTool.h"
 @interface AppDelegate ()
 
 @end
@@ -23,7 +24,15 @@
     NSString *cachePath = [[ZBCacheManager sharedInstance]ZBKitPath];
     NSLog(@"cachePath = %@",cachePath);
 
-   
+    
+    #pragma mark -  公共配置 RequestTool
+    /**
+     公共配置
+     插件机制
+     证书设置
+     */
+    [RequestTool setupPublicParameters]; //设置在所有请求前 一般放在AppDelegate 中调用
+    
     CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
     
     self.window.rootViewController = tabbar;

@@ -9,13 +9,14 @@
 #import "RequestTool.h"
 #import "ZBNetworking.h"
 #import "DataManager.h"
+#import "APMModel.h"
 @implementation RequestTool
 + (void)setupPublicParameters{
     #pragma mark -  公共配置
     /**
      基础配置
      需要在请求之前配置，设置后所有请求都会带上 此基础配置
-     此回调只会在配置时调用一次，如果不变的公共参数可在此配置。
+     此回调只会调用一次。
      */
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
@@ -23,7 +24,7 @@
     parameters[@"iap"]=@"0";
 
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
+   // headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
 
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
         /**
@@ -36,13 +37,19 @@
          如果同一个环境，有多个服务器地址，公共参数不同有两种方式
          1.在每个请求单独添加parameters
          2.在插件机制里 预处理 请求。判断对应的server添加
+         3.此回调只会在配置时调用一次，如果不变的公共参数可在此配置，动态的参数不要在此配置。可以在插件 setRequestProcessHandler 方法内添加
          */
         config.parameters=parameters;
         // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
         config.filtrationCacheKey=@[@"timeString"];
+        /**
+         config.headers公共参数
+         .此回调只会在配置时调用一次，如果请求头内的Token 是动态获取 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
+         */
         config.headers=headers;//请求头
         config.requestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.responseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
+        //config.methodType=ZBMethodTypePOST;//更改默认请求类型，如果服务器给的接口大多不是get 请求，可以在此更改。单次请求，就不用在标明请求类型了。
         config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
         //config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
@@ -53,7 +60,7 @@
          @"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"
          */
     }];
-    
+     
     #pragma mark -  插件机制
     /**
        插件机制
@@ -73,10 +80,12 @@
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
         NSLog(@"插件响应 请求之前 可以进行参数加工,动态参数可在此添加");
         
+        request.url=[self urlProtect:request.url];//可在此 对url 进行加工过滤处理
+        
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
         NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
         [request.parameters setValue:timeString forKey:@"timeString"];//时间戳
-        
+        //此回调每次请求时调用一次，如果公共参数是动态的 可在此配置
         parameters[@"pb"] = @"从插件机制添加";
         [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
        // request.parameters=parameters;//这样添加 其他参数被删除
@@ -111,7 +120,9 @@
             }
         }
         if ([request.userInfo[@"tag"]isEqualToString:@"5555"]) {
-            //json 转模型
+            // 对数据进行加工过滤， json 转模型等
+            NSDictionary *resultData = responseObject[@"data"];
+            return resultData;  //数据进行加工过滤过 必须return
         }
     
         if ([request.userInfo[@"tag"]isEqualToString:@"7777"]) {
@@ -138,7 +149,8 @@
                 //⚠️给*error指针 错误信息，网络请求就会走 失败回调
                 *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
             }else{
-                //请求成功
+                //请求成功 不对数据进行加工过滤等操作，也不用 return
+                
             }
         }
 
@@ -162,6 +174,28 @@
             NSLog(@"插件响应 请求失败");
         }
     }];
+    
+    #pragma mark - 动态获取网络状态
+    [ZBRequestManager setReachabilityStatusChangeBlock:^(ZBNetworkReachabilityStatus status) {
+        switch (status) {
+            case ZBNetworkReachabilityStatusUnknown:
+                NSLog(@"未知网络");
+                break;
+            case ZBNetworkReachabilityStatusNotReachable:
+                NSLog(@"断网");
+                break;
+            case ZBNetworkReachabilityStatusViaWWAN:
+                NSLog(@"蜂窝数据");
+                break;
+            case ZBNetworkReachabilityStatusViaWiFi:
+                NSLog(@"WiFi网络");
+                break;
+            default:
+                break;
+        }
+    }];
+    //默认已经开启了 检测网络状态startMonitoring
+    
     #pragma mark -  证书设置
     /**
      证书设置
@@ -181,5 +215,93 @@
         [ZBRequestEngine defaultEngine].securityPolicy=securityPolicy;
     }
    
+    #pragma mark -  APM 监控
+    /**
+        APM 监控
+        注意 使用需要 iOS10 以上  ，AFNetworking4.0以上。
+        setTaskDidFinishCollectingMetricsBlock 实现请求的 网络指标上报
+     */
+    [[ZBRequestEngine defaultEngine] setTaskDidFinishCollectingMetricsBlock:^(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLSessionTaskMetrics * _Nullable metrics) {
+        [metrics.transactionMetrics enumerateObjectsUsingBlock:^(NSURLSessionTaskTransactionMetrics * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.resourceFetchType == NSURLSessionTaskMetricsResourceFetchTypeNetworkLoad){
+                APMModel *model = [[APMModel alloc] init];
+                //token为 Header的自定义参数  在插件 setRequestProcessHandler 添加的
+                model.token = obj.request.allHTTPHeaderFields[@"Token"];
+                
+                model.req_url = [obj.request.URL absoluteString];
+                model.req_params = [obj.request.URL parameterString];
+                model.req_headers = obj.request.allHTTPHeaderFields;
+                
+                if (@available(iOS 13.0, *)) {
+                    model.req_header_byte = obj.countOfRequestHeaderBytesSent;
+                    model.req_body_byte = obj.countOfRequestBodyBytesSent;
+                    
+                    model.res_header_byte = obj.countOfResponseHeaderBytesReceived;
+                    model.res_body_byte = obj.countOfResponseBodyBytesReceived;
+                }
+            
+                if (@available(iOS 13.0, *)) {
+                    model.local_ip = obj.localAddress;
+                    model.local_port = obj.localPort.integerValue;
+                    
+                    model.remote_ip = obj.remoteAddress;
+                    model.remote_port = obj.remotePort.integerValue;
+                }
+                
+                if (@available(iOS 13.0, *)) {
+                    model.cellular = obj.cellular;
+                }
+                
+                NSHTTPURLResponse *response = (NSHTTPURLResponse *)obj.response;
+                if ([response isKindOfClass:NSHTTPURLResponse.class]){
+                    model.res_headers = response.allHeaderFields;
+                    model.status_code = response.statusCode;
+                }
+                
+                model.http_method = obj.request.HTTPMethod;
+                model.protocol_name = obj.networkProtocolName;
+                model.proxy_connection = obj.proxyConnection;
+                
+                if (obj.domainLookupStartDate &&
+                    obj.domainLookupEndDate){
+                    model.dns_time = ceil([obj.domainLookupEndDate timeIntervalSinceDate:obj.domainLookupStartDate] * 1000);
+                }
+                
+                if (obj.connectStartDate &&
+                    obj.connectEndDate){
+                    model.tcp_time = ceil([obj.connectEndDate timeIntervalSinceDate:obj.connectStartDate] * 1000);
+                }
+               
+                if (obj.secureConnectionStartDate &&
+                    obj.secureConnectionEndDate){
+                    model.ssl_time = ceil([obj.secureConnectionEndDate timeIntervalSinceDate:obj.secureConnectionStartDate] * 1000);
+                }
+                
+                if (obj.requestStartDate &&
+                    obj.requestEndDate){
+                    model.req_time = ceil([obj.requestEndDate timeIntervalSinceDate:obj.requestStartDate] * 1000);
+                }
+                
+                if (obj.responseStartDate &&
+                    obj.responseEndDate){
+                    model.res_time = ceil([obj.responseEndDate timeIntervalSinceDate:obj.responseStartDate] * 1000);
+                }
+                
+                if (obj.fetchStartDate &&
+                    obj.responseEndDate){
+                    model.req_total_time = ceil([obj.responseEndDate timeIntervalSinceDate:obj.fetchStartDate] * 1000);
+                }
+                NSLog(@"在此可进行 网络指标上报：%@",model);
+            }
+        }];
+    }];
+
+}
+//URL处理 不可见字符的问题 https://github.com/Suzhibin/ZBNetworking/issues/18
++(NSString *)urlProtect:(NSString *)url{
+    if ([url containsString:@"\u200B"]) {
+        return [url stringByReplacingOccurrencesOfString:@"\u200B" withString:@""];
+    }
+    return url;
 }
 @end

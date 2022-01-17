@@ -36,6 +36,11 @@
     _isResponseSerializer=YES;
 }
 
+- (void)setMethodType:(ZBMethodType)methodType{
+    _methodType=methodType;
+    _isMethodType=YES;
+}
+
 - (void)cleanAllCallback{
     _successBlock = nil;
     _failureBlock = nil;
@@ -186,4 +191,8 @@
     _isResponseSerializer=YES;
 }
 
+- (void)setMethodType:(ZBMethodType)methodType{
+    _methodType=methodType;
+    _isMethodType=YES;
+}
 @end

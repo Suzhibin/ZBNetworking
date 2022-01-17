@@ -19,21 +19,18 @@
 @end
 
 @implementation HomeViewController
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    //获取网络状态
+    ZBNetworkReachabilityStatus status=[ZBRequestManager networkReachability];
+    NSLog(@"当前是否有网：%d\n  是否为WiFi:%d  状态：%ld",[ZBRequestManager isNetworkReachable],[ZBRequestManager isNetworkWiFi],status);
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    ZBNetworkReachabilityStatus status=[ZBRequestManager networkReachability];
-     NSLog(@"当前是否有网：%d\n  是否为WiFi:%d  状态：%ld",[ZBRequestManager isNetworkReachable],[ZBRequestManager isNetworkWiFi],status);
-    [DataManager sharedInstance].tag=@"1111";
     
-    #pragma mark -  公共配置 RequestTool
-    /**
-     公共配置
-     插件机制
-     证书设置
-     */
-    [RequestTool setupPublicParameters]; //设置在所有请求前 一般放在AppDelegate 中调用
-
+    [DataManager sharedInstance].tag=@"1111";
+ 
     [self.tableView addSubview:self.refreshControl];
     [self.view addSubview:self.tableView];
      
@@ -65,8 +62,8 @@
     headers[@"headers"] = @"herader";
     /**
      数组类型参数,这种公共参数一般都在请求头里，
-     可以在setupBaseConfig 添加公共headers
-     也可以在 预处理方法setRequestProcessHandler单独添加公共参数
+     可以在setupBaseConfig 添加 不变动的公共headers
+     也可以在 预处理方法setRequestProcessHandler 添加动态公共参数
       NSArray  *parameters=@[@{@"path":@"HomeViewController",@"pa":@"aaaa"},@{@"pc":@"bbbb"}];
      */
     /**
@@ -80,16 +77,12 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
        //request.server=server_URL; 优先级大于 公共配置baseServer 兼容了同一环境，有多个服务器地址的问题
         request.url=list_URL;
-        request.methodType=ZBMethodTypeGET;//默认为GET
+        request.methodType=ZBMethodTypeGET;//设置请求类型 优先级大于公共配置
         request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
         request.parameters=parameters;//如果是字典类型与公共配置 Parameters 兼容，如果是其他类型与公共配置 Parameters不兼容，会自动屏蔽公共参数
        // request.isBaseParameters=NO;//本次 请求不使用 公共参数
         request.headers= headers;//与公共配置 Headers 兼容
-        /**
-         多次请求同一个接口 保留第一次或最后一次请求结果 只在请求时有用  读取缓存无效果。默认ZBResponseKeepNone 什么都不做
-         使用场景是在 重复点击造成的 多次请求，如发帖，评论，搜索等业务
-         */
-       // request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
+        request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
        // request.filtrationCacheKey=@[@""];//过滤变动参数 与公共配置 filtrationCacheKey 兼容
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 公共配置,不影响其他请求设置
@@ -127,7 +120,7 @@
     } failure:^(NSError * _Nullable error) {
         [self.refreshControl endRefreshing];  //结束刷新
     } finished:^(id responseObject, NSError *error, ZBURLRequest *request) {
-        NSLog(@"请求完成userInfo:%@",request.userInfo);
+        NSLog(@"请求完成");
     }];
 }
 

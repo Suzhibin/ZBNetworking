@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, ZBResponseSerializerType) {
     ZBHTTPResponseSerializer
 };
 /**
- 操作状态
+ 下载请求的 操作状态
  */
 typedef NS_ENUM(NSUInteger, ZBDownloadState) {
     /** 开始请求*/
