@@ -3,7 +3,7 @@
  本来想发布到cocoaPods的发现名字已经被使用了，也不想改名了。大家就手动下载用吧
 
 [变更日志](https://github.com/Suzhibin/ZBNetworking/blob/master/CHANGELOG)
- 
+[码云gitee] https://gitee.com/AndiSuzhibin/ZBNetworking
 优点:
 
 1.请求类型丰富 /**GET请求*//**POST请求*//**PUT请求*//**PATCH请求*//**DELETE请求*//**Upload请求*//**DownLoad请求*/
