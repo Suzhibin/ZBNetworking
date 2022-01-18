@@ -181,8 +181,15 @@
         }
     }];
 ```
-#### 动态获取网络状态
+#### 获取网络状态
 ```
+  //获取网络状态
+    ZBNetworkReachabilityStatus status=[ZBRequestManager networkReachability];
+    //当前是否有网
+    [ZBRequestManager isNetworkReachable];
+    //否为WiF
+    [ZBRequestManager isNetworkWiFi];
+    //动态获取网络状态
     [ZBRequestManager setReachabilityStatusChangeBlock:^(ZBNetworkReachabilityStatus status) {
         switch (status) {
             case ZBNetworkReachabilityStatusUnknown:
