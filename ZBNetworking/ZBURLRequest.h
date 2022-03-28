@@ -43,13 +43,19 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
- *  接口(服务器地址)
- *  server 优先级大于公共配置 baseServer 
+ * 请求的服务器地址，例如。"https://github.com/Suzhibin/"，默认为nil。
+ * server 优先级大于公共配置 baseServer
  */
 @property (nonatomic,copy) NSString *server;
 
 /**
- *  接口(路径)
+ 请求的接口路径，例如。"ZBNetworking/issues"，默认为nil。
+ */
+@property (nonatomic,copy) NSString *path;
+
+/**
+ *  请求的最终URL，由' server '和' path '属性组合而成 例如："https://github.com/Suzhibin/ZBNetworking/issues"  默认为' nil
+ *  注意:当你手动设置' url '的值时，' server '和' api '属性将被忽略。
  */
 @property (nonatomic,copy) NSString *url;
 
@@ -293,6 +299,12 @@ NS_ASSUME_NONNULL_BEGIN
  *  添加响应数据 内容类型
  */
 @property (nonatomic, strong, nullable)NSArray *responseContentTypes;
+
+/**
+ HTTPMethodsEncodingParametersInURI，用于调整 不同请求类型的参数是否拼接url后 还是峰封装在request body内
+ 调用请求方法时，AFN会将参数以query string格式拼接到URL后面，默认除了GET，HEAD 和 DELETE 之外的请求方法的参数都将封装在request body内
+ */
+@property (nonatomic,strong,nullable) NSSet *HTTPMethodsEncodingParametersInURI;
 
 //===========内部调用===============
 @property (nonatomic, assign) BOOL isRequestSerializer;

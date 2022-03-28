@@ -8,6 +8,7 @@
 
 #ifndef ZBRequestConst_h
 #define ZBRequestConst_h
+#import <UIKit/UIKit.h>
 @class ZBURLRequest,ZBBatchRequest;
 
 /**
@@ -64,7 +65,9 @@ typedef NS_ENUM(NSInteger,ZBMethodType) {
     /**PATCH请求*/
     ZBMethodTypePATCH,
     /**DELETE请求*/
-    ZBMethodTypeDELETE
+    ZBMethodTypeDELETE,
+    /**HEAD请求*/
+    ZBMethodTypeHEAD
 };
 /**
  请求参数的格式.

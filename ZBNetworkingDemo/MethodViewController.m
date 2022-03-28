@@ -253,7 +253,9 @@
     parameters[@"p"]=@"1";
     for (int i = 0; i < 5; i++) {
         NSUInteger identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request) {
-            request.url=list_URL;
+            request.server=url_server;
+            request.path=url_path;
+            //request.url=[NSString stringWithFormat:@"%@%@",url_server,url_path];;
             request.parameters=parameters;
             request.methodType=ZBMethodTypeGET;//默认get
             request.apiType=keepType;

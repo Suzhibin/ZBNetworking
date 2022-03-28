@@ -75,8 +75,9 @@
      NSNumber * parameters=@(1213);
      */
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-       //request.server=server_URL; 优先级大于 公共配置baseServer 兼容了同一环境，有多个服务器地址的问题
-        request.url=list_URL;
+        //request.server=url_server;// 优先级大于 公共配置baseServer 兼容了同一环境，有多个服务器地址的问题
+        //request.path=url_path;
+        request.url=[NSString stringWithFormat:@"%@%@",url_server,url_path];
         request.methodType=ZBMethodTypeGET;//设置请求类型 优先级大于公共配置
         request.apiType=apiType;//（默认为ZBRequestTypeRefresh 不读取缓存，不存储缓存）
         request.parameters=parameters;//如果是字典类型与公共配置 Parameters 兼容，如果是其他类型与公共配置 Parameters不兼容，会自动屏蔽公共参数

@@ -107,10 +107,13 @@ NSString *const zb_downloadPath =@"AppDownload";
 
 #pragma mark - 发起请求
 + (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
-    
-    if ([request.url isEqualToString:@""]||request.url==nil)return 0;
-    
+        
     [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
+    
+    if ([request.url isEqualToString:@""]||request.url==nil){
+        NSLog(@"\n------------ZBNetworking------error info------begin------\n 请求失败 request.url 或 request.server + request.path不能为空 \n------------ZBNetworking------error info-------end-------");
+        return 0;
+    }
     
     id obj=nil;
     if ([ZBRequestEngine defaultEngine].requestProcessHandler) {

@@ -29,7 +29,7 @@ NSString *const _delegate =@"_delegate";
 @property (nonatomic, assign) ZBResponseSerializerType baseResponseSerializer;
 @property (nonatomic, assign) ZBMethodType baseMethodType;
 @property (nonatomic, assign) BOOL consoleLog;
-
+@property (nonatomic, strong) NSSet <NSString *> *baseHTTPMethodsEncodingParametersInURI;
 @end
 
 @implementation ZBRequestEngine{
@@ -91,6 +91,12 @@ NSString *const _delegate =@"_delegate";
         dataTask = [self PATCH:URLString parameters:request.parameters headers:nil success:success failure:failure];
     }else if (request.methodType==ZBMethodTypeDELETE){
         dataTask = [self DELETE:URLString parameters:request.parameters headers:nil success:success failure:failure];
+    }else if (request.methodType==ZBMethodTypeHEAD){
+        dataTask = [self HEAD:URLString parameters:request.parameters headers:nil success:^(NSURLSessionDataTask * _Nonnull task) {
+            if(success){
+                success(task,nil);
+            }
+        } failure:failure];
     }else{
         dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
     }
@@ -191,6 +197,9 @@ NSString *const _delegate =@"_delegate";
 //请求参数的格式
 - (void)requestSerializerConfig:(ZBURLRequest *)request{
     self.requestSerializer =request.requestSerializer==ZBHTTPRequestSerializer ?[AFHTTPRequestSerializer serializer]:[AFJSONRequestSerializer serializer];
+    if(self.baseHTTPMethodsEncodingParametersInURI.count>0){
+        self.requestSerializer.HTTPMethodsEncodingParametersInURI=self.baseHTTPMethodsEncodingParametersInURI;
+    }
 }
 
 //请求头设置
@@ -239,7 +248,9 @@ NSString *const _delegate =@"_delegate";
         [self.responseContentTypes addObjectsFromArray:config.responseContentTypes];
         self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
     }
-  
+    if (config.HTTPMethodsEncodingParametersInURI.count>0) {
+        self.baseHTTPMethodsEncodingParametersInURI=config.HTTPMethodsEncodingParametersInURI;
+    }
     self.consoleLog=config.consoleLog;
 }
 
@@ -267,16 +278,22 @@ NSString *const _delegate =@"_delegate";
         request.apiType=ZBRequestTypeKeepFirst;
     }
     //=====================================================
-    if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {
-        request.server=self.baseServerString;
+    if (request.url.length == 0) {
+        if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {
+            request.server=self.baseServerString;
+        }
+        if (request.path.length > 0) {
+            NSURL *baseURL = [NSURL URLWithString:request.server];
+            if ([[baseURL path] length] > 0 && ![[baseURL absoluteString] hasSuffix:@"/"]) {
+                           baseURL = [baseURL URLByAppendingPathComponent:@""];
+            }
+             
+            request.url= [[NSURL URLWithString:request.path relativeToURL:baseURL] absoluteString];
+        }else{
+            request.url = request.server;
+        }
     }
-    NSURL *baseURL = [NSURL URLWithString:request.server];
-            
-    if ([[baseURL path] length] > 0 && ![[baseURL absoluteString] hasSuffix:@"/"]) {
-                   baseURL = [baseURL URLByAppendingPathComponent:@""];
-    }
-     
-    request.url= [[NSURL URLWithString:request.url relativeToURL:baseURL] absoluteString];
+  
     //=====================================================
     if (self.baseTimeoutInterval) {
         NSTimeInterval timeout;
