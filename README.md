@@ -229,7 +229,7 @@
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
         request.retryCount=2;//请求失败 当次请求重新连接次数
-        request.timeoutInterval=10;//默认30 //优先级 高于 全局设置,不影响其他请求设置
+        request.timeoutInterval=10; //优先级 高于 全局设置,不影响其他请求设置
       
     }  success:^(id responseObj,ZBURLRequest * request){
         if (request.apiType==ZBRequestTypeRefresh) 
