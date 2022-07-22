@@ -207,6 +207,8 @@
      证书设置
      ZBRequestEngine 继承AFHTTPSessionManager，所需其他设置 可以使用[ZBRequestEngine defaultEngine] 自行设置
      */
+    NSURL *url=[NSURL URLWithString:@"https://h5.jp.51wnl.com"];
+    [[ZBRequestEngine defaultEngine]initWithBaseURL:url];//自定义证书 必须设置BaseURL，BaseURL必须为https
     NSString *name=@"";
     if (name.length>0) {
         // 先导入证书
