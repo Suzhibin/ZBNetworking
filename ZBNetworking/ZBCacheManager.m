@@ -55,22 +55,29 @@ static const CGFloat unit = 1000.0;
         _memoryCache.name = memoryNameSpace;
         
         [self initCachesfileWithName:zb_defaultCachePathName];
-  
+#if TARGET_OS_IPHONE
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearMemory) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationWillTerminateNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundCleanCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
+#elif TARGET_OS_MAC
+#endif
+       
     }
     return self;
 }
 
 - (void)dealloc{
+#if TARGET_OS_IPHONE
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+#elif TARGET_OS_MAC
+#endif
+
 }
 
 #pragma mark - 获取沙盒目录
@@ -109,11 +116,12 @@ static const CGFloat unit = 1000.0;
     [self createDirectoryAtPath:self.diskCachePath];
 }
 
-- (void)createDirectoryAtPath:(NSString *)path{
+- (BOOL)createDirectoryAtPath:(NSString *)path{
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
+        return [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
     } else {
-        // NSLog(@"FileDir is exists.%@",path);
+        NSLog(@"FileDir is exists.%@",path);
+        return NO;
     }
 }
 
@@ -123,7 +131,7 @@ static const CGFloat unit = 1000.0;
 }
 
 - (BOOL)cacheExistsForKey:(NSString *)key inPath:(NSString *)path{
-    BOOL isInMemoryCache =  [self.memoryCache objectForKey:key];
+    id isInMemoryCache =  [self.memoryCache objectForKey:key];
     if (isInMemoryCache) {
         return YES;
     }
@@ -404,6 +412,7 @@ static const CGFloat unit = 1000.0;
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
         return;
     }
+#if TARGET_OS_IPHONE
     UIApplication *application = [UIApplication performSelector:@selector(sharedApplication)];
     __block UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
         // Clean up any unfinished task business by marking where you
@@ -416,6 +425,9 @@ static const CGFloat unit = 1000.0;
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
+#elif TARGET_OS_MAC
+#endif
+
 }
 
 - (void)backgroundCleanCache {

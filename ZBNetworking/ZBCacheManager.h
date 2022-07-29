@@ -19,8 +19,11 @@
 
 
 #import <Foundation/Foundation.h>
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#elif TARGET_OS_MAC
 
+#endif
 /** 缓存是否存储成功的Block */
 typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
 /** 得到缓存的Block */
@@ -96,7 +99,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
 
  *  @param path            路径
  */
-- (void)createDirectoryAtPath:(NSString *_Nullable)path;
+- (BOOL)createDirectoryAtPath:(NSString *_Nullable)path;
 
 /**
  *  把内容,存储到文件

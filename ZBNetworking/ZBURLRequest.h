@@ -69,19 +69,13 @@ NS_ASSUME_NONNULL_BEGIN
  *  添加请求头
  *  与公共配置 Headers 兼容
  */
-@property (nonatomic,strong,nullable) NSDictionary *headers;
+@property (nonatomic,strong,nullable) NSMutableDictionary *headers;
 
 /**
  *  过滤parameters 里的随机参数
  *  与公共配置 filtrationCacheKey 兼容
  */
 @property (nonatomic,strong,nullable) NSArray *filtrationCacheKey;
-
-/**
- *  设置超时时间
- *  优先级 高于 公共配置,不影响其他请求设置
- */
-@property (nonatomic,assign) NSTimeInterval timeoutInterval;
 
 /**
  *  请求失败,设置自动重试 请求次数 默认是0.
@@ -149,8 +143,11 @@ NS_ASSUME_NONNULL_BEGIN
  *  为上传请求提供数据
  */
 @property (nonatomic,strong,nullable) NSMutableArray<ZBUploadData *> *uploadDatas;
+#if TARGET_OS_IPHONE
 @property (nonatomic, weak, readonly, nullable) id<ZBURLRequestDelegate> delegate;
-
+#elif TARGET_OS_MAC
+@property (nonatomic, assign, readonly, nullable) id<ZBURLRequestDelegate> delegate;
+#endif
 @property (nonatomic, copy, readonly, nullable) ZBRequestSuccessBlock successBlock;
 
 @property (nonatomic, copy, readonly, nullable) ZBRequestFailureBlock failureBlock;

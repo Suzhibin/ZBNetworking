@@ -7,15 +7,23 @@
 //
 
 #import "NSString+ZBUTF8Encoding.h"
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#elif TARGET_OS_MAC
+
+#endif
 @implementation NSString (ZBUTF8Encoding)
 
 + (NSString *)zb_stringUTF8Encoding:(NSString *)urlString{
+#if TARGET_OS_IPHONE
     if ([[UIDevice currentDevice] systemVersion].floatValue >= 9.0){
         return [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     }else{
         return [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     }
+#elif TARGET_OS_MAC
+    return [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+#endif
 }
 
 + (NSString *)zb_urlString:(NSString *)urlString appendingParameters:(id)parameters{

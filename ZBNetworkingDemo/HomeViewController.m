@@ -85,9 +85,8 @@
         request.headers= headers;//与公共配置 Headers 兼容
         request.retryCount=1;//请求失败 单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
        // request.filtrationCacheKey=@[@""];//过滤变动参数 与公共配置 filtrationCacheKey 兼容
-        request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
-        request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 公共配置,不影响其他请求设置
-        request.timeoutInterval=10;//设置超时时间 //优先级 高于 公共配置,不影响其他请求设置
+//        request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 公共配置，不影响其他请求设置
+//        request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 公共配置,不影响其他请求设置
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};//与公共配置 UserInfo 不兼容 优先级大于 公共配置
     }  success:^(id responseObject,ZBURLRequest * request){
         if ([responseObject isKindOfClass:[NSArray class]]) {

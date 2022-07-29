@@ -19,14 +19,14 @@ NSString *const zb_downloadTempPath =@"AppTempDownload";
 NSString *const zb_downloadPath =@"AppDownload";
 @implementation ZBRequestManager
 
-#pragma mark - 插件
+#pragma mark - 公共配置
 + (void)setupBaseConfig:(void(^)(ZBConfig *config))block{
     ZBConfig *config=[[ZBConfig alloc]init];
     config.consoleLog=NO;
     block ? block(config) : nil;
     [[ZBRequestEngine defaultEngine] setupBaseConfig:config];
 }
-
+#pragma mark - 插件
 + (void)setRequestProcessHandler:(ZBRequestProcessBlock)requestHandler{
     [ZBRequestEngine defaultEngine].requestProcessHandler=requestHandler;
 }
@@ -114,7 +114,9 @@ NSString *const zb_downloadPath =@"AppDownload";
         NSLog(@"\n------------ZBNetworking------error info------begin------\n 请求失败 request.url 或 request.server + request.path不能为空 \n------------ZBNetworking------error info-------end-------");
         return 0;
     }
-    
+    if(request.parameters==nil){
+        request.parameters= [NSMutableDictionary dictionary];
+    }
     id obj=nil;
     if ([ZBRequestEngine defaultEngine].requestProcessHandler) {
         [ZBRequestEngine defaultEngine].requestProcessHandler(request,&obj);

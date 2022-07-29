@@ -12,20 +12,44 @@
 #import "APMModel.h"
 @implementation RequestTool
 + (void)setupPublicParameters{
+    #pragma mark -  如需设置证书，需在网络所有配置前设置
+    /**
+     证书设置
+     ZBRequestEngine 继承AFHTTPSessionManager，所需其他设置 可以使用[ZBRequestEngine defaultEngine] 自行设置
+     */
+    NSString *name=@"";
+    if (name.length>0) {
+        NSURL *url=[NSURL URLWithString:@"https://h5.jp.51wnl.com"];
+        [[AFHTTPSessionManager manager]initWithBaseURL:url];//自定义证书 经过测试 必须设置[[AFHTTPSessionManager manager]initWithBaseURL:url]，BaseURL必须为https，不要使用 ZBRequestEngine调用initWithBaseURL 会重置ZBRequestEngine内设置
+       // ⚠️⚠️⚠️ 如果设置 [[AFHTTPSessionManager manager]initWithBaseURL:url] 必须在 [ZBRequestEngine defaultEngine] 之前调用，否则会重置ZBRequestEngine内设置
+        // 导入证书
+        NSString *cerPath = [[NSBundle mainBundle] pathForResource:name ofType:@"cer"];//证书的路径
+        NSData *cerData = [NSData dataWithContentsOfFile:cerPath];
+        AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+        // 如果需要验证自建证书(无效证书)，需要设置为YES，默认为NO;
+        securityPolicy.allowInvalidCertificates = YES;
+        // 是否需要验证域名，默认为YES;
+        securityPolicy.validatesDomainName = NO;
+        securityPolicy.pinnedCertificates = [[NSSet alloc] initWithObjects:cerData, nil];
+        [ZBRequestEngine defaultEngine].securityPolicy=securityPolicy;
+    }
+   
     #pragma mark -  公共配置
     /**
      基础配置
      需要在请求之前配置，设置后所有请求都会带上 此基础配置
-     此回调只会调用一次。
+     此回调只会调用一次。⚠️⚠️⚠️需要动态配置的 不要在此设置  去setRequestProcessHandler设置
      */
+    /*不推荐在此 配置参数 ，可在setRequestProcessHandler回调配置
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
     parameters[@"jianshu"] = @"https://www.jianshu.com/p/55cda3341d11";
     parameters[@"iap"]=@"0";
-
+     */
+    /*不推荐在此 配置headers，，可在setRequestProcessHandler回调配置
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-   // headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
-
+   // headers[@"Token"] = @"Token";❌❌❌❌//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加❌❌
+     */
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
         /**
          config.baseServer 设置基础服务器地址
@@ -37,20 +61,22 @@
          如果同一个环境，有多个服务器地址，公共参数不同有两种方式
          1.在每个请求单独添加parameters
          2.在插件机制里 预处理 请求。判断对应的server添加
-         3.此回调只会在配置时调用一次，如果不变的公共参数可在此配置，动态的参数不要在此配置。可以在插件 setRequestProcessHandler 方法内添加
+         3.此回调只会在配置时调用一次，如果不变的公共参数可在此配置，动态的参数不要在此配置，总体不推荐在此配置。可以在插件 setRequestProcessHandler 方法内添加
+         // config.parameters=parameters;
          */
-        config.parameters=parameters;
+       
         // filtrationCacheKey因为时间戳是变动参数，缓存key需要过滤掉 变动参数,如果 不使用缓存功能 或者 没有变动参数 则不需要设置。
         config.filtrationCacheKey=@[@"timeString"];
         /**
-         config.headers公共参数
-         .此回调只会在配置时调用一次，如果请求头内的Token 是动态获取 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
+         ⚠️⚠️⚠️config.headers公共参数
+         .此回调只会在配置时调用一次，如果请求头内的Token 是动态获取 ，不在此设置Token ，总体不推荐在此配置。可以在插件 setRequestProcessHandler 方法内添加
+         config.headers=headers;//请求头 非动态配置⚠️⚠️⚠️
          */
-        config.headers=headers;//请求头
+     
         config.requestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.responseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
         //config.methodType=ZBMethodTypePOST;//更改默认请求类型，如果服务器给的接口大多不是get 请求，可以在此更改。单次请求，就不用在标明请求类型了。
-        config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
+        config.timeoutInterval=15;//超时时间 只能在此设置超时时间，单次请求不可设置了
         //config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
         config.userInfo=@{@"info":@"ZBNetworking"};//自定义请求的信息，可以用来注释和判断使用，不会传给服务器
@@ -82,25 +108,35 @@
            6. ......
        */
     //预处理 请求
+    
+    //配置参数
 
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
+    parameters[@"jianshu"] = @"https://www.jianshu.com/p/55cda3341d11";
+    parameters[@"iap"]=@"0";
+    
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+  
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
         NSLog(@"插件响应 请求之前 可以进行参数加工,动态参数可在此添加");
         
         request.url=[self urlProtect:request.url];//可在此 对url 进行加工过滤处理
         
+        if ([request.parameters isKindOfClass:[NSDictionary class]]){
+            [request.parameters addEntriesFromDictionary:parameters];//此回调每次请求时调用一次，如果公共参数 可在此配置
+        }
+        //需要动态获取的参数 要在回调内取
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
         NSString *timeString = [NSString stringWithFormat:@"%.2f",timeInterval];
-        [request.parameters setValue:timeString forKey:@"timeString"];//时间戳
-        //此回调每次请求时调用一次，如果公共参数是动态的 可在此配置
-        parameters[@"pb"] = @"从插件机制添加";
-        [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
-       // request.parameters=parameters;//这样添加 其他参数被删除
+        request.parameters[@"timeString"]=timeString;//时间戳
         
-        headers[@"Token"] = @"从插件机制添加：Token";
-        request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
-
+        request.headers=headers;
+        request.headers[@"Token"]=@"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
+ 
+        
         if ([request.userInfo[@"tag"]isEqualToString:@"9999"]) {
-              
+            //如果不使用 其他缓存框架可忽略
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             request.apiType=ZBRequestTypeRefresh;
             //排除上传和下载请求
@@ -125,12 +161,7 @@
                 request.apiType=ZBRequestTypeRefresh;
             }
         }
-        if ([request.userInfo[@"tag"]isEqualToString:@"5555"]) {
-            // 对数据进行加工过滤， json 转模型等
-            NSDictionary *resultData = responseObject[@"data"];
-            return resultData;  //数据进行加工过滤过 必须return
-        }
-    
+
         if ([request.userInfo[@"tag"]isEqualToString:@"7777"]) {
           
             /**
@@ -156,11 +187,17 @@
                 *error = [NSError errorWithDomain:NSURLErrorDomain code:[errorCode integerValue] userInfo:userInfo];
             }else{
                 //请求成功 不对数据进行加工过滤等操作，也不用 return
-                
+                /*
+                // 如要对数据进行加工过滤， json 转模型等
+                NSDictionary *resultData = responseObject[@"data"];
+                Model *model=[[Model alloc]initWithDict:resultData];
+                return model;  //数据进行加工过滤过 必须return
+                 */
             }
         }
 
         if([request.userInfo[@"tag"]isEqualToString:@"9999"]){
+            //如果不使用 其他缓存框架可忽略
             //自定义缓存逻辑时apiType需要设置为 request.apiType=ZBRequestTypeRefresh（默认）这样就不会走ZBNetworking自带缓存了
             //排除上传和下载请求
             if (request.methodType!=ZBMethodTypeUpload||request.methodType!=ZBMethodTypeDownLoad) {
@@ -201,27 +238,7 @@
         }
     }];
     //默认已经开启了 检测网络状态startMonitoring
-    
-    #pragma mark -  证书设置
-    /**
-     证书设置
-     ZBRequestEngine 继承AFHTTPSessionManager，所需其他设置 可以使用[ZBRequestEngine defaultEngine] 自行设置
-     */
-    NSURL *url=[NSURL URLWithString:@"https://h5.jp.51wnl.com"];
-    [[ZBRequestEngine defaultEngine]initWithBaseURL:url];//自定义证书 必须设置BaseURL，BaseURL必须为https
-    NSString *name=@"";
-    if (name.length>0) {
-        // 先导入证书
-        NSString *cerPath = [[NSBundle mainBundle] pathForResource:name ofType:@"cer"];//证书的路径
-        NSData *cerData = [NSData dataWithContentsOfFile:cerPath];
-        AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-           // 如果需要验证自建证书(无效证书)，需要设置为YES，默认为NO;
-        securityPolicy.allowInvalidCertificates = YES;
-           // 是否需要验证域名，默认为YES;
-        securityPolicy.validatesDomainName = NO;
-        securityPolicy.pinnedCertificates = [[NSSet alloc] initWithObjects:cerData, nil];
-        [ZBRequestEngine defaultEngine].securityPolicy=securityPolicy;
-    }
+
    
     #pragma mark -  APM 监控
     /**
@@ -299,7 +316,7 @@
                     obj.responseEndDate){
                     model.req_total_time = ceil([obj.responseEndDate timeIntervalSinceDate:obj.fetchStartDate] * 1000);
                 }
-                NSLog(@"在此可进行 网络指标上报：%@",model);
+                NSLog(@"在此可进行 网络指标上报 或 添加到容器等时机批量上报：%@",model);
             }
         }];
     }];
