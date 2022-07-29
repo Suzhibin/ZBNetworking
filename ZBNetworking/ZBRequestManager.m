@@ -114,9 +114,11 @@ NSString *const zb_downloadPath =@"AppDownload";
         NSLog(@"\n------------ZBNetworking------error info------begin------\n 请求失败 request.url 或 request.server + request.path不能为空 \n------------ZBNetworking------error info-------end-------");
         return 0;
     }
+    
     if(request.parameters==nil){
         request.parameters= [NSMutableDictionary dictionary];
     }
+    
     id obj=nil;
     if ([ZBRequestEngine defaultEngine].requestProcessHandler) {
         [ZBRequestEngine defaultEngine].requestProcessHandler(request,&obj);
