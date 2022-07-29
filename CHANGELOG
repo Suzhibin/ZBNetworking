@@ -1,3 +1,8 @@
+发布于2022年7月29日 周五
+1.macOS兼容，
+2.单次请求去掉配置超时时间，
+3.证书配置等配置更新
+
 发布于2022年3月28日，周一
 1.request.url 改为request.path，request.url改为server+path 的组合
 2.swift 使用报错处理
