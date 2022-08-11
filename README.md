@@ -31,7 +31,7 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
 
 1.请求类型丰富 /**GET请求*//**POST请求*//**PUT请求*//**PATCH请求*//**DELETE请求*//**Upload请求*//**DownLoad请求*/
 
-2.低耦合，易扩展, 支持iOS,macOS, watchOS, tvOS。
+2.低耦合，易扩展, 支持iOS，macOS，watchOS，tvOS。
 
 3.通过Block配置信息，有Block回调，delegate回调 ,支持公共配置;
 
