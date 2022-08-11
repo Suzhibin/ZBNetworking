@@ -3,7 +3,7 @@
 ## 安装
 
 ### CocoaPods 安装 
-CocoaPods的发现名字已经被使用了,所以直接指向 github地址
+CocoaPods发现名字已经被使用了,所以直接指向 github地址
 1. 在 `Podfile` 中添加以下内容
 ```
 pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
