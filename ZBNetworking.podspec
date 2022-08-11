@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/Suzhibin/ZBNetworking.git", :tag => s.version }
 
   s.source_files  = "ZBNetworking/**/*.{h,m}"
-  s.exclude_files = "ZBNetworking/ZBNetworking.h"
+ 
   s.requires_arc = true
 
   s.dependency "AFNetworking"
