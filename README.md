@@ -100,9 +100,6 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
     parameters[@"github"] = @"https://github.com/Suzhibin/ZBNetworking";
     parameters[@"jianshu"] = @"https://www.jianshu.com/p/55cda3341d11";
 
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
-    
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
          /**
          config.baseServer 设置基础服务器地址
@@ -152,6 +149,10 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
            5.为某个服务器单独添加参数
            6. ......
        */
+       
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+    headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
+    
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
          NSLog(@"插件响应 请求之前 可以进行参数加工,动态参数可在此添加");
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
