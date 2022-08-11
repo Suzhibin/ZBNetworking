@@ -1,6 +1,29 @@
 # ZBNetworking    [介绍文档](http://www.jianshu.com/p/55cda3341d11)
  
- 本来想发布到cocoaPods的发现名字已经被使用了，也不想改名了。大家就手动下载用吧
+## 安装
+
+### CocoaPods
+
+ZBNetworking is available through [CocoaPods](http://cocoapods.org). To install
+it, simply add the following line to your Podfile, and then import <ZBNetworking/ZBNetworking.h>:
+1. 在 `Podfile` 中添加以下内容
+```
+pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
+```
+2. 执行  `pod install`  或  `pod update`。
+```
+#import <ZBNetworking/ZBNetworking.h>
+```
+
+### Manually
+
+1. 下载项目并将“ZBNetworking”文件夹放入项目中。
+2. Import file ZBNetworking.h
+
+```
+#import "ZBNetworking.h"
+```
+
 
 [变更日志](https://github.com/Suzhibin/ZBNetworking/blob/master/CHANGELOG)
 
