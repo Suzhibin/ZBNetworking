@@ -127,7 +127,7 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
         config.requestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.responseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
         config.methodType=ZBMethodTypePOST;//更改默认请求类型，如果服务器给的接口大多不是get 请求，可以在此更改。单次请求，就不用在标明请求类型了。
-        config.timeoutInterval=15;//超时时间  优先级 小于 单个请求重新设置
+        config.timeoutInterval=15;//超时时间  
         config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
         config.responseContentTypes=@[@"text/aaa",@"text/bbb"];//添加新的响应数据类型
@@ -250,7 +250,6 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
         request.requestSerializer=ZBJSONRequestSerializer; //单次请求设置 请求格式 默认JSON，优先级大于 全局设置，不影响其他请求设置
         request.responseSerializer=ZBJSONResponseSerializer; //单次请求设置 响应格式 默认JSON，优先级大于 全局设置,不影响其他请求设置
         request.retryCount=2;//请求失败 当次请求重新连接次数
-        request.timeoutInterval=10; //优先级 高于 全局设置,不影响其他请求设置
       
     }  success:^(id responseObj,ZBURLRequest * request){
         if (request.apiType==ZBRequestTypeRefresh) 
