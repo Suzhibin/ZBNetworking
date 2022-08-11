@@ -1,3 +1,8 @@
+发布于2022年8月11日 周四
+1.支持pod 指向github 集成
+2.支持iOS,macOS, watchOS, tvOS
+3.公共配置ZBConfig 对象内的methodType改为defaultMethodType
+
 发布于2022年7月29日 周五
 1.macOS兼容，
 2.单次请求去掉配置超时时间，
