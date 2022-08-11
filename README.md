@@ -2,10 +2,8 @@
  
 ## 安装
 
-### CocoaPods
+### CocoaPods 安装 
 
-ZBNetworking is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile, and then import <ZBNetworking/ZBNetworking.h>:
 1. 在 `Podfile` 中添加以下内容
 ```
 pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
@@ -15,7 +13,7 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
 #import <ZBNetworking/ZBNetworking.h>
 ```
 
-### Manually
+### 手动安装
 
 1. 下载项目并将“ZBNetworking”文件夹放入项目中。
 2. Import file ZBNetworking.h
