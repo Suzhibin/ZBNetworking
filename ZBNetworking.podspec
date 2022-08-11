@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ZBNetworking"
-  s.version      = "1.3.1"
+  s.version      = "1.0.1"
   s.summary      = "The network request library adds caching policies."
 
   s.homepage     = "https://github.com/Suzhibin/ZBNetworking"
@@ -20,12 +20,12 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = "7.0"
 
-  s.source       = { :git => "https://github.com/Suzhibin/ZBNetworking.git", :tag => "1.0.1" }
+  s.source       = { :git => "https://github.com/Suzhibin/ZBNetworking.git", :tag => s.version }
 
   s.source_files  = "ZBNetworking/**/*.{h,m}"
   s.exclude_files = "ZBNetworking/ZBNetworking.h"
   s.requires_arc = true
 
-  s.dependency "AFNetworking", "~> 3.1.0"
+  s.dependency "AFNetworking"
 
 end
