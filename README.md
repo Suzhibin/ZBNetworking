@@ -151,8 +151,7 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
        */
        
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    headers[@"Token"] = @"Token";//如果请求头内的Token 是动态获取，比如登陆后获取的 ，不在此设置Token 可以在插件 setRequestProcessHandler 方法内添加
-    
+
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
          NSLog(@"插件响应 请求之前 可以进行参数加工,动态参数可在此添加");
         NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
@@ -163,7 +162,7 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
         [request.parameters setValue:parameters forKey:@"pb"];//这样添加 其他参数依然存在。
        // request.parameters=parameters;//这样添加 其他参数被删除
         
-        headers[@"Token"] = @"从插件机制添加：Token";
+        headers[@"Token"] = @"从插件机制添加：Token";     //如果请求头内的Token 是动态获取，比如登陆后获取的,并会过期重新获取
         request.headers=headers;//如果请求头内的Token 是动态获取，比如登陆后获取的 ，在此设置Token
     }];
     
