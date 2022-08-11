@@ -191,8 +191,8 @@
     _isResponseSerializer=YES;
 }
 
-- (void)setMethodType:(ZBMethodType)methodType{
-    _methodType=methodType;
-    _isMethodType=YES;
+- (void)setDefaultMethodType:(ZBMethodType)defaultMethodType{
+    _defaultMethodType=defaultMethodType;
+    _isDefaultMethodType=YES;
 }
 @end

@@ -240,8 +240,8 @@ NSString *const _delegate =@"_delegate";
     if (config.isResponseSerializer==YES) {
         self.baseResponseSerializer=config.responseSerializer;
     }
-    if (config.isMethodType==YES) {
-        self.baseMethodType=config.methodType;
+    if (config.isDefaultMethodType==YES) {
+        self.baseMethodType=config.defaultMethodType;
     }
     if (config.retryCount) {
         self.baseRetryCount=config.retryCount;

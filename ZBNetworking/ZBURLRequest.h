@@ -284,7 +284,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  优先级 小于 单次请求的设置
  *  如果服务器给的接口大多不是get 请求，可以在此更改默认请求类型。单次默认类型的请求，就不用在标明请求类型了。
  */
-@property (nonatomic, assign) ZBMethodType methodType;
+@property (nonatomic, assign) ZBMethodType defaultMethodType;
 
 /**
  *  所有请求失败,设置自动重试 请求次数 默认是0.
@@ -306,7 +306,7 @@ NS_ASSUME_NONNULL_BEGIN
 //===========内部调用===============
 @property (nonatomic, assign) BOOL isRequestSerializer;
 @property (nonatomic, assign) BOOL isResponseSerializer;
-@property (nonatomic, assign) BOOL isMethodType;
+@property (nonatomic, assign) BOOL isDefaultMethodType;
 NS_ASSUME_NONNULL_END
 @end
 
