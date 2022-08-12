@@ -1,14 +1,16 @@
 //
-//  NSString+ZBUTF8Encoding.h
+//  NSString+ZBURLEncoding.h
 //  ZBNetworkingDemo
 //
-//  Created by NQ UEC on 2018/5/21.
-//  Copyright © 2018年 Suzhibin. All rights reserved.
+//  Created by Suzhibin on 2022/8/11.
+//  Copyright © 2022 Suzhibin. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (ZBUTF8Encoding)
+NS_ASSUME_NONNULL_BEGIN
+
+@interface NSString (ZBURLEncoding)
 
 /**
  *  UTF8
@@ -16,7 +18,7 @@
  *  @param urlString 编码前的url字符串
  *  @return 返回 编码后的url字符串
  */
-+ (NSString *)zb_stringUTF8Encoding:(NSString *)urlString;
++ (NSString *)zb_stringEncoding:(NSString *)urlString;
 
 /**
  *  url字符串与parameters参数的的拼接
@@ -41,3 +43,4 @@
 + (id)formaParameters:(id)parameters filtrationCacheKey:(NSArray *)filtrationCacheKey;
 
 @end
+NS_ASSUME_NONNULL_END

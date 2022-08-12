@@ -9,7 +9,7 @@
 #import "ZBRequestManager.h"
 #import "ZBCacheManager.h"
 #import "ZBURLRequest.h"
-#import "NSString+ZBUTF8Encoding.h"
+#import "NSString+ZBURLEncoding.h"
 
 NSString *const _response =@"_response";
 NSString *const _isCache =@"_isCache";
@@ -271,7 +271,7 @@ NSString *const zb_downloadPath =@"AppDownload";
     }else{
         newParameters = request.parameters;
     }
-    NSString *key=[NSString zb_stringUTF8Encoding:[NSString zb_urlString:request.url appendingParameters:newParameters]];
+    NSString *key=[NSString zb_stringEncoding:[NSString zb_urlString:request.url appendingParameters:newParameters]];
     [request setValue:key forKey:_cacheKey];
     return key;
 }

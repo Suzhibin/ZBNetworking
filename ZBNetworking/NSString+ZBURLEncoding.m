@@ -1,29 +1,16 @@
 //
-//  NSString+ZBUTF8Encoding.m
+//  NSString+ZBURLEncoding.m
 //  ZBNetworkingDemo
 //
-//  Created by NQ UEC on 2018/5/21.
-//  Copyright © 2018年 Suzhibin. All rights reserved.
+//  Created by Suzhibin on 2022/8/11.
+//  Copyright © 2022 Suzhibin. All rights reserved.
 //
 
-#import "NSString+ZBUTF8Encoding.h"
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#elif TARGET_OS_MAC
+#import "NSString+ZBURLEncoding.h"
 
-#endif
-@implementation NSString (ZBUTF8Encoding)
-
-+ (NSString *)zb_stringUTF8Encoding:(NSString *)urlString{
-#if TARGET_OS_IPHONE
-    if ([[UIDevice currentDevice] systemVersion].floatValue >= 9.0){
-        return [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    }else{
-        return [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    }
-#elif TARGET_OS_MAC
-    return [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-#endif
+@implementation NSString (ZBURLEncoding)
++ (NSString *)zb_stringEncoding:(NSString *)urlString{
+    return [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 + (NSString *)zb_urlString:(NSString *)urlString appendingParameters:(id)parameters{
@@ -45,7 +32,6 @@
         return [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@",parametersString]];
     }
 }
-
 @end
 
 @implementation ZBRequestTool

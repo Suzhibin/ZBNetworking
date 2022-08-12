@@ -12,7 +12,7 @@
 #elif TARGET_OS_MAC
 #endif
 #import "ZBURLRequest.h"
-#import "NSString+ZBUTF8Encoding.h"
+#import "NSString+ZBURLEncoding.h"
 
 NSString *const _successBlock =@"_successBlock";
 NSString *const _failureBlock =@"_failureBlock";
@@ -85,7 +85,7 @@ NSString *const _delegate =@"_delegate";
     [self headersConfig:request];
     [self printParameterWithRequest:request];
     
-    NSString *URLString=[NSString zb_stringUTF8Encoding:request.url];
+    NSString *URLString=[NSString zb_stringEncoding:request.url];
     NSURLSessionDataTask *dataTask=nil;
     if (request.methodType==ZBMethodTypeGET) {
         dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
@@ -120,7 +120,7 @@ NSString *const _delegate =@"_delegate";
     [self headersConfig:request];
     [self printParameterWithRequest:request];
     
-    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.url] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringEncoding:request.url] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
         [request.uploadDatas enumerateObjectsUsingBlock:^(ZBUploadData *obj, NSUInteger idx, BOOL *stop) {
             if (obj.fileData) {
@@ -156,7 +156,7 @@ NSString *const _delegate =@"_delegate";
     [self headersConfig:request];
     [self printParameterWithRequest:request];
     
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.url]]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringEncoding:request.url]]];
     
     NSString *fileName = [urlRequest.URL lastPathComponent];
     NSURL *downloadFileSavePath = [NSURL fileURLWithPath:[NSString pathWithComponents:@[savePath, fileName]] isDirectory:NO];
