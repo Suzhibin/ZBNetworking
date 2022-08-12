@@ -7,9 +7,8 @@
 //
 
 #import "ZBRequestEngine.h"
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IOS
 #import "AFNetworkActivityIndicatorManager.h"
-#elif TARGET_OS_MAC
 #endif
 #import "ZBURLRequest.h"
 #import "NSString+ZBURLEncoding.h"
@@ -58,9 +57,8 @@ NSString *const _delegate =@"_delegate";
         self.responseSerializer = [AFHTTPResponseSerializer serializer];
         [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"]];
         self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IOS
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-#elif TARGET_OS_MAC
 #endif
          _requestDic =[[NSMutableDictionary alloc] init];
     }
@@ -68,7 +66,9 @@ NSString *const _delegate =@"_delegate";
 }
 
 + (void)load {
+#if !TARGET_OS_WATCH
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+#endif
 }
 
 - (void)dealloc {
@@ -191,7 +191,7 @@ NSString *const _delegate =@"_delegate";
     NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithResumeData:resumeData progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
     return downloadTask;
 }
-
+#if !TARGET_OS_WATCH
 - (NSInteger)networkReachability {
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
@@ -199,7 +199,7 @@ NSString *const _delegate =@"_delegate";
 - (void)setReachabilityStatusChangeBlock:(void (^)(NSInteger status))block{
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:block];
 }
-
+#endif
 //请求参数的格式
 - (void)requestSerializerConfig:(ZBURLRequest *)request{
     self.requestSerializer =request.requestSerializer==ZBHTTPRequestSerializer ?[AFHTTPRequestSerializer serializer]:[AFJSONRequestSerializer serializer];

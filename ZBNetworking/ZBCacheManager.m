@@ -55,13 +55,12 @@ static const CGFloat unit = 1000.0;
         _memoryCache.name = memoryNameSpace;
         
         [self initCachesfileWithName:zb_defaultCachePathName];
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IOS
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearMemory) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationWillTerminateNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundCleanCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
-#elif TARGET_OS_MAC
 #endif
        
     }
@@ -69,15 +68,13 @@ static const CGFloat unit = 1000.0;
 }
 
 - (void)dealloc{
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IOS
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-#elif TARGET_OS_MAC
 #endif
-
 }
 
 #pragma mark - 获取沙盒目录
@@ -412,7 +409,7 @@ static const CGFloat unit = 1000.0;
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
         return;
     }
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IOS
     UIApplication *application = [UIApplication performSelector:@selector(sharedApplication)];
     __block UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
         // Clean up any unfinished task business by marking where you
@@ -425,7 +422,6 @@ static const CGFloat unit = 1000.0;
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
-#elif TARGET_OS_MAC
 #endif
 
 }

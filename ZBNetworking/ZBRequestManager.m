@@ -380,7 +380,7 @@ NSString *const zb_downloadPath =@"AppDownload";
     [request cleanAllCallback];
     [[ZBRequestEngine defaultEngine] removeRequestForkey:request.url];
 }
-
+#if !TARGET_OS_WATCH
 #pragma mark - 获取网络状态
 + (BOOL)isNetworkReachable{
     return [ZBRequestEngine defaultEngine].networkReachability != 0;
@@ -397,7 +397,7 @@ NSString *const zb_downloadPath =@"AppDownload";
 + (void)setReachabilityStatusChangeBlock:(void (^)(ZBNetworkReachabilityStatus status))block{
     [[ZBRequestEngine defaultEngine]setReachabilityStatusChangeBlock:block];
 }
-
+#endif
 #pragma mark - 下载获取文件
 + (NSString *)getDownloadFileForKey:(NSString *)key{
     return [[ZBCacheManager sharedInstance]getDiskFileForKey:[key lastPathComponent] inPath:[self AppDownloadPath]];
