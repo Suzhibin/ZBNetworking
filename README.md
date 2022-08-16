@@ -127,11 +127,13 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
         config.timeoutInterval=15;//超时时间  
         config.retryCount=2;//请求失败 所有请求重新连接次数
         config.consoleLog=YES;//开log
-        config.responseContentTypes=@[@"text/aaa",@"text/bbb"];//添加新的响应数据类型
-        /**
+        
+           /**responseContentTypes
          内部已存在的响应数据类型
          @"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"
          */
+        config.responseContentTypes=@[@"text/aaa",@"text/bbb"];//添加新的响应数据类型
+
           /*
          重新赋值HTTPMethodsEncodingParametersInURI，用于调整 不同请求类型的参数是否拼接url后 还是峰封装在request body内
          解决DELETE 方法返回 Unsupported Media Type 的解决方案（如无此问题，不要设置此属性）
