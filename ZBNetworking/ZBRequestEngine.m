@@ -82,7 +82,7 @@ NSString *const _delegate =@"_delegate";
                               failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
 
     [self requestSerializerConfig:request];
-    [self headersConfig:request];
+    [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
     NSString *URLString=[NSString zb_stringEncoding:request.url];
@@ -117,7 +117,7 @@ NSString *const _delegate =@"_delegate";
                                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
     [self requestSerializerConfig:request];
-    [self headersConfig:request];
+    [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
     NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringEncoding:request.url] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
@@ -153,7 +153,7 @@ NSString *const _delegate =@"_delegate";
 
 #pragma mark - DownLoad
 - (NSUInteger)downloadWithRequest:(ZBURLRequest *)request resumeData:(NSData *)resumeData savePath:(NSString *)savePath progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
-    [self headersConfig:request];
+    [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringEncoding:request.url]]];
@@ -209,11 +209,14 @@ NSString *const _delegate =@"_delegate";
 }
 
 //请求头设置
-- (void)headersConfig:(ZBURLRequest *)request{
+- (void)headersAndTimeConfig:(ZBURLRequest *)request{
     if ([request.headers allKeys].count>0) {
         [request.headers enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
             [self.requestSerializer setValue:value forHTTPHeaderField:field];
         }];
+    }
+    if(request.timeoutInterval>0){
+        self.requestSerializer.timeoutInterval=request.timeoutInterval;
     }
 }
 
@@ -301,7 +304,7 @@ NSString *const _delegate =@"_delegate";
   
     //=====================================================
     if (self.baseTimeoutInterval) {
-        self.requestSerializer.timeoutInterval=self.baseTimeoutInterval;
+        request.timeoutInterval=self.baseTimeoutInterval;
     }
     //=====================================================
     if (request.isBaseParameters && self.baseParameters.count > 0) {

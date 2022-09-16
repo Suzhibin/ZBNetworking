@@ -77,6 +77,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,strong,nullable) NSArray *filtrationCacheKey;
 
+/*
+*  设置超时时间
+*  优先级 高于 公共配置,不影响其他请求设置
+*/
+@property (nonatomic,assign) NSTimeInterval timeoutInterval;
+
 /**
  *  请求失败,设置自动重试 请求次数 默认是0.
  *  单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
