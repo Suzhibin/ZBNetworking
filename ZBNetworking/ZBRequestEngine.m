@@ -363,6 +363,38 @@ NSString *const _delegate =@"_delegate";
     request.consoleLog = self.consoleLog;
 }
 
+- (void)reconfigureUrlWithRequest:(ZBURLRequest *)request{
+    if(request.url==nil){
+        request.url=@"";
+    }
+    if(request.server==nil){
+        request.server=@"";
+    }
+    if(request.path==nil){
+        request.path=@"";
+    }
+    if(request.server.length>0||request.path.length>0){
+        if([request.url hasPrefix:request.server]==NO||[request.url hasSuffix:request.path]==NO){
+            if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {
+                request.server=self.baseServerString;
+                if (request.consoleLog==YES) {
+                    NSLog(@"\n------------ZBNetworking------request info------begin------\n 重新配置URL request.server为空 使用了默认请求地址-baseServer-:%@\n 如不需要使用默认请求地址，该请求可设置request.isBaseServer更改 \n------------ZBNetworking------request info-------end-------",self.baseServerString);
+                }
+            }
+            if (request.path.length > 0) {
+                NSURL *baseURL = [NSURL URLWithString:request.server];
+                if ([[baseURL path] length] > 0 && ![[baseURL absoluteString] hasSuffix:@"/"]) {
+                               baseURL = [baseURL URLByAppendingPathComponent:@""];
+                }
+                 
+                request.url= [[NSURL URLWithString:request.path relativeToURL:baseURL] absoluteString];
+            }else{
+                request.url = request.server;
+            }
+        }
+    }
+}
+
 - (void)cancelRequestByIdentifier:(NSUInteger)identifier {
     if (identifier == 0) return;
     [self.tasks enumerateObjectsUsingBlock:^(NSURLSessionTask *task, NSUInteger idx, BOOL *stop) {

@@ -40,6 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock target:(id<ZBURLRequestDelegate>)target;
 
 /**
+    URL重新检验 
+ */
+- (void)reconfigureUrlWithRequest:(ZBURLRequest *)request;
+
+/**
  *  发起网络请求
 
  *  @param request             ZBURLRequest

@@ -13,6 +13,9 @@
     if (!self) {
         return nil;
     }
+    _url=@"";
+    _server=@"";
+    _path=@"";
     _requestSerializer=ZBJSONRequestSerializer;
     _responseSerializer=ZBJSONResponseSerializer;
     _methodType=ZBMethodTypeGET;

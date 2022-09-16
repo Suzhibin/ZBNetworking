@@ -27,9 +27,9 @@
     
     #pragma mark -  公共配置 RequestTool
     /**
+     证书设置
      公共配置
      插件机制
-     证书设置
      */
     [RequestTool setupPublicParameters]; //设置在所有请求前 一般放在AppDelegate 中调用
     

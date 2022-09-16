@@ -16,7 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 请求的 URL 地址
 @property (nonatomic, copy) NSString *req_url;
-
+///完整的路径
+@property (nonatomic, copy) NSString *req_path;
 /// 请求参数
 @property (nonatomic, copy) NSString *req_params;
 

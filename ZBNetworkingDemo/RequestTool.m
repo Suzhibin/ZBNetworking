@@ -17,13 +17,13 @@
      证书设置
      ZBRequestEngine 继承AFHTTPSessionManager，所需其他设置 可以使用[ZBRequestEngine defaultEngine] 自行设置
      */
-    NSString *name=@"";
-    if (name.length>0) {
+    NSString *cerName=@"";
+    if (cerName.length>0) {
         NSURL *url=[NSURL URLWithString:@"https://h5.jp.51wnl.com"];
         [[AFHTTPSessionManager manager]initWithBaseURL:url];//自定义证书 经过测试 必须设置[[AFHTTPSessionManager manager]initWithBaseURL:url]，BaseURL必须为https，不要使用 ZBRequestEngine调用initWithBaseURL 会重置ZBRequestEngine内设置
-       // ⚠️⚠️⚠️ 如果设置 [[AFHTTPSessionManager manager]initWithBaseURL:url] 必须在 [ZBRequestEngine defaultEngine] 之前调用，否则会重置ZBRequestEngine内设置
+       // ⚠️⚠️⚠️ 如需设置证书，需在网络所有配置前设置
         // 导入证书
-        NSString *cerPath = [[NSBundle mainBundle] pathForResource:name ofType:@"cer"];//证书的路径
+        NSString *cerPath = [[NSBundle mainBundle] pathForResource:cerName ofType:@"cer"];//证书的路径
         NSData *cerData = [NSData dataWithContentsOfFile:cerPath];
         AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
         // 如果需要验证自建证书(无效证书)，需要设置为YES，默认为NO;
@@ -75,10 +75,10 @@
      
         config.requestSerializer=ZBJSONRequestSerializer; //全局设置 请求格式 默认JSON
         config.responseSerializer=ZBJSONResponseSerializer; //全局设置 响应格式 默认JSON
-        //config.defaultMethodType=ZBMethodTypePOST;//更改默认请求类型，如果服务器给的接口大多不是get 请求，可以在此更改。单次请求，就不用在标明请求类型了。
+        //config.defaultMethodType=ZBMethodTypePOST;//更改默认请求类型，如果服务器给的接口大多不是get 请求，可以在此更改。单次请求，就不用在标明默认请求类型了。
         config.timeoutInterval=15;//超时时间 只能在此设置超时时间，单次请求不可设置了
         //config.retryCount=2;//请求失败 所有请求重新连接次数
-        config.consoleLog=YES;//开log
+        config.consoleLog=YES;//开log 便于排查问题，建议开启
         config.userInfo=@{@"info":@"ZBNetworking"};//自定义请求的信息，可以用来注释和判断使用，不会传给服务器
         /** responseContentTypes
          内部已存在的响应数据类型
@@ -120,9 +120,15 @@
   
     [ZBRequestManager setRequestProcessHandler:^(ZBURLRequest * _Nullable request, id  _Nullable __autoreleasing * _Nullable setObject) {
         NSLog(@"插件响应 请求之前 可以进行参数加工,动态参数可在此添加");
-        
-        request.url=[self urlProtect:request.url];//可在此 对url 进行加工过滤处理
-        
+        /*
+         //可在此 进行加工过滤处理
+         if(使用server+path组合){
+            request.server=@"";
+            request.path=@"";
+         }else{
+            request.url=[self urlProtect:request.url];
+         }
+        */
         if ([request.parameters isKindOfClass:[NSDictionary class]]){
             [request.parameters addEntriesFromDictionary:parameters];//此回调每次请求时调用一次，如果公共参数 可在此配置
         }
@@ -163,6 +169,9 @@
         }
 
         if ([request.userInfo[@"tag"]isEqualToString:@"7777"]) {
+            if(request.methodType==ZBMethodTypeDownLoad){//下载请求 responseObject返回的是文件路径
+                return nil;
+            }
             /**
             网络请求 自定义响应结果的处理逻辑
             比如服务器会在成功回调里做 返回code码的操作 ，可以进行逻辑处理
@@ -253,7 +262,11 @@
                 model.token = obj.request.allHTTPHeaderFields[@"Token"];
                 
                 model.req_url = [obj.request.URL absoluteString];
-                model.req_params = [obj.request.URL parameterString];
+                if (@available(iOS 13.0,*))  {
+                    model.req_path= [obj.request.URL path];
+                }else{
+                    model.req_params = [obj.request.URL parameterString];
+                }
                 model.req_headers = obj.request.allHTTPHeaderFields;
                 
                 if (@available(iOS 13.0, *)) {
@@ -315,7 +328,20 @@
                     obj.responseEndDate){
                     model.req_total_time = ceil([obj.responseEndDate timeIntervalSinceDate:obj.fetchStartDate] * 1000);
                 }
-                NSLog(@"在此可进行 网络指标上报 或 添加到容器等时机批量上报：%@",model);
+                
+                /**
+                 在此可进行 网络指标上报 或 添加到容器等时机批量上报
+                 上报请求也会执行到这里，需要有判断条件过滤，否则将无限循环
+                 可以从 model.req_path 或 req_params 拿到参数判断
+                 if(上报请求 ){
+                     //不进行上报
+                 }
+                 if(常规请求){
+                     //进行上报
+                 }
+                 */
+              
+                NSLog(@"APM\n url:%@ \n path:%@ \n总耗时:%lldms, 域名解析:%lldms, 连接耗时:%lldms(包括TLS:%lldms), 请求:%lldms, 回调:%lldms l:%@ r:%@",model.req_url,model.req_path,model.req_total_time,model.dns_time,model.tcp_time,model.ssl_time, model.req_time,model.res_time, model.local_ip, model.remote_ip);
             }
         }];
     }];

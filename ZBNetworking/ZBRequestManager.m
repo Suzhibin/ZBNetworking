@@ -110,11 +110,6 @@ NSString *const zb_downloadPath =@"AppDownload";
         
     [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
     
-    if ([request.url isEqualToString:@""]||request.url==nil){
-        NSLog(@"\n------------ZBNetworking------error info------begin------\n 请求失败 request.url 或 request.server + request.path不能为空 \n------------ZBNetworking------error info-------end-------");
-        return 0;
-    }
-    
     if(request.parameters==nil){
         request.parameters= [NSMutableDictionary dictionary];
     }
@@ -126,6 +121,15 @@ NSString *const zb_downloadPath =@"AppDownload";
             [self successWithResponse:nil responseObject:obj request:request];
             return 0;
         }
+    }
+    
+    [[ZBRequestEngine defaultEngine] reconfigureUrlWithRequest:request];
+    
+    if ([request.url isEqualToString:@""]){
+        NSDictionary * userInfo = @{NSLocalizedDescriptionKey:@"request.url 或 request.server + request.path不能为空"};
+        NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnsupportedURL userInfo:userInfo];
+        [self failureWithError:error request:request];
+        return 0;
     }
     
     NSURLSessionTask * task=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
@@ -422,7 +426,7 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (void)printfailureInfoWithError:(NSError *)error request:(ZBURLRequest *)request{
-    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-%ld\n-error code-:%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.url,request.retryCount,error.code,error.localizedDescription);
+    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-:%ld\n-error code-:%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.url,request.retryCount,error.code,error.localizedDescription);
 }
 
 @end
