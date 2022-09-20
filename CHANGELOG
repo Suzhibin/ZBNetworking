@@ -17,7 +17,7 @@
 1.request.url 改为request.path，request.url改为server+path 的组合
 2.swift 使用报错处理
 3.增加HEAD类型 请求
-4.公共配置增加HTTPMethodsEncodingParametersInURI，用于调整 不同请求类型的参数是否拼接url后，还是峰封装在request body内
+4.公共配置增加HTTPMethodsEncodingParametersInURI，用于调整 不同请求类型的参数是否拼接url后，还是封装在request body内
 
 发布于2022年1月17日，周一
 1.添加获取APM使用示例，
