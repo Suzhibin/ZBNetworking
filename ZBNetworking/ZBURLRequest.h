@@ -86,6 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  请求失败,设置自动重试 请求次数 默认是0.
  *  单次请求 重新连接次数 优先级大于 全局设置，不影响其他请求设置
+ *  重试请求不会调用预处理插件setResponseProcessHandler，会调用失败插件setErrorProcessHandler，可在失败插件内重新配置请求对象
  */
 @property (nonatomic,assign) NSUInteger retryCount;
 

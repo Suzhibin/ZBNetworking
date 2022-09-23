@@ -75,7 +75,7 @@ NSString *const zb_downloadPath =@"AppDownload";
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
     ZBURLRequest *request=[[ZBURLRequest alloc]init];
     config ? config(request) : nil;
-    return [self sendRequest:request progress:progress success:success failure:failure finished:finished target:target];
+    return [self checkRequest:request progress:progress success:success failure:failure finished:finished target:target];
 }
 
 #pragma mark - 配置批量请求
@@ -98,16 +98,16 @@ NSString *const zb_downloadPath =@"AppDownload";
     [batchRequest.responseArray removeAllObjects];
     [batchRequest.requestArray enumerateObjectsUsingBlock:^(ZBURLRequest *request , NSUInteger idx, BOOL *stop) {
         [batchRequest.responseArray addObject:[NSNull null]];
-        [self sendRequest:request progress:progress success:success failure:failure finished:^(id responseObject, NSError *error,ZBURLRequest *request) {
+        [self checkRequest:request progress:progress success:success failure:failure finished:^(id responseObject, NSError *error,ZBURLRequest *request) {
             [batchRequest onFinishedRequest:request response:responseObject error:error finished:finished];
         }target:target];
     }];
     return batchRequest;
 }
 
-#pragma mark - 发起请求
-+ (NSUInteger)sendRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
-        
+#pragma mark - 校验请求
++ (NSUInteger)checkRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
+    
     [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
     
     if(request.parameters==nil){
@@ -122,6 +122,10 @@ NSString *const zb_downloadPath =@"AppDownload";
             return 0;
         }
     }
+    return [self checkAgainRequest:request];
+}
+
++ (NSUInteger)checkAgainRequest:(ZBURLRequest *)request{
     
     [[ZBRequestEngine defaultEngine] reconfigureUrlWithRequest:request];
     
@@ -139,13 +143,14 @@ NSString *const zb_downloadPath =@"AppDownload";
     if (request.apiType==ZBRequestTypeKeepLast&&task) {
         [self cancelRequest:task.taskIdentifier];
     }
-
-    NSUInteger identifier=[self startSendRequest:request];
+    
+    NSUInteger identifier=[self sendRequest:request];
     [[ZBRequestEngine defaultEngine]setRequestObject:request.task forkey:request.url];
     return identifier;
 }
 
-+ (NSUInteger)startSendRequest:(ZBURLRequest *)request{
+#pragma mark - 发起请求
++ (NSUInteger)sendRequest:(ZBURLRequest *)request{
     if (request.methodType==ZBMethodTypeUpload) {
        return [self sendUploadRequest:request];
     }else if (request.methodType==ZBMethodTypeDownLoad){
@@ -333,7 +338,7 @@ NSString *const zb_downloadPath =@"AppDownload";
     if (request.retryCount > 0) {
         request.retryCount --;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self sendRequest:request progress:request.progressBlock success:request.successBlock failure:request.failureBlock finished:request.finishedBlock target:request.delegate];
+            [self checkAgainRequest:request];
         });
         return;
     }

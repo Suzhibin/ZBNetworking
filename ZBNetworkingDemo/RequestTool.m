@@ -185,9 +185,15 @@
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey:errorStr};
                 errorCode= @"401";//假设401 登录过期或Token 失效
                 if ([errorCode integerValue]==401) {
-                    request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
-                    userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
-                    //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 已失败的网络请求，3次不够的话，次数可以多设置一些。
+                    if([request.path isEqualToString:@"Token请求"]){
+                        NSLog(@"RefreshToken请求不用重试");
+                    }else{
+                        request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
+                        userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
+                        
+                        //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 已失败的网络请求。
+                    }
+                   
                 }else{
                     //吐司提示错误  errorStr
                 }
@@ -216,6 +222,12 @@
     }];
      //预处理 错误
     [ZBRequestManager setErrorProcessHandler:^(ZBURLRequest * _Nullable request, NSError * _Nullable error) {
+        /**
+         如果请求失败想替换原来的 请求地址，可以在此修改请求对象,
+         1.在公共配置或者单个请求 设置重试请求次数 retryCount>0
+         2.注意在请求时要使用server+path，不要使用url
+         3.然后在此插件内修改成你想替换的地址 如： request.server=@"http://192.168.1.1:5000";
+         */
    
         if (error.code==NSURLErrorCancelled){
             NSLog(@"插件响应 请求取消❌------------------");

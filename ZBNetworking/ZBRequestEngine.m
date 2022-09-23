@@ -391,8 +391,6 @@ NSString *const _delegate =@"_delegate";
                 }
                  
                 request.url= [[NSURL URLWithString:request.path relativeToURL:baseURL] absoluteString];
-            }else{
-                request.url = request.server;
             }
         }
     }
