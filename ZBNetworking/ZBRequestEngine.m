@@ -215,7 +215,7 @@ NSString *const _delegate =@"_delegate";
             [self.requestSerializer setValue:value forHTTPHeaderField:field];
         }];
     }
-    if(request.timeoutInterval>0){
+    if(request.timeoutInterval>0&&self.requestSerializer.timeoutInterval!=request.timeoutInterval){
         self.requestSerializer.timeoutInterval=request.timeoutInterval;
     }
 }
