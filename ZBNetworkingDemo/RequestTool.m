@@ -188,7 +188,7 @@
                     if([request.path isEqualToString:@"Token请求"]){
                         NSLog(@"RefreshToken请求不用重试");
                     }else{
-                        request.retryCount=3;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
+                        request.retryCount=1;//设置重试请求次数 每2秒重新请求一次 ，走失败回调时会重新请求
                         userInfo = @{NSLocalizedDescriptionKey:@"登录过期"};
                         
                         //这里重新请求Token，请求完毕 retryCount还在执行，就会重新请求到 已失败的网络请求。

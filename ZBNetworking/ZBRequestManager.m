@@ -338,6 +338,11 @@ NSString *const zb_downloadPath =@"AppDownload";
     if (request.retryCount > 0) {
         request.retryCount --;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            /**
+             request.timeoutInterval=0
+             重连请求 防止触发 AFNetworking  kvo监控timeoutInterva 崩溃
+             */
+            request.timeoutInterval=0;
             [self checkAgainRequest:request];
         });
         return;
