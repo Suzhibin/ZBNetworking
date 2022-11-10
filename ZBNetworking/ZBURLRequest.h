@@ -113,11 +113,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - 获取信息
 /**
  *  NSURLSessionTask对象
+ *  不需主动赋值，会自动分配
  */
 @property (nonatomic,strong) NSURLSessionTask *_Nullable  task;
 
 /**
  *  ZBURLRequest对象唯一标识符
+ *  不需主动赋值，会自动分配
  */
 @property (nonatomic,assign) NSUInteger identifier;
 
@@ -127,7 +129,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy,readonly) NSString *cacheKey;
 
 /**
- *  缓存路径文件 读取沙盒缓存返回，内存缓存无
+ *  缓存路径文件 读取沙盒缓存返回，内存缓存无路径
  */
 @property (nonatomic,copy,readonly) NSString *filePath;
 
