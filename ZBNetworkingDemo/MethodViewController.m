@@ -256,6 +256,7 @@
             request.path=url_path;
             //request.url=[NSString stringWithFormat:@"%@%@",url_server,url_path];;
             request.parameters=parameters;
+            request.retryCount=0;//禁止重试，如果没有全局配置 不用写
             request.methodType=ZBMethodTypeGET;//默认get
             request.apiType=keepType;
            // request.userInfo=@{@"tag":@"7777"};
