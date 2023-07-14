@@ -262,7 +262,7 @@ NSString *const _delegate =@"_delegate";
     self.consoleLog=config.consoleLog;
 }
 
-- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock target:(id<ZBURLRequestDelegate>)target{
+- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock delegate:(id<ZBURLRequestDelegate>)delegate{
     if (successBlock) {
         [request setValue:successBlock forKey:_successBlock];
     }
@@ -275,15 +275,15 @@ NSString *const _delegate =@"_delegate";
     if (progressBlock) {
         [request setValue:progressBlock forKey:_progressBlock];
     }
-    if (target) {
-        [request setValue:target forKey:_delegate];
+    if (delegate) {
+        [request setValue:delegate forKey:_delegate];
     }
     //=====================================================
     if (request.methodType==ZBMethodTypeUpload) {
         request.apiType=ZBRequestTypeKeepFirst;
     }
     if (request.methodType==ZBMethodTypeDownLoad) {
-        request.apiType=ZBRequestTypeKeepFirst;
+        request.apiType=ZBRequestTypeRefresh;
     }
     //=====================================================
     if (request.url.length == 0) {

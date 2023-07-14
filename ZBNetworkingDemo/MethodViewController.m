@@ -58,7 +58,8 @@
      */
     
     self.identifier= [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.url=@"https://URL";
+        request.server=@"https://URL";
+        request.path=@"/aip/sss";
         request.methodType=ZBMethodTypePOST;//ZBMethodTypePUT//ZBMethodTypePATCH//ZBMethodTypeDELETE//ZBMethodTypeGET 默认为GET
         request.requestSerializer=ZBJSONRequestSerializer;//默认ZBJSONRequestSerializer 上传参数默认为json 格式
         request.responseSerializer=ZBJSONResponseSerializer;//默认ZBJSONResponseSerializer  返回的数据默认为json格式
@@ -83,16 +84,26 @@
 }
 #pragma mark - 代理请求
 - (void)delegateRequest{
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"path"] = @"MethodViewController";
+    parameters[@"id"]=@"66";
+    parameters[@"p"]=@"1";
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * _Nullable request) {
-        request.url=@"https://URL";
-    } target:self];
+        request.server=url_server;
+        request.path=url_path;
+        request.methodType=ZBMethodTypeGET;//设置请求类型 优先级大于公共配置
+        request.parameters=parameters;//如果是字典类型与公共配置 Parameters 兼容，如果是其他类型与公共配置
+    } delegate:self];//ZBURLRequestDelegate
 }
 #pragma mark - ZBURLRequestDelegate
 - (void)requestSuccess:(ZBURLRequest *)request responseObject:(id)responseObject{
-    if (request.isCache) {
-        NSLog(@"使用了缓存");
-    }else{
-        NSLog(@"重新请求");
+    if ([responseObject isKindOfClass:[NSArray class]]) {
+        NSArray *array = (NSArray *)responseObject;
+        if (request.isCache) {
+            NSLog(@"使用了缓存%@",array);
+        }else{
+            NSLog(@"重新请求%@",array);
+        }
     }
 }
 - (void)requestFailed:(ZBURLRequest *)request error:(NSError *)error{
@@ -116,7 +127,8 @@
     NSURL *fileURL = [NSURL fileURLWithPath:path isDirectory:NO];
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-        request.url=@"https://URL";
+        request.server=@"https://URL";
+        request.path=@"/aip/sss";
         request.methodType=ZBMethodTypeUpload;
         
        // [request addFormDataWithName:@"image[]" fileData:fileData];
@@ -137,8 +149,8 @@
 - (void)downloadWithState:(ZBDownloadState)state{
   //  会默认创建下载路径/Library/Caches/ZBKit/AppDownload
    self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest * request) {
-       request.url=@"https://fcvideo.cdn.bcebos.com/smart/f103c4fc97d2b2e63b15d2d5999d6477.mp4";
-       //request.url=@"http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.2.4.dmg";
+      // request.url=@"https://fcvideo.cdn.bcebos.com/smart/f103c4fc97d2b2e63b15d2d5999d6477.mp4";
+       request.url=@"http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.2.4.dmg";
         request.methodType=ZBMethodTypeDownLoad;
         request.downloadState=state;//下载状态
         request.userInfo=@{@"tag":@"10086"};
@@ -283,7 +295,8 @@
     NSString *timeString = [NSString stringWithFormat:@"%f",timeInterval];
     
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.url=@"https://URL";
+        request.server=@"https://URL";
+        request.path=@"/aip/sss";
         request.methodType=ZBMethodTypePOST;//默认为GET
         request.apiType=ZBRequestTypeRefresh;
         request.parameters=@{@"1": @"one", @"2": @"two", @"time":timeString};

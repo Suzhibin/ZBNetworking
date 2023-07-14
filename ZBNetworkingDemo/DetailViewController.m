@@ -56,7 +56,7 @@
         request.parameters=parameters;
         request.apiType=apiType;
         request.userInfo=@{@"tag":[DataManager sharedInstance].tag};
-    } target:self];
+    } delegate:self];
     /*
     self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
        request.url=details_URL;

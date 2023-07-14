@@ -14,7 +14,7 @@
 + (void)setupPublicParameters{
     #pragma mark -  如需设置证书，需在网络所有配置前设置
     /**
-     证书设置
+     证书设置 如需设置证书，需在网络所有配置前设置
      ZBRequestEngine 继承AFHTTPSessionManager，所需其他设置 可以使用[ZBRequestEngine defaultEngine] 自行设置
      */
     NSString *cerName=@"";

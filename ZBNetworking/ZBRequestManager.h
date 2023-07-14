@@ -46,17 +46,17 @@
  *  请求方法
  *
  *  @param config           请求配置  Block
- *  @param target           执行代理的对象
- *  @return identifier      请求标识符
+ *  @param delegate       执行代理的对象
+ *  @return identifier         请求标识符
  */
-+ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config target:(id<ZBURLRequestDelegate>_Nonnull)target;
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config delegate:(id<ZBURLRequestDelegate>_Nonnull)delegate;
 
 /**
  *  请求方法
  *
  *  @param config           请求配置  Block
- *  @param success          请求成功的 Block
- *  @return identifier      请求标识符
+ *  @param success         请求成功的 Block
+ *  @return identifier         请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config success:(ZBRequestSuccessBlock _Nullable )success;
 
@@ -64,61 +64,61 @@
  *  请求方法
  *
  *  @param config           请求配置  Block
- *  @param failure          请求失败的 Block
- *  @return identifier      请求标识符
+ *  @param failure         请求失败的 Block
+ *  @return identifier         请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config failure:(ZBRequestFailureBlock _Nullable )failure;
 
 /**
  *  请求方法
  *
- *  @param config           请求配置  Block
- *  @param finished         请求完成的 Block
- *  @return identifier      请求标识符
+ *  @param config            请求配置  Block
+ *  @param finished        请求完成的 Block
+ *  @return identifier          请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config finished:(ZBRequestFinishedBlock _Nullable )finished;
 
 /**
  *  请求方法
  *
- *  @param config           请求配置  Block
+ *  @param config            请求配置  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
- *  @return identifier      请求标识符
+ *  @return identifier         请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
 
 /**
  *  请求方法
  *
- *  @param config           请求配置  Block
+ *  @param config            请求配置  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
- *  @param finished         请求完成的 Block
- *  @return identifier      请求标识符
+ *  @param finished        请求完成的 Block
+ *  @return identifier          请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBRequestFinishedBlock _Nullable )finished;
 
 /**
  *  请求方法 进度
  *
- *  @param config           请求配置  Block
- *  @param progress         请求进度  Block
+ *  @param config            请求配置  Block
+ *  @param progress        请求进度  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
- *  @return identifier      请求标识符
+ *  @return identifier         请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config  progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure;
 
 /**
  *  请求方法 进度
  *
- *  @param config           请求配置  Block
- *  @param progress         请求进度  Block
+ *  @param config            请求配置  Block
+ *  @param progress        请求进度  Block
  *  @param success          请求成功的 Block
  *  @param failure          请求失败的 Block
- *  @param finished         请求完成的 Block
- *  @return identifier      请求标识符
+ *  @param finished        请求完成的 Block
+ *  @return identifier          请求标识符
  */
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull)config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBRequestFinishedBlock _Nullable )finished;
 
@@ -126,18 +126,18 @@
  *  批量请求方法
  *
  *  @param config           请求配置  Block
- *  @param target           执行代理的对象
- *  @return identifier      请求标识符
+ *  @param delegate       执行代理的对象
+ *  @return identifier        请求标识符
  */
-+ (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nonnull )config target:(id<ZBURLRequestDelegate>_Nonnull)target;
++ (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nonnull )config delegate:(id<ZBURLRequestDelegate>_Nonnull)delegate;
 
 /**
  *  批量请求方法
  *
- *  @param config           请求配置  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- *  @param finished         批量请求完成的 Block
+ *  @param config              请求配置  Block
+ *  @param success            请求成功的 Block
+ *  @param failure             请求失败的 Block
+ *  @param finished           批量请求完成的 Block
  *  @return BatchRequest    批量请求对象
  */
 + (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nonnull )config success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
@@ -145,11 +145,11 @@
 /**
  *  批量请求方法 进度
  *
- *  @param config           请求配置  Block
- *  @param progress         请求进度  Block
- *  @param success          请求成功的 Block
- *  @param failure          请求失败的 Block
- *  @param finished         批量请求完成的 Block
+ *  @param config              请求配置  Block
+ *  @param progress          请求进度  Block
+ *  @param success            请求成功的 Block
+ *  @param failure            请求失败的 Block
+ *  @param finished           批量请求完成的 Block
  *  @return BatchRequest    批量请求对象
  */
 + (ZBBatchRequest *_Nullable)requestBatchWithConfig:(ZBBatchRequestConfigBlock _Nonnull )config progress:(ZBRequestProgressBlock _Nullable )progress success:(ZBRequestSuccessBlock _Nullable )success failure:(ZBRequestFailureBlock _Nullable )failure finished:(ZBBatchRequestFinishedBlock _Nullable )finished;
@@ -185,20 +185,20 @@
 
 /**
  *  当前网络的状态值，
- *  ZBNetworkReachabilityStatusUnknown      表示 `Unknown`，
- *  ZBNetworkReachabilityStatusNotReachable 表示 `NotReachable
- *  ZBNetworkReachabilityStatusViaWWAN      表示 `WWAN`
- *  ZBNetworkReachabilityStatusViaWiFi      表示 `WiFi`
+ *  ZBNetworkReachabilityStatusUnknown            表示 `Unknown`，
+ *  ZBNetworkReachabilityStatusNotReachable     表示 `NotReachable
+ *  ZBNetworkReachabilityStatusViaWWAN            表示 `WWAN`
+ *  ZBNetworkReachabilityStatusViaWiFi                 表示 `WiFi`
  */
 + (ZBNetworkReachabilityStatus)networkReachability;
 
 /**
  *  动态获取当前网络的状态值，
  *  @param block         当前网络的状态值
- *  ZBNetworkReachabilityStatusUnknown      表示 `Unknown`，
- *  ZBNetworkReachabilityStatusNotReachable 表示 `NotReachable
- *  ZBNetworkReachabilityStatusViaWWAN      表示 `WWAN`
- *  ZBNetworkReachabilityStatusViaWiFi      表示 `WiFi`
+ *  ZBNetworkReachabilityStatusUnknown                表示 `Unknown`，
+ *  ZBNetworkReachabilityStatusNotReachable         表示 `NotReachable
+ *  ZBNetworkReachabilityStatusViaWWAN                表示 `WWAN`
+ *  ZBNetworkReachabilityStatusViaWiFi                      表示 `WiFi`
  */
 + (void)setReachabilityStatusChangeBlock:(nullable void (^)(ZBNetworkReachabilityStatus status))block;
 

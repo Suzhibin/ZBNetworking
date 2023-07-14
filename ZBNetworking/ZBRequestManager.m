@@ -40,8 +40,8 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 #pragma mark - 配置请求
-+ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config target:(id<ZBURLRequestDelegate>_Nonnull)target{
-    return [self requestWithConfig:config progress:nil success:nil failure:nil finished:nil target:target];
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock _Nonnull )config delegate:(id<ZBURLRequestDelegate>_Nonnull)delegate{
+    return [self requestWithConfig:config progress:nil success:nil failure:nil finished:nil delegate:delegate];
 }
 
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config success:(ZBRequestSuccessBlock)success{
@@ -69,18 +69,18 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished{
-    return [self requestWithConfig:config progress:progress success:success failure:failure finished:finished target:nil];
+    return [self requestWithConfig:config progress:progress success:success failure:failure finished:finished delegate:nil];
 }
 
-+ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
++ (NSUInteger)requestWithConfig:(ZBRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished delegate:(id<ZBURLRequestDelegate>)delegate{
     ZBURLRequest *request=[[ZBURLRequest alloc]init];
     config ? config(request) : nil;
-    return [self checkRequest:request progress:progress success:success failure:failure finished:finished target:target];
+    return [self checkRequest:request progress:progress success:success failure:failure finished:finished delegate:delegate];
 }
 
 #pragma mark - 配置批量请求
-+ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config target:(id<ZBURLRequestDelegate>_Nonnull)target{
-    return [self requestBatchWithConfig:config progress:nil success:nil failure:nil finished:nil target:target];
++ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config delegate:(id<ZBURLRequestDelegate>_Nonnull)delegate{
+    return [self requestBatchWithConfig:config progress:nil success:nil failure:nil finished:nil delegate:delegate];
 }
 
 + (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
@@ -88,10 +88,10 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished{
-    return [self requestBatchWithConfig:config progress:progress success:success failure:failure finished:finished target:nil];
+    return [self requestBatchWithConfig:config progress:progress success:success failure:failure finished:finished delegate:nil];
 }
 
-+ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
++ (ZBBatchRequest *)requestBatchWithConfig:(ZBBatchRequestConfigBlock)config progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBBatchRequestFinishedBlock)finished delegate:(id<ZBURLRequestDelegate>)delegate{
     ZBBatchRequest *batchRequest=[[ZBBatchRequest alloc]init];
     config ? config(batchRequest) : nil;
     if (batchRequest.requestArray.count==0)return nil;
@@ -100,15 +100,15 @@ NSString *const zb_downloadPath =@"AppDownload";
         [batchRequest.responseArray addObject:[NSNull null]];
         [self checkRequest:request progress:progress success:success failure:failure finished:^(id responseObject, NSError *error,ZBURLRequest *request) {
             [batchRequest onFinishedRequest:request response:responseObject error:error finished:finished];
-        }target:target];
+        }delegate:delegate];
     }];
     return batchRequest;
 }
 
 #pragma mark - 校验请求
-+ (NSUInteger)checkRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
++ (NSUInteger)checkRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished delegate:(id<ZBURLRequestDelegate>)delegate{
     
-    [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished target:target];
+    [self configBaseWithRequest:request progress:progress success:success failure:failure finished:finished delegate:delegate];
     
     if(request.parameters==nil){
         request.parameters= [NSMutableDictionary dictionary];
@@ -269,8 +269,8 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 #pragma mark - 其他配置
-+ (void)configBaseWithRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished target:(id<ZBURLRequestDelegate>)target{
-    [[ZBRequestEngine defaultEngine] configBaseWithRequest:request progressBlock:progress successBlock:success failureBlock:failure finishedBlock:finished target:target];
++ (void)configBaseWithRequest:(ZBURLRequest *)request progress:(ZBRequestProgressBlock)progress success:(ZBRequestSuccessBlock)success failure:(ZBRequestFailureBlock)failure finished:(ZBRequestFinishedBlock)finished delegate:(id<ZBURLRequestDelegate>)delegate{
+    [[ZBRequestEngine defaultEngine] configBaseWithRequest:request progressBlock:progress successBlock:success failureBlock:failure finishedBlock:finished delegate:delegate];
 }
 
 + (NSString *)keyWithParameters:(ZBURLRequest *)request{

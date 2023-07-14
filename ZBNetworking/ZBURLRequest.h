@@ -43,18 +43,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) ZBResponseSerializerType responseSerializer;
 
 /**
- * 请求的服务器地址，例如。"https://github.com/Suzhibin/"，默认为nil。
+ * 请求的服务器地址，例如。"https://github.com"，默认为nil。
  * server 优先级大于公共配置 baseServer
  */
 @property (nonatomic,copy) NSString *server;
 
 /**
- 请求的接口路径，例如。"ZBNetworking/issues"，默认为nil。
+ 请求的接口路径，例如。"/Suzhibin/ZBNetworking/issues"，默认为nil。
  */
 @property (nonatomic,copy) NSString *path;
 
 /**
- *  请求的最终URL，由' server '和' path '属性组合而成 例如："https://github.com/Suzhibin/ZBNetworking/issues"  默认为' nil
+ *  请求的最终URL，由' server '和' path '属性组合而成
+ *  例如：server "https://github.com"    path "/Suzhibin/ZBNetworking"
+ *  url  "https://github.com/Suzhibin/ZBNetworking"  默认为' nil
  *  注意:当你手动设置' url '的值时，' server '和' api '属性将被忽略。
  */
 @property (nonatomic,copy) NSString *url;
