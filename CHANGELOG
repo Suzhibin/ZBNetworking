@@ -1,3 +1,7 @@
+发布于2023年7月14日 周五
+1.下载请求 默认请求策略改为ZBRequestTypeRefresh
+2.请求代理方法 target改为delegate
+
 发布于2022年9月16日 周五
 1.请求URL或server+path 在预加载插件机制更改后的重新校验优化
 2.请求URL为空 暂停请求改为走失败回调
