@@ -98,6 +98,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)cancelAllRequest;
 
 /**
+ *  响应数据格式
+ */
+- (NSString *)responseStrWithRequest:(ZBURLRequest *)request;
+
+/**
  *  管理请求对象的生命周期
  */
 - (void)setRequestObject:(id)obj forkey:(NSString *)key;

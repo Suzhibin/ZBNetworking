@@ -126,7 +126,10 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (NSUInteger)checkAgainRequest:(ZBURLRequest *)request{
-    
+    if(request==nil){
+        NSLog(@"\n------------ZBNetworking------error info------begin------\n - 请求中止，请求对象request = nil - \n- Abort request,request = nil -\n------------ZBNetworking------error info-------end-------");
+        return 0;
+    }
     [[ZBRequestEngine defaultEngine] reconfigureUrlWithRequest:request];
     
     if ([request.url isEqualToString:@""]){
@@ -235,17 +238,19 @@ NSString *const zb_downloadPath =@"AppDownload";
 + (NSUInteger)downloadStopWithRequest:(ZBURLRequest*)request{
     NSURLSessionTask * task=[[ZBRequestEngine defaultEngine]objectRequestForkey:request.url];
     NSURLSessionDownloadTask *downloadTask=(NSURLSessionDownloadTask *)task;
-    [downloadTask cancelByProducingResumeData:^(NSData *resumeData) {
-        NSString *AppDownloadTempPath=[self AppDownloadTempPath];
-        [[ZBCacheManager sharedInstance]createDirectoryAtPath:AppDownloadTempPath];
-        [[ZBCacheManager sharedInstance] storeContent:resumeData forKey:request.url inPath:AppDownloadTempPath isSuccess:^(BOOL isSuccess) {
-            if (request.consoleLog==YES) {
-                NSLog(@"\n------------ZBNetworking------download info------begin------\n暂停下载请求，保存当前已下载文件进度\n-URLAddress-:%@\n-downloadFileDirectory-:%@\n------------ZBNetworking------download info-------end-------",request.url,AppDownloadTempPath);
-            }
+    if(downloadTask){
+        [downloadTask cancelByProducingResumeData:^(NSData *resumeData) {
+            NSString *AppDownloadTempPath=[self AppDownloadTempPath];
+            [[ZBCacheManager sharedInstance]createDirectoryAtPath:AppDownloadTempPath];
+            [[ZBCacheManager sharedInstance] storeContent:resumeData forKey:request.url inPath:AppDownloadTempPath isSuccess:^(BOOL isSuccess) {
+                [self printDownloadStoreIsSuccess:isSuccess request:request];
+            }];
         }];
-    }];
-    [request setTask:downloadTask];
-    [request setIdentifier:downloadTask.taskIdentifier];
+        [request setTask:downloadTask];
+        [request setIdentifier:downloadTask.taskIdentifier];
+    }else{
+        [self printDownloadFailureRequest:request];
+    }
     return request.identifier;
 }
 
@@ -281,7 +286,9 @@ NSString *const zb_downloadPath =@"AppDownload";
         newParameters = request.parameters;
     }
     NSString *key=[NSString zb_stringEncoding:[NSString zb_urlString:request.url appendingParameters:newParameters]];
-    [request setValue:key forKey:_cacheKey];
+    if(key){
+        [request setValue:key forKey:_cacheKey];
+    }
     return key;
 }
 
@@ -290,7 +297,7 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (id)responsetSerializerConfig:(ZBURLRequest *)request responseObject:(id)responseObject{
-    if (request.responseSerializer==ZBHTTPResponseSerializer||request.methodType==ZBMethodTypeDownLoad||![responseObject isKindOfClass:[NSData class]]) {
+    if (request.responseSerializer==ZBHTTPResponseSerializer||request.responseSerializer==ZBXMLResponseSerializer||request.responseSerializer==ZBPlistResponseSerializer||request.methodType==ZBMethodTypeDownLoad||![responseObject isKindOfClass:[NSData class]]) {
         return responseObject;
     }else{
         NSError *serializationError = nil;
@@ -308,7 +315,9 @@ NSString *const zb_downloadPath =@"AppDownload";
 }
 
 + (void)successWithResponse:(NSURLResponse *)response responseObject:(id)responseObject request:(ZBURLRequest *)request{
-    [request setValue:response forKey:_response];
+    if(response){
+        [request setValue:response forKey:_response];
+    }
     [request setValue:@(NO) forKey:_isCache];
     id result=[self responsetSerializerConfig:request responseObject:responseObject];
     if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
@@ -322,16 +331,19 @@ NSString *const zb_downloadPath =@"AppDownload";
             return;
         }
     }
+    
     if (request.apiType == ZBRequestTypeRefreshAndCache||request.apiType == ZBRequestTypeCache) {
-        [self storeObject:responseObject request:request];
+        if (request.responseSerializer == ZBJSONResponseSerializer||request.responseSerializer == ZBHTTPResponseSerializer){
+            [self storeObject:responseObject request:request];
+        }else{
+            [self printCacheSerializerWithRequest:request];
+        }
     }
     [self successWithCacheCallbackForResult:result forRequest:request];
 }
 
 + (void)failureWithError:(NSError *)error request:(ZBURLRequest *)request{
-    if (request.consoleLog==YES) {
-        [self printfailureInfoWithError:error request:request];
-    }
+    [self printfailureInfoWithError:error request:request];
     if ([ZBRequestEngine defaultEngine].errorProcessHandler) {
         [ZBRequestEngine defaultEngine].errorProcessHandler(request, error);
     }
@@ -352,10 +364,10 @@ NSString *const zb_downloadPath =@"AppDownload";
 
 + (void)getCacheDataForKey:(NSString *)key request:(ZBURLRequest *)request{
     [[ZBCacheManager sharedInstance]getCacheDataForKey:key value:^(NSData *data,NSString *filePath) {
-        if (request.consoleLog==YES) {
-            [self printCacheInfoWithkey:key filePath:filePath request:request];
+        [self printCacheInfoWithkey:key filePath:filePath request:request];
+        if(filePath){
+            [request setValue:filePath forKey:_filePath];
         }
-        [request setValue:filePath forKey:_filePath];
         [request setValue:@(YES) forKey:_isCache];
         id result=[self responsetSerializerConfig:request responseObject:data];
         if ([ZBRequestEngine defaultEngine].responseProcessHandler) {
@@ -427,16 +439,42 @@ NSString *const zb_downloadPath =@"AppDownload";
 
 #pragma mark - 打印log
 + (void)printCacheInfoWithkey:(NSString *)key filePath:(NSString *)filePath request:(ZBURLRequest *)request{
-    NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
-    if ([filePath isEqualToString:@"memoryCache"]) {
-        NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-responseSerializer-:%@\n-filtrationCacheKey-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,responseStr,request.filtrationCacheKey);
-    }else{
-        NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-cacheFileInfo-:%@\n-responseSerializer-:%@\n-filtrationCacheKey-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,[[ZBCacheManager sharedInstance] getDiskFileAttributesWithFilePath:filePath],responseStr,request.filtrationCacheKey);
+    if (request.consoleLog==YES) {
+        NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
+        if ([filePath isEqualToString:@"memoryCache"]) {
+            NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-responseSerializer-:%@\n-filtrationCacheKey-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,responseStr,request.filtrationCacheKey);
+        }else{
+            NSLog(@"\n------------ZBNetworking------cache info------begin------\n-cachekey-:%@\n-cacheFileSource-:%@\n-cacheFileInfo-:%@\n-responseSerializer-:%@\n-filtrationCacheKey-:%@\n------------ZBNetworking------cache info-------end-------",key,filePath,[[ZBCacheManager sharedInstance] getDiskFileAttributesWithFilePath:filePath],responseStr,request.filtrationCacheKey);
+        }
     }
 }
 
 + (void)printfailureInfoWithError:(NSError *)error request:(ZBURLRequest *)request{
-    NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-:%ld\n-error code-:%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.url,request.retryCount,error.code,error.localizedDescription);
+    if (request.consoleLog==YES) {
+        NSLog(@"\n------------ZBNetworking------error info------begin------\n-URLAddress-:%@\n-retryCount-:%ld\n-error code-:%ld\n-error info-:%@\n------------ZBNetworking------error info-------end-------",request.url,request.retryCount,error.code,error.localizedDescription);
+    }
 }
 
++ (void)printCacheSerializerWithRequest:(ZBURLRequest *)request{
+    if (request.consoleLog==YES) {
+        NSString *responseStr =[[ZBRequestEngine defaultEngine] responseStrWithRequest:request];
+        NSLog(@"\n------------ZBNetworking------cache serializer info------begin------\n- 数据响应格式为%@ 不支持缓存- \n-The data response format Caching is not supported-\n------------ZBNetworking------cache serializer info-------end-------",responseStr);
+    }
+}
+
++ (void)printDownloadStoreIsSuccess:(BOOL)isSuccess request:(ZBURLRequest *)request{
+    if (request.consoleLog==YES) {
+        if(isSuccess==YES){
+            NSLog(@"\n------------ZBNetworking------download info------begin------\n暂停下载请求，成功保存当前已下载文件进度\n-URLAddress-:%@\n-downloadFileDirectory-:%@\n------------ZBNetworking------download info-------end-------",request.url,[self AppDownloadTempPath]);
+        }else{
+            NSLog(@"\n------------ZBNetworking------download info------begin------\n暂停下载请求，当前已下载文件保存失败\n-URLAddress-:%@\n-downloadFileDirectory-:%@\n------------ZBNetworking------download info-------end-------",request.url,[self AppDownloadTempPath]);
+        }
+    }
+}
+
++ (void)printDownloadFailureRequest:(ZBURLRequest *)request{
+    if (request.consoleLog==YES) {
+        NSLog(@"\n------------ZBNetworking------download info------begin------\n downloadTask对象为nil，无法暂停下载请求\n-URLAddress-:%@\n------------ZBNetworking------download info-------end-------",request.url);
+    }
+}
 @end

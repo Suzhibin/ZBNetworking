@@ -24,32 +24,39 @@ typedef NS_ENUM(NSInteger,ZBApiType) {
      重新请求:  不读取缓存，不存储缓存
      没有缓存需求的，单独使用
      */
-    ZBRequestTypeRefresh,
+    ZBRequestTypeRefresh                = 0,
+    
     /**
      重新请求:  不读取缓存，但存储缓存
+     缓存支持响应数据的格式:ZBJSONResponseSerializer,ZBHTTPResponseSerializer
      可以与 ZBRequestTypeCache 配合使用
      */
-    ZBRequestTypeRefreshAndCache,
+    ZBRequestTypeRefreshAndCache        = 1,
+    
     /**
      读取缓存:  有缓存,读取缓存--无缓存，重新请求并存储缓存
+     缓存支持响应数据的格式:ZBJSONResponseSerializer,ZBHTTPResponseSerializer
      可以与ZBRequestTypeRefreshAndCache 配合使用
      */
-    ZBRequestTypeCache,
+    ZBRequestTypeCache                  = 2,
+    
     /**
      重新请求： 上拉加载更多业务，不读取缓存，不存储缓存
      用于区分业务 可以不用
      */
-    ZBRequestTypeRefreshMore,
+    ZBRequestTypeRefreshMore            = 3,
+    
     /**
      重新请求:  不读取缓存，不存储缓存.同一请求重复请求，请求结果没有响应的时候，使用第一次请求结果
      如果请求结果响应了，会终止此过程
      */
-    ZBRequestTypeKeepFirst,
+    ZBRequestTypeKeepFirst              = 4,
+    
     /**
      重新请求:   不读取缓存，不存储缓存.同一请求重复请求，请求结果没有响应的时候，使用最后一次请求结果
      如果请求结果响应了，会终止此过程
      */
-    ZBRequestTypeKeepLast,
+    ZBRequestTypeKeepLast               = 5,
 };
 /**
  HTTP 请求类型.
@@ -57,21 +64,21 @@ typedef NS_ENUM(NSInteger,ZBApiType) {
  */
 typedef NS_ENUM(NSInteger,ZBMethodType) {
     /**GET请求*/
-    ZBMethodTypeGET,
+    ZBMethodTypeGET         = 0,
     /**POST请求*/
-    ZBMethodTypePOST,
+    ZBMethodTypePOST        = 1,
     /**Upload请求*/
-    ZBMethodTypeUpload,
+    ZBMethodTypeUpload      = 2,
     /**DownLoad请求*/
-    ZBMethodTypeDownLoad,
+    ZBMethodTypeDownLoad    = 3,
     /**PUT请求*/
-    ZBMethodTypePUT,
+    ZBMethodTypePUT         = 4,
     /**PATCH请求*/
-    ZBMethodTypePATCH,
+    ZBMethodTypePATCH       = 5,
     /**DELETE请求*/
-    ZBMethodTypeDELETE,
+    ZBMethodTypeDELETE      = 6,
     /**HEAD请求*/
-    ZBMethodTypeHEAD
+    ZBMethodTypeHEAD        = 7,
 };
 /**
  请求参数的格式.
@@ -79,9 +86,9 @@ typedef NS_ENUM(NSInteger,ZBMethodType) {
  */
 typedef NS_ENUM(NSUInteger, ZBRequestSerializerType) {
     /** 设置请求参数为JSON格式*/
-    ZBJSONRequestSerializer,
+    ZBJSONRequestSerializer     = 0,
     /** 设置请求参数为二进制格式*/
-    ZBHTTPRequestSerializer,
+    ZBHTTPRequestSerializer     = 1,
 };
 /**
  返回响应数据的格式.
@@ -89,18 +96,22 @@ typedef NS_ENUM(NSUInteger, ZBRequestSerializerType) {
  */
 typedef NS_ENUM(NSUInteger, ZBResponseSerializerType) {
     /** 设置响应数据为JSON格式*/
-    ZBJSONResponseSerializer,
+    ZBJSONResponseSerializer     = 0,
     /** 设置响应数据为二进制格式*/
-    ZBHTTPResponseSerializer
+    ZBHTTPResponseSerializer     = 1,
+    /** 设置响应数据为XML格式*/
+    ZBXMLResponseSerializer      = 2,
+    /** 设置响应数据为Plist格式*/
+    ZBPlistResponseSerializer    = 3,
 };
 /**
  下载请求的 操作状态
  */
 typedef NS_ENUM(NSUInteger, ZBDownloadState) {
     /** 开始请求*/
-    ZBDownloadStateStart,
+    ZBDownloadStateStart    = 0,
     /** 暂停请求*/
-    ZBDownloadStateStop,
+    ZBDownloadStateStop     = 1,
 };
 /**
  *  当前网络的状态值，

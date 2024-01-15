@@ -21,7 +21,7 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
-    NSString *cachePath = [[ZBCacheManager sharedInstance]ZBKitPath];
+    NSString *cachePath = [[ZBCacheManager sharedInstance]ZBAppCachePath];
     NSLog(@"cachePath = %@",cachePath);
 
     
@@ -31,7 +31,7 @@
      公共配置
      插件机制
      */
-    [RequestTool setupPublicParameters]; //设置在所有请求前 一般放在AppDelegate 中调用
+    [[RequestTool sharedInstance] setupPublicParameters]; //设置在所有请求前 一般放在AppDelegate 中调用
     
     CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
     

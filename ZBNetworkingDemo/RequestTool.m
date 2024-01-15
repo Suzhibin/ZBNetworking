@@ -11,7 +11,15 @@
 #import "DataManager.h"
 #import "APMModel.h"
 @implementation RequestTool
-+ (void)setupPublicParameters{
++ (instancetype)sharedInstance{
+    static RequestTool *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[RequestTool alloc]init];
+    });
+    return sharedInstance;
+}
+- (void)setupPublicParameters{
     #pragma mark -  如需设置证书，需在网络所有配置前设置
     /**
      证书设置 如需设置证书，需在网络所有配置前设置
@@ -82,7 +90,7 @@
         config.userInfo=@{@"info":@"ZBNetworking"};//自定义请求的信息，可以用来注释和判断使用，不会传给服务器
         /** responseContentTypes
          内部已存在的响应数据类型
-         @"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"
+         @"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip",@"application/x-www-form-urlencoded"
          */
         config.responseContentTypes=@[@"application/pdf",@"video/mpeg4"];//添加新的响应数据类型
         /*

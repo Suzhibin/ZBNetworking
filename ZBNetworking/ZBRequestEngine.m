@@ -32,6 +32,13 @@ NSString *const _delegate =@"_delegate";
 @property (nonatomic, assign) ZBMethodType baseMethodType;
 @property (nonatomic, assign) BOOL consoleLog;
 @property (nonatomic, strong) NSSet <NSString *> *baseHTTPMethodsEncodingParametersInURI;
+
+@property (nonatomic, strong) AFHTTPRequestSerializer *httpRequestSerializer;
+@property (nonatomic, strong) AFJSONRequestSerializer *jsonRequestSerializer;
+
+@property (nonatomic, strong) AFHTTPResponseSerializer *httpResponseSerializer;
+@property (nonatomic, strong) AFXMLParserResponseSerializer *xmlResponseSerializer;
+@property (nonatomic, strong) AFPropertyListResponseSerializer *plistResponseSerializer;
 @end
 
 @implementation ZBRequestEngine{
@@ -54,8 +61,7 @@ NSString *const _delegate =@"_delegate";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.responseSerializer = [AFHTTPResponseSerializer serializer];
-        [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"]];
+        [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip",@"application/x-www-form-urlencoded"]];
         self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
 #if TARGET_OS_IOS
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
@@ -80,7 +86,6 @@ NSString *const _delegate =@"_delegate";
                              progress:(void (^)(NSProgress * _Nonnull))progress
                               success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                               failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
-
     [self requestSerializerConfig:request];
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
@@ -106,16 +111,15 @@ NSString *const _delegate =@"_delegate";
     }else{
         dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
     }
-    [request setTask:dataTask];
-    [request setIdentifier:dataTask.taskIdentifier];
+    if(dataTask){
+        [request setTask:dataTask];
+        [request setIdentifier:dataTask.taskIdentifier];
+    }
     return request.identifier;
 }
 
 #pragma mark - upload
-- (NSUInteger)uploadWithRequest:(ZBURLRequest *)request
-                                progress:(void (^)(NSProgress * _Nonnull))uploadProgressBlock
-                                    success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                                    failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
+- (NSUInteger)uploadWithRequest:(ZBURLRequest *)request progress:(void (^)(NSProgress * _Nonnull))uploadProgressBlock success:(void (^)(NSURLSessionDataTask *task, id responseObject))success failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure{
     [self requestSerializerConfig:request];
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
@@ -146,8 +150,10 @@ NSString *const _delegate =@"_delegate";
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         uploadProgressBlock ? uploadProgressBlock(uploadProgress) : nil;
     } success:success failure:failure];
-    [request setTask:uploadTask];
-    [request setIdentifier:uploadTask.taskIdentifier];
+    if(uploadTask){
+        [request setTask:uploadTask];
+        [request setIdentifier:uploadTask.taskIdentifier];
+    }
     return request.identifier;
 }
 
@@ -175,10 +181,11 @@ NSString *const _delegate =@"_delegate";
             return downloadFileSavePath;
         } completionHandler:completionHandler];
     }
-    
-    [downloadTask resume];
-    [request setTask:downloadTask];
-    [request setIdentifier:downloadTask.taskIdentifier];
+    if(downloadTask){
+        [downloadTask resume];
+        [request setTask:downloadTask];
+        [request setIdentifier:downloadTask.taskIdentifier];
+    }
     return request.identifier;
 }
 
@@ -202,7 +209,16 @@ NSString *const _delegate =@"_delegate";
 #endif
 //请求参数的格式
 - (void)requestSerializerConfig:(ZBURLRequest *)request{
-    self.requestSerializer =request.requestSerializer==ZBHTTPRequestSerializer ?[AFHTTPRequestSerializer serializer]:[AFJSONRequestSerializer serializer];
+    self.requestSerializer =request.requestSerializer==ZBHTTPRequestSerializer ?self.httpRequestSerializer:self.jsonRequestSerializer;
+    
+    if(request.responseSerializer==ZBXMLResponseSerializer){
+        self.responseSerializer = self.xmlResponseSerializer;
+    }else if(request.responseSerializer==ZBPlistResponseSerializer){
+        self.responseSerializer = self.plistResponseSerializer;
+    }else{
+        self.responseSerializer = self.httpResponseSerializer;//转json自己处理
+    }
+    
     if(self.baseHTTPMethodsEncodingParametersInURI.count>0){
         self.requestSerializer.HTTPMethodsEncodingParametersInURI=self.baseHTTPMethodsEncodingParametersInURI;
     }
@@ -215,6 +231,7 @@ NSString *const _delegate =@"_delegate";
             [self.requestSerializer setValue:value forHTTPHeaderField:field];
         }];
     }
+    
     if(request.timeoutInterval>0&&self.requestSerializer.timeoutInterval!=request.timeoutInterval){
         self.requestSerializer.timeoutInterval=request.timeoutInterval;
     }
@@ -375,7 +392,7 @@ NSString *const _delegate =@"_delegate";
     }
     if(request.path==nil){
         request.path=@"";
-    }
+    } 
     if(request.server.length>0||request.path.length>0){
         if([request.url hasPrefix:request.server]==NO||[request.url hasSuffix:request.path]==NO){
             if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {
@@ -412,12 +429,29 @@ NSString *const _delegate =@"_delegate";
     }
 }
 
+#pragma mark - 打印log
 - (void)printParameterWithRequest:(ZBURLRequest *)request{
     if (request.consoleLog==YES) {
         NSString *requestStr=request.requestSerializer==ZBHTTPRequestSerializer ?@"HTTP":@"JOSN";
-        NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
+        NSString *responseStr =[self responseStrWithRequest:request];
         NSLog(@"\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",request.url,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);
     }
+}
+
+- (NSString *)responseStrWithRequest:(ZBURLRequest *)request{
+    NSString *responseStr;
+    if(request.responseSerializer==ZBJSONResponseSerializer){
+        responseStr=@"JOSN";
+    }else if (request.responseSerializer==ZBHTTPResponseSerializer){
+        responseStr=@"HTTP";
+    }else if (request.responseSerializer==ZBXMLResponseSerializer){
+        responseStr=@"XML";
+    }else if (request.responseSerializer==ZBPlistResponseSerializer){
+        responseStr=@"Plist";
+    }else {
+        responseStr=@"Unknown response serializer type";
+    }
+    return responseStr;
 }
 
 #pragma mark - request 生命周期管理
@@ -447,22 +481,63 @@ NSString *const _delegate =@"_delegate";
     }
     return _baseParameters;
 }
+
 - (NSMutableDictionary<NSString *, NSString *> *)baseHeaders {
     if (!_baseHeaders) {
         _baseHeaders = [NSMutableDictionary dictionary];
     }
     return _baseHeaders;
 }
+
 - (NSMutableArray *)baseFiltrationCacheKey {
     if (!_baseFiltrationCacheKey) {
         _baseFiltrationCacheKey = [NSMutableArray array];
     }
     return _baseFiltrationCacheKey;
 }
+
 - (NSMutableArray *)responseContentTypes {
     if (!_responseContentTypes) {
         _responseContentTypes = [NSMutableArray array];
     }
     return _responseContentTypes;
 }
+
+- (AFHTTPRequestSerializer *)httpRequestSerializer {
+    if (!_httpRequestSerializer) {
+        _httpRequestSerializer = [AFHTTPRequestSerializer serializer];
+        
+    }
+    return _httpRequestSerializer;
+}
+
+- (AFJSONRequestSerializer *)jsonRequestSerializer {
+    if (!_jsonRequestSerializer) {
+        _jsonRequestSerializer = [AFJSONRequestSerializer serializer];
+        
+    }
+    return _jsonRequestSerializer;
+}
+
+- (AFHTTPResponseSerializer *)httpResponseSerializer {
+    if (!_httpResponseSerializer) {
+        _httpResponseSerializer = [AFHTTPResponseSerializer serializer];
+    }
+    return _httpResponseSerializer;
+}
+
+- (AFXMLParserResponseSerializer *)xmlResponseSerializer {
+    if (!_xmlResponseSerializer) {
+        _xmlResponseSerializer = [AFXMLParserResponseSerializer serializer];
+    }
+    return _xmlResponseSerializer;
+}
+
+- (AFPropertyListResponseSerializer *)plistResponseSerializer {
+    if (!_plistResponseSerializer) {
+        _plistResponseSerializer = [AFPropertyListResponseSerializer serializer];
+    }
+    return _plistResponseSerializer;
+}
+
 @end

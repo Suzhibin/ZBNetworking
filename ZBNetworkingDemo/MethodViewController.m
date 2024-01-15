@@ -26,7 +26,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view addSubview:self.tableView];
-    self.dataArray=[NSArray arrayWithObjects:@"GET / POST / PUT / PATCH / DELETE ",@"取消请求",@"代理方法",@"上传文件",@"下载文件（支持断点）",@"批量请求",@"多次请求,保留第一次请求(场景:发帖,评论等)",@"多次请求,保留最后一次请求(场景:搜索)",@"parameters过滤动态参数",nil];
+    self.dataArray=[NSArray arrayWithObjects:@"GET / POST / PUT / PATCH / DELETE ",@"取消请求",@"代理方法",@"上传文件",@"下载文件（支持断点）",@"批量请求",@"多次请求,保留第一次请求(场景:发帖,评论等)",@"多次请求,保留最后一次请求(场景:搜索)",@"parameters过滤动态参数",@"响应序列化",nil];
      self.path = [[ZBCacheManager sharedInstance] tmpPath];
     NSLog(@"path:%@",self.path);
     
@@ -210,12 +210,12 @@
         ZBURLRequest *request1=[[ZBURLRequest alloc]init];
         request1.url=@"";
         request1.methodType=ZBMethodTypeDownLoad;
-        [batchRequest.urlArray addObject:request1];
+        [batchRequest.requestArray addObject:request1];
         
         ZBURLRequest *request2=[[ZBURLRequest alloc]init];
         request2.url=@"";
         request2.methodType=ZBMethodTypeDownLoad;
-        [batchRequest.urlArray addObject:request2];
+        [batchRequest.requestArray addObject:request2];
           */
     } progress:^(NSProgress * _Nullable progress) {
         NSLog(@"onProgress: %.2f", 100.f * progress.completedUnitCount/progress.totalUnitCount);
@@ -289,7 +289,7 @@
 #pragma mark - 过滤缓存key
 //过滤掉parameters 缓存key里的 变动参数
 - (void)parametersfiltrationCacheKey{
-    //POST等 使用了parameters 的请求 缓存key会是url+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个parametersfiltrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳
+    //POST等 使用了parameters 的请求 缓存key会是url+parameters，parameters里有是时间戳或者其他动态参数,key一直变动 无法拿到缓存。所以定义一个filtrationCacheKey 过滤掉parameters 缓存key里的 变动参数比如 时间戳。更推荐在setupBaseConfig进行全局配置
     
     NSTimeInterval timeInterval = [[NSDate date] timeIntervalSince1970];
     NSString *timeString = [NSString stringWithFormat:@"%f",timeInterval];
@@ -303,7 +303,27 @@
         request.filtrationCacheKey=@[@"time"];//过滤掉parameters 缓存key里变动参数比如 时间戳
     }success:nil failure:nil];
 }
-
+#pragma mark - 响应序列化
+- (void)responseSerializer{
+    /**
+     ZBJSONResponseSerializer     = 0,默认
+     ZBHTTPResponseSerializer     = 1,
+     ZBXMLResponseSerializer      = 2,
+     ZBPlistResponseSerializer    = 3,
+     */
+    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+        request.server=@"https://URL";
+        request.path=@"/aip/sss";
+        request.apiType=ZBRequestTypeRefresh;
+        request.responseSerializer = ZBXMLResponseSerializer;//ZBPlistResponseSerializer;
+    }success:^(id  _Nullable responseObject, ZBURLRequest * _Nullable request) {
+        if(request.responseSerializer == ZBXMLResponseSerializer){
+            if([responseObject isKindOfClass:[NSXMLParser class]]){
+                NSLog(@"xml");
+            }
+        }
+    }];
+}
 - (void)downLoadPathSize:(NSString *)path{
     CGFloat downLoadPathSize=[[ZBCacheManager sharedInstance]getFileSizeWithPath:path];
     downLoadPathSize=downLoadPathSize/1000.0/1000.0;
@@ -350,6 +370,9 @@
             break;
         case 8:
             [self parametersfiltrationCacheKey];//过滤掉parameters 缓存key里的 变动参数
+            break;
+        case 9:
+            [self responseSerializer];//请求序列化
             break;
         default:
             break;

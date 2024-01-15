@@ -57,9 +57,9 @@
 }
 
 - (void)dealloc{
-#ifdef DEBUG
-    NSLog(@"%s",__func__);
-#endif
+    if (_consoleLog==YES) {
+        NSLog(@"%s",__func__);
+    }
 }
 
 #pragma mark - 上传请求参数

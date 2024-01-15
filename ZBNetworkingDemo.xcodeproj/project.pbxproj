@@ -30,7 +30,7 @@
 		9F244A532170D59900482E41 /* CustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A522170D59900482E41 /* CustomTabBarController.m */; };
 		9F244A582170D92500482E41 /* HomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F244A572170D92500482E41 /* HomeModel.m */; };
 		9F8959422486523500559BEC /* RequestTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8959412486523500559BEC /* RequestTool.m */; };
-		9F9177B32489080600DF1B9D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F9177B22489080600DF1B9D /* WebKit.framework */; };
+		9F8E9C012B440DBB007E68D7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F9177B22489080600DF1B9D /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		9F94958F27912C98002D8CAB /* APMModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F94958E27912C98002D8CAB /* APMModel.m */; };
 		9F9E6729255A36AB003CEB7E /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F9E6728255A36AB003CEB7E /* PlayerViewController.m */; };
 		9FB4A67F28A5EB9E00FEDB3F /* NSString+ZBURLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FB4A67E28A5EB9D00FEDB3F /* NSString+ZBURLEncoding.m */; };
@@ -120,7 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F9177B32489080600DF1B9D /* WebKit.framework in Frameworks */,
+				9F8E9C012B440DBB007E68D7 /* WebKit.framework in Frameworks */,
 				5858D131DA3F67455D1FBE08 /* libPods-ZBNetworkingDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -203,7 +203,7 @@
 + (void)setReachabilityStatusChangeBlock:(nullable void (^)(ZBNetworkReachabilityStatus status))block;
 
 /**
- *  获取下载文件
+ *  获取下载文件   下载请求使用
  *
  *  @param  key                 一般为请求地址
  *  @return 获取下载文件
