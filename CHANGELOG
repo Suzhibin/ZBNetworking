@@ -1,3 +1,9 @@
+发布于2024年1月15日 周一
+v1.0.3
+1.增加XML和Plist格式响应数据
+2.responseContentTypes 默认类型增加 application/x-www-form-urlencoded
+3.增加程序健壮性
+
 发布于2023年7月14日 周五
 1.下载请求 默认请求策略改为ZBRequestTypeRefresh
 2.请求代理方法 target改为delegate
