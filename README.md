@@ -43,7 +43,7 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
 
 7.显示缓存大小/个数，全部清除缓存/单个文件清除缓存/按时间清除缓存/按路径清除缓存  方法多样  并且都可以自定义路径   可扩展性强
 
-8.可设置请求自动重试次数。可配置ContentTypes，可修改HTTPMethodsEncodingParametersInURI（不同请求类型的参数是否拼接url后 还是在body内）
+8.可设置请求自动重试次数，可配置ContentTypes，可修改HTTPMethodsEncodingParametersInURI（不同请求类型的参数是否拼接url后 还是在body内）
 
 9.DownLoad支持断点下载 ，批量请求等功能
 
