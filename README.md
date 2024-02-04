@@ -39,11 +39,11 @@ pod 'ZBNetworking', :git => 'https://github.com/Suzhibin/ZBNetworking.git'
 
 5.有插件机制  可以统一 预处理 所有 请求,响应,错误 处理逻辑的方法
 
-6.内存缓存，沙盒缓存，有缓存文件过期机制 默认一周
+6.内存缓存，沙盒缓存，有缓存文件过期机制 默认一周，有缓存key过滤功能
 
 7.显示缓存大小/个数，全部清除缓存/单个文件清除缓存/按时间清除缓存/按路径清除缓存  方法多样  并且都可以自定义路径   可扩展性强
 
-8.有缓存key过滤功能
+8.可设置请求自动重试次数。可配置ContentTypes，可修改HTTPMethodsEncodingParametersInURI（不同请求类型的参数是否拼接url后 还是在body内）
 
 9.DownLoad支持断点下载 ，批量请求等功能
 
