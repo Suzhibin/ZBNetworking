@@ -19,10 +19,10 @@
 
 
 #import <Foundation/Foundation.h>
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
 #import <UIKit/UIKit.h>
 #elif TARGET_OS_MAC
-
+#import <AppKit/AppKit.h>
 #endif
 /** 缓存是否存储成功的Block */
 typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
@@ -45,6 +45,7 @@ typedef void(^ZBCacheCompletedBlock)(void);
  *  内存缓存应该保存的对象的最大数目.
  */
 @property (assign, nonatomic) NSUInteger maxMemoryCountLimit;
+
 /**
  *  获取沙盒Home的文件目录
  *

@@ -55,25 +55,30 @@ static const CGFloat unit = 1000.0;
         _memoryCache.name = memoryNameSpace;
         
         [self initCachesfileWithName:zb_defaultCachePathName];
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearMemory) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(automaticCleanCache) name:UIApplicationWillTerminateNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundCleanCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
 #endif
-       
+#if  TARGET_OS_OSX
+        [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
+#endif
     }
     return self;
 }
 
 - (void)dealloc{
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+#endif
+#if  TARGET_OS_OSX
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationWillTerminateNotification object:nil];
 #endif
 }
 
@@ -403,13 +408,12 @@ static const CGFloat unit = 1000.0;
         }
     });
 }
-
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
 - (void)backgroundCleanCacheWithPath:(NSString *)path{
     Class UIApplicationClass = NSClassFromString(@"UIApplication");
     if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
         return;
     }
-#if TARGET_OS_IOS
     UIApplication *application = [UIApplication performSelector:@selector(sharedApplication)];
     __block UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
         // Clean up any unfinished task business by marking where you
@@ -422,9 +426,8 @@ static const CGFloat unit = 1000.0;
         [application endBackgroundTask:bgTask];
         bgTask = UIBackgroundTaskInvalid;
     }];
-#endif
-
 }
+#endif
 
 - (void)backgroundCleanCache {
     [self backgroundCleanCacheWithPath:self.diskCachePath];
