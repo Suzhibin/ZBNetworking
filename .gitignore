@@ -59,6 +59,20 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 
+*.xcuserstate
+
+project.xcworkspace
+
+xcuserdata
+
+UserInterfaceState.xcuserstate
+
+project.xcworkspace/
+
+xcuserdata/
+
+UserInterface.xcuserstate
+
 
 ZBNetworking/Pods
 Pods

@@ -34,7 +34,7 @@ typedef NS_ENUM(NSInteger,ZBApiType) {
     ZBRequestTypeRefreshAndCache        = 1,
     
     /**
-     读取缓存:  有缓存,读取缓存--无缓存，重新请求并存储缓存
+     读取缓存:  有缓存,读取缓存。 -- 如无缓存，重新请求并存储缓存
      缓存支持响应数据的格式:ZBJSONResponseSerializer,ZBHTTPResponseSerializer
      可以与ZBRequestTypeRefreshAndCache 配合使用
      */
@@ -47,13 +47,13 @@ typedef NS_ENUM(NSInteger,ZBApiType) {
     ZBRequestTypeRefreshMore            = 3,
     
     /**
-     重新请求:  不读取缓存，不存储缓存.同一请求重复请求，请求结果没有响应的时候，使用第一次请求结果
+     重新请求:  不读取缓存，不存储缓存.同一请求重复请求，使用第一次请求结果
      如果请求结果响应了，会终止此过程
      */
     ZBRequestTypeKeepFirst              = 4,
     
     /**
-     重新请求:   不读取缓存，不存储缓存.同一请求重复请求，请求结果没有响应的时候，使用最后一次请求结果
+     重新请求:   不读取缓存，不存储缓存.同一请求重复请求，使用最后一次请求结果
      如果请求结果响应了，会终止此过程
      */
     ZBRequestTypeKeepLast               = 5,
