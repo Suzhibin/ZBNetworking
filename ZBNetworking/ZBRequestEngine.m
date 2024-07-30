@@ -7,9 +7,6 @@
 //
 
 #import "ZBRequestEngine.h"
-#if TARGET_OS_IOS
-#import "AFNetworkActivityIndicatorManager.h"
-#endif
 #import "ZBURLRequest.h"
 #import "NSString+ZBURLEncoding.h"
 
@@ -63,9 +60,6 @@ NSString *const _delegate =@"_delegate";
     if (self) {
         [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip",@"application/x-www-form-urlencoded"]];
         self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
-#if TARGET_OS_IOS
-        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-#endif
          _requestDic =[[NSMutableDictionary alloc] init];
     }
     return self;

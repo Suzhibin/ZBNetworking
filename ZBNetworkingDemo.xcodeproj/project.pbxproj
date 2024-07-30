@@ -634,7 +634,7 @@
 				DEVELOPMENT_TEAM = E6LU458855;
 				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -649,7 +649,7 @@
 				DEVELOPMENT_TEAM = E6LU458855;
 				INFOPLIST_FILE = ZBNetworkingDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "github.com-Suzhibin.ZBNetworkingDemo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

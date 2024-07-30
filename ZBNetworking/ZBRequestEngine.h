@@ -6,7 +6,15 @@
 //  Copyright © 2017年 Suzhibin. All rights reserved.
 //
 
+#if __has_include(<AFNetworking/AFNetworking.h>)
 #import <AFNetworking/AFNetworking.h>
+#elif __has_include("AFNetworking.h")
+#import "AFNetworking.h"
+#elif __has_include("AFNetworking-umbrella.h")
+#import "AFNetworking-umbrella.h"
+#else
+#error "AFNetworking header not found"
+#endif
 #import "ZBRequestConst.h"
 @class ZBConfig;
 
